@@ -18,69 +18,153 @@
      * Initialize Git repository (e.g., on GitHub, GitLab).  
      * Select and set up a PaaS (e.g., Render, Railway.app) and provision a managed PostgreSQL database.  
      * Configure basic deployment pipeline (e.g., Git push to deploy to a staging/development environment on the PaaS).  
-  2. **Database Schema & Migrations \- MVP (2-3 days)**  
-     * Design database schema for users, reading\_logs (user\_id, date\_read, passage\_text, notes\_text).  
-     * Create Laravel migrations for these tables.  
-     * Define Eloquent models for User and ReadingLog.  
+  2. **Database Schema & Migrations \- MVP (3-4 days)**  
+     * Design database schema for core tables:
+       * users (id, name, email, password, etc.)
+       * reading\_logs (id, user\_id, date\_read, passage\_text, notes\_text)
+       * book\_progress (id, user\_id, book\_id, book\_name, total\_chapters, chapters\_read, completion\_percent, is\_completed, last\_updated)
+     * Create Laravel migrations for these tables
+     * Define Eloquent models for User, ReadingLog, and BookProgress
+     * Create Bible reference configuration file (config/bible.php) with static data for all 66 books
   3. **User Authentication (Web) (3-5 days)**  
      * Implement custom email/password registration and login compatible with HTMX + Alpine.js frontend.  
      * Create basic views for login, registration, and password reset that integrate with HTMX approach.  
      * Ensure authenticated users have a dedicated dashboard/home area.  
      * Note: This approach avoids Laravel starter kits as they're not compatible with our HTMX architecture.  
   4. **Daily Reading Log Input (Web) (5-7 days)**  
-     * Create a form for users to log their daily reading:  
-       * Flexible text input for Bible passage (e.g., "John 3:16-21").  
-       * Date selector (defaults to today, consider "today only" for MVP simplicity).  
-       * Small plain text area for basic notes.  
-     * Develop Laravel controller logic to handle form submission, validate input, and save ReadingLog entries to the database (associated with the authenticated user).  
-     * Use HTMX for form submission to provide a smooth UX without full page reloads. Return a success message or an updated part of the page.  
-  5. **Streak Calculation & Display (Web) (3-5 days)**  
-     * Develop backend logic (e.g., in a Laravel service or model method) to calculate the current reading streak for the authenticated user based on consecutive ReadingLog dates.  
-     * Display the current streak prominently on the user's dashboard (e.g., in the header or a dedicated section).  
-     * Use HTMX to potentially refresh this display after a new log is entered.  
+     * Create a form for users to log their daily reading with a two-step structured selector:  
+       * Step 1: Book Selection - Dropdown of all 66 Bible books  
+       * Step 2: Chapter Selection - Dynamic dropdown of valid chapters for selected book  
+       * Date selector (defaults to today)  
+       * Small plain text area for basic notes  
+     * Develop Laravel controller logic to:  
+       * Handle form submission and validate input  
+       * Save ReadingLog entries to the database (associated with the authenticated user)  
+       * Update BookProgress table with newly read chapters  
+     * Implement a BibleReferenceService to access static book/chapter data from config  
+     * Use HTMX for form submission to provide a smooth UX without full page reloads
+  5. **Streak Calculation & Display (Web) (4-6 days)**  
+     * Develop a StreakService to calculate current and longest streaks:  
+       * Implement 1-day grace period (streak continues if user reads either today OR yesterday)  
+       * Normalize dates to start of day to avoid timezone issues  
+       * Handle edge cases like non-sequential data entry  
+     * Create models and controllers to display streak information  
+     * Display current streak prominently on the dashboard with visual indicator (e.g., flame icon)  
+     * Show all-time longest streak for additional motivation  
+     * Use HTMX to refresh this display after a new log is entered
   6. **History Visualization (Basic Calendar) (Web) (4-6 days)**  
-     * Develop backend logic to fetch all ReadingLog dates for the authenticated user.  
-     * Create a simple calendar view (e.g., using HTML table or CSS Grid, styled to resemble GitHub's contribution graph) where days with logged readings are visually distinct.  
-     * Display this calendar on the user's dashboard.  
-  7. **Basic Responsive Design & UI Styling (Ongoing, 3-5 days dedicated)**  
-     * Implement basic responsive design using CSS (Flexbox, Grid, Media Queries) to ensure core features are usable on desktop and common mobile screen sizes.  
-     * Apply simple, clean styling. Consider a lightweight CSS framework like Pico.css or Tailwind CSS (if comfortable with its utility-first approach and setup).  
-  8. **Testing & Bug Fixing (MVP Scope) (3-4 days)**  
-     * Manual testing of all MVP features.  
-     * Write basic Laravel feature tests for critical paths (authentication, log creation).  
-  9. **Deployment to Production & Basic Monitoring (1-2 days)**  
-     * Deploy the MVP to the production environment on your chosen PaaS.  
-     * Set up basic error tracking (e.g., Sentry free tier, Laravel's built-in logging).
+     * Develop backend logic to fetch all ReadingLog dates for the authenticated user  
+     * Create a simple calendar view (e.g., using HTML table or CSS Grid, styled to resemble GitHub's contribution graph) where days with logged readings are visually distinct  
+     * Implement hover/click functionality to see what was read on a specific day  
+     * Display this calendar on the user's dashboard  
+     * Use HTMX to refresh the calendar when new readings are logged
 
-## **Phase 2: Web App \- Core Feature Enhancements**
+  7. **Book Completion Tracking & Statistics (Web) (5-7 days)**  
+     * Implement the BookProgress denormalized table with incremental updates:  
+       * Create controller logic that updates BookProgress whenever a ReadingLog is created  
+       * Calculate completion percentage based on chapters read vs. total chapters  
+       * Track which books are started vs. completed  
+     * Develop a Book Completion Grid UI showing all 66 books with status indicators:  
+       * Not started: Light gray  
+       * In progress: Blue  
+       * Completed: Green  
+     * Create a simple statistics dashboard showing:  
+       * Current streak and all-time longest streak  
+       * Total chapters read  
+       * Books started vs. completed count  
+       * Total days with reading activity  
+     * Use HTMX for dynamic updates of statistics components
+  8. **UI Implementation & Basic Styling (4-5 days)**  
+     * Create a clean, intuitive UI prioritizing ease of use and clarity  
+     * Design clear visualizations for streaks, history, and statistics  
+     * Implement responsive design for mobile and desktop use  
+     * Apply simple, clean styling. Consider a lightweight CSS framework like Pico.css or Tailwind CSS (if comfortable with its utility-first approach and setup)  
+     * Ensure all components (book grid, statistics dashboard, calendar) are responsive  
 
-* **Goal:** Incorporate key habit-forming features from the "Bible App Ideas" document that build directly on the MVP.  
-* **Estimated Time:** 5-8 Weeks  
+  9. **French Language Support (3-4 days)**  
+     * Implement Laravel's localization system  
+     * Create translation files for all UI elements and messages  
+     * Extend Bible reference configuration to support French book names  
+     * Add language toggle to user interface  
+     * Implement locale-aware date formatting  
+     * Test with native French speakers from Quebec  
+  10. **Caching Implementation (2-3 days)**  
+     * Set up Redis for caching  
+     * Implement caching for frequently accessed data:  
+       * User statistics (current streak, longest streak)  
+       * Book completion data  
+       * Reading history calendar  
+     * Configure cache invalidation on new reading logs  
+     * Implement fallback mechanisms if cache is unavailable  
+     * Add cache monitoring and debugging tools  
+
+  11. **Testing & Bug Fixing (MVP Scope) (3-4 days)**  
+     * Manual testing of all MVP features  
+     * Write basic Laravel feature tests for critical paths (authentication, log creation, streak calculation)  
+     * Test BookProgress updates and statistics calculations  
+     * Verify cache performance and reliability  
+  12. **Deployment to Production & Basic Monitoring (1-2 days)**  
+     * Deploy the MVP to the production environment on your chosen PaaS  
+     * Set up basic error tracking (e.g., Sentry free tier, Laravel's built-in logging)  
+     * Configure initial database backup strategy
+
+## **Phase 2: Web App \- Advanced Statistics & Core Enhancements**
+
+* **Goal:** Expand on the MVP's basic statistics with more detailed analytics and add key habit-forming features.  
+* **Estimated Time:** 6-9 Weeks  
 * **Tasks:**  
-  1. **Reading Plans Integration (Basic) (7-10 days)**  
-     * Database: Add tables for reading\_plans (name, description, list of passages/days) and user\_reading\_plan\_progress (user\_id, plan\_id, current\_day, completed\_passages).  
-     * Backend: Seed some built-in reading plans. Logic for users to select a plan. Logic to display today's reading for the active plan. Logic to mark plan readings as complete (could be tied to logging a specific passage).  
-     * Frontend: UI for users to browse and select plans. Display current plan and today's reading. Basic progress visualization within a plan.  
-  2. **Goal Setting & Tracking (Basic) (5-7 days)**  
-     * Database: Add table for user\_goals (user\_id, goal\_type \[e.g., chapters\_per\_day, finish\_book\_by\_date\], target\_value, current\_progress, start\_date, end\_date).  
-     * Backend: Logic for users to create simple goals (e.g., "Read X chapters daily"). Logic to update goal progress based on reading logs.  
-     * Frontend: UI for creating and viewing active goals. Basic progress display towards these goals.  
-  3. **Enhanced Notes & Reflection (Basic Tagging) (4-6 days)**  
+  1. **Advanced Statistics Implementation (7-9 days)**  
+     * Weekly Statistics Analysis:
+       * Generate week-by-week reading summaries
+       * Track number of chapters read per week
+       * Calculate weekly reading consistency percentage
+       * Identify strongest and weakest reading days
+       * Compare current week to previous weeks
+     * Advanced Visualizations:
+       * Heat maps showing reading intensity
+       * Progress charts with trend lines
+       * Interactive filters for date ranges
+     * Reading Patterns Analysis:
+       * Day-of-week patterns identification
+       * Time-of-day analysis (if timestamp data available)
+       * Consistency metrics and suggestions
+
+  2. **Reading Plans Integration (7-10 days)**  
+     * Database: Add tables for reading\_plans (name, description, list of passages/days) and user\_reading\_plan\_progress (user\_id, plan\_id, current\_day, completed\_passages)  
+     * Backend: Controllers and services for fetching plans, user subscription to plans, marking plan entries as complete  
+     * Frontend: UI for plan discovery, viewing active plan and progress, marking plan days as complete  
+
+  3. **Basic Goal Setting (5-7 days)**  
+     * Database: Add tables for goals (type, target, timeframe) and goal\_progress (measurements)  
+     * Backend: Logic for users to create simple goals (e.g., "Read X chapters daily")  
+     * Frontend: UI for creating and viewing active goals with progress indicators
+
+  4. **Enhanced Notes & Reflection (Basic Tagging) (4-6 days)**  
      * Database: Add tags table and a pivot table for reading\_log\_tag.  
      * Backend: Logic to allow users to add tags to their reading log notes. Basic search/filter of notes by tags.  
      * Frontend: UI to add/manage tags during note entry. UI to view notes filtered by tags.  
-  4. **"Catch-Up" / Grace Mechanism (Streak Forgiveness \- Simple) (3-5 days)**  
-     * Backend: Implement a simple "log for yesterday" feature (e.g., allow logging for the previous day until a certain time, like noon).  
-     * Alternatively, a very simple "streak freeze" concept (e.g., one per month, manually applied for now or very simply earned).  
-     * Frontend: Clear UI for this mechanism if applicable.  
-  5. **Bible Version Selection (Tracking Only) (1-2 days)**  
-     * Database: Add a bible\_version field to reading\_logs (or user profile if it's a default).  
-     * Frontend: Allow users to specify which Bible version they are reading from when logging (simple text input or dropdown).  
-  6. **Refined UI/UX based on MVP Feedback (Ongoing, 3-4 days dedicated)**  
-     * Incorporate any user feedback from the MVP.  
-     * Improve navigation and clarity.  
+
+  5. **"Catch-Up" / Grace Mechanism (Streak Forgiveness \- Enhanced) (3-5 days)**  
+     * Backend: Expand on the MVP's 1-day grace period with more flexible options:  
+       * Allow logging for multiple previous days with a weekly limit  
+       * Implement a "streak freeze" concept (earned through consistent reading)  
+     * Frontend: Clear UI for these mechanisms with helpful explanations  
+
+  6. **UX/UI Refinement for Web App (5-6 days)**  
+     * Refined UI with more polished styles, transitions, and micro-interactions  
+     * Improved flow based on user testing and feedback from MVP  
+     * Enhance visualization components (statistics charts, book completion grid)  
+     * Improve navigation and overall user experience  
+
   7. **Testing & Bug Fixing (Phase 2 Scope) (4-5 days)**  
-     * Manual and automated testing for new features.
+     * Manual and automated testing for new features  
+     * Performance testing for advanced statistics calculations  
+     * Browser compatibility testing  
+
+  8. **Documentation Update (1-2 days)**  
+     * Update Technical Architecture document with Phase 2 implementations  
+     * Align Product Requirements Document with newly added features  
+     * Document API endpoints for future mobile development
 
 ## **Phase 3: Web App \- Engagement & UX Refinements**
 
