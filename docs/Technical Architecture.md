@@ -62,19 +62,22 @@
 ## Data Models (Entity Relationship Diagram)
 
 ```
-┌───────────────────┐       ┌───────────────────┐
-│       Users       │       │    ReadingLogs    │
-├───────────────────┤       ├───────────────────┤
-│ id (PK)           │       │ id (PK)           │
-│ name              │◄──────┤ user_id (FK)      │
-│ email             │       │ date_read         │
-│ password          │       │ passage_text      │
-│ email_verified_at │       │ notes_text        │
-│ remember_token    │       │ created_at        │
-│ created_at        │       │ updated_at        │
-│ updated_at        │       └───────────────────┘
-└───────────────────┘       
+┌───────────────────┐       ┌───────────────────┐       ┌───────────────────┐
+│       Users       │       │    ReadingLogs    │       │   BookProgress    │
+├───────────────────┤       ├───────────────────┤       ├───────────────────┤
+│ id (PK)           │       │ id (PK)           │       │ id (PK)           │
+│ name              │◄──────┤ user_id (FK)      │       │ user_id (FK)      │
+│ email             │       │ date_read         │       │ book_id           │
+│ password          │       │ passage_text      │       │ book_name         │
+│ email_verified_at │       │ notes_text        │       │ total_chapters    │
+│ remember_token    │       │ created_at        │       │ chapters_read     │
+│ created_at        │       │ updated_at        │       │ completion_percent│
+│ updated_at        │       └───────────────────┘       │ is_completed      │
+└───────────────────┘                                   │ last_updated      │
+                                                        └───────────────────┘
 ```
+
+**Note:** The `BookProgress` table is a denormalized structure that tracks each user's reading progress for each book of the Bible. There is no direct database relationship (such as a foreign key) between `ReadingLogs` and `BookProgress`. Instead, `BookProgress` is updated whenever a new `ReadingLog` is created or modified. This serves as a performance optimization for statistics calculations, eliminating the need to scan all reading logs when checking book completion status.
 
 **MVP-Focused Data Model**: The initial implementation will focus only on the core entities (Users and ReadingLogs) needed for the MVP's "Read → Log → See Progress" flow. Additional entities like Goals, Achievements, Tags, and ReadingPlans will be implemented in later phases as the application evolves beyond MVP.
 
@@ -137,13 +140,14 @@ GET /calendar
 
 # Statistics Routes
 GET /stats/books
-- Returns: HTML fragment with books read visualization
-- Used with: hx-get="/stats/books" hx-target="#books-progress"
+- Returns: HTML fragment with book completion stats (from the BookProgress table)
+- Used with: hx-get="/stats/books" hx-target="#book-progress"
 
 GET /stats/summary
 - Returns: HTML fragment with summary statistics
 - Used with: hx-get="/stats/summary" hx-target="#stats-summary"
 
+# Post-MVP Statistics Routes (Phase 2)
 GET /stats/weekly
 - Returns: HTML fragment with weekly reading statistics
 - Used with: hx-get="/stats/weekly" hx-target="#weekly-stats"
@@ -192,12 +196,13 @@ GET /api/calendar
 # Statistics Endpoints
 GET /api/stats/books
 - Requires: Authentication
-- Returns: array of books with read status and completion percentage
+- Returns: array of books with read status and completion percentage (from the BookProgress table)
 
 GET /api/stats/summary
 - Requires: Authentication
 - Returns: summary statistics (total_logs, longest_streak, books_started, books_completed)
 
+# Post-MVP Statistics Endpoints (Phase 2)
 GET /api/stats/weekly
 - Requires: Authentication
 - Optional Query Params: year, week_number
@@ -231,15 +236,14 @@ GET /api/user/achievements
 
 ### Bible Passage Input
 
-The Bible passage input is a critical component of the reading log functionality. For the MVP, we'll implement a structured selector approach to simplify the user experience and ensure data integrity.
+The Bible passage input is a critical component of the reading log functionality. For the MVP, we'll implement a simplified two-step structured selector approach to simplify the user experience and ensure data integrity.
 
 #### Structured Bible Passage Selector
 
-The UI will provide a three-step structured selector:
+The UI will provide a simplified two-step structured selector for the MVP:
 
 1. **Book Selection**:
-   - Dropdown menu containing all 66 books of the Bible
-   - Organized in canonical order (Old Testament followed by New Testament)
+   - Dropdown menu of all 66 books of the Bible
    - Example: Genesis, Exodus, ... Revelation
 
 2. **Chapter Selection**:
@@ -247,27 +251,66 @@ The UI will provide a three-step structured selector:
    - Constrained to valid chapter numbers for the selected book
    - Example: John has 21 chapters, so the range would be 1-21
 
-3. **Verse Range** (Optional):
-   - Start and end verse inputs that dynamically update based on the selected book and chapter
-   - Can be left empty to indicate the entire chapter was read
-   - Example: John 3 has 36 verses, so the range would be 1-36
+**Note:** For the MVP, reading logs will be restricted to whole chapters only to simplify the implementation. Verse-level tracking can be added in future iterations.
 
 #### Implementation Logic
 
 1. **Bible Reference Data**:
-   - Maintain a data structure with chapter counts for all 66 Bible books
-   - Maintain a data structure with verse counts for each chapter of each book
-   - Could be stored as JSON or in the database for easy updates
+   - Maintain a static configuration file with data for all 66 Bible books
+   - Implementation as a PHP config file for optimal performance:
+   ```php
+   // config/bible.php
+   return [
+       'books' => [
+           [
+               'id' => 1,
+               'name' => 'Genesis',
+               'abbreviation' => 'GEN',
+               'testament' => 'old',
+               'chapter_count' => 50
+           ],
+           [
+               'id' => 2,
+               'name' => 'Exodus',
+               'abbreviation' => 'EXO',
+               'testament' => 'old',
+               'chapter_count' => 40
+           ],
+           // ... remaining 64 books
+       ]
+   ];
+   ```
+   - Create a singleton service class to access this data efficiently:
+   ```php
+   class BibleReferenceService
+   {
+       protected $books;
+       
+       public function __construct()
+       {
+           $this->books = collect(config('bible.books'));
+       }
+       
+       public function getBookById($id)
+       {
+           return $this->books->firstWhere('id', $id);
+       }
+       
+       public function getBookByName($name)
+       {
+           return $this->books->firstWhere('name', $name);
+       }
+   }
+   ```
+   - This approach is more efficient than a database table since Bible data is fixed and unchanging
 
 2. **Dynamic Selection Logic**:
    - When a book is selected, dynamically populate the chapter dropdown with valid chapter numbers
-   - When a chapter is selected, dynamically set the maximum values for verse inputs
+   - Ensure only valid chapter numbers can be selected based on the chosen book
 
 3. **Reference Formatting**:
-   - Format user selections into standardized reference strings:
-     - Entire chapter: "John 3"
-     - Single verse: "John 3:16"
-     - Verse range: "John 3:16-21"
+   - Format user selections into standardized reference strings in the format "Book Chapter"
+   - Example: "John 3" or "Genesis 1"
 
 #### Benefits of Structured Selector Approach
 
@@ -281,27 +324,74 @@ In future iterations, we can add a free-form text input option with validation f
 
 ### Advanced Statistics Implementation
 
-The Advanced Statistics feature provides motivating metrics about Bible reading progress. Here's the general implementation approach:
+The Advanced Statistics feature provides motivating metrics about Bible reading progress. For the MVP, we'll focus on a streamlined set of high-value statistics that encourage habit formation while keeping implementation simple.
 
-#### Reading Statistics Logic
+#### MVP Reading Statistics Logic
 
-1. **Summary Statistics Calculation**:
-   - Retrieve all reading logs for the user
-   - Count total number of logs created
-   - Determine first and most recent reading dates
-   - Calculate longest streak (reusing streak calculation logic)
+1. **Core Statistics Calculation**:
+   - Current streak (using the streak calculation logic with 1-day grace period)
+   - All-time longest streak
+   - Total chapters read (count of reading logs)
+   - Total books started vs. completed
+   - Number of days with reading activity
+   
+   ```php
+   // Example controller method for basic statistics
+   public function getStatsSummary()
+   {
+       $user = auth()->user();
+       
+       $stats = [
+           'current_streak' => $this->streakService->getCurrentStreak($user),
+           'longest_streak' => $this->streakService->getLongestStreak($user),
+           'total_chapters' => ReadingLog::where('user_id', $user->id)->count(),
+           'books_started' => BookProgress::where('user_id', $user->id)
+                             ->where('completion_percent', '>', 0)
+                             ->count(),
+           'books_completed' => BookProgress::where('user_id', $user->id)
+                               ->where('is_completed', true)
+                               ->count(),
+           'reading_days' => ReadingLog::where('user_id', $user->id)
+                            ->distinct('date_read')
+                            ->count(),
+       ];
+       
+       return $stats;
+   }
+   ```
 
-2. **Weekly Statistics**:
-   - Generate week-by-week reading summaries
-   - Track number of chapters read per week
-   - Calculate weekly reading consistency percentage
-   - Identify strongest and weakest reading days
-   - Compare current week to previous weeks
+2. **Post-MVP Statistics** (to be implemented after initial launch):
+   - Weekly reading summaries
+   - Reading consistency percentage
+   - Day-of-week patterns
+   - Trend analysis
 
 3. **Book Completion Tracking**:
-   - Parse each reading log to extract book and chapter information
-   - Maintain a data structure tracking which chapters have been read in each book
-   - Calculate completion percentage based on chapters read versus total chapters
+   - **Performance-Optimized Approach:** 
+     - Implement a denormalized `book_progress` table for efficient tracking:
+       ```
+       ┌────────────────────┐
+       │   book_progress    │
+       ├────────────────────┤
+       │ id (PK)            │
+       │ user_id (FK)       │
+       │ book_id            │ (from static Bible config)
+       │ book_name          │
+       │ total_chapters     │
+       │ chapters_read      │ (JSON array or serialized data)
+       │ completion_percent │
+       │ is_completed       │ (boolean)
+       │ last_updated       │
+       └────────────────────┘
+       ```
+     - Update this table incrementally with each new reading log:
+       - When user logs a chapter (e.g., "Genesis 1"):
+         1. Parse the passage to extract book name and chapter
+         2. Look up the book_id from the static Bible configuration (e.g., Genesis = 1)
+         3. Find or create a BookProgress record for this user and book_id
+         4. Add the chapter to the chapters_read array if not already present
+         5. Recalculate completion_percentage based on chapters_read vs total_chapters
+       - This approach avoids scanning all reading logs for statistics calculations
    - Consider a book "started" when at least one chapter has been read
    - Consider a book "completed" when all chapters have been read at least once
 
@@ -313,27 +403,42 @@ The Advanced Statistics feature provides motivating metrics about Bible reading 
      - Completion percentage
    - Update this structure as new readings are logged
 
-#### Visualization Approach
+#### MVP Visualization Approach
 
-1. **Reading Progress Map**:
-   - Display all Bible books in canonical order
-   - Use color-coding to indicate completion status:
+1. **Book Completion Grid**:
+   - Simple grid or list showing all 66 Bible books in canonical order
+   - Basic color-coding to indicate completion status:
      - Not started: Light gray
-     - In progress: Blue gradient based on percentage
+     - In progress: Blue
      - Completed: Green
+   - Display completion percentage for each book
 
 2. **Statistics Dashboard**:
-   - Display key metrics prominently: total readings, current streak, longest streak
-   - Show books started vs. books completed
-   - Include a visual progress bar for overall Bible completion
+   - Focus on key motivational metrics:
+     - Current streak counter with visual indicator (e.g., flame icon)
+     - All-time longest streak
+     - Total chapters read
+     - Books started vs. completed count
+   - Simple, clean design that highlights achievements
 
-#### Key Statistics Features
+3. **Calendar View**:
+   - Monthly calendar showing reading activity
+   - Color-coded days to indicate reading activity
+   - Simple hover/click to see what was read on a specific day
 
-1. **Longest Streak Tracking**: Records and displays the user's best reading streak ever achieved
-2. **Book Completion Tracking**: Shows which books of the Bible have been started and which are fully read
-3. **Reading Progress Visualization**: Provides visual indication of progress through the entire Bible
-4. **Summary Statistics**: Shows total number of logs, books started, and books completed
-5. **Weekly Analysis**: Provides week-by-week performance metrics and trends
+#### Key Statistics Features for MVP
+
+1. **Current Streak Tracking**: Shows the user's current consecutive days of reading (with 1-day grace period)
+2. **Longest Streak Tracking**: Records and displays the user's best reading streak ever achieved
+3. **Book Completion Tracking**: Shows which books of the Bible have been started and which are fully read
+4. **Basic Reading Summary**: Shows total chapters read, books started, and books completed
+5. **Calendar Visualization**: Provides a monthly view of reading activity
+
+**Post-MVP Statistics Features** (Phase 2):
+1. **Weekly Analysis**: Week-by-week performance metrics and trends
+2. **Reading Patterns**: Analysis of reading consistency and preferred days
+3. **Advanced Visualizations**: Heat maps and progress charts
+4. **Personalized Insights**: Recommendations based on reading patterns
 
 ### Streak Calculation Logic
 
@@ -489,6 +594,81 @@ Rather than using Laravel's official starter kits, this project implements a cus
 - **VPS Providers**: Lower cost but much higher operational complexity.
 - **Shared Hosting**: Too limited for a modern Laravel application with queues and background processing.
 
+## Authentication
+
+The application will use Laravel's built-in authentication system with some customizations to support both web (cookie-based) and API (token-based) authentication.
+
+### Web Authentication
+
+1. **Session-Based Authentication**:
+   - Laravel's session-based authentication for web users
+   - Secure, HttpOnly cookies
+   - CSRF protection for all forms
+
+2. **Registration & Login**:
+   - Custom forms styled to match the application design
+   - Email verification (optional for MVP)
+   - Password reset functionality
+
+### API Authentication (Post-MVP)
+
+1. **Laravel Sanctum**:
+   - Token-based authentication for API clients
+   - Ability to scope tokens to specific abilities
+   - Support for mobile apps (iOS/Android)
+
+2. **Security Considerations**:
+   - Token expiration policies
+   - Rate limiting for authentication endpoints
+   - IP-based blocking for suspicious activity
+
+## Internationalization
+
+The application will support both English and French languages from the MVP launch, with a focus on serving users in Quebec and other francophone regions.
+
+### Implementation Approach
+
+1. **Laravel Localization**:
+   - Use Laravel's built-in localization system (`resources/lang/` directory structure)
+   - Language files for all UI strings and messages
+   - Language middleware to detect and set preferred language
+
+2. **Bible Reference Handling**:
+   - Bible book names stored in both English and French
+   - Support for Bible book name input in either language
+   - Display of Bible references in user's preferred language
+
+3. **User Experience**:
+   - Language toggle accessible from any page
+   - Language preference stored in user profile
+   - Default language detection based on browser settings
+
+4. **Data Considerations**:
+   - User-generated content (notes) remains in original input language
+   - Dates and times formatted according to locale preferences
+   - Error messages and system notifications translated
+
+### Implementation Details
+
+1. **Technical Implementation**:
+   - Translation files structured by feature area
+   - Use of translation keys rather than hard-coded strings
+   - Configuration for date/time localization
+
+2. **Bible Reference Configuration**:
+   - Extend the static configuration file (config/bible.php) to include:  
+     ```php
+     [
+       'id' => 1,
+       'name' => [
+         'en' => 'Genesis',
+         'fr' => 'Genèse'
+       ],
+       'chapter_count' => 50
+     ]
+     ```
+   - BibleReferenceService will handle lookups in both languages
+
 ## Security Considerations
 
 1. **Authentication**: Using Laravel Sanctum for secure authentication:
@@ -518,6 +698,7 @@ Rather than using Laravel's official starter kits, this project implements a cus
 ## Scalability Considerations
 
 1. **Database**:
+   - Denormalized BookProgress table for efficient book completion tracking without scanning all reading logs.
    - Indexed queries for common operations (streak calculations, calendar views).
    - Caching layer for frequently accessed data (current streak, reading plans).
    - Potential sharding strategy for user data as user base grows.
@@ -531,6 +712,96 @@ Rather than using Laravel's official starter kits, this project implements a cus
    - Ability to scale web servers independently of background workers.
    - CDN integration for static assets.
    - Monitoring and alerting to identify bottlenecks early.
+
+## Testing Strategy
+
+A comprehensive testing approach is essential to ensure the reliability and correctness of the Bible Reading Habit Builder application, particularly for critical features like streak calculation and book completion tracking.
+
+### Test Types
+
+1. **Unit Tests**:
+   - **BibleReferenceService**: Verify correct book lookup and chapter validation
+   - **StreakService**: Test streak calculation with various date patterns
+     - Current streak with consecutive days
+     - Current streak with 1-day grace period
+     - Longest streak determination
+     - Edge cases like timezone boundaries
+   - **BookProgressService**: Test incremental updates and completion percentage calculation
+
+2. **Feature Tests**:
+   - **Authentication Flow**: Registration, login, password reset
+   - **Reading Log Creation**: Verify proper saving and validation
+   - **BookProgress Updates**: Ensure reading logs correctly update book progress
+   - **Statistics Calculation**: Verify accuracy of dashboard statistics
+
+3. **Integration Tests**:
+   - **API Endpoints**: Test all JSON API endpoints for correct responses
+   - **HTMX Interactions**: Test partial page updates and form submissions
+   - **Database Interactions**: Verify correct data flow between related tables
+
+4. **Performance Tests**:
+   - **Book Completion Queries**: Benchmark performance of denormalized table approach
+   - **Statistics Dashboard**: Measure load time with increasing numbers of reading logs
+   - **Streak Calculation**: Verify performance with large reading history
+
+### Testing Tools
+
+1. **PHPUnit**:
+   - Primary testing framework for unit and feature tests
+   - Custom assertions for domain-specific validations
+
+2. **Laravel Dusk**:
+   - Browser testing for critical user flows
+   - Verification of HTMX interactions
+
+3. **JMeter/k6**:
+   - Load testing for performance-critical endpoints
+   - Simulation of concurrent users
+
+4. **Laravel Telescope**:
+   - Development-time monitoring of queries, cache, and requests
+   - Identification of N+1 query issues
+
+### Test Data Strategy
+
+1. **Factories and Seeders**:
+   - Create realistic test data with Laravel factories
+   - Seed specific scenarios for edge case testing
+   - Generate large datasets for performance testing
+
+2. **Test Fixtures**:
+   - Predefined reading patterns for streak testing
+   - Various book completion scenarios
+
+### Continuous Integration
+
+1. **Automated Test Runs**:
+   - Run tests on every pull request
+   - Nightly full test suite execution
+
+2. **Code Coverage**:
+   - Track test coverage for critical components
+   - Aim for 90%+ coverage of core business logic
+
+3. **Static Analysis**:
+   - PHPStan/Psalm for static code analysis
+   - Laravel Pint for code style enforcement
+
+### Testing Priorities
+
+1. **Critical Path Testing**:
+   - Streak calculation logic
+   - Book progress tracking
+   - Reading log creation
+   - Authentication flows
+
+2. **Edge Case Testing**:
+   - Timezone handling
+   - Date boundaries
+   - Concurrent updates
+   - Invalid inputs
+
+This testing strategy ensures that the application's core functionality remains reliable while allowing for confident iteration and feature expansion in future phases.
 
 ## Future Considerations
 
