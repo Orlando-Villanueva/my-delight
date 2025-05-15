@@ -581,13 +581,13 @@ Rather than using Laravel's official starter kits, this project implements a cus
 - **Flutter**: Excellent UI consistency but less mature ecosystem and potentially more complex API integration.
 - **Progressive Web App**: Simpler to develop but limited device integration and offline capabilities.
 
-### Deployment: PaaS (Render, Railway.app)
+### Deployment: Railway.app (PaaS)
 
 **Strengths for this project:**
 - **Simplified DevOps**: Reduces operational complexity compared to managing raw infrastructure.
 - **Managed Database**: Includes backups, security patches, and scaling with minimal developer intervention.
-- **Cost Predictability**: Generally more predictable pricing for early-stage projects compared to raw cloud providers.
-- **Quick Setup**: Faster initial deployment and environment configuration.
+- **Cost Predictability**: Pay-as-you-go pricing model and app hibernation features help control costs for early-stage projects.
+- **Quick Setup**: Faster initial deployment and environment configuration with native support for PostgreSQL and Redis databases.
 
 **Alternatives Considered:**
 - **AWS/Azure/GCP**: More powerful but requires significantly more DevOps knowledge.

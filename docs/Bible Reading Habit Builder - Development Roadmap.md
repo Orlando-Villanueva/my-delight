@@ -5,7 +5,7 @@
 * **Backend:** Laravel  
 * **Database:** Co-located Managed Database (e.g., PostgreSQL via PaaS)  
 * **Web Frontend:** HTMX \+ Alpine.js (served by Laravel)  
-* **Deployment (Web App & Backend):** PaaS (e.g., Render, Railway.app)
+* **Deployment (Web App & Backend):** Railway.app (PaaS)
 
 ## **Phase 1: MVP Web App \- Foundation & Core Loop**
 
@@ -16,7 +16,7 @@
      * Set up a new Laravel project.  
      * Configure local development environment (e.g., Laravel Herd, Laragon, Docker with Sail).  
      * Initialize Git repository (e.g., on GitHub, GitLab).  
-     * Select and set up a PaaS (e.g., Render, Railway.app) and provision a managed PostgreSQL database.  
+     * Set up Railway.app and provision a managed PostgreSQL database.  
      * Configure basic deployment pipeline (e.g., Git push to deploy to a staging/development environment on the PaaS).  
   2. **Database Schema & Migrations \- MVP (3-4 days)**  
      * Design database schema for core tables:
@@ -95,7 +95,7 @@
      * Implement locale-aware date formatting  
      * Test with native French speakers from Quebec  
   10. **Caching Implementation (2-3 days)**  
-     * Set up Redis for caching  
+     * Set up Redis for caching using Railway's native Redis support  
      * Implement caching for frequently accessed data:  
        * User statistics (current streak, longest streak)  
        * Book completion data  
@@ -146,7 +146,7 @@
       * Test BookProgress updates and statistics calculations
       * Verify cache performance and reliability
   15. **Deployment to Production & Basic Monitoring (1-2 days)**  
-      * Deploy the MVP to the production environment on your chosen PaaS  
+      * Deploy the MVP to the production environment on Railway.app  
       * Set up basic error tracking (e.g., Sentry free tier, Laravel's built-in logging)  
       * Configure initial database backup strategy
       * Set up performance monitoring for UI metrics
