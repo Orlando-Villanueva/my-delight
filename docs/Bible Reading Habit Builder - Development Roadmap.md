@@ -10,7 +10,7 @@
 ## **Phase 1: MVP Web App \- Foundation & Core Loop**
 
 * **Goal:** Launch the core "Read \-\> Log \-\> See Progress (Streak/History)" loop with essential features as defined in the "Bible App MVP" document. Validate the concept quickly.  
-* **Estimated Time:** 4-7 Weeks  
+* **Estimated Time:** 6-9 Weeks  
 * **Tasks:**  
   1. **Project Setup & Environment (3-5 days)**  
      * Set up a new Laravel project.  
@@ -74,12 +74,18 @@
        * Books started vs. completed count  
        * Total days with reading activity  
      * Use HTMX for dynamic updates of statistics components
-  8. **UI Implementation & Basic Styling (4-5 days)**  
-     * Create a clean, intuitive UI prioritizing ease of use and clarity  
-     * Design clear visualizations for streaks, history, and statistics  
-     * Implement responsive design for mobile and desktop use  
-     * Apply simple, clean styling. Consider a lightweight CSS framework like Pico.css or Tailwind CSS (if comfortable with its utility-first approach and setup)  
-     * Ensure all components (book grid, statistics dashboard, calendar) are responsive  
+  8. **UI Implementation & Brand Identity (6-8 days)**  
+      * Implement the defined color palette, typography system, and iconography from the UI Requirements Document
+      * Set up Tailwind CSS with custom configuration for the brand colors and typography
+      * Integrate Phosphor Icons library for consistent iconography across the application
+      * Create a clean, intuitive UI prioritizing ease of use and clarity
+      * Implement responsive layouts:
+        * Mobile: Bottom tab bar navigation with 4 primary destinations
+        * Desktop: Left sidebar navigation with expandable sections
+      * Design clear visualizations for streaks, history, and statistics
+      * Create card-based components for discrete information chunks
+      * Develop the Book Completion Grid with proper color-coding (not started: light gray, in progress: blue, completed: green)
+      * Ensure all components are responsive across defined breakpoints (mobile, tablet, desktop)
 
   9. **French Language Support (3-4 days)**  
      * Implement Laravel's localization system  
@@ -98,15 +104,52 @@
      * Implement fallback mechanisms if cache is unavailable  
      * Add cache monitoring and debugging tools  
 
-  11. **Testing & Bug Fixing (MVP Scope) (3-4 days)**  
-     * Manual testing of all MVP features  
-     * Write basic Laravel feature tests for critical paths (authentication, log creation, streak calculation)  
-     * Test BookProgress updates and statistics calculations  
-     * Verify cache performance and reliability  
-  12. **Deployment to Production & Basic Monitoring (1-2 days)**  
-     * Deploy the MVP to the production environment on your chosen PaaS  
-     * Set up basic error tracking (e.g., Sentry free tier, Laravel's built-in logging)  
-     * Configure initial database backup strategy
+  11. **Accessibility Implementation (3-4 days)**
+      * Implement WCAG 2.1 AA standards from the beginning
+      * Ensure proper color contrast ratios (minimum 4.5:1 for normal text)
+      * Add focus indicators for keyboard navigation
+      * Implement proper ARIA labels for interactive elements
+      * Ensure screen reader compatibility
+      * Test with keyboard-only navigation
+      * Verify support for text resizing up to 200%
+      * Ensure touch targets meet minimum size requirements (44px × 44px)
+
+  12. **Performance Optimization (2-3 days)**
+      * Optimize for core web vitals metrics specified in UI Requirements:
+        * First Contentful Paint (FCP) under 1.5 seconds
+        * Time to Interactive (TTI) under 3.5 seconds
+      * Implement image optimization and lazy loading
+      * Set up appropriate loading indicators for HTMX requests
+      * Minimize CSS and JavaScript bundle sizes
+      * Implement efficient HTMX swap strategies to reduce DOM manipulation
+
+  13. **HTMX & Alpine.js Integration (3-4 days)**
+      * Implement HTMX patterns for dynamic content updates:
+        * Use `hx-get` and `hx-post` for server communication
+        * Implement `hx-swap` for smooth transitions
+        * Use `hx-target` to update specific page sections
+        * Add appropriate loading indicators
+      * Implement Alpine.js for interactive components:
+        * Form validation states
+        * Dropdowns and toggles
+        * Responsive menu behavior
+        * Simple animations for streak updates
+      * Ensure proper integration between HTMX and Alpine.js components
+
+  14. **Validation & Quality Assurance (4-5 days)**
+      * Cross-browser testing (Chrome, Firefox, Safari, Edge)
+      * Mobile device testing on iOS and Android
+      * WCAG 2.1 AA compliance validation
+      * Performance testing using Lighthouse
+      * Usability testing with representative users
+      * Write basic Laravel feature tests for critical paths (authentication, log creation, streak calculation)
+      * Test BookProgress updates and statistics calculations
+      * Verify cache performance and reliability
+  15. **Deployment to Production & Basic Monitoring (1-2 days)**  
+      * Deploy the MVP to the production environment on your chosen PaaS  
+      * Set up basic error tracking (e.g., Sentry free tier, Laravel's built-in logging)  
+      * Configure initial database backup strategy
+      * Set up performance monitoring for UI metrics
 
 ## **Phase 2: Web App \- Advanced Statistics & Core Enhancements**
 
@@ -151,16 +194,18 @@
      * Frontend: Clear UI for these mechanisms with helpful explanations  
 
   6. **UX/UI Refinement for Web App (5-6 days)**  
-     * Refined UI with more polished styles, transitions, and micro-interactions  
-     * Improved flow based on user testing and feedback from MVP  
-     * Enhance visualization components (statistics charts, book completion grid)  
-     * Improve navigation and overall user experience  
+      * Refined UI with more polished styles, transitions, and micro-interactions  
+      * Improved flow based on user testing and feedback from MVP  
+      * Enhance visualization components (statistics charts, book completion grid)  
+      * Improve navigation and overall user experience  
+      * Refine animations for streak increases and other achievement indicators
+      * Enhance interactive calendar with detailed reading information on click/tap
+      * Optimize mobile experience based on real-world usage patterns
 
   7. **Testing & Bug Fixing (Phase 2 Scope) (4-5 days)**  
      * Manual and automated testing for new features  
      * Performance testing for advanced statistics calculations  
      * Browser compatibility testing  
-
   8. **Documentation Update (1-2 days)**  
      * Update Technical Architecture document with Phase 2 implementations  
      * Align Product Requirements Document with newly added features  
@@ -186,8 +231,11 @@
      * Frontend: UI for users to configure their reminder preferences.  
   5. **Improved Onboarding Experience (3-4 days)**  
      * Develop a simple guided tour or a series of introductory tips for new users explaining core features (streaks, logging, plans).  
-  6. **Accessibility Review & Improvements (2-3 days)**  
-     * Review the app for basic accessibility (contrast, keyboard navigation, semantic HTML). Make necessary adjustments.  
+  6. **Accessibility Enhancements (2-3 days)**  
+      * Conduct comprehensive accessibility audit against WCAG 2.1 AA standards
+      * Address any accessibility issues identified in real-world usage
+      * Implement advanced accessibility features beyond minimum requirements
+      * Test with assistive technology users for feedback
   7. **Advanced Notes Features (Optional Prompts) (3-5 days)**  
      * Backend: Store predefined reflection prompts.  
      * Frontend: Option for users to see and use these prompts within their notes section.  
