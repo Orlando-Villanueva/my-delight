@@ -27,7 +27,7 @@
 
 **PR 1: Project Scaffolding (3-4 days)**
 * Set up Laravel project with HTMX + Alpine.js
-* Configure local development environment
+* Configure local development environment (using Laravel Herd for local, Railway for production)
 * Initialize Git repository
 * Implement basic responsive layout structure
 

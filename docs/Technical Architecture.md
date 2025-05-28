@@ -534,7 +534,7 @@ This approach allows the same backend logic to serve both the HTMX-based web int
 - **Django (Python)**: Excellent framework but potentially slower development cycle for PHP developers already familiar with Laravel.
 - **Ruby on Rails**: Similar benefits to Laravel but smaller community and potentially steeper learning curve.
 
-### Database: PostgreSQL
+### Database: PostgreSQL (via Railway.app)
 
 **Strengths for this project:**
 - **Reliability**: Well-established, ACID-compliant database with excellent data integrity.

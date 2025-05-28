@@ -26,7 +26,7 @@ A web application designed to help users build and maintain a consistent Bible r
 ## Technical Overview
 
 - **Framework**: Laravel (PHP)
-- **Database**: MySQL with denormalized BookProgress table for efficient tracking
+- **Database**: PostgreSQL with denormalized BookProgress table for efficient tracking
 - **Caching**: Redis
 - **Bible Reference System**: Static configuration approach via config files
 - **Internationalization**: Laravel's built-in localization system
@@ -38,8 +38,8 @@ A web application designed to help users build and maintain a consistent Bible r
 - PHP 8.1+
 - Composer
 - Node.js and npm
-- MySQL 8.0+
-- Redis server
+- PostgreSQL (same version as production/Railway.app)
+- [Optional] Redis server (for caching, not required for local development)
 
 ### Installation
 
@@ -58,6 +58,43 @@ A web application designed to help users build and maintain a consistent Bible r
    ```bash
    npm install
    ```
+
+4. **Create your PostgreSQL database and user (using pgAdmin)**
+   - Open pgAdmin and connect to your local server.
+   - Right-click "Login/Group Roles" → Create → Login/Group Role. Set a username and password (e.g., `biblehabit_user` / `admin123`).
+   - Right-click "Databases" → Create → Database. Set the name (e.g., `biblehabit`) and assign your user as the owner.
+   - With the new database selected, open the Query Tool and run:
+     ```sql
+     GRANT ALL ON SCHEMA public TO biblehabit_user;
+     ALTER ROLE biblehabit_user CREATEDB;
+     ALTER DATABASE biblehabit OWNER TO biblehabit_user;
+     ```
+
+5. **Environment Setup**
+   ```bash
+   cp .env.example .env
+   php artisan key:generate
+   ```
+   - Edit `.env` and update your DB credentials as needed.
+
+6. **Database Setup**
+   ```bash
+   php artisan migrate:fresh
+   php artisan db:seed
+   ```
+
+7. **Build frontend assets**
+   ```bash
+   npm run dev
+   ```
+
+8. **Access the application**
+   - Use Laravel Herd: open http://biblehabit.test (or your configured Herd domain)
+
+### Notes
+- **Laravel Herd is the only recommended way to run locally.**
+- **Redis is optional for local development and not required to get started.**
+- For production (Railway.app), use the provided commented-out DB settings in your `.env` file.
 
 4. **Environment Setup**
    ```bash
