@@ -1011,6 +1011,81 @@ A smart notification system will help users maintain their reading habit through
 
 The reminder system will be designed to be helpful without becoming intrusive, with careful attention to frequency and tone to avoid notification fatigue.
 
+### Database Configuration
+
+The application uses different database configurations for local development and production environments to optimize for both developer experience and production performance.
+
+#### Local Development (SQLite)
+
+For local development, SQLite is used for its simplicity and zero-configuration requirements:
+
+- **Type**: SQLite (file-based)
+- **Location**: `database/database.sqlite`
+- **Configuration**:
+  ```env
+  DB_CONNECTION=sqlite
+  DB_DATABASE=/absolute/path/to/project/database/database.sqlite
+  ```
+- **Benefits**:
+  - No database server required
+  - Fast development setup
+  - Easy to reset and migrate
+  - File-based for simple version control (though the file itself is in .gitignore)
+
+#### Production (Laravel Cloud)
+
+For production, the application uses Laravel Cloud's managed database service:
+
+- **Type**: Serverless PostgreSQL 17
+- **Hosting**: Laravel Cloud (powered by Neon)
+- **Configuration**:
+  - Auto-configured by Laravel Cloud
+  - Environment variables automatically injected
+  - Connection pooling for high concurrency (up to 10,000 connections)
+- **Features**:
+  - Automatic scaling
+  - Point-in-time recovery
+  - Automated backups
+  - High availability
+
+#### Database Schema
+
+The database schema follows these design principles:
+
+1. **Denormalized Book Progress**:
+   - Optimized for read performance
+   - Separate `book_progress` table tracks completion status
+   - Reduces need for complex joins in common queries
+
+2. **User Data Isolation**:
+   - All user data properly scoped to user accounts
+   - Appropriate indexes for common query patterns
+   - Soft deletes where appropriate
+
+3. **Migrations**:
+   - Version-controlled database changes
+   - Rollback capabilities
+   - Environment-specific seeders
+
+#### Environment Variables
+
+Key database-related environment variables:
+
+```env
+# Local Development (SQLite)
+DB_CONNECTION=sqlite
+DB_DATABASE=/path/to/database.sqlite
+
+# Production (Laravel Cloud - auto-configured)
+# DB_CONNECTION=pgsql
+# DB_HOST=ep-xxx.cloud.laravel.cloud
+# DB_PORT=5432
+# DB_DATABASE=laravel
+# DB_USERNAME=user
+# DB_PASSWORD=password
+# DB_SSL_MODE=require
+```
+
 ### Caching Strategy
 
 As user growth occurs, implementing a robust caching strategy will be essential for maintaining performance and scalability. Here's the planned approach:

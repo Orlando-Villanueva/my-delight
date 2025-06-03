@@ -26,8 +26,10 @@ A web application designed to help users build and maintain a consistent Bible r
 ## Technical Overview
 
 - **Framework**: Laravel (PHP)
-- **Database**: PostgreSQL with denormalized BookProgress table for efficient tracking
-- **Caching**: Redis
+- **Database**: 
+  - **Local Development**: SQLite for simplicity and ease of setup
+  - **Production**: Laravel Cloud's Serverless Postgres (PostgreSQL 17) with denormalized BookProgress table for efficient tracking
+- **Caching**: Redis (in production)
 - **Bible Reference System**: Static configuration approach via config files
 - **Internationalization**: Laravel's built-in localization system
 - **Testing**: Comprehensive test suite covering critical components
@@ -38,8 +40,8 @@ A web application designed to help users build and maintain a consistent Bible r
 - PHP 8.1+
 - Composer
 - Node.js and npm
-- PostgreSQL (same version as production/Railway.app)
-- [Optional] Redis server (for caching, not required for local development)
+- SQLite (for local development)
+- [Optional] Redis server (for production caching)
 
 ### Installation
 
@@ -59,28 +61,30 @@ A web application designed to help users build and maintain a consistent Bible r
    npm install
    ```
 
-4. **Create your PostgreSQL database and user (using pgAdmin)**
-   - Open pgAdmin and connect to your local server.
-   - Right-click "Login/Group Roles" → Create → Login/Group Role. Set a username and password (e.g., `biblehabit_user` / `admin123`).
-   - Right-click "Databases" → Create → Database. Set the name (e.g., `biblehabit`) and assign your user as the owner.
-   - With the new database selected, open the Query Tool and run:
-     ```sql
-     GRANT ALL ON SCHEMA public TO biblehabit_user;
-     ALTER ROLE biblehabit_user CREATEDB;
-     ALTER DATABASE biblehabit OWNER TO biblehabit_user;
-     ```
+4. **Set up SQLite database**
+   ```bash
+   # Create SQLite database file
+   touch database/database.sqlite
+   
+   # Update .env for SQLite
+   # DB_CONNECTION=sqlite
+   # DB_DATABASE=/absolute/path/to/your/project/database/database.sqlite
+   ```
+   
+   On Windows, use the full path in .env:
+   ```
+   DB_DATABASE=W:/Projects/Herd/biblehabit/database/database.sqlite
+   ```
 
 5. **Environment Setup**
    ```bash
    cp .env.example .env
    php artisan key:generate
    ```
-   - Edit `.env` and update your DB credentials as needed.
 
-6. **Database Setup**
+6. **Run migrations and seeders**
    ```bash
-   php artisan migrate:fresh
-   php artisan db:seed
+   php artisan migrate --seed
    ```
 
 7. **Build frontend assets**
@@ -89,42 +93,29 @@ A web application designed to help users build and maintain a consistent Bible r
    ```
 
 8. **Access the application**
-   - Use Laravel Herd: open http://biblehabit.test (or your configured Herd domain)
-
-### Notes
-- **Laravel Herd is the only recommended way to run locally.**
-- **Redis is optional for local development and not required to get started.**
-- For production (Railway.app), use the provided commented-out DB settings in your `.env` file.
-
-4. **Environment Setup**
-   ```bash
-   cp .env.example .env
-   php artisan key:generate
-   ```
-
-5. **Configure the environment variables**
-   Open `.env` file and update:
-   - Database connection details
-   - Redis configuration
-   - Application settings
-   - Language settings
-
-6. **Database Setup**
-   ```bash
-   php artisan migrate
-   php artisan db:seed
-   ```
-
-7. **Build frontend assets**
-   ```bash
-   npm run dev
-   ```
-
-8. **Run the application**
    ```bash
    php artisan serve
    ```
-   Access the application at http://localhost:8000
+   - Access at http://localhost:8000
+   - Or use Laravel Herd: open http://biblehabit.test (if configured)
+
+## Production Setup (Laravel Cloud)
+
+1. **Database**: Laravel Cloud automatically provisions a Serverless Postgres database (PostgreSQL 17)
+2. **Environment Variables**: Database credentials are automatically injected
+3. **Migrations**: Run migrations via Laravel Cloud's CLI or deployment pipeline
+   ```bash
+   php artisan migrate --force
+   ```
+
+## Local Development Tips
+
+- **SQLite**: Default for local development (fast, file-based, no server required)
+- **PostgreSQL**: Optional for local development (matches production environment)
+  - Install PostgreSQL and update `.env` with PostgreSQL credentials
+  - Run migrations after switching database types
+- **Environment Files**: Keep sensitive credentials in `.env` (never commit this file)
+- **Debugging**: Set `APP_DEBUG=true` in development for detailed error messages
 
 ### Additional Configuration
 
