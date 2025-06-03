@@ -43,6 +43,53 @@ A web application designed to help users build and maintain a consistent Bible r
 - SQLite (for local development)
 - [Optional] Redis server (for production caching)
 
+### Local Development with Laravel Herd
+
+Laravel Herd is a fast, native Laravel development environment for macOS and Windows. It simplifies running Laravel projects locally without manual server configuration.
+
+#### Installation
+
+- **macOS:**  
+  Download and install from [herd.laravel.com](https://herd.laravel.com/).
+- **Windows:**  
+  Download and install from [herd.laravel.com](https://herd.laravel.com/).
+
+#### Usage
+
+1. **Open Herd and add your project directory**  
+   Click "Add Project" and select your cloned `biblehabit` directory.
+
+2. **Set up your local domain (optional but recommended):**  
+   Herd can automatically configure a `.test` domain (e.g., http://biblehabit.test).
+   Update your `.env`:
+   ```
+   APP_URL=http://biblehabit.test
+   ```
+
+3. **Database Configuration:**  
+   By default, local development uses SQLite. Ensure your `.env` has:
+   ```
+   DB_CONNECTION=sqlite
+   DB_DATABASE=absolute_path_to_your_project/database/database.sqlite
+   ```
+   On Windows, use:
+   ```
+   DB_DATABASE=W:/Projects/Herd/biblehabit/database/database.sqlite
+   ```
+
+4. **Run migrations and seeders:**  
+   ```bash
+   php artisan migrate --seed
+   ```
+
+5. **Access your app:**  
+   Open http://biblehabit.test in your browser.
+
+#### Notes
+
+- Herd automatically handles PHP versions and web server configuration.
+- For more details, see the [Laravel Herd documentation](https://herd.laravel.com/docs).
+
 ### Installation
 
 1. **Clone the repository**
