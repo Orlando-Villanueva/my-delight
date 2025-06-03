@@ -1016,6 +1016,25 @@ The reminder system will be designed to be helpful without becoming intrusive, w
 The application uses different database configurations for local development and production environments to optimize for both developer experience and production performance.
 
 #### Local Development (SQLite)
+- **Database**: SQLite
+- **File**: `database/database.sqlite`
+- **Configuration**: 
+  - Uses in-memory or file-based SQLite database for simplicity and speed
+  - No need for separate database server installation
+  - Ideal for development and testing environments
+  - Configured in `.env` with `DB_CONNECTION=sqlite`
+  - Database file is created automatically on first migration
+
+#### Production (Laravel Cloud)
+- **Platform**: Laravel Cloud
+- **Database**: Managed PostgreSQL
+- **Features**:
+  - Automated backups and maintenance
+  - High availability and scalability
+  - Built-in monitoring and performance insights
+  - Secure connections with TLS/SSL
+  - Environment-based configuration via `.env` variables
+  - Seamless integration with Laravel's deployment pipeline
 
 For local development, SQLite is used for its simplicity and zero-configuration requirements:
 
