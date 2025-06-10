@@ -322,6 +322,84 @@ The UI will provide a simplified two-step structured selector for the MVP:
 
 In future iterations, we can add a free-form text input option with validation for users who prefer that input method.
 
+### Responsive Navigation Architecture
+
+The application implements a dual-navigation system optimized for different device types and user patterns:
+
+#### Mobile Navigation Strategy
+
+1. **Bottom Tab Navigation**:
+   - **3-tab layout**: Dashboard, History, Profile/Settings
+   - **Touch-optimized**: Minimum 44px x 44px touch targets
+   - **Fixed positioning**: Always visible for consistent access
+   - **Active state indicators**: Visual feedback for current page
+
+2. **Floating Action Button (FAB)**:
+   - **Primary action**: "Log Reading" - the most frequent daily action
+   - **Strategic positioning**: Bottom-right, above bottom navigation
+   - **Accessibility**: Large enough for easy thumb access
+   - **Visual prominence**: Uses accent color (#FF9933) for attention
+
+#### Desktop Navigation Strategy
+
+1. **Sidebar Navigation**:
+   - **Always visible**: 256px fixed width sidebar
+   - **Comprehensive navigation**: All main sections with icons and labels
+   - **User context**: Profile section with avatar and quick logout
+   - **Active state**: Clear visual indicators for current page
+
+2. **Content Layout**:
+   - **Two-column approach**: 70% main content, 30% supporting information
+   - **Responsive grid**: Adapts to different screen sizes
+   - **Contextual sidebar**: Shows relevant statistics and quick actions
+
+#### Implementation Details
+
+```php
+// Layout structure in authenticated.blade.php
+// Mobile: Bottom nav (3 tabs) + FAB
+// Desktop: Sidebar (always visible) + main content area + secondary sidebar
+
+// Navigation state management with Alpine.js
+<div x-data="{ mobileMenuOpen: false }" class="flex h-screen">
+    <!-- Desktop Sidebar (hidden on mobile) -->
+    <aside class="hidden lg:flex lg:flex-col lg:w-64">
+        <!-- Navigation items with active state detection -->
+        @if(request()->routeIs('dashboard'))
+            <a class="bg-primary/10 text-primary border-r-2 border-primary">
+        @endif
+    </aside>
+    
+    <!-- Mobile bottom navigation -->
+    <nav class="lg:hidden fixed bottom-0">
+        <!-- 3 navigation tabs -->
+    </nav>
+    
+    <!-- Floating Action Button (all screen sizes) -->
+    <a href="{{ route('logs.create') }}" 
+       class="fixed bottom-20 lg:bottom-6 right-4 lg:right-6">
+        <!-- FAB with responsive positioning -->
+    </a>
+</div>
+```
+
+#### Design Rationale
+
+1. **User Journey Optimization**: FAB placement recognizes that "Log Reading" is the primary daily action
+2. **Ergonomic Considerations**: Bottom-right FAB position aligns with natural thumb movement on mobile devices
+3. **Progressive Enhancement**: Desktop layout expands functionality while maintaining mobile-first approach
+4. **Accessibility**: Proper touch targets and keyboard navigation support
+5. **Visual Hierarchy**: FAB uses accent color to maintain prominence across all pages
+
+#### Route Structure
+
+The navigation system expects these core routes:
+- `dashboard` - Main landing page with streak and calendar
+- `history` - Reading log history and filtering
+- `profile` - User settings and account management  
+- `logs.create` - Reading log entry form (FAB target)
+- `logout` - Authentication termination
+
 ### Advanced Statistics Implementation
 
 The Advanced Statistics feature provides motivating metrics about Bible reading progress. For the MVP, we'll focus on a streamlined set of high-value statistics that encourage habit formation while keeping implementation simple.

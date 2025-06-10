@@ -51,21 +51,21 @@ This document outlines the specific UI requirements for the Bible Reading Habit 
 
 ### Mobile Layout
 
-- **Navigation**: Bottom tab bar with 4 primary destinations:
-  - Home/Dashboard
-  - Log Reading
+- **Navigation**: Bottom tab bar with 3 primary destinations:
+  - Dashboard
   - History
   - Profile/Settings
 - **Content Area**: Single column layout with card-based components
-- **Fixed Call-to-Action**: Floating action button for quick access to "Log Reading"
+- **Floating Action Button**: Primary action button for "Log Reading" positioned bottom-right, always visible across all screens for easy daily access
 
 ### Tablet/Desktop Layout
 
-- **Navigation**: Left sidebar with expandable sections
+- **Navigation**: Left sidebar with always-visible navigation (256px width)
 - **Content Area**: Two-column layout on larger screens
   - Primary content (70%)
   - Supporting statistics/information (30%)
 - **Dashboard Layout**: Grid-based layout with resizable cards for different statistics
+- **Floating Action Button**: Positioned bottom-right for consistent access to "Log Reading" functionality
 
 ### Common UI Patterns
 
@@ -111,7 +111,6 @@ This document outlines the specific UI requirements for the Bible Reading Habit 
     - Current streak counter with flame icon
     - Visual emphasis (size, color)
     - Longest streak ever display
-  - **Quick Log** button/card
   - **Calendar Visualization**:
     - Month view similar to GitHub contribution graph
     - Color-coded squares indicating reading activity
@@ -232,19 +231,21 @@ This document outlines the specific UI requirements for the Bible Reading Habit 
 
 ### Mobile-Specific Adaptations
 
-- Bottom navigation instead of sidebar
+- Bottom navigation with 3 tabs instead of sidebar
 - Single column layout
-- Larger touch targets (min 44px × 44px)
+- Larger touch targets (min 44px × 44px) 
 - Collapsible sections for statistics
 - Simplified Bible progress visualization
+- Floating Action Button positioned above bottom navigation for primary "Log Reading" action
 
 ### Desktop Enhancements
 
 - Multi-column dashboard layout
 - Expanded statistics visualizations
-- Sidebar navigation
+- Always-visible sidebar navigation with user profile section
 - Hover states for interactive elements
 - Keyboard shortcuts for common actions
+- Floating Action Button with hover animations and scaling effects
 
 ## Language Support Requirements
 
