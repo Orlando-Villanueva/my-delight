@@ -1,6 +1,7 @@
 @extends('layouts.authenticated')
 
 @section('page-title', 'Layout Preview')
+@section('page-subtitle', 'Testing the responsive layout with sample content')
 
 @section('content')
     <div class="space-y-6">
