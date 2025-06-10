@@ -65,7 +65,28 @@ This document outlines the specific UI requirements for the Bible Reading Habit 
   - Primary content (70%)
   - Supporting statistics/information (30%)
 - **Dashboard Layout**: Grid-based layout with resizable cards for different statistics
-- **Floating Action Button**: Positioned bottom-right for consistent access to "Log Reading" functionality
+- **Primary Action**: Prominent "Log Reading" button in desktop header for immediate access, replacing the floating action button pattern on larger screens
+
+### Hybrid Action Button Approach
+
+The primary "Log Reading" action uses a **responsive hybrid approach** optimized for each platform:
+
+#### Mobile (< 1024px)
+- **Floating Action Button (FAB)**: Traditional mobile pattern
+- **Position**: Bottom-right, above bottom navigation
+- **Size**: 56px circular button with icon
+- **Behavior**: Always visible, follows mobile UX conventions
+
+#### Desktop (≥ 1024px)
+- **Header Action Button**: Prominent button in page header
+- **Position**: Top-right of content area header
+- **Size**: Full-sized button with icon and text label
+- **Features**: 
+  - Quick streak indicator on extra-large screens
+  - Better visual hierarchy and accessibility
+  - Contextual placement near page content
+
+This approach ensures platform-appropriate interactions while maintaining consistent functionality across all devices.
 
 ### Common UI Patterns
 
@@ -245,7 +266,11 @@ This document outlines the specific UI requirements for the Bible Reading Habit 
 - Always-visible sidebar navigation with user profile section
 - Hover states for interactive elements
 - Keyboard shortcuts for common actions
-- Floating Action Button with hover animations and scaling effects
+- **Header Action Button**: Prominent "Log Reading" button in page header with:
+  - Icon and text label for clarity
+  - Quick streak indicator on extra-large screens
+  - Better accessibility and visual hierarchy
+  - Contextual placement near page content
 
 ## Language Support Requirements
 

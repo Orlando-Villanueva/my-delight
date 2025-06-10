@@ -334,11 +334,15 @@ The application implements a dual-navigation system optimized for different devi
    - **Fixed positioning**: Always visible for consistent access
    - **Active state indicators**: Visual feedback for current page
 
-2. **Floating Action Button (FAB)**:
-   - **Primary action**: "Log Reading" - the most frequent daily action
-   - **Strategic positioning**: Bottom-right, above bottom navigation
-   - **Accessibility**: Large enough for easy thumb access
-   - **Visual prominence**: Uses accent color (#FF9933) for attention
+2. **Primary Action Strategy - Hybrid Approach**:
+   - **Mobile (< 1024px)**: Floating Action Button (FAB) for "Log Reading"
+     - **Strategic positioning**: Bottom-right, above bottom navigation
+     - **Accessibility**: Large enough for easy thumb access
+     - **Visual prominence**: Uses accent color (#FF9933) for attention
+   - **Desktop (≥ 1024px)**: Header Action Button for "Log Reading"
+     - **Strategic positioning**: Top-right of content header
+     - **Enhanced accessibility**: Full-sized button with icon and text
+     - **Contextual placement**: Near page content for better UX
 
 #### Desktop Navigation Strategy
 
@@ -358,7 +362,7 @@ The application implements a dual-navigation system optimized for different devi
 ```php
 // Layout structure in authenticated.blade.php
 // Mobile: Bottom nav (3 tabs) + FAB
-// Desktop: Sidebar (always visible) + main content area + secondary sidebar
+// Desktop: Sidebar + header with action button + main content area + secondary sidebar
 
 // Navigation state management with Alpine.js
 <div x-data="{ mobileMenuOpen: false }" class="flex h-screen">
@@ -370,26 +374,43 @@ The application implements a dual-navigation system optimized for different devi
         @endif
     </aside>
     
+    <!-- Desktop Header with Action Button -->
+    <header class="hidden lg:block">
+        <div class="flex items-center justify-between">
+            <div>
+                <h1>@yield('page-title', 'Dashboard')</h1>
+                <p>@yield('page-subtitle', 'Track your Bible reading journey')</p>
+            </div>
+            <!-- Log Reading Button -->
+            <a href="{{ route('logs.create') }}" class="bg-accent hover:bg-accent/90">
+                Log Reading
+            </a>
+        </div>
+    </header>
+    
     <!-- Mobile bottom navigation -->
     <nav class="lg:hidden fixed bottom-0">
         <!-- 3 navigation tabs -->
     </nav>
     
-    <!-- Floating Action Button (all screen sizes) -->
+    <!-- Floating Action Button (mobile only) -->
     <a href="{{ route('logs.create') }}" 
-       class="fixed bottom-20 lg:bottom-6 right-4 lg:right-6">
-        <!-- FAB with responsive positioning -->
+       class="lg:hidden fixed bottom-20 right-4">
+        <!-- FAB for mobile devices -->
     </a>
 </div>
 ```
 
 #### Design Rationale
 
-1. **User Journey Optimization**: FAB placement recognizes that "Log Reading" is the primary daily action
-2. **Ergonomic Considerations**: Bottom-right FAB position aligns with natural thumb movement on mobile devices
+1. **User Journey Optimization**: Primary action placement recognizes that "Log Reading" is the most frequent daily action
+2. **Platform-Specific UX**: 
+   - **Mobile**: FAB follows mobile design patterns with thumb-friendly positioning
+   - **Desktop**: Header button provides better accessibility and visual hierarchy
 3. **Progressive Enhancement**: Desktop layout expands functionality while maintaining mobile-first approach
-4. **Accessibility**: Proper touch targets and keyboard navigation support
-5. **Visual Hierarchy**: FAB uses accent color to maintain prominence across all pages
+4. **Accessibility**: Proper touch targets, keyboard navigation, and clear labeling on all platforms
+5. **Visual Hierarchy**: Consistent accent color maintains prominence while adapting to platform conventions
+6. **Contextual Placement**: Desktop header button is closer to content, reducing cognitive load
 
 #### Route Structure
 
