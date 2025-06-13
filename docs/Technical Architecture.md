@@ -59,6 +59,9 @@
 └─────────────────────────────────────────────────────────────────────┘
 ```
 
+For detailed component relationships, data flow diagrams, and integration patterns, see:
+- [Application Architecture Diagram](./Application%20Architecture%20Diagram.md)
+
 ## Data Models (Entity Relationship Diagram)
 
 ```
@@ -67,19 +70,22 @@
 ├───────────────────┤       ├───────────────────┤       ├───────────────────┤
 │ id (PK)           │       │ id (PK)           │       │ id (PK)           │
 │ name              │◄──────┤ user_id (FK)      │       │ user_id (FK)      │
-│ email             │       │ date_read         │       │ book_id           │
-│ password          │       │ passage_text      │       │ book_name         │
-│ email_verified_at │       │ notes_text        │       │ total_chapters    │
-│ remember_token    │       │ created_at        │       │ chapters_read     │
-│ created_at        │       │ updated_at        │       │ completion_percent│
-│ updated_at        │       └───────────────────┘       │ is_completed      │
-└───────────────────┘                                   │ last_updated      │
-                                                        └───────────────────┘
+│ email             │       │ book_id           │       │ book_id           │
+│ password          │       │ chapter           │       │ book_name         │
+│ email_verified_at │       │ passage_text      │       │ total_chapters    │
+│ remember_token    │       │ date_read         │       │ chapters_read     │
+│ created_at        │       │ notes_text        │       │ completion_percent│
+│ updated_at        │       │ created_at        │       │ is_completed      │
+└───────────────────┘       │ updated_at        │       │ last_updated      │
+                            └───────────────────┘       └───────────────────┘
 ```
 
 **Note:** The `BookProgress` table is a denormalized structure that tracks each user's reading progress for each book of the Bible. There is no direct database relationship (such as a foreign key) between `ReadingLogs` and `BookProgress`. Instead, `BookProgress` is updated whenever a new `ReadingLog` is created or modified. This serves as a performance optimization for statistics calculations, eliminating the need to scan all reading logs when checking book completion status.
 
-**MVP-Focused Data Model**: The initial implementation will focus only on the core entities (Users and ReadingLogs) needed for the MVP's "Read → Log → See Progress" flow. Additional entities like Goals, Achievements, Tags, and ReadingPlans will be implemented in later phases as the application evolves beyond MVP.
+**MVP-Focused Data Model**: The initial implementation will focus only on the core entities (Users, ReadingLogs, and BookProgress) needed for the MVP's "Read → Log → See Progress" flow. Additional entities like Goals, Achievements, Tags, and ReadingPlans will be implemented in later phases as the application evolves beyond MVP.
+
+For detailed database schema documentation, migration files, and performance considerations, see:
+- [Database Schema Documentation](./Database%20Schema%20Documentation.md)
 
 # API Structure
 
@@ -628,44 +634,30 @@ This approach allows the same backend logic to serve both the HTMX-based web int
 - **Authentication System**: Laravel Sanctum for dual-mode authentication, supporting both cookie-based sessions for the HTMX frontend and token-based auth for future mobile APIs.
 - **Testing Tools**: Testing frameworks like Pest make it easy to implement a test-driven approach from the start.
 
-**Alternatives Considered:**
-- **Node.js/Express**: While offering good performance for API-heavy applications, it lacks the integrated architecture and mature ORM that Laravel provides.
-- **Django (Python)**: Excellent framework but potentially slower development cycle for PHP developers already familiar with Laravel.
-- **Ruby on Rails**: Similar benefits to Laravel but smaller community and potentially steeper learning curve.
-
-### Database: PostgreSQL (via Railway.app)
+### Database: PostgreSQL (via Laravel Cloud)
 
 **Strengths for this project:**
 - **Reliability**: Well-established, ACID-compliant database with excellent data integrity.
-- **JSON Support**: Native JSON column types ideal for storing flexible data like reading plan structures.
+- **JSON Support**: Native JSON column types ideal for storing flexible data like chapter tracking in BookProgress table.
 - **Advanced Querying**: Powerful querying capabilities for complex streak calculations and data analytics.
-- **Managed Options**: Widely available as a managed service on PaaS providers, reducing operational overhead.
-
-**Alternatives Considered:**
-- **MySQL**: Slightly simpler but less feature-rich for complex queries and JSON storage.
-- **MongoDB**: Would offer flexible schema but less data integrity guarantees for critical user data.
-- **SQLite**: Too limited for production use with multiple concurrent users.
+- **Managed Service**: Laravel Cloud provides automated backups, scaling, and maintenance.
 
 ### Frontend (Web): HTMX + Alpine.js
 
 **Strengths for this project:**
-- **Simplicity**: Both technologies have minimal learning curves compared to full frontend frameworks.
-- **Progressive Enhancement**: Allows building interactive features without requiring a complete SPA architecture.
-- **Server-Side Rendering**: Main content rendered server-side improves SEO and initial load performance.
-- **Reduced Bundle Size**: Lightweight compared to React/Vue/Angular, leading to faster page loads.
-- **Reduced Complexity**: No need for a separate build process or complex state management.
+- **Server-Driven Architecture**: HTMX enables server-driven state management with HTML fragments as the primary data format.
+- **Minimal Client Logic**: Alpine.js provides "sprinkles of interactivity" for local UI state without complex state management.
+- **Progressive Enhancement**: Works well even with limited JavaScript support.
+- **Performance**: Lightweight compared to full frontend frameworks, leading to faster page loads.
 
-**Custom Frontend Approach:**
-Rather than using Laravel's official starter kits, this project implements a custom frontend approach with HTMX + Alpine.js, which offers:
-- **Server-driven UI updates**: HTMX allows for seamless partial page updates without client-side routing
-- **Minimal JavaScript**: Alpine.js provides just enough reactivity for interactive components
-- **Progressive enhancement**: Works well even with limited JavaScript support
-- **Simpler authentication flow**: Custom authentication system designed specifically for this architecture
+**Implementation Details:**
+- **HTMX**: Handles server communication, form submissions, HTML fragment updates, and event triggering
+- **Alpine.js**: Manages local UI state (dropdowns, modals), client-side validation, and reactive data binding
+- **Integration**: Both technologies work together seamlessly, with HTMX handling server interactions and Alpine managing client-side enhancements
 
-**Alternatives Considered:**
-- **React**: More powerful but introduces significant complexity and would require a separate build pipeline.
-- **Vue.js**: Good balance of power and simplicity but still requires more complex setup than HTMX+Alpine.
-- **Inertia.js**: Good Laravel integration but more opinionated and potentially limiting for future mobile API work.
+For detailed implementation patterns, see:
+- [HTMX Implementation Guide](./HTMX%20Implementation%20Guide.md)
+- [Alpine.js Component Guide](./Alpine.js%20Component%20Guide.md)
 
 ### Mobile: Native Swift (iOS) & Kotlin (Android)
 
@@ -673,25 +665,15 @@ Rather than using Laravel's official starter kits, this project implements a cus
 - **Performance**: Native development provides the best performance for mobile apps.
 - **Platform Integration**: Better access to device features like notifications and offline storage.
 - **User Experience**: Follows platform-specific design patterns for more intuitive UX.
-- **App Store Optimization**: Better ranking potential in app stores compared to cross-platform solutions.
+- **Shared Backend**: Mobile apps will consume the same Laravel API endpoints as the web interface.
 
-**Alternatives Considered:**
-- **React Native**: Would allow code sharing between platforms but with potential performance tradeoffs.
-- **Flutter**: Excellent UI consistency but less mature ecosystem and potentially more complex API integration.
-- **Progressive Web App**: Simpler to develop but limited device integration and offline capabilities.
-
-### Deployment: Railway.app (PaaS)
+### Deployment: Laravel Cloud
 
 **Strengths for this project:**
-- **Simplified DevOps**: Reduces operational complexity compared to managing raw infrastructure.
-- **Managed Database**: Includes backups, security patches, and scaling with minimal developer intervention.
-- **Cost Predictability**: Pay-as-you-go pricing model and app hibernation features help control costs for early-stage projects.
-- **Quick Setup**: Faster initial deployment and environment configuration with native support for PostgreSQL and Redis databases.
-
-**Alternatives Considered:**
-- **AWS/Azure/GCP**: More powerful but requires significantly more DevOps knowledge.
-- **VPS Providers**: Lower cost but much higher operational complexity.
-- **Shared Hosting**: Too limited for a modern Laravel application with queues and background processing.
+- **Integrated Platform**: Purpose-built for Laravel applications with optimized performance.
+- **Managed Database**: Serverless PostgreSQL with automatic scaling and point-in-time recovery.
+- **Simplified DevOps**: Reduces operational complexity with automated deployments and monitoring.
+- **Cost Efficiency**: Pay-as-you-go pricing model with automatic scaling based on usage.
 
 ## Authentication
 
@@ -1160,11 +1142,13 @@ For production, the application uses Laravel Cloud's managed database service:
   - Auto-configured by Laravel Cloud
   - Environment variables automatically injected
   - Connection pooling for high concurrency (up to 10,000 connections)
+  - Hibernation support for cost optimization
 - **Features**:
-  - Automatic scaling
+  - Automatic scaling (0.5-2 compute units)
   - Point-in-time recovery
-  - Automated backups
-  - High availability
+  - Automated backups with encryption
+  - High availability across multiple regions
+  - Built-in monitoring and performance insights
 
 #### Database Schema
 
@@ -1225,16 +1209,18 @@ As user growth occurs, implementing a robust caching strategy will be essential 
 
 #### Implementation Technologies
 
-1. **Redis**:
-   - Primary distributed caching solution
+1. **Laravel KV Store (via Laravel Cloud)**:
+   - Redis API-compatible key-value store
    - Supports complex data structures needed for statistics
    - Enables atomic operations for counters and leaderboards
    - Provides pub/sub capabilities for cache invalidation
+   - Managed service with automatic scaling and monitoring
 
 2. **Laravel Cache**:
    - Abstraction layer for different cache backends
    - Tag-based cache invalidation for related items
    - Automatic serialization/deserialization of complex objects
+   - Seamless integration with Laravel Cloud's KV Store
 
 #### Cache Invalidation Strategy
 

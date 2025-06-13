@@ -3,9 +3,9 @@
 **Core Tech Stack:**
 
 * **Backend:** Laravel  
-* **Database:** PostgreSQL (via Railway.app)  
+* **Database:** Serverless PostgreSQL (via Laravel Cloud)  
 * **Web Frontend:** HTMX + Alpine.js  
-* **Deployment:** Railway.app (PaaS)
+* **Deployment:** Laravel Cloud (PaaS)
 * **Development Workflow:** Continuous deployment with feature-based PR structure
 
 ## **MVP Development Plan**
@@ -27,7 +27,10 @@
 
 **PR 1: Project Scaffolding (3-4 days)**
 * Set up Laravel project with HTMX + Alpine.js
-* Configure local development environment (using Laravel Herd for local, Railway for production)
+* Configure dual database environment:
+  - SQLite for local development (zero-configuration)
+  - Serverless PostgreSQL for production via Laravel Cloud
+* Configure local development environment (using Laravel Herd for local, Laravel Cloud for production)
 * Initialize Git repository
 * ✅ Implement basic responsive layout structure with:
   - Dual navigation system (3-tab mobile bottom nav + desktop sidebar)
@@ -36,17 +39,23 @@
   - Mobile-first responsive design with proper touch targets
 
 **PR 2: Deployment Pipeline (1-2 days)**
-* Set up Railway.app infrastructure
-* Provision PostgreSQL database
-* Configure CI/CD pipeline with GitHub
+* Set up Laravel Cloud infrastructure with one-click deployment
+* Provision Serverless PostgreSQL database with automatic scaling
+* Configure CI/CD pipeline with GitHub (push-to-deploy)
 * Set up automatic deployment for all pushed commits
 * Configure deployment environments (staging/production)
+* Leverage Laravel Cloud's automatic environment variable injection
+* Set up built-in monitoring, logging, and error tracking
+* Configure edge network and CDN for global performance
 
 **PR 3: Database Foundations (2-3 days)**
-* Design core database schema
+* Design core database schema for dual environment:
+  - SQLite migrations for local development
+  - PostgreSQL-optimized migrations for production
 * Create migrations for users, reading_logs, book_progress tables
-* Define Eloquent models
+* Define Eloquent models with database-agnostic queries
 * Create Bible reference configuration file with static data for all 66 books
+* Test migration compatibility across SQLite and PostgreSQL
 
 ### **Week 2: Authentication & UI Framework**
 
@@ -127,7 +136,7 @@
 ### **Week 7: Performance & Accessibility**
 
 **PR 14: Caching & Performance Optimization (3-4 days)**
-* Set up Redis for caching (via Railway.app)
+* Set up Laravel KV Store for caching (Redis API-compatible via Laravel Cloud)
 * Implement tiered caching strategy:
   * Application-level cache for user statistics and streak data
   * Cache Bible reference metadata (book/chapter counts)
@@ -137,8 +146,10 @@
   * Event-based invalidation (when new readings are logged)
   * Selective invalidation using cache tags
 * Optimize database queries with proper indexing
-* Configure asset optimization (minification, compression)
+* Leverage Laravel Cloud's automatic asset optimization and CDN
+* Configure hibernation for cost optimization during low traffic
 * Add HTMX loading indicators for better UX
+* Utilize Laravel Cloud's built-in performance monitoring
 
 **PR 15: Accessibility Implementation (3-4 days)**
 * Ensure WCAG 2.1 AA compliance
@@ -163,14 +174,17 @@
 * Performance benchmarking
 
 **PR 18: Production Monitoring & Analytics (2-3 days)**
-* Configure production environment
-* Set up error tracking (Sentry or similar)
-* Implement database backup strategy
+* Configure production environment with Laravel Cloud's managed services
+* Leverage Laravel Cloud's built-in error tracking and logging
+* Utilize automatic database backup and point-in-time recovery
+* Configure Laravel Cloud's performance metrics and monitoring dashboard
+* Set up spending alerts and resource usage monitoring
 * Deploy basic analytics tracking (optional):
   * Page view and user action monitoring
   * Reading log creation tracking
   * Basic user engagement metrics
-* Complete final production deployment
+* Configure autoscaling policies and hibernation settings
+* Complete final production deployment with zero-downtime deployment
 
 ## **Key Milestones**
 
