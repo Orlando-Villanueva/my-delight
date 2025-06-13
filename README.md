@@ -26,8 +26,10 @@ A web application designed to help users build and maintain a consistent Bible r
 ## Technical Overview
 
 - **Framework**: Laravel (PHP)
-- **Database**: MySQL with denormalized BookProgress table for efficient tracking
-- **Caching**: Redis
+- **Database**: 
+  - **Local Development**: SQLite for simplicity and ease of setup
+  - **Production**: Laravel Cloud's Serverless Postgres (PostgreSQL 17) with denormalized BookProgress table for efficient tracking
+- **Caching**: Redis (in production)
 - **Bible Reference System**: Static configuration approach via config files
 - **Internationalization**: Laravel's built-in localization system
 - **Testing**: Comprehensive test suite covering critical components
@@ -38,8 +40,55 @@ A web application designed to help users build and maintain a consistent Bible r
 - PHP 8.1+
 - Composer
 - Node.js and npm
-- MySQL 8.0+
-- Redis server
+- SQLite (for local development)
+- [Optional] Redis server (for production caching)
+
+### Local Development with Laravel Herd
+
+Laravel Herd is a fast, native Laravel development environment for macOS and Windows. It simplifies running Laravel projects locally without manual server configuration.
+
+#### Installation
+
+- **macOS:**  
+  Download and install from [herd.laravel.com](https://herd.laravel.com/).
+- **Windows:**  
+  Download and install from [herd.laravel.com](https://herd.laravel.com/).
+
+#### Usage
+
+1. **Open Herd and add your project directory**  
+   Click "Add Project" and select your cloned `biblehabit` directory.
+
+2. **Set up your local domain (optional but recommended):**  
+   Herd can automatically configure a `.test` domain (e.g., http://biblehabit.test).
+   Update your `.env`:
+   ```
+   APP_URL=http://biblehabit.test
+   ```
+
+3. **Database Configuration:**  
+   By default, local development uses SQLite. Ensure your `.env` has:
+   ```
+   DB_CONNECTION=sqlite
+   DB_DATABASE=absolute_path_to_your_project/database/database.sqlite
+   ```
+   On Windows, use:
+   ```
+   DB_DATABASE=W:/Projects/Herd/biblehabit/database/database.sqlite
+   ```
+
+4. **Run migrations and seeders:**  
+   ```bash
+   php artisan migrate --seed
+   ```
+
+5. **Access your app:**  
+   Open http://biblehabit.test in your browser.
+
+#### Notes
+
+- Herd automatically handles PHP versions and web server configuration.
+- For more details, see the [Laravel Herd documentation](https://herd.laravel.com/docs).
 
 ### Installation
 
@@ -59,23 +108,30 @@ A web application designed to help users build and maintain a consistent Bible r
    npm install
    ```
 
-4. **Environment Setup**
+4. **Set up SQLite database**
+   ```bash
+   # Create SQLite database file
+   touch database/database.sqlite
+   
+   # Update .env for SQLite
+   # DB_CONNECTION=sqlite
+   # DB_DATABASE=/absolute/path/to/your/project/database/database.sqlite
+   ```
+   
+   On Windows, use the full path in .env:
+   ```
+   DB_DATABASE=W:/Projects/Herd/biblehabit/database/database.sqlite
+   ```
+
+5. **Environment Setup**
    ```bash
    cp .env.example .env
    php artisan key:generate
    ```
 
-5. **Configure the environment variables**
-   Open `.env` file and update:
-   - Database connection details
-   - Redis configuration
-   - Application settings
-   - Language settings
-
-6. **Database Setup**
+6. **Run migrations and seeders**
    ```bash
-   php artisan migrate
-   php artisan db:seed
+   php artisan migrate --seed
    ```
 
 7. **Build frontend assets**
@@ -83,11 +139,30 @@ A web application designed to help users build and maintain a consistent Bible r
    npm run dev
    ```
 
-8. **Run the application**
+8. **Access the application**
    ```bash
    php artisan serve
    ```
-   Access the application at http://localhost:8000
+   - Access at http://localhost:8000
+   - Or use Laravel Herd: open http://biblehabit.test (if configured)
+
+## Production Setup (Laravel Cloud)
+
+1. **Database**: Laravel Cloud automatically provisions a Serverless Postgres database (PostgreSQL 17)
+2. **Environment Variables**: Database credentials are automatically injected
+3. **Migrations**: Run migrations via Laravel Cloud's CLI or deployment pipeline
+   ```bash
+   php artisan migrate --force
+   ```
+
+## Local Development Tips
+
+- **SQLite**: Default for local development (fast, file-based, no server required)
+- **PostgreSQL**: Optional for local development (matches production environment)
+  - Install PostgreSQL and update `.env` with PostgreSQL credentials
+  - Run migrations after switching database types
+- **Environment Files**: Keep sensitive credentials in `.env` (never commit this file)
+- **Debugging**: Set `APP_DEBUG=true` in development for detailed error messages
 
 ### Additional Configuration
 

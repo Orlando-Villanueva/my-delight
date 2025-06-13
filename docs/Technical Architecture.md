@@ -59,6 +59,9 @@
 └─────────────────────────────────────────────────────────────────────┘
 ```
 
+For detailed component relationships, data flow diagrams, and integration patterns, see:
+- [Application Architecture Diagram](./Application%20Architecture%20Diagram.md)
+
 ## Data Models (Entity Relationship Diagram)
 
 ```
@@ -67,19 +70,22 @@
 ├───────────────────┤       ├───────────────────┤       ├───────────────────┤
 │ id (PK)           │       │ id (PK)           │       │ id (PK)           │
 │ name              │◄──────┤ user_id (FK)      │       │ user_id (FK)      │
-│ email             │       │ date_read         │       │ book_id           │
-│ password          │       │ passage_text      │       │ book_name         │
-│ email_verified_at │       │ notes_text        │       │ total_chapters    │
-│ remember_token    │       │ created_at        │       │ chapters_read     │
-│ created_at        │       │ updated_at        │       │ completion_percent│
-│ updated_at        │       └───────────────────┘       │ is_completed      │
-└───────────────────┘                                   │ last_updated      │
-                                                        └───────────────────┘
+│ email             │       │ book_id           │       │ book_id           │
+│ password          │       │ chapter           │       │ book_name         │
+│ email_verified_at │       │ passage_text      │       │ total_chapters    │
+│ remember_token    │       │ date_read         │       │ chapters_read     │
+│ created_at        │       │ notes_text        │       │ completion_percent│
+│ updated_at        │       │ created_at        │       │ is_completed      │
+└───────────────────┘       │ updated_at        │       │ last_updated      │
+                            └───────────────────┘       └───────────────────┘
 ```
 
 **Note:** The `BookProgress` table is a denormalized structure that tracks each user's reading progress for each book of the Bible. There is no direct database relationship (such as a foreign key) between `ReadingLogs` and `BookProgress`. Instead, `BookProgress` is updated whenever a new `ReadingLog` is created or modified. This serves as a performance optimization for statistics calculations, eliminating the need to scan all reading logs when checking book completion status.
 
-**MVP-Focused Data Model**: The initial implementation will focus only on the core entities (Users and ReadingLogs) needed for the MVP's "Read → Log → See Progress" flow. Additional entities like Goals, Achievements, Tags, and ReadingPlans will be implemented in later phases as the application evolves beyond MVP.
+**MVP-Focused Data Model**: The initial implementation will focus only on the core entities (Users, ReadingLogs, and BookProgress) needed for the MVP's "Read → Log → See Progress" flow. Additional entities like Goals, Achievements, Tags, and ReadingPlans will be implemented in later phases as the application evolves beyond MVP.
+
+For detailed database schema documentation, migration files, and performance considerations, see:
+- [Database Schema Documentation](./Database%20Schema%20Documentation.md)
 
 # API Structure
 
@@ -322,6 +328,105 @@ The UI will provide a simplified two-step structured selector for the MVP:
 
 In future iterations, we can add a free-form text input option with validation for users who prefer that input method.
 
+### Responsive Navigation Architecture
+
+The application implements a dual-navigation system optimized for different device types and user patterns:
+
+#### Mobile Navigation Strategy
+
+1. **Bottom Tab Navigation**:
+   - **3-tab layout**: Dashboard, History, Profile/Settings
+   - **Touch-optimized**: Minimum 44px x 44px touch targets
+   - **Fixed positioning**: Always visible for consistent access
+   - **Active state indicators**: Visual feedback for current page
+
+2. **Primary Action Strategy - Hybrid Approach**:
+   - **Mobile (< 1024px)**: Floating Action Button (FAB) for "Log Reading"
+     - **Strategic positioning**: Bottom-right, above bottom navigation
+     - **Accessibility**: Large enough for easy thumb access
+     - **Visual prominence**: Uses accent color (#FF9933) for attention
+   - **Desktop (≥ 1024px)**: Header Action Button for "Log Reading"
+     - **Strategic positioning**: Top-right of content header
+     - **Enhanced accessibility**: Full-sized button with icon and text
+     - **Contextual placement**: Near page content for better UX
+
+#### Desktop Navigation Strategy
+
+1. **Sidebar Navigation**:
+   - **Always visible**: 256px fixed width sidebar
+   - **Comprehensive navigation**: All main sections with icons and labels
+   - **User context**: Profile section with avatar and quick logout
+   - **Active state**: Clear visual indicators for current page
+
+2. **Content Layout**:
+   - **Two-column approach**: 70% main content, 30% supporting information
+   - **Responsive grid**: Adapts to different screen sizes
+   - **Contextual sidebar**: Shows relevant statistics and quick actions
+
+#### Implementation Details
+
+```php
+// Layout structure in authenticated.blade.php
+// Mobile: Bottom nav (3 tabs) + FAB
+// Desktop: Sidebar + header with action button + main content area + secondary sidebar
+
+// Navigation state management with Alpine.js
+<div x-data="{ mobileMenuOpen: false }" class="flex h-screen">
+    <!-- Desktop Sidebar (hidden on mobile) -->
+    <aside class="hidden lg:flex lg:flex-col lg:w-64">
+        <!-- Navigation items with active state detection -->
+        @if(request()->routeIs('dashboard'))
+            <a class="bg-primary/10 text-primary border-r-2 border-primary">
+        @endif
+    </aside>
+    
+    <!-- Desktop Header with Action Button -->
+    <header class="hidden lg:block">
+        <div class="flex items-center justify-between">
+            <div>
+                <h1>@yield('page-title', 'Dashboard')</h1>
+                <p>@yield('page-subtitle', 'Track your Bible reading journey')</p>
+            </div>
+            <!-- Log Reading Button -->
+            <a href="{{ route('logs.create') }}" class="bg-accent hover:bg-accent/90">
+                Log Reading
+            </a>
+        </div>
+    </header>
+    
+    <!-- Mobile bottom navigation -->
+    <nav class="lg:hidden fixed bottom-0">
+        <!-- 3 navigation tabs -->
+    </nav>
+    
+    <!-- Floating Action Button (mobile only) -->
+    <a href="{{ route('logs.create') }}" 
+       class="lg:hidden fixed bottom-20 right-4">
+        <!-- FAB for mobile devices -->
+    </a>
+</div>
+```
+
+#### Design Rationale
+
+1. **User Journey Optimization**: Primary action placement recognizes that "Log Reading" is the most frequent daily action
+2. **Platform-Specific UX**: 
+   - **Mobile**: FAB follows mobile design patterns with thumb-friendly positioning
+   - **Desktop**: Header button provides better accessibility and visual hierarchy
+3. **Progressive Enhancement**: Desktop layout expands functionality while maintaining mobile-first approach
+4. **Accessibility**: Proper touch targets, keyboard navigation, and clear labeling on all platforms
+5. **Visual Hierarchy**: Consistent accent color maintains prominence while adapting to platform conventions
+6. **Contextual Placement**: Desktop header button is closer to content, reducing cognitive load
+
+#### Route Structure
+
+The navigation system expects these core routes:
+- `dashboard` - Main landing page with streak and calendar
+- `history` - Reading log history and filtering
+- `profile` - User settings and account management  
+- `logs.create` - Reading log entry form (FAB target)
+- `logout` - Authentication termination
+
 ### Advanced Statistics Implementation
 
 The Advanced Statistics feature provides motivating metrics about Bible reading progress. For the MVP, we'll focus on a streamlined set of high-value statistics that encourage habit formation while keeping implementation simple.
@@ -529,44 +634,30 @@ This approach allows the same backend logic to serve both the HTMX-based web int
 - **Authentication System**: Laravel Sanctum for dual-mode authentication, supporting both cookie-based sessions for the HTMX frontend and token-based auth for future mobile APIs.
 - **Testing Tools**: Testing frameworks like Pest make it easy to implement a test-driven approach from the start.
 
-**Alternatives Considered:**
-- **Node.js/Express**: While offering good performance for API-heavy applications, it lacks the integrated architecture and mature ORM that Laravel provides.
-- **Django (Python)**: Excellent framework but potentially slower development cycle for PHP developers already familiar with Laravel.
-- **Ruby on Rails**: Similar benefits to Laravel but smaller community and potentially steeper learning curve.
-
-### Database: PostgreSQL
+### Database: PostgreSQL (via Laravel Cloud)
 
 **Strengths for this project:**
 - **Reliability**: Well-established, ACID-compliant database with excellent data integrity.
-- **JSON Support**: Native JSON column types ideal for storing flexible data like reading plan structures.
+- **JSON Support**: Native JSON column types ideal for storing flexible data like chapter tracking in BookProgress table.
 - **Advanced Querying**: Powerful querying capabilities for complex streak calculations and data analytics.
-- **Managed Options**: Widely available as a managed service on PaaS providers, reducing operational overhead.
-
-**Alternatives Considered:**
-- **MySQL**: Slightly simpler but less feature-rich for complex queries and JSON storage.
-- **MongoDB**: Would offer flexible schema but less data integrity guarantees for critical user data.
-- **SQLite**: Too limited for production use with multiple concurrent users.
+- **Managed Service**: Laravel Cloud provides automated backups, scaling, and maintenance.
 
 ### Frontend (Web): HTMX + Alpine.js
 
 **Strengths for this project:**
-- **Simplicity**: Both technologies have minimal learning curves compared to full frontend frameworks.
-- **Progressive Enhancement**: Allows building interactive features without requiring a complete SPA architecture.
-- **Server-Side Rendering**: Main content rendered server-side improves SEO and initial load performance.
-- **Reduced Bundle Size**: Lightweight compared to React/Vue/Angular, leading to faster page loads.
-- **Reduced Complexity**: No need for a separate build process or complex state management.
+- **Server-Driven Architecture**: HTMX enables server-driven state management with HTML fragments as the primary data format.
+- **Minimal Client Logic**: Alpine.js provides "sprinkles of interactivity" for local UI state without complex state management.
+- **Progressive Enhancement**: Works well even with limited JavaScript support.
+- **Performance**: Lightweight compared to full frontend frameworks, leading to faster page loads.
 
-**Custom Frontend Approach:**
-Rather than using Laravel's official starter kits, this project implements a custom frontend approach with HTMX + Alpine.js, which offers:
-- **Server-driven UI updates**: HTMX allows for seamless partial page updates without client-side routing
-- **Minimal JavaScript**: Alpine.js provides just enough reactivity for interactive components
-- **Progressive enhancement**: Works well even with limited JavaScript support
-- **Simpler authentication flow**: Custom authentication system designed specifically for this architecture
+**Implementation Details:**
+- **HTMX**: Handles server communication, form submissions, HTML fragment updates, and event triggering
+- **Alpine.js**: Manages local UI state (dropdowns, modals), client-side validation, and reactive data binding
+- **Integration**: Both technologies work together seamlessly, with HTMX handling server interactions and Alpine managing client-side enhancements
 
-**Alternatives Considered:**
-- **React**: More powerful but introduces significant complexity and would require a separate build pipeline.
-- **Vue.js**: Good balance of power and simplicity but still requires more complex setup than HTMX+Alpine.
-- **Inertia.js**: Good Laravel integration but more opinionated and potentially limiting for future mobile API work.
+For detailed implementation patterns, see:
+- [HTMX Implementation Guide](./HTMX%20Implementation%20Guide.md)
+- [Alpine.js Component Guide](./Alpine.js%20Component%20Guide.md)
 
 ### Mobile: Native Swift (iOS) & Kotlin (Android)
 
@@ -574,25 +665,15 @@ Rather than using Laravel's official starter kits, this project implements a cus
 - **Performance**: Native development provides the best performance for mobile apps.
 - **Platform Integration**: Better access to device features like notifications and offline storage.
 - **User Experience**: Follows platform-specific design patterns for more intuitive UX.
-- **App Store Optimization**: Better ranking potential in app stores compared to cross-platform solutions.
+- **Shared Backend**: Mobile apps will consume the same Laravel API endpoints as the web interface.
 
-**Alternatives Considered:**
-- **React Native**: Would allow code sharing between platforms but with potential performance tradeoffs.
-- **Flutter**: Excellent UI consistency but less mature ecosystem and potentially more complex API integration.
-- **Progressive Web App**: Simpler to develop but limited device integration and offline capabilities.
-
-### Deployment: Railway.app (PaaS)
+### Deployment: Laravel Cloud
 
 **Strengths for this project:**
-- **Simplified DevOps**: Reduces operational complexity compared to managing raw infrastructure.
-- **Managed Database**: Includes backups, security patches, and scaling with minimal developer intervention.
-- **Cost Predictability**: Pay-as-you-go pricing model and app hibernation features help control costs for early-stage projects.
-- **Quick Setup**: Faster initial deployment and environment configuration with native support for PostgreSQL and Redis databases.
-
-**Alternatives Considered:**
-- **AWS/Azure/GCP**: More powerful but requires significantly more DevOps knowledge.
-- **VPS Providers**: Lower cost but much higher operational complexity.
-- **Shared Hosting**: Too limited for a modern Laravel application with queues and background processing.
+- **Integrated Platform**: Purpose-built for Laravel applications with optimized performance.
+- **Managed Database**: Serverless PostgreSQL with automatic scaling and point-in-time recovery.
+- **Simplified DevOps**: Reduces operational complexity with automated deployments and monitoring.
+- **Cost Efficiency**: Pay-as-you-go pricing model with automatic scaling based on usage.
 
 ## Authentication
 
@@ -1011,6 +1092,102 @@ A smart notification system will help users maintain their reading habit through
 
 The reminder system will be designed to be helpful without becoming intrusive, with careful attention to frequency and tone to avoid notification fatigue.
 
+### Database Configuration
+
+The application uses different database configurations for local development and production environments to optimize for both developer experience and production performance.
+
+#### Local Development (SQLite)
+- **Database**: SQLite
+- **File**: `database/database.sqlite`
+- **Configuration**: 
+  - Uses in-memory or file-based SQLite database for simplicity and speed
+  - No need for separate database server installation
+  - Ideal for development and testing environments
+  - Configured in `.env` with `DB_CONNECTION=sqlite`
+  - Database file is created automatically on first migration
+
+#### Production (Laravel Cloud)
+- **Platform**: Laravel Cloud
+- **Database**: Managed PostgreSQL
+- **Features**:
+  - Automated backups and maintenance
+  - High availability and scalability
+  - Built-in monitoring and performance insights
+  - Secure connections with TLS/SSL
+  - Environment-based configuration via `.env` variables
+  - Seamless integration with Laravel's deployment pipeline
+
+For local development, SQLite is used for its simplicity and zero-configuration requirements:
+
+- **Type**: SQLite (file-based)
+- **Location**: `database/database.sqlite`
+- **Configuration**:
+  ```env
+  DB_CONNECTION=sqlite
+  DB_DATABASE=/absolute/path/to/project/database/database.sqlite
+  ```
+- **Benefits**:
+  - No database server required
+  - Fast development setup
+  - Easy to reset and migrate
+  - File-based for simple version control (though the file itself is in .gitignore)
+
+#### Production (Laravel Cloud)
+
+For production, the application uses Laravel Cloud's managed database service:
+
+- **Type**: Serverless PostgreSQL 17
+- **Hosting**: Laravel Cloud (powered by Neon)
+- **Configuration**:
+  - Auto-configured by Laravel Cloud
+  - Environment variables automatically injected
+  - Connection pooling for high concurrency (up to 10,000 connections)
+  - Hibernation support for cost optimization
+- **Features**:
+  - Automatic scaling (0.5-2 compute units)
+  - Point-in-time recovery
+  - Automated backups with encryption
+  - High availability across multiple regions
+  - Built-in monitoring and performance insights
+
+#### Database Schema
+
+The database schema follows these design principles:
+
+1. **Denormalized Book Progress**:
+   - Optimized for read performance
+   - Separate `book_progress` table tracks completion status
+   - Reduces need for complex joins in common queries
+
+2. **User Data Isolation**:
+   - All user data properly scoped to user accounts
+   - Appropriate indexes for common query patterns
+   - Soft deletes where appropriate
+
+3. **Migrations**:
+   - Version-controlled database changes
+   - Rollback capabilities
+   - Environment-specific seeders
+
+#### Environment Variables
+
+Key database-related environment variables:
+
+```env
+# Local Development (SQLite)
+DB_CONNECTION=sqlite
+DB_DATABASE=/path/to/database.sqlite
+
+# Production (Laravel Cloud - auto-configured)
+# DB_CONNECTION=pgsql
+# DB_HOST=ep-xxx.cloud.laravel.cloud
+# DB_PORT=5432
+# DB_DATABASE=laravel
+# DB_USERNAME=user
+# DB_PASSWORD=password
+# DB_SSL_MODE=require
+```
+
 ### Caching Strategy
 
 As user growth occurs, implementing a robust caching strategy will be essential for maintaining performance and scalability. Here's the planned approach:
@@ -1032,16 +1209,18 @@ As user growth occurs, implementing a robust caching strategy will be essential 
 
 #### Implementation Technologies
 
-1. **Redis**:
-   - Primary distributed caching solution
+1. **Laravel KV Store (via Laravel Cloud)**:
+   - Redis API-compatible key-value store
    - Supports complex data structures needed for statistics
    - Enables atomic operations for counters and leaderboards
    - Provides pub/sub capabilities for cache invalidation
+   - Managed service with automatic scaling and monitoring
 
 2. **Laravel Cache**:
    - Abstraction layer for different cache backends
    - Tag-based cache invalidation for related items
    - Automatic serialization/deserialization of complex objects
+   - Seamless integration with Laravel Cloud's KV Store
 
 #### Cache Invalidation Strategy
 
