@@ -26,9 +26,11 @@ A web application designed to help users build and maintain a consistent Bible r
 ## Technical Overview
 
 - **Framework**: Laravel (PHP)
+- **Architecture**: LUCID Architecture pattern for clean separation of concerns and high testability
 - **Database**: 
   - **Local Development**: SQLite for simplicity and ease of setup
   - **Production**: Laravel Cloud's Serverless Postgres (PostgreSQL 17) with denormalized BookProgress table for efficient tracking
+- **Frontend**: HTMX + Alpine.js for server-driven interactivity
 - **Caching**: Redis (in production)
 - **Bible Reference System**: Static configuration approach via config files
 - **Internationalization**: Laravel's built-in localization system
