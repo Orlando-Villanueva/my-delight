@@ -74,7 +74,7 @@
 ### **Week 3: Reading Log Core**
 
 **PR 6: Bible Reference System (2-3 days)**
-* Implement Bible reference service
+* Implement Bible reference Jobs (LUCID architecture)
 * Create book and chapter data structure
 * Build dynamic chapter selection logic
 * Set up reference validation
@@ -88,7 +88,7 @@
 ### **Week 4: Streak System & First User Testing**
 
 **PR 8: Streak Calculation System (3-4 days)**
-* Develop streak calculation service
+* Develop streak calculation Jobs and Features
 * Implement 1-day grace period logic
 * Create longest streak tracking
 * Build streak UI components
@@ -110,7 +110,7 @@
 * Add HTMX refresh behavior
 
 **PR 11: Book Completion Tracking (3-4 days)**
-* Create book progress service
+* Create book progress Jobs and Features
 * Implement completion percentage calculation
 * Build book grid visualization
 * Add progress update triggers

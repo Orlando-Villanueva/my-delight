@@ -85,15 +85,11 @@ public function storeReadingLog(Request $request)
             'notes_text' => 'nullable|string|max:500'
         ]);
         
-        // Custom validation for chapter count
-        $book = $this->bibleService->getBookById($validated['book_id']);
-        if ($validated['chapter'] > $book['chapter_count']) {
-            throw ValidationException::withMessages([
-                'chapter' => "Chapter {$validated['chapter']} does not exist in {$book['name']}."
-            ]);
-        }
-        
-        $log = $this->createReadingLog($validated);
+        // Use LUCID Feature for reading log creation (includes validation)
+        $log = $this->serve(LogReadingFeature::class, [
+            'data' => $validated,
+            'user' => $request->user()
+        ]);
         
         return view('partials.reading-log-success', compact('log'));
         
@@ -123,21 +119,10 @@ public function storeReadingLog(Request $request)
             'notes_text' => 'nullable|string|max:500'
         ]);
         
-        // Custom validation for chapter count
-        $book = $this->bibleService->getBookById($validated['book_id']);
-        if ($validated['chapter'] > $book['chapter_count']) {
-            throw ValidationException::withMessages([
-                'chapter' => "Chapter {$validated['chapter']} does not exist in {$book['name']}."
-            ]);
-        }
-        
-        $log = ReadingLog::create([
-            'user_id' => auth()->id(),
-            'book_id' => $validated['book_id'],
-            'chapter' => $validated['chapter'],
-            'date_read' => $validated['date_read'],
-            'passage_text' => $this->formatPassageText($validated['book_id'], $validated['chapter']),
-            'notes_text' => $validated['notes_text']
+        // Use LUCID Feature for reading log creation (includes validation)
+        $log = $this->serve(LogReadingFeature::class, [
+            'data' => $validated,
+            'user' => $request->user()
         ]);
         
         return view('partials.reading-log-success', compact('log'));

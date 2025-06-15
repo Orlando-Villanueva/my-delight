@@ -1,51 +1,49 @@
 # Application Architecture Diagram
 
-## Overview
+## System Overview
 
-This document provides visual representations of the Bible Reading Habit Builder's system architecture, component relationships, and data flow patterns for the planned MVP implementation.
+The Bible Reading Habit Builder follows a **LUCID Architecture** pattern that separates concerns across distinct layers, enabling high testability, maintainability, and clear business logic organization.
 
-## System Architecture Overview
+## High-Level System Architecture
 
 ```
 ┌─────────────────────────────────────────────────────────────────────┐
 │                          Client Layer                               │
 │                                                                     │
-│  ┌───────────────┐    ┌───────────────┐    ┌───────────────┐        │
-│  │  Web Browser  │    │   iOS App     │    │  Android App  │        │
-│  │  (HTMX +      │    │  (Swift)      │    │  (Kotlin)     │        │
-│  │   Alpine.js)  │    │               │    │               │        │
-│  └───────┬───────┘    └───────┬───────┘    └───────┬───────┘        │
+│  ┌───────────────┐    ┌───────────────┐    ┌───────────────────────┐│
+│  │  Web Browser  │    │   iOS App     │    │   Android App         ││
+│  │  (HTMX +      │    │  (Swift)      │    │   (Kotlin)            ││
+│  │   Alpine.js)  │    │               │    │                       ││
+│  └───────┬───────┘    └───────┬───────┘    └───────┬───────────────┘│
 │          │                    │                    │                │
 └──────────┼────────────────────┼────────────────────┼────────────────┘
            │                    │                    │
+           │                    │                    │
            ▼                    ▼                    ▼
 ┌─────────────────────────────────────────────────────────────────────┐
-│                        Communication Layer                          │
-│                                                                     │
-│  ┌───────────────────────┐      ┌───────────────────────────┐       │
-│  │      Web Routes       │      │      API Routes           │       │
-│  │  (HTML/HTMX Responses)│      │   (JSON Responses)        │       │
-│  └───────────┬───────────┘      └──────────────┬────────────┘       │
-│              │                                 │                    │
-└──────────────┼─────────────────────────────────┼────────────────────┘
-               │                                 │
-               ▼                                 ▼
-┌─────────────────────────────────────────────────────────────────────┐
-│                       Application Layer                             │
+│                     Laravel Application                             │
 │                                                                     │
 │  ┌───────────────┐    ┌───────────────┐    ┌───────────────┐        │
-│  │  Controllers  │    │    Services   │    │  Middleware   │        │
+│  │   Controllers │    │   Features    │    │   Middleware  │        │
 │  │               │    │               │    │               │        │
 │  └───────┬───────┘    └───────┬───────┘    └───────┬───────┘        │
 │          │                    │                    │                │
-└──────────┼────────────────────┼────────────────────┼────────────────┘
-           │                    │                    │
-           ▼                    ▼                    ▼
-┌─────────────────────────────────────────────────────────────────────┐
-│                         Domain Layer                                │
-│                                                                     │
+│          └────────────────────┼────────────────────┘                │
+│                               │                                     │
+│                               ▼                                     │
+│  ┌─────────────────────────────────────────────────────────────────┐ │
+│  │                    LUCID Business Layer                        │ │
+│  │                                                                 │ │
+│  │  ┌─────────────┐  ┌─────────────┐  ┌─────────────────────────┐  │ │
+│  │  │    Jobs     │  │ Operations  │  │       Domains           │  │ │
+│  │  │             │  │             │  │                         │  │ │
+│  │  └─────┬───────┘  └─────┬───────┘  └───────┬─────────────────┘  │ │
+│  │        │                │                  │                    │ │
+│  └────────┼────────────────┼──────────────────┼────────────────────┘ │
+│           │                │                  │                      │
+│           ▼                ▼                  ▼                      │
 │  ┌───────────────┐    ┌───────────────┐    ┌───────────────┐        │
-│  │    Models     │    │  Repositories │    │ Domain Logic  │        │
+│  │    Models     │    │ Repositories  │    │ External APIs │        │
 │  │               │    │               │    │               │        │
 │  └───────┬───────┘    └───────┬───────┘    └───────────────┘        │
 │          │                    │                                     │
@@ -56,9 +54,60 @@ This document provides visual representations of the Bible Reading Habit Builder
 │                      Infrastructure Layer                           │
 │                                                                     │
 │  ┌───────────────┐    ┌───────────────┐    ┌───────────────┐        │
-│  │   Database    │    │ External APIs │    │   Caching     │        │
-│  │  (PostgreSQL) │    │ (Bible APIs)  │    │   (Redis)     │        │
+│  │   Database    │    │   Caching     │    │   Storage     │        │
+│  │ (PostgreSQL/  │    │   (Redis)     │    │   (Files)     │        │
+│  │   SQLite)     │    │               │    │               │        │
 │  └───────────────┘    └───────────────┘    └───────────────┘        │
+│                                                                     │
+└─────────────────────────────────────────────────────────────────────┘
+```
+
+### Backend LUCID Architecture
+
+```
+┌─────────────────────────────────────────────────────────────────────┐
+│                        Laravel Application                          │
+│                                                                     │
+│  ┌─────────────────────────────────────────────────────────────────┐ │
+│  │                      Request Flow                               │ │
+│  └─────────────────────────────────────────────────────────────────┘ │
+│                                                                     │
+│  ┌───────────────────────────────────────────────────────────────┐   │
+│  │   Controllers    │    Features     │    Repositories  │       │   │
+│  ├─────────────────┼─────────────────┼─────────────────┤       │   │
+│  │ • DashboardCtrl │    • LogReading │    • ReadingLogRepo│       │   │
+│  │ • ReadingLogCtrl│    • GetHistory │    • BookProgRepo │       │   │
+│  │ • UserCtrl      │    • GetStats   │    • UserRepo     │       │   │
+│  │ • AuthCtrl      │    • Register   │                  │       │   │
+│  └─────────────────┼─────────────────┼─────────────────┤       │   │
+│                    │                 │                  │       │   │
+│  ┌─────────────────────────────────────────────────────────────────┐ │
+│  │                     LUCID Business Layer                       │ │
+│  │                                                                 │ │
+│  │  ┌─────────────────────────────────────────────────────────────┐ │ │
+│  │  │                        Jobs                                 │ │ │
+│  │  │ • ValidateReadingLogJob    • UpdateBookProgressJob         │ │ │
+│  │  │ • SaveReadingLogJob        • CalculateCurrentStreakJob     │ │ │
+│  │  │ • GetBibleBookJob          • CalculateLongestStreakJob     │ │ │
+│  │  │ • ValidateBibleReferenceJob • GetReadingStatsJob           │ │ │
+│  │  │ • SendWelcomeEmailJob      • GetBookProgressStatsJob       │ │ │
+│  │  └─────────────────────────────────────────────────────────────┘ │ │
+│  │                                                                 │ │
+│  │  ┌─────────────────────────────────────────────────────────────┐ │ │
+│  │  │                    Operations                               │ │ │
+│  │  │ • CompleteBookOperation (orchestrates book completion)      │ │ │
+│  │  │ • ProcessBulkReadingOperation (batch reading log imports)  │ │ │
+│  │  │ • UserOnboardingOperation (coordinated setup process)      │ │ │
+│  │  └─────────────────────────────────────────────────────────────┘ │ │
+│  │                                                                 │ │
+│  │  ┌─────────────────────────────────────────────────────────────┐ │ │
+│  │  │                      Domains                                │ │ │
+│  │  │ • Reading/ (reading logs, Bible references)                │ │ │
+│  │  │ • BookProgress/ (progress tracking, completion)            │ │ │
+│  │  │ • Statistics/ (streak calculation, analytics)              │ │ │
+│  │  │ • Authentication/ (user management, auth)                  │ │ │
+│  │  └─────────────────────────────────────────────────────────────┘ │ │
+│  └─────────────────────────────────────────────────────────────────┘ │
 │                                                                     │
 └─────────────────────────────────────────────────────────────────────┘
 ```

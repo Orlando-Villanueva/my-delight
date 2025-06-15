@@ -30,7 +30,18 @@
 │                       Application Layer                             │
 │                                                                     │
 │  ┌───────────────┐    ┌───────────────┐    ┌───────────────┐        │
-│  │  Controllers  │    │    Services   │    │  Middleware   │        │
+│  │  Controllers  │    │   Features    │    │  Middleware   │        │
+│  │               │    │               │    │               │        │
+│  └───────┬───────┘    └───────┬───────┘    └───────┬───────┘        │
+│          │                    │                    │                │
+└──────────┼────────────────────┼────────────────────┼────────────────┘
+           │                    │                    │
+           ▼                    ▼                    ▼
+┌─────────────────────────────────────────────────────────────────────┐
+│                      LUCID Business Layer                           │
+│                                                                     │
+│  ┌───────────────┐    ┌───────────────┐    ┌───────────────┐        │
+│  │     Jobs      │    │  Operations   │    │   Domains     │        │
 │  │               │    │               │    │               │        │
 │  └───────┬───────┘    └───────┬───────┘    └───────┬───────┘        │
 │          │                    │                    │                │
@@ -61,6 +72,196 @@
 
 For detailed component relationships, data flow diagrams, and integration patterns, see:
 - [Application Architecture Diagram](./Application%20Architecture%20Diagram.md)
+
+## LUCID Architecture Implementation
+
+This project implements the **LUCID Architecture** pattern, which provides clear separation of concerns and highly testable code organization. LUCID stands for:
+
+- **L**ucid (the overall architecture)
+- **U**nits (Jobs - single units of work)
+- **C**ontrol (Operations - orchestrate multiple Jobs)
+- **I**nterface (Features - expose business logic to Controllers)
+- **D**omain (group related functionality)
+
+### LUCID Layer Responsibilities
+
+#### Features
+Features are the interface layer between Controllers and the business logic. They represent high-level business use cases and coordinate the execution of Jobs and Operations.
+
+```php
+// Example: LogReadingFeature
+namespace App\Features\Reading;
+
+use Lucid\Units\Feature;
+use App\Jobs\Reading\ValidateReadingLogJob;
+use App\Jobs\Reading\SaveReadingLogJob;
+use App\Jobs\BookProgress\UpdateBookProgressJob;
+use App\Jobs\Statistics\RecalculateStreakJob;
+
+class LogReadingFeature extends Feature
+{
+    public function handle(LogReadingRequest $request)
+    {
+        $validatedData = $this->run(ValidateReadingLogJob::class, [
+            'data' => $request->all()
+        ]);
+
+        $readingLog = $this->run(SaveReadingLogJob::class, [
+            'user' => $request->user(),
+            'data' => $validatedData
+        ]);
+
+        $this->run(UpdateBookProgressJob::class, [
+            'user' => $request->user(),
+            'book_id' => $validatedData['book_id'],
+            'chapter' => $validatedData['chapter']
+        ]);
+
+        $this->run(RecalculateStreakJob::class, [
+            'user' => $request->user()
+        ]);
+
+        return $readingLog;
+    }
+}
+```
+
+#### Jobs
+Jobs are small, focused units of work that perform a single responsibility. They are highly testable and reusable across different Features.
+
+```php
+// Example: SaveReadingLogJob
+namespace App\Jobs\Reading;
+
+use Lucid\Units\Job;
+use App\Models\ReadingLog;
+
+class SaveReadingLogJob extends Job
+{
+    private $user;
+    private $data;
+
+    public function __construct($user, $data)
+    {
+        $this->user = $user;
+        $this->data = $data;
+    }
+
+    public function handle()
+    {
+        return ReadingLog::create([
+            'user_id' => $this->user->id,
+            'book_id' => $this->data['book_id'],
+            'chapter' => $this->data['chapter'],
+            'passage_text' => $this->data['passage_text'],
+            'date_read' => $this->data['date_read'],
+            'notes_text' => $this->data['notes_text'] ?? null,
+        ]);
+    }
+}
+```
+
+#### Operations
+Operations orchestrate multiple Jobs when complex business logic requires coordination between multiple units of work.
+
+```php
+// Example: CompleteBookOperation
+namespace App\Operations\BookProgress;
+
+use Lucid\Units\Operation;
+use App\Jobs\BookProgress\MarkBookCompletedJob;
+use App\Jobs\Statistics\UpdateBookStatisticsJob;
+use App\Jobs\Achievements\CheckBookCompletionAchievementsJob;
+
+class CompleteBookOperation extends Operation
+{
+    private $user;
+    private $bookId;
+
+    public function __construct($user, $bookId)
+    {
+        $this->user = $user;
+        $this->bookId = $bookId;
+    }
+
+    public function handle()
+    {
+        $this->run(MarkBookCompletedJob::class, [
+            'user' => $this->user,
+            'book_id' => $this->bookId
+        ]);
+
+        $this->run(UpdateBookStatisticsJob::class, [
+            'user' => $this->user
+        ]);
+
+        $this->run(CheckBookCompletionAchievementsJob::class, [
+            'user' => $this->user,
+            'book_id' => $this->bookId
+        ]);
+    }
+}
+```
+
+#### Domains
+Domains group related functionality and provide a way to organize the codebase by business areas.
+
+```
+app/
+├── Domains/
+│   ├── Reading/
+│   │   ├── Jobs/
+│   │   ├── Features/
+│   │   ├── Operations/
+│   │   └── Models/
+│   ├── BookProgress/
+│   │   ├── Jobs/
+│   │   ├── Features/
+│   │   └── Models/
+│   ├── Statistics/
+│   │   ├── Jobs/
+│   │   ├── Features/
+│   │   └── Models/
+│   └── BibleReference/
+│       ├── Jobs/
+│       └── Services/ # Some utility services remain
+```
+
+### Controller Integration
+
+Controllers become thin layers that simply dispatch Features:
+
+```php
+namespace App\Http\Controllers;
+
+use App\Features\Reading\LogReadingFeature;
+use App\Features\Reading\GetReadingHistoryFeature;
+
+class ReadingLogController extends Controller
+{
+    public function store(LogReadingRequest $request)
+    {
+        $readingLog = $this->serve(LogReadingFeature::class, $request);
+
+        if ($request->expectsJson()) {
+            return response()->json($readingLog);
+        }
+
+        return view('partials.reading-log-success', compact('readingLog'));
+    }
+
+    public function index(Request $request)
+    {
+        $logs = $this->serve(GetReadingHistoryFeature::class, $request);
+
+        if ($request->expectsJson()) {
+            return response()->json($logs);
+        }
+
+        return view('partials.logs', compact('logs'));
+    }
+}
+```
 
 ## Data Models (Entity Relationship Diagram)
 
@@ -286,29 +487,66 @@ The UI will provide a simplified two-step structured selector for the MVP:
        ]
    ];
    ```
-   - Create a singleton service class to access this data efficiently:
+   - Create specialized Jobs to access this data efficiently:
    ```php
-   class BibleReferenceService
+   // Job for book lookups
+   class GetBibleBookJob extends Job
    {
-       protected $books;
-       
-       public function __construct()
+       private $bookId;
+       private $bookName;
+
+       public function __construct($bookId = null, $bookName = null)
        {
-           $this->books = collect(config('bible.books'));
+           $this->bookId = $bookId;
+           $this->bookName = $bookName;
        }
-       
-       public function getBookById($id)
+
+       public function handle()
        {
-           return $this->books->firstWhere('id', $id);
+           $books = collect(config('bible.books'));
+           
+           if ($this->bookId) {
+               return $books->firstWhere('id', $this->bookId);
+           }
+           
+           if ($this->bookName) {
+               return $books->firstWhere('name', $this->bookName);
+           }
+           
+           return $books;
        }
-       
-       public function getBookByName($name)
+   }
+
+   // Job for chapter validation
+   class ValidateBibleReferenceJob extends Job
+   {
+       private $bookId;
+       private $chapter;
+
+       public function __construct($bookId, $chapter)
        {
-           return $this->books->firstWhere('name', $name);
+           $this->bookId = $bookId;
+           $this->chapter = $chapter;
+       }
+
+       public function handle()
+       {
+           $book = app(GetBibleBookJob::class, ['bookId' => $this->bookId])->handle();
+           
+           if (!$book) {
+               throw new InvalidBibleReferenceException("Invalid book ID: {$this->bookId}");
+           }
+           
+           if ($this->chapter < 1 || $this->chapter > $book['chapters']) {
+               throw new InvalidBibleReferenceException("Invalid chapter {$this->chapter} for {$book['name']['en']}");
+           }
+           
+           return true;
        }
    }
    ```
    - This approach is more efficient than a database table since Bible data is fixed and unchanging
+   - Jobs are highly testable and can be reused across Features
 
 2. **Dynamic Selection Logic**:
    - When a book is selected, dynamically populate the chapter dropdown with valid chapter numbers
@@ -441,27 +679,55 @@ The Advanced Statistics feature provides motivating metrics about Bible reading 
    - Number of days with reading activity
    
    ```php
-   // Example controller method for basic statistics
-   public function getStatsSummary()
+   // Example Feature for statistics
+   class GetUserStatisticsFeature extends Feature
    {
-       $user = auth()->user();
+       public function handle(Request $request)
+       {
+           $user = $request->user();
+           
+           $currentStreak = $this->run(CalculateCurrentStreakJob::class, [
+               'user' => $user
+           ]);
+           
+           $longestStreak = $this->run(CalculateLongestStreakJob::class, [
+               'user' => $user
+           ]);
+           
+           $readingStats = $this->run(GetReadingStatsJob::class, [
+               'user' => $user
+           ]);
+           
+           $bookStats = $this->run(GetBookProgressStatsJob::class, [
+               'user' => $user
+           ]);
+           
+           return [
+               'current_streak' => $currentStreak,
+               'longest_streak' => $longestStreak,
+               'total_chapters' => $readingStats['total_chapters'],
+               'reading_days' => $readingStats['reading_days'],
+               'books_started' => $bookStats['books_started'],
+               'books_completed' => $bookStats['books_completed'],
+           ];
+       }
+   }
+   
+   // Supporting Jobs
+   class CalculateCurrentStreakJob extends Job
+   {
+       private $user;
        
-       $stats = [
-           'current_streak' => $this->streakService->getCurrentStreak($user),
-           'longest_streak' => $this->streakService->getLongestStreak($user),
-           'total_chapters' => ReadingLog::where('user_id', $user->id)->count(),
-           'books_started' => BookProgress::where('user_id', $user->id)
-                             ->where('completion_percent', '>', 0)
-                             ->count(),
-           'books_completed' => BookProgress::where('user_id', $user->id)
-                               ->where('is_completed', true)
-                               ->count(),
-           'reading_days' => ReadingLog::where('user_id', $user->id)
-                            ->distinct('date_read')
-                            ->count(),
-       ];
+       public function __construct($user)
+       {
+           $this->user = $user;
+       }
        
-       return $stats;
+       public function handle()
+       {
+           // Streak calculation logic with 1-day grace period
+           return StreakCalculator::calculateCurrentStreak($this->user);
+       }
    }
    ```
 
@@ -640,7 +906,7 @@ This approach allows the same backend logic to serve both the HTMX-based web int
 - **Reliability**: Well-established, ACID-compliant database with excellent data integrity.
 - **JSON Support**: Native JSON column types ideal for storing flexible data like chapter tracking in BookProgress table.
 - **Advanced Querying**: Powerful querying capabilities for complex streak calculations and data analytics.
-- **Managed Service**: Laravel Cloud provides automated backups, scaling, and maintenance.
+- **Managed Platform**: Laravel Cloud provides automated backups, scaling, and maintenance.
 
 ### Frontend (Web): HTMX + Alpine.js
 
@@ -748,7 +1014,7 @@ The application will support both English and French languages from the MVP laun
        'chapter_count' => 50
      ]
      ```
-   - BibleReferenceService will handle lookups in both languages
+   - Bible reference Jobs will handle lookups in both languages
 
 ## Security Considerations
 
@@ -801,19 +1067,27 @@ A comprehensive testing approach is essential to ensure the reliability and corr
 ### Test Types
 
 1. **Unit Tests**:
-   - **BibleReferenceService**: Verify correct book lookup and chapter validation
-   - **StreakService**: Test streak calculation with various date patterns
-     - Current streak with consecutive days
-     - Current streak with 1-day grace period
-     - Longest streak determination
-     - Edge cases like timezone boundaries
-   - **BookProgressService**: Test incremental updates and completion percentage calculation
+   - **Bible Reference Jobs**: 
+     - `GetBibleBookJob`: Verify correct book lookup by ID and name
+     - `ValidateBibleReferenceJob`: Test chapter validation and error handling
+   - **Streak Calculation Jobs**: Test streak calculation with various date patterns
+     - `CalculateCurrentStreakJob`: Current streak with consecutive days and 1-day grace period
+     - `CalculateLongestStreakJob`: Longest streak determination and edge cases
+     - Timezone boundary handling and date parsing
+   - **Book Progress Jobs**: 
+     - `UpdateBookProgressJob`: Test incremental chapter updates
+     - `CalculateCompletionPercentageJob`: Test percentage calculations and completion flags
 
 2. **Feature Tests**:
-   - **Authentication Flow**: Registration, login, password reset
-   - **Reading Log Creation**: Verify proper saving and validation
-   - **BookProgress Updates**: Ensure reading logs correctly update book progress
-   - **Statistics Calculation**: Verify accuracy of dashboard statistics
+   - **Authentication Features**: 
+     - `RegisterUserFeature`: Registration flow with validation
+     - `LoginUserFeature`: Login process and token generation
+   - **Reading Features**: 
+     - `LogReadingFeature`: End-to-end reading log creation with book progress updates
+     - `GetReadingHistoryFeature`: Reading log retrieval with filtering
+   - **Statistics Features**: 
+     - `GetUserStatisticsFeature`: Dashboard statistics accuracy
+     - `GetStreakDataFeature`: Streak visualization data
 
 3. **Integration Tests**:
    - **API Endpoints**: Test all JSON API endpoints for correct responses
@@ -892,7 +1166,7 @@ This testing strategy ensures that the application's core functionality remains 
 2. **Notes and Highlights**: Allow users to add personal notes and highlight verses
 3. **Social Sharing**: Share reading progress or insights with friends
 4. **Multiple Translations**: Support for different Bible translations
-5. **Audio Bible**: Integration with audio Bible services
+5. **Audio Bible**: Integration with audio Bible APIs via dedicated Jobs
 6. **Offline Mode**: Full offline functionality for mobile apps
 
 ### Advanced Reading Goals System
@@ -968,11 +1242,11 @@ A comprehensive goal-setting system will empower users to create and track perso
    - Goal adjustment interface based on past performance
    - Notification preferences for goal reminders
 
-3. **Backend Services**:
-   - Weekly goal evaluation service
-   - Achievement calculation engine
-   - Recommendation system for goal adjustments
-   - Notification scheduler for progress updates
+3. **Backend Jobs & Features**:
+- `EvaluateWeeklyGoalsJob`: Weekly goal evaluation logic
+- `CalculateAchievementsJob`: Achievement calculation engine
+- `GenerateGoalRecommendationsFeature`: Recommendation system for goal adjustments
+- `ScheduleProgressNotificationsJob`: Notification scheduler for progress updates
 
 #### Benefits for Bible Reading Habit
 
@@ -1007,9 +1281,9 @@ A gamification-based micro-rewards system will enhance user engagement and habit
 #### Implementation Approach
 
 1. **Technical Architecture**:
-   - Achievement tracking service to monitor user activity
-   - Event-driven system to award achievements in real-time
-   - Notification system to alert users of new achievements
+   - `TrackUserActivityJob`: Monitor user activity for achievements
+   - `AwardAchievementFeature`: Event-driven system to award achievements in real-time
+   - `SendAchievementNotificationJob`: Alert users of new achievements
 
 2. **Data Structure**:
    ```
@@ -1068,7 +1342,7 @@ A smart notification system will help users maintain their reading habit through
 1. **Technical Architecture**:
    - Background job system for scheduling reminders
    - User preference storage for notification settings
-   - Analytics service to determine optimal timing
+   - `AnalyzeOptimalTimingJob`: Determine optimal timing for reminders
    - Multi-channel delivery (push notifications, email, in-app)
 
 2. **Data Requirements**:
@@ -1134,7 +1408,7 @@ For local development, SQLite is used for its simplicity and zero-configuration 
 
 #### Production (Laravel Cloud)
 
-For production, the application uses Laravel Cloud's managed database service:
+For production, the application uses Laravel Cloud's managed database platform:
 
 - **Type**: Serverless PostgreSQL 17
 - **Hosting**: Laravel Cloud (powered by Neon)
@@ -1214,7 +1488,7 @@ As user growth occurs, implementing a robust caching strategy will be essential 
    - Supports complex data structures needed for statistics
    - Enables atomic operations for counters and leaderboards
    - Provides pub/sub capabilities for cache invalidation
-   - Managed service with automatic scaling and monitoring
+   - Managed platform with automatic scaling and monitoring
 
 2. **Laravel Cache**:
    - Abstraction layer for different cache backends
