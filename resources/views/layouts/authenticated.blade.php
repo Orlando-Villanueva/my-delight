@@ -30,7 +30,7 @@
             <!-- Desktop Sidebar Navigation -->
             <aside class="hidden lg:flex lg:flex-col w-64 bg-white dark:bg-gray-800 border-r border-neutral-300 dark:border-gray-700">
                 <!-- Logo Section -->
-                <div class="p-6 border-b border-neutral-300 dark:border-gray-700">
+                <div class="px-6 py-4 border-b border-neutral-300 dark:border-gray-700">
                     <a href="{{ route('dashboard') }}" class="text-xl font-bold text-primary dark:text-primary hover:opacity-90 transition">
                         Bible Habit Builder
                     </a>

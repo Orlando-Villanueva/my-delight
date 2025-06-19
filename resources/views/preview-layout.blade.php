@@ -1,17 +1,17 @@
 @extends('layouts.authenticated')
 
-@section('page-title', 'Layout Preview')
-@section('page-subtitle', 'Testing the responsive layout with sample content')
+@section('page-title', 'Bible Habit Builder Demo')
+@section('page-subtitle', 'Experience your personalized Bible reading journey')
 
 @section('content')
     <div class="space-y-6">
         <!-- Header Section -->
         <div class="bg-white dark:bg-gray-800 rounded-lg shadow-sm p-6 border border-neutral-mid dark:border-gray-700">
             <h1 class="text-2xl font-bold text-neutral-dark dark:text-gray-100 mb-2">
-                🎨 Responsive Layout Preview
+                🎨 Bible Habit Builder Demo
             </h1>
             <p class="text-gray-600 dark:text-gray-400">
-                This preview shows the authenticated layout with sample content. Test the responsiveness by resizing your browser window.
+                Welcome to your personal Bible reading journey! This demo shows how your daily reading habits create lasting spiritual growth.
             </p>
         </div>
 
@@ -22,9 +22,9 @@
                     <h2 class="text-lg font-semibold mb-1">Current Streak</h2>
                     <div class="flex items-center space-x-3">
                         <span class="text-4xl font-bold">🔥</span>
-                        <span class="text-3xl font-bold">7 days</span>
+                        <span class="text-3xl font-bold">12 days</span>
                     </div>
-                    <p class="text-blue-100 text-sm mt-1">Longest streak: 14 days</p>
+                    <p class="text-blue-100 text-sm mt-1">Longest streak: 28 days</p>
                 </div>
                 <div class="text-right">
                     <p class="text-blue-100 text-sm">Keep it up!</p>
@@ -36,7 +36,7 @@
         <!-- Sample Calendar Grid -->
         <div class="bg-white dark:bg-gray-800 rounded-lg shadow-sm p-6 border border-neutral-mid dark:border-gray-700">
             <h3 class="text-lg font-semibold text-neutral-dark dark:text-gray-100 mb-4">
-                📅 Reading Calendar (Sample)
+                📅 June 2025 Reading Calendar
             </h3>
             <div class="grid grid-cols-7 gap-1 text-center text-xs">
                 <!-- Day headers -->
@@ -48,15 +48,27 @@
                 <div class="p-2 font-medium text-gray-500">F</div>
                 <div class="p-2 font-medium text-gray-500">S</div>
                 
-                <!-- Sample calendar days -->
-                @for($i = 1; $i <= 35; $i++)
+                <!-- June 2025 calendar (June 1st is a Sunday) -->
+                @php
+                    $completedDays = [1, 2, 3, 4, 6, 7, 8, 9, 10, 11, 13, 14, 15, 16, 17, 18]; // Orlando's reading pattern
+                @endphp
+                @for($i = 1; $i <= 30; $i++)
                     @php
-                        $hasReading = $i <= 20 && ($i % 3 !== 0); // Sample pattern
-                        $dayNumber = $i <= 20 ? $i : '';
+                        $hasReading = in_array($i, $completedDays);
+                        $isToday = $i === 18;
+                        $isFuture = $i > 18;
                     @endphp
-                    <div class="aspect-square p-1 text-xs rounded {{ $hasReading ? 'bg-secondary text-white' : 'bg-gray-100 dark:bg-gray-700 text-gray-400' }}">
-                        {{ $dayNumber }}
+                    <div class="aspect-square p-1 text-xs rounded flex items-center justify-center
+                        {{ $isToday ? 'bg-primary text-white ring-2 ring-primary ring-offset-1' : 
+                           ($hasReading ? 'bg-secondary text-white' : 
+                           ($isFuture ? 'bg-gray-50 dark:bg-gray-800 text-gray-300' : 'bg-gray-100 dark:bg-gray-700 text-gray-400')) }}">
+                        {{ $i }}
                     </div>
+                @endfor
+                
+                <!-- Fill remaining grid cells for layout -->
+                @for($i = 31; $i <= 35; $i++)
+                    <div class="aspect-square p-1 text-xs rounded bg-gray-50 dark:bg-gray-800"></div>
                 @endfor
             </div>
         </div>
@@ -65,32 +77,32 @@
         <div class="grid grid-cols-1 md:grid-cols-3 gap-4">
             <div class="bg-white dark:bg-gray-800 rounded-lg shadow-sm p-4 border border-neutral-mid dark:border-gray-700">
                 <h4 class="text-sm font-medium text-gray-500 dark:text-gray-400">Total Chapters</h4>
-                <p class="text-2xl font-bold text-neutral-dark dark:text-gray-100 mt-1">127</p>
+                <p class="text-2xl font-bold text-neutral-dark dark:text-gray-100 mt-1">89</p>
             </div>
             <div class="bg-white dark:bg-gray-800 rounded-lg shadow-sm p-4 border border-neutral-mid dark:border-gray-700">
                 <h4 class="text-sm font-medium text-gray-500 dark:text-gray-400">Books Started</h4>
-                <p class="text-2xl font-bold text-neutral-dark dark:text-gray-100 mt-1">12</p>
+                <p class="text-2xl font-bold text-neutral-dark dark:text-gray-100 mt-1">8</p>
             </div>
             <div class="bg-white dark:bg-gray-800 rounded-lg shadow-sm p-4 border border-neutral-mid dark:border-gray-700">
                 <h4 class="text-sm font-medium text-gray-500 dark:text-gray-400">Books Completed</h4>
-                <p class="text-2xl font-bold text-neutral-dark dark:text-gray-100 mt-1">3</p>
+                <p class="text-2xl font-bold text-neutral-dark dark:text-gray-100 mt-1">5</p>
             </div>
         </div>
 
         <!-- Navigation Test Section -->
         <div class="bg-white dark:bg-gray-800 rounded-lg shadow-sm p-6 border border-neutral-mid dark:border-gray-700">
             <h3 class="text-lg font-semibold text-neutral-dark dark:text-gray-100 mb-4">
-                🧭 Navigation Test
+                🧭 Layout Features
             </h3>
             <div class="space-y-3">
                 <p class="text-gray-600 dark:text-gray-400">
-                    <strong>Mobile:</strong> Check the bottom navigation (3 tabs) and FAB button
+                    <strong>Mobile View:</strong> Optimized bottom navigation with quick access to Dashboard, History, and Profile
                 </p>
                 <p class="text-gray-600 dark:text-gray-400">
-                    <strong>Desktop:</strong> Check the left sidebar navigation and 70%/30% layout split
+                    <strong>Desktop View:</strong> Elegant sidebar layout with main content (70%) and activity panel (30%)
                 </p>
                 <p class="text-gray-600 dark:text-gray-400">
-                    <strong>Responsive:</strong> Resize window to see layout changes at 1024px breakpoint
+                    <strong>Responsive Design:</strong> Seamlessly adapts to any screen size for consistent user experience
                 </p>
             </div>
         </div>
@@ -98,24 +110,35 @@
         <!-- Sample Book Grid -->
         <div class="bg-white dark:bg-gray-800 rounded-lg shadow-sm p-6 border border-neutral-mid dark:border-gray-700">
             <h3 class="text-lg font-semibold text-neutral-dark dark:text-gray-100 mb-4">
-                📚 Bible Books Progress (Sample)
+                📚 Current Reading Progress
             </h3>
             <div class="grid grid-cols-2 md:grid-cols-4 lg:grid-cols-6 gap-2 text-xs">
                 @php
-                    $sampleBooks = ['Genesis', 'Exodus', 'Leviticus', 'Numbers', 'Deuteronomy', 'Joshua', 'Judges', 'Ruth', 'Matthew', 'Mark', 'Luke', 'John'];
-                    $statuses = ['completed', 'in-progress', 'not-started'];
+                    $readingProgress = [
+                        ['book' => 'Genesis', 'status' => 'completed'],
+                        ['book' => 'Exodus', 'status' => 'completed'],
+                        ['book' => 'Matthew', 'status' => 'completed'],
+                        ['book' => 'Mark', 'status' => 'completed'],
+                        ['book' => 'Luke', 'status' => 'completed'],
+                        ['book' => 'John', 'status' => 'in-progress'],
+                        ['book' => 'Acts', 'status' => 'in-progress'],
+                        ['book' => 'Romans', 'status' => 'in-progress'],
+                        ['book' => 'Psalms', 'status' => 'not-started'],
+                        ['book' => 'Proverbs', 'status' => 'not-started'],
+                        ['book' => 'James', 'status' => 'not-started'],
+                        ['book' => 'Revelation', 'status' => 'not-started']
+                    ];
                 @endphp
-                @foreach($sampleBooks as $index => $book)
+                @foreach($readingProgress as $book)
                     @php
-                        $status = $statuses[$index % 3];
-                        $bgColor = match($status) {
+                        $bgColor = match($book['status']) {
                             'completed' => 'bg-secondary text-white',
                             'in-progress' => 'bg-primary text-white',
                             'not-started' => 'bg-gray-200 dark:bg-gray-600 text-gray-600 dark:text-gray-300'
                         };
                     @endphp
                     <div class="p-2 rounded text-center {{ $bgColor }}">
-                        {{ $book }}
+                        {{ $book['book'] }}
                     </div>
                 @endforeach
             </div>
@@ -131,15 +154,15 @@
             <div class="space-y-2 text-sm">
                 <div class="flex justify-between">
                     <span class="text-gray-600 dark:text-gray-400">This Week:</span>
-                    <span class="font-medium">5/7 days</span>
+                    <span class="font-medium">6/7 days</span>
                 </div>
                 <div class="flex justify-between">
                     <span class="text-gray-600 dark:text-gray-400">This Month:</span>
-                    <span class="font-medium">18/30 days</span>
+                    <span class="font-medium">16/18 days</span>
                 </div>
                 <div class="flex justify-between">
-                    <span class="text-gray-600 dark:text-gray-400">Reading Time:</span>
-                    <span class="font-medium">~15 min</span>
+                    <span class="text-gray-600 dark:text-gray-400">Avg. Reading Time:</span>
+                    <span class="font-medium">22 min</span>
                 </div>
             </div>
         </div>
@@ -149,26 +172,27 @@
             <h4 class="font-semibold text-neutral-dark dark:text-gray-100 mb-3">Recent Readings</h4>
             <div class="space-y-3 text-sm">
                 <div class="border-l-2 border-primary pl-3">
-                    <p class="font-medium">John 3</p>
-                    <p class="text-xs text-gray-500">Today, 8:30 AM</p>
+                    <p class="font-medium">John 14:1-31</p>
+                    <p class="text-xs text-gray-500">Today, 7:15 AM</p>
                 </div>
                 <div class="border-l-2 border-secondary pl-3">
-                    <p class="font-medium">John 2</p>
-                    <p class="text-xs text-gray-500">Yesterday, 7:45 AM</p>
+                    <p class="font-medium">John 13:1-38</p>
+                    <p class="text-xs text-gray-500">Yesterday, 7:30 AM</p>
                 </div>
                 <div class="border-l-2 border-secondary pl-3">
-                    <p class="font-medium">John 1</p>
-                    <p class="text-xs text-gray-500">2 days ago, 9:15 AM</p>
+                    <p class="font-medium">John 12:12-50</p>
+                    <p class="text-xs text-gray-500">June 16, 6:45 AM</p>
                 </div>
             </div>
         </div>
 
-        <!-- Sidebar Layout Info -->
+        <!-- Motivational Quote -->
         <div class="bg-accent/10 rounded-lg p-4 border border-accent/20">
-            <h4 class="font-semibold text-accent mb-2">Desktop Sidebar (30%)</h4>
-            <p class="text-xs text-gray-600 dark:text-gray-400">
-                This sidebar is only visible on desktop (lg+ breakpoint). On mobile, this content would be integrated into the main content area.
-            </p>
+            <h4 class="font-semibold text-accent mb-2">Daily Encouragement</h4>
+            <blockquote class="text-xs text-gray-600 dark:text-gray-400 italic">
+                "Your word is a lamp for my feet, a light on my path."
+            </blockquote>
+            <p class="text-xs text-accent mt-1">— Psalm 119:105</p>
         </div>
     </div>
 @endsection 
