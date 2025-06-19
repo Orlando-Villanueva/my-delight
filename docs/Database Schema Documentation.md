@@ -69,7 +69,7 @@ CREATE TABLE reading_logs (
 ```
 
 **Field Details**:
-- `book_id`: References Bible book (1-66, maps to config/bible.php)
+- `book_id`: References Bible book (1-66, maps to config/bible.php with translations in lang/ files)
 - `chapter`: Chapter number within the book
 - `passage_text`: Formatted reference (e.g., "Genesis 1", "John 3")
 - `date_read`: Date when the reading occurred
@@ -271,7 +271,7 @@ return new class extends Migration
    - Constraint: `unique_user_book_chapter_date`
 
 2. **Valid Book References**: Book IDs must be 1-66
-   - Enforced by application validation (references config/bible.php)
+   - Enforced by application validation (references config/bible.php with translations)
 
 3. **Valid Chapter Numbers**: Chapters must be valid for the book
    - Enforced by application validation
@@ -302,7 +302,9 @@ return new class extends Migration
 
 ### Initial Data Setup
 
-1. **Bible Reference Data**: Stored in config/bible.php (not database)
+1. **Bible Reference Data**: 
+   - Configuration: `config/bible.php` (book structure, chapter counts)
+   - Translations: `lang/{locale}/bible.php` (localized book names)
 2. **User Seeding**: Factory-generated test users for development
 3. **Sample Data**: Realistic reading logs for testing
 

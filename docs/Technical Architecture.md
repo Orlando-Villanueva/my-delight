@@ -423,25 +423,27 @@ The UI will provide a simplified two-step structured selector for the MVP:
    - Maintain a static configuration file with data for all 66 Bible books
    - Implementation as a PHP config file for optimal performance:
    ```php
-   // config/bible.php
+   // config/bible.php - Configuration only (structural data)
    return [
        'books' => [
-           [
+           1 => [
                'id' => 1,
-               'name' => 'Genesis',
-               'abbreviation' => 'GEN',
-               'testament' => 'old',
-               'chapter_count' => 50
+               'chapters' => 50,
+               'testament' => 'old'
            ],
-           [
+           2 => [
                'id' => 2,
-               'name' => 'Exodus',
-               'abbreviation' => 'EXO',
-               'testament' => 'old',
-               'chapter_count' => 40
+               'chapters' => 40,
+               'testament' => 'old'
            ],
            // ... remaining 64 books
-       ]
+       ],
+       'testaments' => [
+           'old' => ['range' => [1, 39]],
+           'new' => ['range' => [40, 66]]
+       ],
+       'default_locale' => 'en',
+       'supported_locales' => ['en', 'fr']
    ];
    ```
    - Create specialized services to access this data efficiently:
@@ -449,39 +451,85 @@ The UI will provide a simplified two-step structured selector for the MVP:
    // Service for Bible book operations
    class BibleReferenceService
    {
-       public function getBibleBook($bookId = null, $bookName = null)
+       public function getBibleBook(int|string $identifier, ?string $locale = null): ?array
        {
-           $books = collect(config('bible.books'));
+           $locale = $locale ?? 'en';
            
-           if ($bookId) {
-               return $books->firstWhere('id', $bookId);
+           // Get book by ID or name with proper translation support
+           if (is_numeric($identifier)) {
+               $bookId = (int) $identifier;
+               if (isset(config('bible.books')[$bookId])) {
+                   $book = config('bible.books')[$bookId];
+                   $book['name'] = __("bible.books.{$bookId}", [], $locale);
+                   return $book;
+               }
            }
            
-           if ($bookName) {
-               return $books->firstWhere('name', $bookName);
+           // Search by localized name
+           foreach (config('bible.books') as $bookId => $book) {
+               $translatedName = __("bible.books.{$bookId}", [], $locale);
+               if (strtolower($translatedName) === strtolower($identifier)) {
+                   $book['name'] = $translatedName;
+                   return $book;
+               }
            }
            
-           return $books;
+           return null;
        }
 
-       public function validateBibleReference($bookId, $chapter)
+       public function validateBibleReference(int $bookId, int $chapter): bool
        {
-           $book = $this->getBibleBook($bookId);
-           
-           if (!$book) {
-               throw new InvalidBibleReferenceException("Invalid book ID: {$bookId}");
+           if (!$this->validateBookId($bookId)) {
+               return false;
            }
            
-           if ($chapter < 1 || $chapter > $book['chapters']) {
-               throw new InvalidBibleReferenceException("Invalid chapter {$chapter} for {$book['name']['en']}");
-           }
-           
-           return true;
+           return $this->validateChapterNumber($bookId, $chapter);
+       }
+       
+       public function formatBibleReference(int $bookId, int $chapter, ?string $locale = null): string
+       {
+           $bookName = __("bible.books.{$bookId}", [], $locale ?? 'en');
+           return "{$bookName} {$chapter}";
        }
    }
    ```
    - This approach is more efficient than a database table since Bible data is fixed and unchanging
    - Services are highly testable and can be reused across controllers
+
+   **Translation System Architecture**:
+   ```php
+   // lang/en/bible.php - English translations
+   return [
+       'books' => [
+           1 => 'Genesis',
+           2 => 'Exodus',
+           // ... all 66 books
+       ],
+       'testaments' => [
+           'old' => 'Old Testament',
+           'new' => 'New Testament'
+       ]
+   ];
+   
+   // lang/fr/bible.php - French translations
+   return [
+       'books' => [
+           1 => 'Genèse',
+           2 => 'Exode',
+           // ... all 66 books
+       ],
+       'testaments' => [
+           'old' => 'Ancien Testament',
+           'new' => 'Nouveau Testament'
+       ]
+   ];
+   ```
+   
+   **Separation of Concerns**:
+   - Configuration data (`config/bible.php`): Book structure, chapter counts, testament organization
+   - Translation data (`lang/{locale}/bible.php`): Localized book names and labels
+   - Business logic (`BibleReferenceService`): Book operations, validation, formatting
+   - Fallback system: Service works in both Laravel and standalone contexts
 
 2. **Dynamic Selection Logic**:
    - When a book is selected, dynamically populate the chapter dropdown with valid chapter numbers

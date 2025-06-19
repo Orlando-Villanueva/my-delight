@@ -170,7 +170,9 @@ Laravel Herd is a fast, native Laravel development environment for macOS and Win
 
 - **Redis Setup**: Ensure Redis server is running for caching functionality
 - **Language Settings**: Default language can be configured in `config/app.php`
-- **Bible Reference Data**: Configuration files are stored in `config/bible.php`
+- **Bible Reference Data**: 
+  - Configuration: `config/bible.php` (book structure, chapter counts)
+  - Translations: `lang/en/bible.php`, `lang/fr/bible.php` (localized book names)
 
 ## Testing
 

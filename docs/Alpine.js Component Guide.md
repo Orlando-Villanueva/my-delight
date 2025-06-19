@@ -104,7 +104,8 @@ function readingLogForm() {
         availableChapters: 0,
         
         // Bible book chapter counts (from server config)
-        bookChapters: @json(config('bible.books')),
+                        bookChapters: @json(config('bible.books')),
+                bookNames: @json(__('bible.books')),
         
         updateChapters() {
             if (this.form.book_id) {
