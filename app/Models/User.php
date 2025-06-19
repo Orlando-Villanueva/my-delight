@@ -4,6 +4,7 @@ namespace App\Models;
 
 // use Illuminate\Contracts\Auth\MustVerifyEmail;
 use Illuminate\Database\Eloquent\Factories\HasFactory;
+use Illuminate\Database\Eloquent\Relations\HasMany;
 use Illuminate\Foundation\Auth\User as Authenticatable;
 use Illuminate\Notifications\Notifiable;
 
@@ -44,5 +45,45 @@ class User extends Authenticatable
             'email_verified_at' => 'datetime',
             'password' => 'hashed',
         ];
+    }
+
+    /**
+     * Get the reading logs for the user.
+     */
+    public function readingLogs(): HasMany
+    {
+        return $this->hasMany(ReadingLog::class);
+    }
+
+    /**
+     * Get the book progress records for the user.
+     */
+    public function bookProgress(): HasMany
+    {
+        return $this->hasMany(BookProgress::class);
+    }
+
+    /**
+     * Get reading logs ordered by date (most recent first).
+     */
+    public function recentReadingLogs(): HasMany
+    {
+        return $this->readingLogs()->recentFirst();
+    }
+
+    /**
+     * Get completed books for the user.
+     */
+    public function completedBooks(): HasMany
+    {
+        return $this->bookProgress()->completed();
+    }
+
+    /**
+     * Get books in progress for the user.
+     */
+    public function booksInProgress(): HasMany
+    {
+        return $this->bookProgress()->inProgress();
     }
 }
