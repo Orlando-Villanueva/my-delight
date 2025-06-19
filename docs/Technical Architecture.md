@@ -73,192 +73,149 @@
 For detailed component relationships, data flow diagrams, and integration patterns, see:
 - [Application Architecture Diagram](./Application%20Architecture%20Diagram.md)
 
-## LUCID Architecture Implementation
+## Service Layer Architecture Implementation
 
-This project implements the **LUCID Architecture** pattern, which provides clear separation of concerns and highly testable code organization. LUCID stands for:
+This project implements the **Service Layer Pattern**, which provides clear separation of concerns, highly testable code organization, and follows modern Laravel best practices. The Service Layer acts as an intermediary between controllers and models, encapsulating business logic and promoting code reusability.
 
-- **L**ucid (the overall architecture)
-- **U**nits (Jobs - single units of work)
-- **C**ontrol (Operations - orchestrate multiple Jobs)
-- **I**nterface (Features - expose business logic to Controllers)
-- **D**omain (group related functionality)
+### Service Layer Benefits
 
-### LUCID Layer Responsibilities
+- **Separation of Concerns**: Business logic is separated from presentation and data access layers
+- **Reusability**: Services can be reused across different controllers, commands, and jobs
+- **Testability**: Services can be easily unit tested in isolation
+- **Maintainability**: Clean, organized code structure that's easy to modify and extend
+- **Thin Controllers**: Controllers remain focused on HTTP concerns only
 
-#### Features
-Features are the interface layer between Controllers and the business logic. They represent high-level business use cases and coordinate the execution of Jobs and Operations.
-
-```php
-// Example: LogReadingFeature
-namespace App\Features\Reading;
-
-use Lucid\Units\Feature;
-use App\Jobs\Reading\ValidateReadingLogJob;
-use App\Jobs\Reading\SaveReadingLogJob;
-use App\Jobs\BookProgress\UpdateBookProgressJob;
-use App\Jobs\Statistics\RecalculateStreakJob;
-
-class LogReadingFeature extends Feature
-{
-    public function handle(LogReadingRequest $request)
-    {
-        $validatedData = $this->run(ValidateReadingLogJob::class, [
-            'data' => $request->all()
-        ]);
-
-        $readingLog = $this->run(SaveReadingLogJob::class, [
-            'user' => $request->user(),
-            'data' => $validatedData
-        ]);
-
-        $this->run(UpdateBookProgressJob::class, [
-            'user' => $request->user(),
-            'book_id' => $validatedData['book_id'],
-            'chapter' => $validatedData['chapter']
-        ]);
-
-        $this->run(RecalculateStreakJob::class, [
-            'user' => $request->user()
-        ]);
-
-        return $readingLog;
-    }
-}
-```
-
-#### Jobs
-Jobs are small, focused units of work that perform a single responsibility. They are highly testable and reusable across different Features.
-
-```php
-// Example: SaveReadingLogJob
-namespace App\Jobs\Reading;
-
-use Lucid\Units\Job;
-use App\Models\ReadingLog;
-
-class SaveReadingLogJob extends Job
-{
-    private $user;
-    private $data;
-
-    public function __construct($user, $data)
-    {
-        $this->user = $user;
-        $this->data = $data;
-    }
-
-    public function handle()
-    {
-        return ReadingLog::create([
-            'user_id' => $this->user->id,
-            'book_id' => $this->data['book_id'],
-            'chapter' => $this->data['chapter'],
-            'passage_text' => $this->data['passage_text'],
-            'date_read' => $this->data['date_read'],
-            'notes_text' => $this->data['notes_text'] ?? null,
-        ]);
-    }
-}
-```
-
-#### Operations
-Operations orchestrate multiple Jobs when complex business logic requires coordination between multiple units of work.
-
-```php
-// Example: CompleteBookOperation
-namespace App\Operations\BookProgress;
-
-use Lucid\Units\Operation;
-use App\Jobs\BookProgress\MarkBookCompletedJob;
-use App\Jobs\Statistics\UpdateBookStatisticsJob;
-use App\Jobs\Achievements\CheckBookCompletionAchievementsJob;
-
-class CompleteBookOperation extends Operation
-{
-    private $user;
-    private $bookId;
-
-    public function __construct($user, $bookId)
-    {
-        $this->user = $user;
-        $this->bookId = $bookId;
-    }
-
-    public function handle()
-    {
-        $this->run(MarkBookCompletedJob::class, [
-            'user' => $this->user,
-            'book_id' => $this->bookId
-        ]);
-
-        $this->run(UpdateBookStatisticsJob::class, [
-            'user' => $this->user
-        ]);
-
-        $this->run(CheckBookCompletionAchievementsJob::class, [
-            'user' => $this->user,
-            'book_id' => $this->bookId
-        ]);
-    }
-}
-```
-
-#### Domains
-Domains group related functionality and provide a way to organize the codebase by business areas.
+### Service Layer Structure
 
 ```
 app/
-├── Domains/
-│   ├── Reading/
-│   │   ├── Jobs/
-│   │   ├── Features/
-│   │   ├── Operations/
-│   │   └── Models/
-│   ├── BookProgress/
-│   │   ├── Jobs/
-│   │   ├── Features/
-│   │   └── Models/
-│   ├── Statistics/
-│   │   ├── Jobs/
-│   │   ├── Features/
-│   │   └── Models/
-│   └── BibleReference/
-│       ├── Jobs/
-│       └── Services/ # Some utility services remain
+├── Services/
+│   ├── ReadingLogService.php      # Reading log business logic
+│   ├── UserStatisticsService.php  # Dashboard and statistics
+│   └── BookProgressService.php    # Book progress tracking
+├── Models/                        # Eloquent models
+├── Http/
+│   ├── Controllers/              # Thin controllers
+│   └── Requests/                 # Form validation
+└── Repositories/                 # Data access (optional)
+```
+
+### Service Layer Implementation
+
+#### ReadingLogService
+Handles all business logic related to Bible reading logs:
+
+```php
+namespace App\Services;
+
+use App\Models\User;
+use App\Models\ReadingLog;
+
+class ReadingLogService
+{
+    /**
+     * Log a new Bible reading entry for a user.
+     */
+    public function logReading(User $user, array $data): ReadingLog
+    {
+        // Create the reading log
+        $readingLog = $user->readingLogs()->create([
+            'book_id' => $data['book_id'],
+            'chapter' => $data['chapter'],
+            'passage_text' => $data['passage_text'],
+            'date_read' => $data['date_read'] ?? now()->toDateString(),
+            'notes_text' => $data['notes_text'] ?? null,
+        ]);
+
+        // Update book progress
+        $this->updateBookProgress($user, $data['book_id'], $data['chapter']);
+
+        return $readingLog;
+    }
+
+    /**
+     * Calculate the current reading streak for a user.
+     */
+    public function calculateCurrentStreak(User $user): int
+    {
+        // Streak calculation logic with 1-day grace period
+        // Implementation details in actual service class
+    }
+}
+```
+
+#### UserStatisticsService
+Handles dashboard statistics and user progress calculations:
+
+```php
+namespace App\Services;
+
+class UserStatisticsService
+{
+    public function __construct(
+        private ReadingLogService $readingLogService
+    ) {}
+
+    /**
+     * Get comprehensive dashboard statistics for a user.
+     */
+    public function getDashboardStatistics(User $user): array
+    {
+        return [
+            'streaks' => $this->getStreakStatistics($user),
+            'reading_summary' => $this->getReadingSummary($user),
+            'book_progress' => $this->getBookProgressSummary($user),
+            'recent_activity' => $this->getRecentActivity($user),
+        ];
+    }
+
+    /**
+     * Get calendar data for visualization (GitHub-style contribution graph).
+     */
+    public function getCalendarData(User $user, ?string $year = null): array
+    {
+        // Calendar visualization logic
+    }
+}
 ```
 
 ### Controller Integration
 
-Controllers become thin layers that simply dispatch Features:
+Controllers remain thin and delegate business logic to services:
 
 ```php
 namespace App\Http\Controllers;
 
-use App\Features\Reading\LogReadingFeature;
-use App\Features\Reading\GetReadingHistoryFeature;
+use App\Services\ReadingLogService;
+use App\Services\UserStatisticsService;
 
 class ReadingLogController extends Controller
 {
-    public function store(LogReadingRequest $request)
+    public function __construct(
+        private ReadingLogService $readingLogService,
+        private UserStatisticsService $statisticsService
+    ) {}
+
+    public function store(StoreReadingLogRequest $request)
     {
-        $readingLog = $this->serve(LogReadingFeature::class, $request);
+        $readingLog = $this->readingLogService->logReading(
+            $request->user(),
+            $request->validated()
+        );
 
         if ($request->expectsJson()) {
             return response()->json($readingLog);
         }
 
-        return view('partials.reading-log-success', compact('readingLog'));
+        return redirect()->back()->with('success', 'Reading logged successfully!');
     }
 
-    public function index(Request $request)
+    public function dashboard(Request $request)
     {
-        $logs = $this->serve(GetReadingHistoryFeature::class, $request);
+        $statistics = $this->statisticsService->getDashboardStatistics($request->user());
+        $calendarData = $this->statisticsService->getCalendarData($request->user());
 
-        if ($request->expectsJson()) {
-            return response()->json($logs);
-        }
-
-        return view('partials.logs', compact('logs'));
+        return view('dashboard', compact('statistics', 'calendarData'));
     }
 }
 ```
@@ -494,7 +451,7 @@ The UI will provide a simplified two-step structured selector for the MVP:
    {
        private $bookId;
        private $bookName;
-
+       
        public function __construct($bookId = null, $bookName = null)
        {
            $this->bookId = $bookId;
@@ -511,8 +468,8 @@ The UI will provide a simplified two-step structured selector for the MVP:
            
            if ($this->bookName) {
                return $books->firstWhere('name', $this->bookName);
-           }
-           
+       }
+       
            return $books;
        }
    }
@@ -683,9 +640,9 @@ The Advanced Statistics feature provides motivating metrics about Bible reading 
    class GetUserStatisticsFeature extends Feature
    {
        public function handle(Request $request)
-       {
+   {
            $user = $request->user();
-           
+       
            $currentStreak = $this->run(CalculateCurrentStreakJob::class, [
                'user' => $user
            ]);
