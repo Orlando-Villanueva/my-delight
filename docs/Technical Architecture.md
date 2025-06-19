@@ -1032,42 +1032,33 @@ The application will support both English and French languages from the MVP laun
 
 ## Testing Strategy
 
-A comprehensive testing approach is essential to ensure the reliability and correctness of the Bible Reading Habit Builder application, particularly for critical features like streak calculation and book completion tracking.
+A pragmatic testing approach focused on essential functionality for the Bible Reading Habit Builder MVP, emphasizing core user workflows and business-critical validations.
 
-### Test Types
+### MVP Testing Philosophy
 
-1. **Unit Tests**:
-   - **Bible Reference Services**: 
-     - `GetBibleBookJob`: Verify correct book lookup by ID and name
-     - `ValidateBibleReferenceJob`: Test chapter validation and error handling
-   - **Streak Calculation Services**: Test streak calculation with various date patterns
-     - `CalculateCurrentStreakJob`: Current streak with consecutive days and 1-day grace period
-     - `CalculateLongestStreakJob`: Longest streak determination and edge cases
-     - Timezone boundary handling and date parsing
-   - **Book Progress Services**: 
-     - `UpdateBookProgressJob`: Test incremental chapter updates
-     - `CalculateCompletionPercentageJob`: Test percentage calculations and completion flags
+The testing strategy prioritizes **essential verification over comprehensive coverage** for the initial MVP release. This approach focuses developer time on shipping core functionality while ensuring reliability of critical features like streak calculation and book completion tracking.
 
-2. **Feature Tests**:
-   - **Authentication Features**: 
-     - `AuthenticationService`: Registration and login flow with validation
-     - `UserService`: User management and profile operations
-   - **Reading Features**: 
-     - `ReadingLogService`: End-to-end reading log creation with book progress updates
-     - `ReadingLogService`: Reading log retrieval with filtering and history management
-   - **Statistics Features**: 
-     - `UserStatisticsService`: Dashboard statistics accuracy
-     - `UserStatisticsService`: Streak visualization data
+### Core Testing Areas
 
-3. **Integration Tests**:
-   - **API Endpoints**: Test all JSON API endpoints for correct responses
-   - **HTMX Interactions**: Test partial page updates and form submissions
-   - **Database Interactions**: Verify correct data flow between related tables
+1. **Database Compatibility Verification** (2-3 hours):
+   - **Migration Compatibility**: Ensure migrations run successfully on both SQLite (local) and PostgreSQL (production)
+   - **Essential Model Validations**: Verify core business rules (book_id ranges, email uniqueness, completion percentages)
+   - **Critical Constraints**: Test foreign keys, unique constraints, and JSON column functionality
+   - **Basic Integration**: Confirm core user workflow (register → log reading → view progress) works on both databases
 
-4. **Performance Tests**:
-   - **Book Completion Queries**: Benchmark performance of denormalized table approach
-   - **Statistics Dashboard**: Measure load time with increasing numbers of reading logs
-   - **Streak Calculation**: Verify performance with large reading history
+2. **Unit Tests** (Essential Only):
+   - **Streak Calculation Logic**: Test current streak calculation with 1-day grace period
+   - **Bible Reference Validation**: Test book_id (1-66) and chapter number validation
+   - **Book Progress Updates**: Test completion percentage calculation when chapters are logged
+
+3. **Feature Tests** (Core User Journey):
+   - **Authentication Flow**: Registration and login functionality
+   - **Reading Log Creation**: End-to-end reading log submission with book progress updates
+   - **Dashboard Statistics**: Basic statistics display and calculation accuracy
+
+4. **Browser Tests** (Critical Path Only):
+   - **HTMX Interactions**: Form submissions and partial page updates
+   - **Mobile Responsiveness**: Core functionality on mobile devices
 
 ### Testing Tools
 
@@ -1114,19 +1105,26 @@ A comprehensive testing approach is essential to ensure the reliability and corr
 
 ### Testing Priorities
 
-1. **Critical Path Testing**:
-   - Streak calculation logic
-   - Book progress tracking
-   - Reading log creation
-   - Authentication flows
+1. **Critical Path Testing** (MVP Focus):
+   - Core user workflow: register → log reading → view progress
+   - Streak calculation with 1-day grace period
+   - Book progress updates when chapters are logged
+   - Basic authentication flows
 
-2. **Edge Case Testing**:
-   - Timezone handling
-   - Date boundaries
-   - Concurrent updates
-   - Invalid inputs
+2. **Essential Validation** (Business Rules):
+   - Bible reference validation (book_id 1-66, valid chapters)
+   - Model constraints (email uniqueness, completion percentages)
+   - Database compatibility between SQLite and PostgreSQL
 
-This testing strategy ensures that the application's core functionality remains reliable while allowing for confident iteration and feature expansion in future phases.
+### Post-MVP Testing Expansion
+
+Future testing phases will include:
+- **Comprehensive Edge Case Testing**: Timezone handling, date boundaries, concurrent updates
+- **Performance Testing**: Large dataset handling, query optimization
+- **Advanced Integration Testing**: Complex HTMX interactions, full API coverage
+- **Load Testing**: Multi-user scenarios and scalability validation
+
+This simplified testing strategy ensures that the application's core functionality is reliable while allowing rapid iteration and feature development during the MVP phase. Comprehensive testing will be implemented as the application grows and user feedback validates the core concept.
 
 ## Future Considerations
 

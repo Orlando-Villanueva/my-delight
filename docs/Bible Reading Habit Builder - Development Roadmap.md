@@ -55,7 +55,10 @@
 * Create migrations for users, reading_logs, book_progress tables
 * Define Eloquent models with database-agnostic queries
 * Create Bible reference configuration file with static data for all 66 books
-* Test migration compatibility across SQLite and PostgreSQL
+* Basic database compatibility verification (2-3 hours):
+  - Test migration compatibility across SQLite and PostgreSQL
+  - Verify essential model validations and constraints
+  - Confirm core user workflow functions on both databases
 
 ### **Week 2: Authentication & UI Framework**
 

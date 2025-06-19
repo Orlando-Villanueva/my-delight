@@ -1,0 +1,137 @@
+# Bible Reading Habit Builder - MVP Development Rules
+
+## 🎯 Project Context
+- **Project**: Bible reading habit tracker MVP
+- **Scale**: 3 tables (users, reading_logs, book_progress)
+- **Scope**: Personal use, single developer
+- **Timeline**: 8-week MVP launch
+- **Philosophy**: Ship simple, iterate based on user feedback
+
+## ⚡ Over-Engineering Prevention Rules
+
+### ALWAYS Apply These Filters to New Issues/Features:
+
+#### 🔍 MVP Reality Check (Ask Before Any Implementation)
+1. **Scale Reality**: "Am I solving for 10 users or 10,000 users?"
+2. **Complexity Reality**: "Am I solving for 3 tables or 300 tables?"
+3. **Risk Reality**: "What's the actual worst-case scenario for an MVP?"
+4. **Time Reality**: "Is this worth X hours vs. shipping user features?"
+
+#### 🚨 Automatic Red Flags (STOP and Simplify)
+- "Cross-environment testing matrices"
+- "Comprehensive validation frameworks"
+- "Production-scale data scenarios"
+- "Enterprise-level compliance"
+- "Every possible edge case"
+- "Extensive documentation matrices"
+
+#### 📏 Hard Time Limits (Auto-Simplify if Exceeded)
+- **Database Tasks**: Max 4 hours
+- **UI Components**: Max 6 hours
+- **Testing/Validation**: Max 2 hours
+- **Any Single Feature**: Max 1 day
+
+### 🎲 Decision Heuristics (Apply to Every Suggestion)
+
+#### The Framework Trust Test
+- "Does Laravel/framework already handle this?"
+- "Why not use the framework's built-in solution?"
+
+#### The Personal Project Test
+- "Would I spend this much time on my hobby project?"
+- "Is this solving a problem I actually have?"
+
+#### The Ship It Test
+- "Can users accomplish their goal without this?"
+- "Does this block MVP launch?"
+
+#### The 80/20 Rule
+- "What's the 20% that gives 80% of the value?"
+- "Am I optimizing the wrong 80%?"
+
+## 🟢 Right-Sized Issue Characteristics
+
+### GOOD (Encourage)
+- **Time**: 30 minutes - 4 hours
+- **Scope**: One specific problem
+- **Testing**: Smoke test + essential validation
+- **Documentation**: Inline comments + basic notes
+- **User Value**: Clear, immediate benefit
+
+### WATCH (Question)
+- **Time**: 4+ hours - 1 day
+- **Scope**: Multiple related problems
+- **Testing**: Comprehensive scenarios
+- Always ask: "Can this be simplified for MVP?"
+
+### BAD (Reject/Simplify)
+- **Time**: 1+ days
+- **Scope**: Enterprise-level scenarios
+- **Testing**: Every possible edge case
+- Force simplification before proceeding
+
+## 🎯 MVP-Specific Guidelines
+
+### Database/Backend
+- ✅ Test basic functionality works
+- ❌ Test every possible failure scenario
+- ✅ Trust Laravel's ORM and migration system
+- ❌ Build comprehensive validation matrices
+
+### Frontend/UI
+- ✅ Ensure core user journey works
+- ❌ Pixel-perfect cross-browser testing
+- ✅ Mobile responsiveness for key screens
+- ❌ Test every interaction edge case
+
+### Testing Strategy
+- ✅ Essential functionality verification
+- ❌ Comprehensive test automation suites
+- ✅ Smoke tests for critical paths
+- ❌ Enterprise-level testing frameworks
+
+## 🚀 Default Responses to Common Over-Engineering
+
+### When User Asks for Comprehensive Testing:
+"For this MVP, let's focus on essential verification. We can test [core functionality] with a smoke test. Comprehensive testing can be added post-MVP when we have real user feedback."
+
+### When Scope Seems Too Large:
+"This feels enterprise-sized for our 3-table MVP. What's the minimum viable version that solves the core user problem? We can enhance it later."
+
+### When Time Estimate Exceeds Limits:
+"This is estimated at [X hours], which exceeds our MVP time box of [Y hours]. Let's identify the essential 20% that gives 80% of the value."
+
+## 💡 Always Suggest Simplifications
+
+### Default Simplification Strategies:
+1. **Remove enterprise patterns** → Use simple solutions
+2. **Defer complex scenarios** → Focus on happy path
+3. **Trust the framework** → Don't reinvent what Laravel provides
+4. **Start with manual** → Automate later if needed
+5. **MVP first** → Polish in post-MVP iterations
+
+## 📋 Issue Creation Template (Always Suggest)
+
+```markdown
+**MVP Context**: Bible reading tracker (3 tables, personal use)
+**Time Estimate**: [Must be ≤ time limits]
+**User Value**: [How does this help users track Bible reading?]
+
+Essential Requirements:
+- [ ] [Minimum needed for MVP]
+- [ ] [Core functionality only]
+
+Reality Check:
+- Framework Coverage: [What does Laravel handle?]
+- Actual Risk: [Real worst-case scenario]
+- User Impact: [Will users notice if not perfect?]
+```
+
+## 🎖️ Success Metrics
+- Issues completed within estimated time
+- Features solve actual user problems
+- Minimal complexity for maximum value
+- Fast iteration cycles
+- User feedback drives decisions
+
+**Remember**: This is an MVP for a personal Bible reading habit tracker, not enterprise banking software. Keep it simple, ship it fast, learn from users. 
