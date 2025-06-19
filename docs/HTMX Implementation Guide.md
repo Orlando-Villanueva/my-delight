@@ -85,11 +85,11 @@ public function storeReadingLog(Request $request)
             'notes_text' => 'nullable|string|max:500'
         ]);
         
-        // Use LUCID Feature for reading log creation (includes validation)
-        $log = $this->serve(LogReadingFeature::class, [
-            'data' => $validated,
-            'user' => $request->user()
-        ]);
+        // Use Service Layer for reading log creation (includes validation)
+        $log = $this->readingLogService->logReading(
+            $request->user(),
+            $validated
+        );
         
         return view('partials.reading-log-success', compact('log'));
         
@@ -119,11 +119,11 @@ public function storeReadingLog(Request $request)
             'notes_text' => 'nullable|string|max:500'
         ]);
         
-        // Use LUCID Feature for reading log creation (includes validation)
-        $log = $this->serve(LogReadingFeature::class, [
-            'data' => $validated,
-            'user' => $request->user()
-        ]);
+        // Use Service Layer for reading log creation (includes validation)
+        $log = $this->readingLogService->logReading(
+            $request->user(),
+            $validated
+        );
         
         return view('partials.reading-log-success', compact('log'));
         

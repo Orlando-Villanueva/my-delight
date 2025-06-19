@@ -26,7 +26,7 @@ A web application designed to help users build and maintain a consistent Bible r
 ## Technical Overview
 
 - **Framework**: Laravel (PHP)
-- **Architecture**: LUCID Architecture pattern for clean separation of concerns and high testability
+- **Architecture**: Service Layer Pattern for clean separation of concerns and high testability
 - **Database**: 
   - **Local Development**: SQLite for simplicity and ease of setup
   - **Production**: Laravel Cloud's Serverless Postgres (PostgreSQL 17) with denormalized BookProgress table for efficient tracking

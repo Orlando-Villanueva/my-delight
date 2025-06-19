@@ -30,7 +30,7 @@
 │                       Application Layer                             │
 │                                                                     │
 │  ┌───────────────┐    ┌───────────────┐    ┌───────────────┐        │
-│  │  Controllers  │    │   Features    │    │  Middleware   │        │
+│  │  Controllers  │    │   Services    │    │  Middleware   │        │
 │  │               │    │               │    │               │        │
 │  └───────┬───────┘    └───────┬───────┘    └───────┬───────┘        │
 │          │                    │                    │                │
@@ -38,10 +38,10 @@
            │                    │                    │
            ▼                    ▼                    ▼
 ┌─────────────────────────────────────────────────────────────────────┐
-│                      LUCID Business Layer                           │
+│                      Service Layer                                   │
 │                                                                     │
 │  ┌───────────────┐    ┌───────────────┐    ┌───────────────┐        │
-│  │     Jobs      │    │  Operations   │    │   Domains     │        │
+│  │   Services    │    │  Repositories │    │   Models      │        │
 │  │               │    │               │    │               │        │
 │  └───────┬───────┘    └───────┬───────┘    └───────┬───────┘        │
 │          │                    │                    │                │
@@ -444,58 +444,36 @@ The UI will provide a simplified two-step structured selector for the MVP:
        ]
    ];
    ```
-   - Create specialized Jobs to access this data efficiently:
+   - Create specialized services to access this data efficiently:
    ```php
-   // Job for book lookups
-   class GetBibleBookJob extends Job
+   // Service for Bible book operations
+   class BibleReferenceService
    {
-       private $bookId;
-       private $bookName;
-       
-       public function __construct($bookId = null, $bookName = null)
-       {
-           $this->bookId = $bookId;
-           $this->bookName = $bookName;
-       }
-
-       public function handle()
+       public function getBibleBook($bookId = null, $bookName = null)
        {
            $books = collect(config('bible.books'));
            
-           if ($this->bookId) {
-               return $books->firstWhere('id', $this->bookId);
+           if ($bookId) {
+               return $books->firstWhere('id', $bookId);
            }
            
-           if ($this->bookName) {
-               return $books->firstWhere('name', $this->bookName);
-       }
-       
+           if ($bookName) {
+               return $books->firstWhere('name', $bookName);
+           }
+           
            return $books;
        }
-   }
 
-   // Job for chapter validation
-   class ValidateBibleReferenceJob extends Job
-   {
-       private $bookId;
-       private $chapter;
-
-       public function __construct($bookId, $chapter)
+       public function validateBibleReference($bookId, $chapter)
        {
-           $this->bookId = $bookId;
-           $this->chapter = $chapter;
-       }
-
-       public function handle()
-       {
-           $book = app(GetBibleBookJob::class, ['bookId' => $this->bookId])->handle();
+           $book = $this->getBibleBook($bookId);
            
            if (!$book) {
-               throw new InvalidBibleReferenceException("Invalid book ID: {$this->bookId}");
+               throw new InvalidBibleReferenceException("Invalid book ID: {$bookId}");
            }
            
-           if ($this->chapter < 1 || $this->chapter > $book['chapters']) {
-               throw new InvalidBibleReferenceException("Invalid chapter {$this->chapter} for {$book['name']['en']}");
+           if ($chapter < 1 || $chapter > $book['chapters']) {
+               throw new InvalidBibleReferenceException("Invalid chapter {$chapter} for {$book['name']['en']}");
            }
            
            return true;
@@ -503,7 +481,7 @@ The UI will provide a simplified two-step structured selector for the MVP:
    }
    ```
    - This approach is more efficient than a database table since Bible data is fixed and unchanging
-   - Jobs are highly testable and can be reused across Features
+   - Services are highly testable and can be reused across controllers
 
 2. **Dynamic Selection Logic**:
    - When a book is selected, dynamically populate the chapter dropdown with valid chapter numbers
@@ -635,29 +613,21 @@ The Advanced Statistics feature provides motivating metrics about Bible reading 
    - Total books started vs. completed
    - Number of days with reading activity
    
-   ```php
-   // Example Feature for statistics
-   class GetUserStatisticsFeature extends Feature
+      ```php
+   // Service for user statistics
+   class UserStatisticsService
    {
-       public function handle(Request $request)
-   {
-           $user = $request->user();
-       
-           $currentStreak = $this->run(CalculateCurrentStreakJob::class, [
-               'user' => $user
-           ]);
+       public function __construct(
+           private ReadingLogService $readingLogService
+       ) {}
+
+       public function getDashboardStats(User $user): array
+       {
+           $currentStreak = $this->readingLogService->getCurrentStreak($user);
+           $longestStreak = $this->readingLogService->getLongestStreak($user);
            
-           $longestStreak = $this->run(CalculateLongestStreakJob::class, [
-               'user' => $user
-           ]);
-           
-           $readingStats = $this->run(GetReadingStatsJob::class, [
-               'user' => $user
-           ]);
-           
-           $bookStats = $this->run(GetBookProgressStatsJob::class, [
-               'user' => $user
-           ]);
+           $readingStats = $this->getReadingStats($user);
+           $bookStats = $this->getBookProgressStats($user);
            
            return [
                'current_streak' => $currentStreak,
@@ -668,22 +638,17 @@ The Advanced Statistics feature provides motivating metrics about Bible reading 
                'books_completed' => $bookStats['books_completed'],
            ];
        }
-   }
-   
-   // Supporting Jobs
-   class CalculateCurrentStreakJob extends Job
-   {
-       private $user;
        
-       public function __construct($user)
+       private function getReadingStats(User $user): array
        {
-           $this->user = $user;
-       }
-       
-       public function handle()
-       {
-           // Streak calculation logic with 1-day grace period
-           return StreakCalculator::calculateCurrentStreak($this->user);
+           // Calculate reading statistics
+           return [
+               'total_chapters' => $user->readingLogs()->count(),
+               'reading_days' => $user->readingLogs()
+                   ->selectRaw('DATE(date_read) as reading_date')
+                   ->distinct()
+                   ->count()
+           ];
        }
    }
    ```
@@ -971,7 +936,7 @@ The application will support both English and French languages from the MVP laun
        'chapter_count' => 50
      ]
      ```
-   - Bible reference Jobs will handle lookups in both languages
+   - Bible reference services will handle lookups in both languages
 
 ## Security Considerations
 
@@ -1024,27 +989,27 @@ A comprehensive testing approach is essential to ensure the reliability and corr
 ### Test Types
 
 1. **Unit Tests**:
-   - **Bible Reference Jobs**: 
+   - **Bible Reference Services**: 
      - `GetBibleBookJob`: Verify correct book lookup by ID and name
      - `ValidateBibleReferenceJob`: Test chapter validation and error handling
-   - **Streak Calculation Jobs**: Test streak calculation with various date patterns
+   - **Streak Calculation Services**: Test streak calculation with various date patterns
      - `CalculateCurrentStreakJob`: Current streak with consecutive days and 1-day grace period
      - `CalculateLongestStreakJob`: Longest streak determination and edge cases
      - Timezone boundary handling and date parsing
-   - **Book Progress Jobs**: 
+   - **Book Progress Services**: 
      - `UpdateBookProgressJob`: Test incremental chapter updates
      - `CalculateCompletionPercentageJob`: Test percentage calculations and completion flags
 
 2. **Feature Tests**:
    - **Authentication Features**: 
-     - `RegisterUserFeature`: Registration flow with validation
-     - `LoginUserFeature`: Login process and token generation
+     - `AuthenticationService`: Registration and login flow with validation
+     - `UserService`: User management and profile operations
    - **Reading Features**: 
-     - `LogReadingFeature`: End-to-end reading log creation with book progress updates
-     - `GetReadingHistoryFeature`: Reading log retrieval with filtering
+     - `ReadingLogService`: End-to-end reading log creation with book progress updates
+     - `ReadingLogService`: Reading log retrieval with filtering and history management
    - **Statistics Features**: 
-     - `GetUserStatisticsFeature`: Dashboard statistics accuracy
-     - `GetStreakDataFeature`: Streak visualization data
+     - `UserStatisticsService`: Dashboard statistics accuracy
+     - `UserStatisticsService`: Streak visualization data
 
 3. **Integration Tests**:
    - **API Endpoints**: Test all JSON API endpoints for correct responses
@@ -1123,7 +1088,7 @@ This testing strategy ensures that the application's core functionality remains 
 2. **Notes and Highlights**: Allow users to add personal notes and highlight verses
 3. **Social Sharing**: Share reading progress or insights with friends
 4. **Multiple Translations**: Support for different Bible translations
-5. **Audio Bible**: Integration with audio Bible APIs via dedicated Jobs
+5. **Audio Bible**: Integration with audio Bible APIs via dedicated services
 6. **Offline Mode**: Full offline functionality for mobile apps
 
 ### Advanced Reading Goals System
@@ -1199,7 +1164,7 @@ A comprehensive goal-setting system will empower users to create and track perso
    - Goal adjustment interface based on past performance
    - Notification preferences for goal reminders
 
-3. **Backend Jobs & Features**:
+3. **Backend Services & Business Logic**:
 - `EvaluateWeeklyGoalsJob`: Weekly goal evaluation logic
 - `CalculateAchievementsJob`: Achievement calculation engine
 - `GenerateGoalRecommendationsFeature`: Recommendation system for goal adjustments

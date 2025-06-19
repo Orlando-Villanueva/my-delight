@@ -2,7 +2,7 @@
 
 ## System Overview
 
-The Bible Reading Habit Builder follows a **LUCID Architecture** pattern that separates concerns across distinct layers, enabling high testability, maintainability, and clear business logic organization.
+The Bible Reading Habit Builder follows a **Service Layer Architecture** pattern that separates concerns across distinct layers, enabling high testability, maintainability, and clear business logic organization.
 
 ## High-Level System Architecture
 
@@ -24,7 +24,7 @@ The Bible Reading Habit Builder follows a **LUCID Architecture** pattern that se
 │                     Laravel Application                             │
 │                                                                     │
 │  ┌───────────────┐    ┌───────────────┐    ┌───────────────┐        │
-│  │   Controllers │    │   Features    │    │   Middleware  │        │
+│  │   Controllers │    │   Services    │    │   Middleware  │        │
 │  │               │    │               │    │               │        │
 │  └───────┬───────┘    └───────┬───────┘    └───────┬───────┘        │
 │          │                    │                    │                │
@@ -32,10 +32,10 @@ The Bible Reading Habit Builder follows a **LUCID Architecture** pattern that se
 │                               │                                     │
 │                               ▼                                     │
 │  ┌─────────────────────────────────────────────────────────────────┐ │
-│  │                    LUCID Business Layer                        │ │
+│  │                    Service Layer                               │ │
 │  │                                                                 │ │
 │  │  ┌─────────────┐  ┌─────────────┐  ┌─────────────────────────┐  │ │
-│  │  │    Jobs     │  │ Operations  │  │       Domains           │  │ │
+│  │  │   Services  │  │ Repositories│  │       Models            │  │ │
 │  │  │             │  │             │  │                         │  │ │
 │  │  └─────┬───────┘  └─────┬───────┘  └───────┬─────────────────┘  │ │
 │  │        │                │                  │                    │ │
@@ -62,7 +62,7 @@ The Bible Reading Habit Builder follows a **LUCID Architecture** pattern that se
 └─────────────────────────────────────────────────────────────────────┘
 ```
 
-### Backend LUCID Architecture
+### Backend Service Layer Architecture
 
 ```
 ┌─────────────────────────────────────────────────────────────────────┐
@@ -73,7 +73,7 @@ The Bible Reading Habit Builder follows a **LUCID Architecture** pattern that se
 │  └─────────────────────────────────────────────────────────────────┘ │
 │                                                                     │
 │  ┌───────────────────────────────────────────────────────────────┐   │
-│  │   Controllers    │    Features     │    Repositories  │       │   │
+│  │   Controllers    │    Services     │    Repositories  │       │   │
 │  ├─────────────────┼─────────────────┼─────────────────┤       │   │
 │  │ • DashboardCtrl │    • LogReading │    • ReadingLogRepo│       │   │
 │  │ • ReadingLogCtrl│    • GetHistory │    • BookProgRepo │       │   │
@@ -82,10 +82,10 @@ The Bible Reading Habit Builder follows a **LUCID Architecture** pattern that se
 │  └─────────────────┼─────────────────┼─────────────────┤       │   │
 │                    │                 │                  │       │   │
 │  ┌─────────────────────────────────────────────────────────────────┐ │
-│  │                     LUCID Business Layer                       │ │
+│  │                     Service Layer                              │ │
 │  │                                                                 │ │
 │  │  ┌─────────────────────────────────────────────────────────────┐ │ │
-│  │  │                        Jobs                                 │ │ │
+│  │  │                        Services                             │ │ │
 │  │  │ • ValidateReadingLogJob    • UpdateBookProgressJob         │ │ │
 │  │  │ • SaveReadingLogJob        • CalculateCurrentStreakJob     │ │ │
 │  │  │ • GetBibleBookJob          • CalculateLongestStreakJob     │ │ │
@@ -94,7 +94,7 @@ The Bible Reading Habit Builder follows a **LUCID Architecture** pattern that se
 │  │  └─────────────────────────────────────────────────────────────┘ │ │
 │  │                                                                 │ │
 │  │  ┌─────────────────────────────────────────────────────────────┐ │ │
-│  │  │                    Operations                               │ │ │
+│  │  │                    Business Logic                          │ │ │
 │  │  │ • CompleteBookOperation (orchestrates book completion)      │ │ │
 │  │  │ • ProcessBulkReadingOperation (batch reading log imports)  │ │ │
 │  │  │ • UserOnboardingOperation (coordinated setup process)      │ │ │
