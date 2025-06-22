@@ -191,12 +191,36 @@ public function storeReadingLog(Request $request)
         });
     });
 </script>
+
+<!-- Example Fortify authentication form with HTMX -->
+<form hx-post="/login" hx-target="#auth-response" hx-swap="innerHTML">
+    @csrf
+    <div>
+        <label for="email">Email</label>
+        <input type="email" name="email" id="email" required>
+    </div>
+    <div>
+        <label for="password">Password</label>
+        <input type="password" name="password" id="password" required>
+    </div>
+    <div>
+        <label>
+            <input type="checkbox" name="remember"> Remember me
+        </label>
+    </div>
+    <button type="submit">Login</button>
+    <div id="auth-response"></div>
+</form>
 ```
 
 ### Route Organization
 
 ```php
 // routes/web.php
+
+// Fortify routes are automatically registered
+// Custom view responses configured in FortifyServiceProvider
+
 Route::middleware(['auth', 'web'])->group(function () {
     // Dashboard routes
     Route::get('/dashboard', [DashboardController::class, 'index'])->name('dashboard');
@@ -211,6 +235,22 @@ Route::middleware(['auth', 'web'])->group(function () {
     // Statistics routes
     Route::get('/stats/books', [StatisticsController::class, 'getBookProgress'])->name('stats.books');
     Route::get('/stats/summary', [StatisticsController::class, 'getSummary'])->name('stats.summary');
+});
+
+// Guest routes (Fortify handles the POST endpoints)
+Route::middleware(['guest'])->group(function () {
+    // Custom view routes for Fortify forms
+    Route::get('/login', function () {
+        return view('auth.login');
+    })->name('login');
+    
+    Route::get('/register', function () {
+        return view('auth.register');
+    })->name('register');
+    
+    Route::get('/forgot-password', function () {
+        return view('auth.forgot-password');
+    })->name('password.request');
 });
 ```
 

@@ -63,10 +63,10 @@
 ### **Week 2: Authentication & UI Framework**
 
 **PR 4: User Authentication (3-4 days)**
-* Implement registration system with email validation
-* Create login functionality with remember me option
-* Add password reset flow
-* Build authentication views (HTMX compatible)
+* Install and configure Laravel Fortify for backend authentication
+* Create custom HTMX-compatible authentication views (login, registration, password reset)
+* Configure user model and authentication guards
+* Implement authentication middleware and route protection
 
 **PR 5: UI Framework & Design System (3-4 days)**
 * Implement Tailwind CSS configuration
@@ -200,9 +200,19 @@
 
 After validating the MVP with real users, future phases will expand the application with:
 
+### **Phase 2: Enhanced Authentication & User Experience**
+* **Social Authentication (Laravel Socialite)**
+  - Google OAuth integration for seamless sign-in
+  - Facebook OAuth for Christian community users
+  - Apple Sign-In for privacy-focused authentication
+  - Account linking for existing users
+  - Social profile data enhancement (verified emails, profile pictures)
 * Advanced statistics and insights
 * Reading plans and goals
 * Enhanced habit formation mechanics
+
+### **Phase 3: Mobile & Extended Features**
 * Mobile applications (iOS/Android)
+* Advanced social features and community integration
 
 _Note: This roadmap focuses on the MVP phase only. Future phases will be planned based on user feedback and validation of core concepts._
