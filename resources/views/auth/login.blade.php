@@ -18,15 +18,25 @@
 
         <!-- Login Form Card -->
         <x-ui.card elevated="true" class="mt-8">
-            <form hx-post="/login" 
-                  hx-target="#auth-response" 
-                  hx-swap="innerHTML"
-                  hx-indicator="#loading-indicator"
-                  class="space-y-6">
+            <form method="POST" action="{{ route('login') }}" class="space-y-6">
                 @csrf
                 
-                <!-- Response Container -->
-                <div id="auth-response" class="hidden"></div>
+                <!-- Display Validation Errors -->
+                @if ($errors->any())
+                    <div class="bg-error/10 border border-error/20 rounded-lg p-4">
+                        <div class="flex items-center mb-2">
+                            <svg class="w-5 h-5 text-error mr-2" fill="currentColor" viewBox="0 0 20 20">
+                                <path fill-rule="evenodd" d="M10 18a8 8 0 100-16 8 8 0 000 16zM8.707 7.293a1 1 0 00-1.414 1.414L8.586 10l-1.293 1.293a1 1 0 101.414 1.414L10 11.414l1.293 1.293a1 1 0 001.414-1.414L11.414 10l1.293-1.293a1 1 0 00-1.414-1.414L10 8.586 8.707 7.293z" clip-rule="evenodd"></path>
+                            </svg>
+                            <span class="text-error font-medium">Please correct the following errors:</span>
+                        </div>
+                        <ul class="text-sm text-error space-y-1">
+                            @foreach ($errors->all() as $error)
+                                <li>• {{ $error }}</li>
+                            @endforeach
+                        </ul>
+                    </div>
+                @endif
                 
                 <!-- Email Field -->
                 <x-ui.input 
@@ -35,41 +45,19 @@
                     label="Email Address"
                     placeholder="Enter your email"
                     required="true"
+                    :value="old('email')"
                     :error="$errors->first('email')"
                 />
                 
                 <!-- Password Field -->
-                <div x-data="{ showPassword: false }" class="space-y-1">
-                    <label for="password" class="block text-sm font-medium text-neutral-700 mb-2 after:content-['*'] after:ml-0.5 after:text-error">
-                        Password
-                    </label>
-                    <div class="relative">
-                        <input 
-                            :type="showPassword ? 'text' : 'password'"
-                            id="password"
-                            name="password"
-                            placeholder="Enter your password"
-                            required
-                            class="block w-full px-3 py-2 pr-10 border border-neutral-300 rounded-lg shadow-sm placeholder-neutral-400 focus:outline-none focus:ring-2 focus:ring-primary focus:border-primary text-neutral-600"
-                        />
-                        <button 
-                            type="button"
-                            @click="showPassword = !showPassword"
-                            class="absolute inset-y-0 right-0 pr-3 flex items-center text-neutral-400 hover:text-neutral-600"
-                        >
-                            <svg x-show="!showPassword" class="h-5 w-5" fill="none" stroke="currentColor" viewBox="0 0 24 24">
-                                <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M15 12a3 3 0 11-6 0 3 3 0 016 0z"></path>
-                                <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M2.458 12C3.732 7.943 7.523 5 12 5c4.478 0 8.268 2.943 9.542 7-1.274 4.057-5.064 7-9.542 7-4.477 0-8.268-2.943-9.542-7z"></path>
-                            </svg>
-                            <svg x-show="showPassword" class="h-5 w-5" fill="none" stroke="currentColor" viewBox="0 0 24 24">
-                                <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M13.875 18.825A10.05 10.05 0 0112 19c-4.478 0-8.268-2.943-9.543-7a9.97 9.97 0 011.563-3.029m5.858.908a3 3 0 114.243 4.243M9.878 9.878l4.242 4.242M9.878 9.878L8.464 8.464M9.878 9.878a3 3 0 00-.007 4.243m4.242-4.242L15.536 8.464M14.122 14.121a3 3 0 01-4.243-4.243m4.243 4.243l1.414 1.414"></path>
-                            </svg>
-                        </button>
-                    </div>
-                    @error('password')
-                        <p class="text-sm text-error mt-1" role="alert">{{ $message }}</p>
-                    @enderror
-                </div>
+                <x-ui.input 
+                    type="password"
+                    name="password"
+                    label="Password"
+                    placeholder="Enter your password"
+                    required="true"
+                    :error="$errors->first('password')"
+                />
                 
                 <!-- Remember Me Checkbox -->
                 <div class="flex items-center justify-between">
@@ -100,16 +88,7 @@
                     size="lg" 
                     class="w-full"
                 >
-                    <span class="htmx-indicator" id="loading-indicator">
-                        <svg class="animate-spin -ml-1 mr-3 h-5 w-5 text-white" xmlns="http://www.w3.org/2000/svg" fill="none" viewBox="0 0 24 24">
-                            <circle class="opacity-25" cx="12" cy="12" r="10" stroke="currentColor" stroke-width="4"></circle>
-                            <path class="opacity-75" fill="currentColor" d="M4 12a8 8 0 018-8V0C5.373 0 0 5.373 0 12h4zm2 5.291A7.962 7.962 0 014 12H0c0 3.042 1.135 5.824 3 7.938l3-2.647z"></path>
-                        </svg>
-                        Signing in...
-                    </span>
-                    <span class="htmx-indicator:not(.htmx-request)">
-                        Sign in
-                    </span>
+                    Sign in
                 </x-ui.button>
             </form>
         </x-ui.card>
@@ -138,44 +117,4 @@
         </div>
     </div>
 </div>
-
-<!-- HTMX Configuration -->
-<script>
-    document.addEventListener('DOMContentLoaded', function() {
-        // Configure HTMX for Fortify authentication
-        document.body.addEventListener('htmx:configRequest', function(evt) {
-            evt.detail.headers['X-CSRF-TOKEN'] = document.querySelector('meta[name="csrf-token"]').getAttribute('content');
-        });
-        
-        // Handle successful login
-        document.body.addEventListener('htmx:afterRequest', function(evt) {
-            if (evt.detail.xhr.status === 302 && evt.detail.pathInfo.requestPath === '/login') {
-                // Redirect on successful login
-                window.location.href = '/dashboard';
-            }
-        });
-        
-        // Handle validation errors
-        document.body.addEventListener('htmx:responseError', function(evt) {
-            if (evt.detail.xhr.status === 422) {
-                // Display validation errors
-                const response = JSON.parse(evt.detail.xhr.responseText);
-                if (response.errors) {
-                    let errorHtml = '<div class="bg-error/10 border border-error/20 rounded-lg p-4 mb-4">';
-                    errorHtml += '<div class="flex items-center"><svg class="w-5 h-5 text-error mr-2" fill="currentColor" viewBox="0 0 20 20"><path fill-rule="evenodd" d="M10 18a8 8 0 100-16 8 8 0 000 16zM8.707 7.293a1 1 0 00-1.414 1.414L8.586 10l-1.293 1.293a1 1 0 101.414 1.414L10 11.414l1.293 1.293a1 1 0 001.414-1.414L11.414 10l1.293-1.293a1 1 0 00-1.414-1.414L10 8.586 8.707 7.293z" clip-rule="evenodd"></path></svg>';
-                    errorHtml += '<span class="text-error font-medium">Please correct the following errors:</span></div>';
-                    errorHtml += '<ul class="mt-2 text-sm text-error">';
-                    Object.values(response.errors).forEach(function(errors) {
-                        errors.forEach(function(error) {
-                            errorHtml += '<li>• ' + error + '</li>';
-                        });
-                    });
-                    errorHtml += '</ul></div>';
-                    document.getElementById('auth-response').innerHTML = errorHtml;
-                    document.getElementById('auth-response').classList.remove('hidden');
-                }
-            }
-        });
-    });
-</script>
 @endsection 

@@ -18,25 +18,35 @@
 
         <!-- Forgot Password Form Card -->
         <x-ui.card elevated="true" class="mt-8">
-            <form hx-post="/forgot-password" 
-                  hx-target="#auth-response" 
-                  hx-swap="innerHTML"
-                  hx-indicator="#loading-indicator"
-                  class="space-y-6">
+            <form method="POST" action="{{ route('password.email') }}" class="space-y-6">
                 @csrf
                 
-                <!-- Response Container -->
-                <div id="auth-response" class="hidden"></div>
-                
-                <!-- Success Message (if session status exists) -->
+                <!-- Display Success Message -->
                 @if (session('status'))
-                    <div class="bg-secondary/10 border border-secondary/20 rounded-lg p-4 mb-4">
+                    <div class="bg-secondary/10 border border-secondary/20 rounded-lg p-4">
                         <div class="flex items-center">
                             <svg class="w-5 h-5 text-secondary mr-2" fill="currentColor" viewBox="0 0 20 20">
                                 <path fill-rule="evenodd" d="M10 18a8 8 0 100-16 8 8 0 000 16zm3.707-9.293a1 1 0 00-1.414-1.414L9 10.586 7.707 9.293a1 1 0 00-1.414 1.414l2 2a1 1 0 001.414 0l4-4z" clip-rule="evenodd"></path>
                             </svg>
                             <span class="text-secondary font-medium">{{ session('status') }}</span>
                         </div>
+                    </div>
+                @endif
+                
+                <!-- Display Validation Errors -->
+                @if ($errors->any())
+                    <div class="bg-error/10 border border-error/20 rounded-lg p-4">
+                        <div class="flex items-center mb-2">
+                            <svg class="w-5 h-5 text-error mr-2" fill="currentColor" viewBox="0 0 20 20">
+                                <path fill-rule="evenodd" d="M10 18a8 8 0 100-16 8 8 0 000 16zM8.707 7.293a1 1 0 00-1.414 1.414L8.586 10l-1.293 1.293a1 1 0 101.414 1.414L10 11.414l1.293 1.293a1 1 0 001.414-1.414L11.414 10l1.293-1.293a1 1 0 00-1.414-1.414L10 8.586 8.707 7.293z" clip-rule="evenodd"></path>
+                            </svg>
+                            <span class="text-error font-medium">Please correct the following errors:</span>
+                        </div>
+                        <ul class="text-sm text-error space-y-1">
+                            @foreach ($errors->all() as $error)
+                                <li>• {{ $error }}</li>
+                            @endforeach
+                        </ul>
                     </div>
                 @endif
                 
@@ -47,6 +57,7 @@
                     label="Email Address"
                     placeholder="Enter your email address"
                     required="true"
+                    :value="old('email')"
                     :error="$errors->first('email')"
                     help="We'll send password reset instructions to this email address"
                 />
@@ -58,16 +69,7 @@
                     size="lg" 
                     class="w-full"
                 >
-                    <span class="htmx-indicator" id="loading-indicator">
-                        <svg class="animate-spin -ml-1 mr-3 h-5 w-5 text-white" xmlns="http://www.w3.org/2000/svg" fill="none" viewBox="0 0 24 24">
-                            <circle class="opacity-25" cx="12" cy="12" r="10" stroke="currentColor" stroke-width="4"></circle>
-                            <path class="opacity-75" fill="currentColor" d="M4 12a8 8 0 018-8V0C5.373 0 0 5.373 0 12h4zm2 5.291A7.962 7.962 0 014 12H0c0 3.042 1.135 5.824 3 7.938l3-2.647z"></path>
-                        </svg>
-                        Sending reset link...
-                    </span>
-                    <span class="htmx-indicator:not(.htmx-request)">
-                        Send reset link
-                    </span>
+                    Send reset link
                 </x-ui.button>
             </form>
         </x-ui.card>
@@ -96,49 +98,4 @@
         </div>
     </div>
 </div>
-
-<!-- HTMX Configuration -->
-<script>
-    document.addEventListener('DOMContentLoaded', function() {
-        // Configure HTMX for Fortify authentication
-        document.body.addEventListener('htmx:configRequest', function(evt) {
-            evt.detail.headers['X-CSRF-TOKEN'] = document.querySelector('meta[name="csrf-token"]').getAttribute('content');
-        });
-        
-        // Handle successful password reset request
-        document.body.addEventListener('htmx:afterRequest', function(evt) {
-            if (evt.detail.xhr.status === 200 && evt.detail.pathInfo.requestPath === '/forgot-password') {
-                // Show success message
-                let successHtml = '<div class="bg-secondary/10 border border-secondary/20 rounded-lg p-4 mb-4">';
-                successHtml += '<div class="flex items-center"><svg class="w-5 h-5 text-secondary mr-2" fill="currentColor" viewBox="0 0 20 20"><path fill-rule="evenodd" d="M10 18a8 8 0 100-16 8 8 0 000 16zm3.707-9.293a1 1 0 00-1.414-1.414L9 10.586 7.707 9.293a1 1 0 00-1.414 1.414l2 2a1 1 0 001.414 0l4-4z" clip-rule="evenodd"></path></svg>';
-                successHtml += '<span class="text-secondary font-medium">Password reset link sent! Check your email for instructions.</span></div>';
-                successHtml += '</div>';
-                document.getElementById('auth-response').innerHTML = successHtml;
-                document.getElementById('auth-response').classList.remove('hidden');
-            }
-        });
-        
-        // Handle validation errors
-        document.body.addEventListener('htmx:responseError', function(evt) {
-            if (evt.detail.xhr.status === 422) {
-                // Display validation errors
-                const response = JSON.parse(evt.detail.xhr.responseText);
-                if (response.errors) {
-                    let errorHtml = '<div class="bg-error/10 border border-error/20 rounded-lg p-4 mb-4">';
-                    errorHtml += '<div class="flex items-center"><svg class="w-5 h-5 text-error mr-2" fill="currentColor" viewBox="0 0 20 20"><path fill-rule="evenodd" d="M10 18a8 8 0 100-16 8 8 0 000 16zM8.707 7.293a1 1 0 00-1.414 1.414L8.586 10l-1.293 1.293a1 1 0 101.414 1.414L10 11.414l1.293 1.293a1 1 0 001.414-1.414L11.414 10l1.293-1.293a1 1 0 00-1.414-1.414L10 8.586 8.707 7.293z" clip-rule="evenodd"></path></svg>';
-                    errorHtml += '<span class="text-error font-medium">Please correct the following errors:</span></div>';
-                    errorHtml += '<ul class="mt-2 text-sm text-error">';
-                    Object.values(response.errors).forEach(function(errors) {
-                        errors.forEach(function(error) {
-                            errorHtml += '<li>• ' + error + '</li>';
-                        });
-                    });
-                    errorHtml += '</ul></div>';
-                    document.getElementById('auth-response').innerHTML = errorHtml;
-                    document.getElementById('auth-response').classList.remove('hidden');
-                }
-            }
-        });
-    });
-</script>
 @endsection 
