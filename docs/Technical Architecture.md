@@ -913,9 +913,9 @@ For detailed implementation patterns, see:
 
 ## Authentication
 
-The application uses **Laravel Fortify** as a frontend-agnostic authentication backend, providing robust authentication logic while maintaining full control over the HTMX + Blade frontend.
+The application uses **Laravel Fortify** as a frontend-agnostic authentication backend, providing robust authentication logic while maintaining full control over the standard Laravel + Blade frontend.
 
-### Web Authentication (Laravel Fortify + Custom HTMX Frontend)
+### Web Authentication (Laravel Fortify + Standard Laravel Forms)
 
 1. **Laravel Fortify Backend**:
    - Handles all authentication logic, routes, and controllers
@@ -924,17 +924,19 @@ The application uses **Laravel Fortify** as a frontend-agnostic authentication b
    - Secure, HttpOnly cookies with CSRF protection
    - Customizable actions for registration and password reset logic
 
-2. **Custom HTMX Frontend**:
+2. **Standard Laravel Frontend** (MVP Simplified):
    - Custom Blade views styled to match application design
-   - HTMX integration for seamless form submissions and error handling
-   - Maintains existing Alpine.js interactions where needed
-   - Server-driven HTML responses for consistent user experience
+   - Standard HTML forms with `method="POST"` submissions
+   - Laravel's built-in validation error display with `@if ($errors->any())`
+   - Standard Fortify redirect handling for authentication flows
+   - **Architectural Decision**: Simplified from HTMX to reduce complexity (~300 lines of JavaScript)
 
 3. **Configuration**:
    - Fortify service provider configured in `FortifyServiceProvider`
    - Custom view responses defined for login, registration, and password reset
    - User model integration with Fortify's authentication system
    - Route middleware protection for authenticated areas
+   - RouteServiceProvider HOME constant for post-authentication redirects
 
 ### API Authentication (Post-MVP)
 
@@ -952,11 +954,12 @@ The application uses **Laravel Fortify** as a frontend-agnostic authentication b
 
 ### Benefits of Fortify Approach
 
-1. **No Frontend Conflicts**: Fortify provides only backend logic, allowing full HTMX + Alpine.js frontend control
+1. **No Frontend Conflicts**: Fortify provides only backend logic, allowing full standard Laravel frontend control
 2. **Laravel 12 Native**: Fully supported and maintained authentication solution
 3. **Security**: Enterprise-grade authentication features with regular security updates
-4. **Flexibility**: Custom frontend implementation while leveraging robust backend
-5. **Future-Proof**: Easy integration with mobile APIs and social authentication in later phases
+4. **Simplicity**: Standard Laravel patterns reduce complexity and maintenance overhead
+5. **MVP-Focused**: Proven authentication flows without client-side complexity
+6. **Future-Proof**: Easy integration with mobile APIs and social authentication in later phases
 
 ## Internationalization
 
@@ -1008,7 +1011,7 @@ The application will support both English and French languages from the MVP laun
 ## Security Considerations
 
 1. **Authentication**: Using Laravel Sanctum for secure authentication:
-   - Cookie-based sessions for HTMX web interface
+   - Cookie-based sessions for standard Laravel web interface
    - Token-based API authentication for mobile clients
    - Built-in CSRF protection for web forms
 
@@ -1076,7 +1079,8 @@ The testing strategy prioritizes **essential verification over comprehensive cov
    - **Dashboard Statistics**: Basic statistics display and calculation accuracy
 
 4. **Browser Tests** (Critical Path Only):
-   - **HTMX Interactions**: Form submissions and partial page updates
+   - **Standard Form Submissions**: Authentication and core form functionality
+   - **HTMX Interactions**: Reading log submissions and dashboard updates (non-auth features)
    - **Mobile Responsiveness**: Core functionality on mobile devices
 
 ### Testing Tools
@@ -1087,7 +1091,7 @@ The testing strategy prioritizes **essential verification over comprehensive cov
 
 2. **Laravel Dusk**:
    - Browser testing for critical user flows
-   - Verification of HTMX interactions
+   - Verification of standard form submissions and HTMX interactions (non-auth features)
 
 3. **JMeter/k6**:
    - Load testing for performance-critical endpoints
@@ -1525,11 +1529,11 @@ When implementing social authentication with Laravel Socialite in Phase 2, the e
 - Support account linking for users who initially registered with email/password
 - Handle profile data synchronization (name, email, avatar)
 
-#### HTMX Integration
-- Social authentication will integrate seamlessly with existing HTMX workflow
+#### Standard Laravel Integration
+- Social authentication will integrate seamlessly with existing standard Laravel forms
 - Add social login buttons to existing authentication forms
-- Maintain consistent user experience with server-driven HTML responses
-- Support both redirect-based and modal-based authentication flows
+- Maintain consistent user experience with standard Laravel redirects
+- Support standard redirect-based authentication flows
 
 #### Benefits for Bible Reading Community
 - **Google**: Seamless integration for users already using Google services

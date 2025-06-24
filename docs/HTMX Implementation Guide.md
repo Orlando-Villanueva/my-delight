@@ -192,24 +192,26 @@ public function storeReadingLog(Request $request)
     });
 </script>
 
-<!-- Example Fortify authentication form with HTMX -->
-<form hx-post="/login" hx-target="#auth-response" hx-swap="innerHTML">
+<!-- Note: Authentication uses standard Laravel forms (not HTMX) for MVP simplicity.
+     HTMX is used for reading logs, dashboard updates, and other app features.
+     See auth/login.blade.php for actual authentication implementation. -->
+
+<!-- Example HTMX form for reading logs and other app features -->
+<form hx-post="/logs" hx-target="#logs-response" hx-swap="innerHTML">
     @csrf
     <div>
-        <label for="email">Email</label>
-        <input type="email" name="email" id="email" required>
+        <label for="book_id">Bible Book</label>
+        <select name="book_id" id="book_id" required>
+            <option value="">Select a book...</option>
+            <!-- Book options -->
+        </select>
     </div>
     <div>
-        <label for="password">Password</label>
-        <input type="password" name="password" id="password" required>
+        <label for="chapter">Chapter</label>
+        <input type="number" name="chapter" id="chapter" required>
     </div>
-    <div>
-        <label>
-            <input type="checkbox" name="remember"> Remember me
-        </label>
-    </div>
-    <button type="submit">Login</button>
-    <div id="auth-response"></div>
+    <button type="submit">Log Reading</button>
+    <div id="logs-response"></div>
 </form>
 ```
 
