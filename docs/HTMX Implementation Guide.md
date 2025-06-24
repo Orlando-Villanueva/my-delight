@@ -191,12 +191,38 @@ public function storeReadingLog(Request $request)
         });
     });
 </script>
+
+<!-- Note: Authentication uses standard Laravel forms (not HTMX) for MVP simplicity.
+     HTMX is used for reading logs, dashboard updates, and other app features.
+     See auth/login.blade.php for actual authentication implementation. -->
+
+<!-- Example HTMX form for reading logs and other app features -->
+<form hx-post="/logs" hx-target="#logs-response" hx-swap="innerHTML">
+    @csrf
+    <div>
+        <label for="book_id">Bible Book</label>
+        <select name="book_id" id="book_id" required>
+            <option value="">Select a book...</option>
+            <!-- Book options -->
+        </select>
+    </div>
+    <div>
+        <label for="chapter">Chapter</label>
+        <input type="number" name="chapter" id="chapter" required>
+    </div>
+    <button type="submit">Log Reading</button>
+    <div id="logs-response"></div>
+</form>
 ```
 
 ### Route Organization
 
 ```php
 // routes/web.php
+
+// Fortify routes are automatically registered
+// Custom view responses configured in FortifyServiceProvider
+
 Route::middleware(['auth', 'web'])->group(function () {
     // Dashboard routes
     Route::get('/dashboard', [DashboardController::class, 'index'])->name('dashboard');
@@ -211,6 +237,22 @@ Route::middleware(['auth', 'web'])->group(function () {
     // Statistics routes
     Route::get('/stats/books', [StatisticsController::class, 'getBookProgress'])->name('stats.books');
     Route::get('/stats/summary', [StatisticsController::class, 'getSummary'])->name('stats.summary');
+});
+
+// Guest routes (Fortify handles the POST endpoints)
+Route::middleware(['guest'])->group(function () {
+    // Custom view routes for Fortify forms
+    Route::get('/login', function () {
+        return view('auth.login');
+    })->name('login');
+    
+    Route::get('/register', function () {
+        return view('auth.register');
+    })->name('register');
+    
+    Route::get('/forgot-password', function () {
+        return view('auth.forgot-password');
+    })->name('password.request');
 });
 ```
 

@@ -16,17 +16,19 @@ This document outlines the specific requirements for the Minimum Viable Product 
 
 1. **As a new user**, I want to sign up for an account, so that I can start tracking my Bible reading habit.
    - **Acceptance Criteria:**
-     - User can register with email and password
+     - User can register with email and password using Laravel Fortify backend
      - Email validation is performed
      - Password must meet security requirements (8+ characters, including a number)
      - User receives a welcome message after successful registration
+     - Custom HTMX-compatible registration forms integrate seamlessly with existing design
 
 2. **As a returning user**, I want to log in to my account, so that I can access my reading history and progress.
    - **Acceptance Criteria:**
-     - User can log in with email and password
+     - User can log in with email and password using Fortify authentication
      - Incorrect credentials result in appropriate error messages
      - User remains logged in unless they explicitly log out
-     - Password reset functionality is available
+     - Password reset functionality is available through Fortify's backend
+     - Custom HTMX-compatible login forms maintain consistent user experience
 
 ### Daily Reading Log
 
@@ -318,6 +320,7 @@ The MVP features have been prioritized based on the following framework:
 
 The following features have been deliberately excluded from the MVP to focus development efforts and deliver value more quickly:
 
+- **Social Authentication (Laravel Socialite)**: While OAuth integration with Google, Facebook, and Apple would enhance user onboarding, traditional email/password authentication is sufficient for MVP validation. Social auth will be added in Phase 2 post-MVP
 - **Reading Plans:** While valuable, structured reading plans add significant complexity and can be added post-MVP
 - **Goal Setting:** Beyond the implicit goal of streak maintenance, custom goal setting adds UI and data complexity
 - **Enhanced Notes Features:** Advanced features like tagging can be added once basic notes functionality is validated

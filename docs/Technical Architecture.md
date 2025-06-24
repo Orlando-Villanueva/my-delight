@@ -913,24 +913,36 @@ For detailed implementation patterns, see:
 
 ## Authentication
 
-The application will use Laravel's built-in authentication system with some customizations to support both web (cookie-based) and API (token-based) authentication.
+The application uses **Laravel Fortify** as a frontend-agnostic authentication backend, providing robust authentication logic while maintaining full control over the standard Laravel + Blade frontend.
 
-### Web Authentication
+### Web Authentication (Laravel Fortify + Standard Laravel Forms)
 
-1. **Session-Based Authentication**:
-   - Laravel's session-based authentication for web users
-   - Secure, HttpOnly cookies
-   - CSRF protection for all forms
+1. **Laravel Fortify Backend**:
+   - Handles all authentication logic, routes, and controllers
+   - Provides registration, login, logout, password reset, and email verification
+   - Session-based authentication for web users
+   - Secure, HttpOnly cookies with CSRF protection
+   - Customizable actions for registration and password reset logic
 
-2. **Registration & Login**:
-   - Custom forms styled to match the application design
-   - Email verification (optional for MVP)
-   - Password reset functionality
+2. **Standard Laravel Frontend** (MVP Simplified):
+   - Custom Blade views styled to match application design
+   - Standard HTML forms with `method="POST"` submissions
+   - Laravel's built-in validation error display with `@if ($errors->any())`
+   - Standard Fortify redirect handling for authentication flows
+   - **Architectural Decision**: Simplified from HTMX to reduce complexity (~300 lines of JavaScript)
+
+3. **Configuration**:
+   - Fortify service provider configured in `FortifyServiceProvider`
+   - Custom view responses defined for login, registration, and password reset
+   - User model integration with Fortify's authentication system
+   - Route middleware protection for authenticated areas
+   - RouteServiceProvider HOME constant for post-authentication redirects
 
 ### API Authentication (Post-MVP)
 
-1. **Laravel Sanctum**:
-   - Token-based authentication for API clients
+1. **Laravel Sanctum Integration**:
+   - Fortify works seamlessly with Sanctum for API authentication
+   - Token-based authentication for mobile clients
    - Ability to scope tokens to specific abilities
    - Support for mobile apps (iOS/Android)
 
@@ -938,6 +950,16 @@ The application will use Laravel's built-in authentication system with some cust
    - Token expiration policies
    - Rate limiting for authentication endpoints
    - IP-based blocking for suspicious activity
+   - Fortify's built-in security features and validation
+
+### Benefits of Fortify Approach
+
+1. **No Frontend Conflicts**: Fortify provides only backend logic, allowing full standard Laravel frontend control
+2. **Laravel 12 Native**: Fully supported and maintained authentication solution
+3. **Security**: Enterprise-grade authentication features with regular security updates
+4. **Simplicity**: Standard Laravel patterns reduce complexity and maintenance overhead
+5. **MVP-Focused**: Proven authentication flows without client-side complexity
+6. **Future-Proof**: Easy integration with mobile APIs and social authentication in later phases
 
 ## Internationalization
 
@@ -989,7 +1011,7 @@ The application will support both English and French languages from the MVP laun
 ## Security Considerations
 
 1. **Authentication**: Using Laravel Sanctum for secure authentication:
-   - Cookie-based sessions for HTMX web interface
+   - Cookie-based sessions for standard Laravel web interface
    - Token-based API authentication for mobile clients
    - Built-in CSRF protection for web forms
 
@@ -1057,7 +1079,8 @@ The testing strategy prioritizes **essential verification over comprehensive cov
    - **Dashboard Statistics**: Basic statistics display and calculation accuracy
 
 4. **Browser Tests** (Critical Path Only):
-   - **HTMX Interactions**: Form submissions and partial page updates
+   - **Standard Form Submissions**: Authentication and core form functionality
+   - **HTMX Interactions**: Reading log submissions and dashboard updates (non-auth features)
    - **Mobile Responsiveness**: Core functionality on mobile devices
 
 ### Testing Tools
@@ -1068,7 +1091,7 @@ The testing strategy prioritizes **essential verification over comprehensive cov
 
 2. **Laravel Dusk**:
    - Browser testing for critical user flows
-   - Verification of HTMX interactions
+   - Verification of standard form submissions and HTMX interactions (non-auth features)
 
 3. **JMeter/k6**:
    - Load testing for performance-critical endpoints
@@ -1130,12 +1153,13 @@ This simplified testing strategy ensures that the application's core functionali
 
 ### Additional Features for Future Releases
 
-1. **Reading Plans**: Structured reading plans for different purposes (e.g., chronological, thematic, devotional)
-2. **Notes and Highlights**: Allow users to add personal notes and highlight verses
-3. **Social Sharing**: Share reading progress or insights with friends
-4. **Multiple Translations**: Support for different Bible translations
-5. **Audio Bible**: Integration with audio Bible APIs via dedicated services
-6. **Offline Mode**: Full offline functionality for mobile apps
+1. **Social Authentication (Laravel Socialite)**: OAuth integration with Google, Facebook, and Apple Sign-In for streamlined user onboarding
+2. **Reading Plans**: Structured reading plans for different purposes (e.g., chronological, thematic, devotional)
+3. **Notes and Highlights**: Allow users to add personal notes and highlight verses
+4. **Social Sharing**: Share reading progress or insights with friends
+5. **Multiple Translations**: Support for different Bible translations
+6. **Audio Bible**: Integration with audio Bible APIs via dedicated services
+7. **Offline Mode**: Full offline functionality for mobile apps
 
 ### Advanced Reading Goals System
 
@@ -1489,3 +1513,32 @@ As user growth occurs, implementing a robust caching strategy will be essential 
    - Implement size-based policies for cache entry limits
 
 This caching strategy will be implemented incrementally as user load increases, with the most performance-critical features receiving caching support first.
+
+### Social Authentication Implementation Strategy (Phase 2)
+
+When implementing social authentication with Laravel Socialite in Phase 2, the existing authentication architecture will require minimal changes:
+
+#### Database Schema Extensions
+- Add `provider`, `provider_id`, and `avatar_url` columns to existing users table
+- Add composite unique index for social accounts (provider + provider_id)
+- Maintain backward compatibility with existing email/password users
+
+#### Service Layer Extensions
+- Extend existing `UserService` with social authentication methods
+- Implement `findOrCreateFromSocial()` method for OAuth user handling
+- Support account linking for users who initially registered with email/password
+- Handle profile data synchronization (name, email, avatar)
+
+#### Standard Laravel Integration
+- Social authentication will integrate seamlessly with existing standard Laravel forms
+- Add social login buttons to existing authentication forms
+- Maintain consistent user experience with standard Laravel redirects
+- Support standard redirect-based authentication flows
+
+#### Benefits for Bible Reading Community
+- **Google**: Seamless integration for users already using Google services
+- **Facebook**: Access to Christian communities and groups
+- **Apple Sign-In**: Privacy-focused option for security-conscious users
+- **Enhanced profiles**: Verified emails and profile pictures improve user experience
+
+This implementation strategy ensures social authentication enhances rather than disrupts the existing user experience while maintaining the clean architecture established in the MVP.

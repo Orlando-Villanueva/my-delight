@@ -8,17 +8,27 @@
 * **Deployment:** Laravel Cloud (PaaS)
 * **Development Workflow:** Continuous deployment with feature-based PR structure
 
+## **📋 Roadmap Updates (Post PR-4 Completion)**
+
+**✅ Authentication Completed:** Successfully implemented user authentication with simplified standard Laravel forms instead of HTMX for reliability and MVP speed (~300 lines of JavaScript complexity removed).
+
+**🔄 Prioritization Changes:** Reordered PRs 5-10 to prioritize core user functionality over UI polish:
+- **Accelerated:** Reading log core features (PR-5) moved up as highest priority  
+- **Combined:** UI refinements integrated into later PRs since design system is 85% complete
+- **Streamlined:** Reduced from 18 PRs to 10 PRs by combining related functionality
+- **Focus Shift:** Emphasis on essential features first, polish and performance later
+
 ## **MVP Development Plan**
 
 **Goal:** Launch the core "Read → Log → See Progress" loop to help users establish Bible reading habits.
 
-**Timeline:** 8 Weeks
+**Timeline:** 8 Weeks (6 weeks remaining)
 
 ### **Development Workflow**
 
 * **Feature-Based PRs:** Each feature developed in a separate branch
 * **Continuous Deployment:** Every pushed commit to the main branch triggers automatic deployment to production
-* **HTMX First Approach:** Focus on HTMX endpoints returning HTML fragments for the MVP (JSON API endpoints deferred to post-MVP)
+* **Hybrid Frontend Approach:** Standard Laravel forms for authentication (simplified), HTMX for dynamic app features (reading logs, dashboard updates)
 * **Testing Integration:** 1-2 user testing sessions during development
 * **PR Structure:** Clear, focused PRs with descriptive titles and descriptions
 * **PR Reviews:** Self-review required before merging
@@ -60,149 +70,107 @@
   - Verify essential model validations and constraints
   - Confirm core user workflow functions on both databases
 
-### **Week 2: Authentication & UI Framework**
+### **Week 2: Authentication & Core Features**
 
-**PR 4: User Authentication (3-4 days)**
-* Implement registration system with email validation
-* Create login functionality with remember me option
-* Add password reset flow
-* Build authentication views (HTMX compatible)
+**✅ PR 4: User Authentication (COMPLETED)**
+* ✅ Install and configure Laravel Fortify for backend authentication
+* ✅ Create standard Laravel authentication forms (login, registration, password reset)
+* ✅ Configure user model and authentication guards
+* ✅ Implement authentication middleware and route protection
 
-**PR 5: UI Framework & Design System (3-4 days)**
-* Implement Tailwind CSS configuration
-* Create base component library
-* Set up design tokens (colors, typography, spacing)
-* Develop responsive navigation components
+### **Week 3: Reading Log Core Features**
 
-### **Week 3: Reading Log Core**
+**PR 5: Reading Log Core Features (3-4 days)** 
+*Priority: High - Core user functionality*
+* Implement BibleReferenceService (config/bible.php + translations in lang/{locale}/bible.php)
+* Create dynamic Bible book/chapter selection with validation (66 books, chapter counts)
+* Build reading log form with validation using ReadingLogService
+* Implement book progress tracking with denormalized table updates (JSON storage)
+* Create reading history view with basic filtering and expandable notes
+* Add HTMX integration for seamless form submissions and dynamic updates
 
-**PR 6: Bible Reference System (2-3 days)**
-* Implement Bible reference services (Service Layer architecture)
-* Create book and chapter data structure
-* Build dynamic chapter selection logic
-* Set up reference validation
+### **Week 4: Dashboard & User Analytics**
 
-**PR 7: Reading Log Form (3-4 days)**
-* Develop two-step Bible passage selector
-* Create notes input with validation
-* Build submission flow with HTMX integration
-* Implement success/error handling
+**PR 6: Dashboard & User Analytics (3-4 days)**
+*Priority: High - Essential user engagement*
+* Create user dashboard layout using documented UI Requirements (card-based, responsive grid)
+* Implement UserStatisticsService with streak calculation (1-day grace period logic)
+* Build GitHub-style calendar visualization component with color-coded activity
+* Add dashboard reading log quick-entry (Floating Action Button mobile / Header Button desktop)
+* Create streak counter component with current/longest streak display
+* Implement HTMX updates for dynamic content refresh after reading log submissions
 
-### **Week 4: Streak System & First User Testing**
+### **Week 5: Bible Reading Tracking System**
 
-**PR 8: Streak Calculation System (3-4 days)**
-* Develop streak calculation services and methods
-* Implement 1-day grace period logic
-* Create longest streak tracking
-* Build streak UI components
+**PR 7: Bible Reading Tracking System (3-4 days)**
+*Priority: Medium - Enhanced user experience*
+* Enhance book completion tracking with detailed progress calculation
+* Create advanced calendar features (hover states, reading details popup)
+* Build Book Completion Grid (66 books, canonical order, color-coded status)
+* Add reading pattern analytics and summary statistics display
+* Implement automatic progress update triggers and cache invalidation
+* Create interactive book progress visualization with completion percentages
 
-**PR 9: Dashboard Integration (2-3 days)**
-* Create user dashboard layout
-* Integrate streak display
-* Add quick-log entry point
-* Build initial statistics display
+**[User Testing Session #1]** - Focus on core functionality and user flow
 
-**[User Testing Session #1]** - Focus on core functionality
+### **Week 6: Enhanced Features & Multilingual Support**
 
-### **Week 5: Visualization & Progress Tracking**
-
-**PR 10: Calendar Visualization (3-4 days)**
-* Implement GitHub-style contribution calendar
-* Create date-based coloring system
-* Build hover interaction for reading details
-* Add HTMX refresh behavior
-
-**PR 11: Book Completion Tracking (3-4 days)**
-* Create book progress services and methods
-* Implement completion percentage calculation
-* Build book grid visualization
-* Add progress update triggers
-
-### **Week 6: Statistics & Multilingual Support**
-
-**PR 12: Reading Statistics (3-4 days)**
-* Implement core statistics calculations:
-  * Total chapters read
-  * Books started vs. completed count
-  * Total days with reading activity
-* Create statistics cards and visualizations
-* Build caching layer for performance
-* Add dynamic updates via HTMX
-
-**PR 13: French Language Support (2-3 days)**
-* Set up Laravel localization
-* Create translation files
-* Add language selector
-* Implement locale-aware formatting
-* Extend Bible reference configuration to support French book names
+**PR 8: Enhanced Features & Multilingual Support (2-3 days)**
+*Priority: Medium - Market expansion and UX polish*
+* Implement French localization using documented lang files (Bible book translations)
+* Apply comprehensive design system tokens (colors, typography, iconography from UI Requirements)
+* Add advanced statistics visualizations (Book Completion Grid, enhanced calendar features)
+* Create language toggle component and seamless switching functionality
+* Polish responsive design based on user testing feedback (mobile/desktop hybrid patterns)
 
 ### **Week 7: Performance & Accessibility**
 
-**PR 14: Caching & Performance Optimization (3-4 days)**
-* Set up Laravel KV Store for caching (Redis API-compatible via Laravel Cloud)
-* Implement tiered caching strategy:
-  * Application-level cache for user statistics and streak data
-  * Cache Bible reference metadata (book/chapter counts)
-  * Cache reading history summaries
-* Configure cache invalidation strategies:
-  * Time-based TTL (5-15 min for frequent data, 24+ hours for static data)
-  * Event-based invalidation (when new readings are logged)
-  * Selective invalidation using cache tags
-* Optimize database queries with proper indexing
-* Leverage Laravel Cloud's automatic asset optimization and CDN
-* Configure hibernation for cost optimization during low traffic
-* Add HTMX loading indicators for better UX
-* Utilize Laravel Cloud's built-in performance monitoring
+**PR 9: Performance & Accessibility (3-4 days)**
+*Priority: Medium - Production readiness*
+* Set up caching strategy for user statistics and Bible data
+* Optimize database queries and add proper indexing
+* Ensure WCAG 2.1 AA compliance with ARIA labels and keyboard navigation
+* Add HTMX loading indicators and error handling
+* Implement performance monitoring and optimization
 
-**PR 15: Accessibility Implementation (3-4 days)**
-* Ensure WCAG 2.1 AA compliance
-* Add ARIA labels and roles
-* Implement keyboard navigation
-* Test with screen readers
+**[User Testing Session #2]** - Focus on performance, accessibility, and final UX
 
-**[User Testing Session #2]** - Focus on UX refinement
+### **Week 8: Final Polish & Production Deployment**
 
-### **Week 8: Final Polish & Deployment**
-
-**PR 16: UX Refinements (2-3 days)**
-* Address user testing feedback
-* Polish animations and transitions
-* Refine mobile experience
-* Enhance form validation feedback
-
-**PR 17: Final Testing & QA (2-3 days)**
-* Cross-browser compatibility testing
-* Mobile responsiveness validation
-* Security audit
-* Performance benchmarking
-
-**PR 18: Production Monitoring & Analytics (2-3 days)**
-* Configure production environment with Laravel Cloud's managed services
-* Leverage Laravel Cloud's built-in error tracking and logging
-* Utilize automatic database backup and point-in-time recovery
-* Configure Laravel Cloud's performance metrics and monitoring dashboard
-* Set up spending alerts and resource usage monitoring
-* Deploy basic analytics tracking (optional):
-  * Page view and user action monitoring
-  * Reading log creation tracking
-  * Basic user engagement metrics
-* Configure autoscaling policies and hibernation settings
-* Complete final production deployment with zero-downtime deployment
+**PR 10: Final Polish & Production Deployment (2-3 days)**
+*Priority: High - Launch readiness*
+* Address user testing feedback from sessions #1 and #2
+* Cross-browser compatibility and mobile responsiveness validation
+* Security audit and performance benchmarking
+* Configure production monitoring and analytics
+* Complete final production deployment with Laravel Cloud
 
 ## **Key Milestones**
 
-1. **End of Week 2:** Complete authentication and base UI
-2. **End of Week 4:** Core reading log and streak functionality
-3. **End of Week 6:** All main features implemented
-4. **End of Week 8:** Production-ready application
+1. **✅ End of Week 2:** Authentication system completed (PR-4)
+2. **End of Week 3:** Core reading log functionality with Bible reference system (PR-5)
+3. **End of Week 4:** Dashboard and user analytics with streak/calendar visualization (PR-6)
+4. **End of Week 5:** Enhanced Bible reading tracking and book completion system (PR-7)
+5. **Mid-Week 6:** Enhanced features and multilingual support (PR-8, 2-3 days)
+6. **End of Week 8:** Production-ready application with full testing and deployment (PR-9, PR-10)
 
 ## **Future Phases**
 
 After validating the MVP with real users, future phases will expand the application with:
 
+### **Phase 2: Enhanced Authentication & User Experience**
+* **Social Authentication (Laravel Socialite)**
+  - Google OAuth integration for seamless sign-in
+  - Facebook OAuth for Christian community users
+  - Apple Sign-In for privacy-focused authentication
+  - Account linking for existing users
+  - Social profile data enhancement (verified emails, profile pictures)
 * Advanced statistics and insights
 * Reading plans and goals
 * Enhanced habit formation mechanics
+
+### **Phase 3: Mobile & Extended Features**
 * Mobile applications (iOS/Android)
+* Advanced social features and community integration
 
 _Note: This roadmap focuses on the MVP phase only. Future phases will be planned based on user feedback and validation of core concepts._

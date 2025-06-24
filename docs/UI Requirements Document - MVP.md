@@ -106,10 +106,12 @@ This approach ensures platform-appropriate interactions while maintaining consis
   - Email input field
   - Password input field with visibility toggle
   - "Remember me" checkbox
-  - "Login" primary button
+  - "Login" primary button (submits to Fortify's `/login` endpoint)
   - "Forgot password?" link
   - "Register" secondary link
   - Language toggle (EN/FR)
+  - HTMX integration for seamless form submission and error handling
+  - Server-side validation error display
 
 #### Registration Screen
 
@@ -121,9 +123,11 @@ This approach ensures platform-appropriate interactions while maintaining consis
   - Password confirmation field
   - Password strength indicator
   - Terms of service checkbox
-  - "Register" primary button
+  - "Register" primary button (submits to Fortify's `/register` endpoint)
   - "Login" secondary link
   - Language toggle (EN/FR)
+  - HTMX integration for seamless form submission and error handling
+  - Server-side validation error display from Fortify backend
 
 ### 2. Dashboard Screen
 
