@@ -86,14 +86,24 @@
 * Create dynamic Bible book/chapter selection with validation (66 books, chapter counts)
 * Build reading log form with validation using ReadingLogService
 * Implement book progress tracking with denormalized table updates (JSON storage)
-* Create reading history view with basic filtering and expandable notes
+* Create minimal reading history view (unstyled, functional only)
 * Add HTMX integration for seamless form submissions and dynamic updates
+* **Note: Minimal UI only - basic HTML structure without styling/design**
 
-### **Week 4: Dashboard & User Analytics**
+### **Week 4: Design System & Dashboard**
 
-**PR 6: Dashboard & User Analytics (3-4 days)**
+**PR 6: Design System Implementation (2-3 days)**
+*Priority: High - Design foundation for all components*
+* Extract design tokens from v0 prototype (CSS variables, color system)
+* Create comprehensive Tailwind design system matching UI Requirements Document
+* Build reusable Blade components (cards, buttons, forms, layouts)
+* Apply pixel-perfect design to ALL existing pages (auth, dashboard, forms, history)
+* Establish design patterns and component library for future features
+* Implement responsive grid system and mobile-first approach
+
+**PR 7: Dashboard & User Analytics (2-3 days)**
 *Priority: High - Essential user engagement*
-* Create user dashboard layout using documented UI Requirements (card-based, responsive grid)
+* Create advanced dashboard components using established design system
 * Implement UserStatisticsService with streak calculation (1-day grace period logic)
 * Build GitHub-style calendar visualization component with color-coded activity
 * Add dashboard reading log quick-entry (Floating Action Button mobile / Header Button desktop)
@@ -102,7 +112,7 @@
 
 ### **Week 5: Bible Reading Tracking System**
 
-**PR 7: Bible Reading Tracking System (3-4 days)**
+**PR 8: Bible Reading Tracking System (3-4 days)**
 *Priority: Medium - Enhanced user experience*
 * Enhance book completion tracking with detailed progress calculation
 * Create advanced calendar features (hover states, reading details popup)
@@ -115,17 +125,17 @@
 
 ### **Week 6: Enhanced Features & Multilingual Support**
 
-**PR 8: Enhanced Features & Multilingual Support (2-3 days)**
+**PR 9: Enhanced Features & Multilingual Support (2-3 days)**
 *Priority: Medium - Market expansion and UX polish*
 * Implement French localization using documented lang files (Bible book translations)
-* Apply comprehensive design system tokens (colors, typography, iconography from UI Requirements)
-* Add advanced statistics visualizations (Book Completion Grid, enhanced calendar features)
+* Add advanced statistics visualizations (enhanced calendar features, reading patterns)
 * Create language toggle component and seamless switching functionality
 * Polish responsive design based on user testing feedback (mobile/desktop hybrid patterns)
+* Implement theme toggle (light/dark mode) from design system
 
 ### **Week 7: Performance & Accessibility**
 
-**PR 9: Performance & Accessibility (3-4 days)**
+**PR 10: Performance & Accessibility (3-4 days)**
 *Priority: Medium - Production readiness*
 * Set up caching strategy for user statistics and Bible data
 * Optimize database queries and add proper indexing
@@ -137,7 +147,7 @@
 
 ### **Week 8: Final Polish & Production Deployment**
 
-**PR 10: Final Polish & Production Deployment (2-3 days)**
+**PR 11: Final Polish & Production Deployment (2-3 days)**
 *Priority: High - Launch readiness*
 * Address user testing feedback from sessions #1 and #2
 * Cross-browser compatibility and mobile responsiveness validation
@@ -149,10 +159,11 @@
 
 1. **✅ End of Week 2:** Authentication system completed (PR-4)
 2. **End of Week 3:** Core reading log functionality with Bible reference system (PR-5)
-3. **End of Week 4:** Dashboard and user analytics with streak/calendar visualization (PR-6)
-4. **End of Week 5:** Enhanced Bible reading tracking and book completion system (PR-7)
-5. **Mid-Week 6:** Enhanced features and multilingual support (PR-8, 2-3 days)
-6. **End of Week 8:** Production-ready application with full testing and deployment (PR-9, PR-10)
+3. **Early Week 4:** Design system implementation with pixel-perfect UI (PR-6)
+4. **End of Week 4:** Dashboard and user analytics with streak/calendar visualization (PR-7)
+5. **End of Week 5:** Enhanced Bible reading tracking and book completion system (PR-8)
+6. **Mid-Week 6:** Enhanced features and multilingual support (PR-9, 2-3 days)
+7. **End of Week 8:** Production-ready application with full testing and deployment (PR-10, PR-11)
 
 ## **Future Phases**
 
