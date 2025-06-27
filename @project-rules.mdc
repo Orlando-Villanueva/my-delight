@@ -1,0 +1,56 @@
+---
+description: 
+globs: 
+alwaysApply: false
+---
+# Bible Reading Habit Builder - Project Rules
+
+## Development Environment
+
+### Laravel Herd Configuration
+- **NEVER use `php artisan serve`** - This project uses Laravel Herd for local development
+- **Laravel Herd provides native web server** - Sites are automatically served via nginx with .test domains
+- **Access via Herd interface** - Use Herd's GUI or check configured local domains
+- **Herd manages PHP versions** - No need to manually configure PHP server settings
+
+### Testing Alternatives
+When testing the system, use these methods instead of starting a development server:
+- **Run Laravel tests**: `php artisan test` or `vendor/bin/pest`
+- **Check routes**: `php artisan route:list`
+- **Inspect database**: `php artisan tinker` or database tools
+- **Validate configuration**: `php artisan config:show`
+- **Check migrations**: `php artisan migrate:status`
+- **Seed data for testing**: `php artisan db:seed`
+
+## Development Workflow
+
+### Local Testing
+- **Use Herd's configured domain** - Project should be accessible via local .test domain
+- **Leverage Herd Pro features** if available (dumps, logs, debugging)
+- **Database testing** - Use `php artisan migrate:fresh --seed` for clean test data
+- **Feature verification** - Test individual components via artisan commands and tests
+
+### Code Validation
+- **Run automated tests** before marking issues complete
+- **Check Laravel logs** via `storage/logs/laravel.log` or Herd's log viewer
+- **Validate HTMX functionality** through browser developer tools
+- **Test form submissions** and API endpoints through the configured Herd domain
+
+## Code Quality Rules
+
+### Import Standards
+- **NEVER use fully qualified class names in code** - always use proper import statements
+- **BAD**: `function (Illuminate\Http\Request $request)` or `new Illuminate\Support\Collection()`
+- **GOOD**: Add `use Illuminate\Http\Request;` at top, then use `function (Request $request)`
+- **Apply to all contexts**: Controllers, routes, services, models, tests, and any PHP files
+- **Rationale**: Improves readability, follows PSR standards, enables IDE autocompletion
+
+## Issue Completion Criteria
+- All features must be testable via the Herd-configured domain
+- Tests must pass: `php artisan test`
+- No critical errors in Laravel logs
+- HTMX functionality verified in browser
+- Database operations confirmed via tinker or migrations
+
+
+
