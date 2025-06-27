@@ -12,7 +12,7 @@
         <link href="https://fonts.bunny.net/css?family=inter:400,500,600,700" rel="stylesheet" />
 
         <!-- HTMX CDN -->
-        <script src="https://unpkg.com/htmx.org@1.9.10" integrity="sha384-D1Kt99CQMDuVetoL1rYwg5t+9QdHe7NLX/SoJYkXDFfX37iInKRy5xLSi8nO7UC" crossorigin="anonymous"></script>
+        <script src="https://cdn.jsdelivr.net/npm/htmx.org@2.0.5/dist/htmx.min.js"></script>
         
         <!-- Alpine.js CDN -->
         <script defer src="https://unpkg.com/alpinejs@3.13.3/dist/cdn.min.js"></script>
