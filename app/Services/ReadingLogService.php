@@ -248,10 +248,13 @@ class ReadingLogService
             throw new InvalidArgumentException("Invalid book ID: {$bookId}");
         }
 
+        // Get the localized book name (string) instead of the array
+        $bookName = $this->bibleService->getLocalizedBookName($bookId);
+
         $bookProgress = $user->bookProgress()->firstOrCreate(
             ['book_id' => $bookId],
             [
-                'book_name' => $book['name'],
+                'book_name' => $bookName,
                 'total_chapters' => $book['chapters'],
                 'chapters_read' => [],
                 'completion_percent' => 0,

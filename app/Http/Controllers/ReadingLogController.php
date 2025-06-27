@@ -22,7 +22,10 @@ class ReadingLogController extends Controller
      */
     public function create(Request $request)
     {
-        $books = $this->bibleReferenceService->listBibleBooks();
+        // TEMPORARY: Test French support by loading French book names
+        // You can change 'fr' to 'en' to switch back to English
+        $locale = $request->get('lang', 'en'); // Allow testing via ?lang=fr
+        $books = $this->bibleReferenceService->listBibleBooks(null, $locale);
         
         // Return partial view for HTMX requests (seamless content loading)
         if ($request->header('HX-Request')) {

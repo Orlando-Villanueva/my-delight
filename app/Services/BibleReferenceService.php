@@ -3,6 +3,7 @@
 namespace App\Services;
 
 use InvalidArgumentException;
+use Exception;
 
 class BibleReferenceService
 {
@@ -46,8 +47,11 @@ class BibleReferenceService
             $bookId = (int) $identifier;
             if (isset($this->bibleConfig['books'][$bookId])) {
                 $book = $this->bibleConfig['books'][$bookId];
-                // Add translated name to the response
-                $book['name'] = $this->getLocalizedBookName($bookId, $locale);
+                // Add translated names for all supported locales
+                $book['name'] = [];
+                foreach ($this->supportedLocales as $supportedLocale) {
+                    $book['name'][$supportedLocale] = $this->getLocalizedBookName($bookId, $supportedLocale);
+                }
                 return $book;
             }
             return null;
@@ -57,7 +61,11 @@ class BibleReferenceService
         foreach ($this->bibleConfig['books'] as $bookId => $book) {
             $translatedName = $this->getLocalizedBookName($bookId, $locale);
             if (strtolower($translatedName) === strtolower($identifier)) {
-                $book['name'] = $translatedName;
+                // Add translated names for all supported locales
+                $book['name'] = [];
+                foreach ($this->supportedLocales as $supportedLocale) {
+                    $book['name'][$supportedLocale] = $this->getLocalizedBookName($bookId, $supportedLocale);
+                }
                 return $book;
             }
         }
@@ -237,27 +245,32 @@ class BibleReferenceService
             throw new InvalidArgumentException("Invalid book ID: {$bookId}");
         }
 
-        // Use Laravel's translation system
+        // Use Laravel's translation system if available
         $translationKey = "bible.books.{$bookId}";
         
         // Try to get translation, fallback to English if not found
-        if (function_exists('__')) {
-            $translation = __($translationKey, [], $locale);
-            
-            // If translation key is returned unchanged, try fallback locale
-            if ($translation === $translationKey && $locale !== $this->defaultLocale) {
-                $translation = __($translationKey, [], $this->defaultLocale);
+        if (function_exists('__') && app()->bound('translator')) {
+            try {
+                $translation = __($translationKey, [], $locale);
+                
+                // If translation key is returned unchanged, try fallback locale
+                if ($translation === $translationKey && $locale !== $this->defaultLocale) {
+                    $translation = __($translationKey, [], $this->defaultLocale);
+                }
+                
+                // If still no translation, use fallback
+                if ($translation === $translationKey) {
+                    return $this->getTranslationFallback($bookId, $locale);
+                }
+                
+                return $translation;
+            } catch (Exception $e) {
+                // If translation fails, use fallback
+                return $this->getTranslationFallback($bookId, $locale);
             }
-            
-            // If still no translation, return a fallback
-            if ($translation === $translationKey) {
-                return "Book {$bookId}";
-            }
-            
-            return $translation;
         }
         
-        // Fallback for testing environment
+        // Fallback for testing environment or when translator not available
         return $this->getTranslationFallback($bookId, $locale);
     }
 
@@ -358,7 +371,9 @@ class BibleReferenceService
         
         // Get localized testament name
         $translationKey = "bible.testaments.{$testament}";
-        $name = function_exists('__') ? __($translationKey, [], $locale) : $this->getTestamentFallback($testament, $locale);
+        $name = (function_exists('__') && app()->bound('translator')) 
+            ? __($translationKey, [], $locale) 
+            : $this->getTestamentFallback($testament, $locale);
         
         return [
             'name' => $name,
