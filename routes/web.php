@@ -2,7 +2,6 @@
 
 use Illuminate\Support\Facades\Route;
 use Illuminate\Http\Request;
-use App\Http\Controllers\DemoController;
 use App\Http\Controllers\ReadingLogController;
 
 Route::get('/', function () {
@@ -28,10 +27,7 @@ Route::middleware('guest')->group(function () {
     })->name('password.reset');
 });
 
-// HTMX and Alpine.js Demo Routes
-Route::get('/demo', [DemoController::class, 'index'])->name('demo');
-Route::get('/demo/verse', [DemoController::class, 'getRandomVerse'])->name('demo.verse');
-Route::post('/demo/log', [DemoController::class, 'logReading'])->name('demo.log');
+
 
 // Authenticated Routes
 Route::middleware('auth')->group(function () {
@@ -46,21 +42,20 @@ Route::middleware('auth')->group(function () {
         return view('dashboard');
     })->name('dashboard');
 
-    // Temporary routes (will be replaced with real controllers later)
+    // Coming Soon Routes (MVP placeholders)
     Route::get('/profile', function () {
-        return view('preview-layout');
+        return response()->view('dashboard', [
+            'message' => 'Profile management coming soon in post-MVP!'
+        ]);
     })->name('profile');
 
     Route::get('/history', function () {
-        return view('preview-layout');
+        return response()->view('dashboard', [
+            'message' => 'Reading history coming soon in post-MVP!'
+        ]);
     })->name('history');
 
     // Reading Log Routes
     Route::get('/logs/create', [ReadingLogController::class, 'create'])->name('logs.create');
     Route::post('/logs', [ReadingLogController::class, 'store'])->name('logs.store');
 });
-
-// Layout Preview Route (temporary for testing - accessible without auth)
-Route::get('/preview-layout', function () {
-    return view('preview-layout');
-})->name('layout.preview');

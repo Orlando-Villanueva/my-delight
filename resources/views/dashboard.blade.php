@@ -36,9 +36,7 @@
                 <a href="{{ route('profile') }}" class="block w-full text-left px-3 py-2 text-sm text-gray-600 hover:bg-white rounded border border-transparent hover:border-gray-200">
                     Edit Profile
                 </a>
-                <a href="{{ route('demo') }}" class="block w-full text-left px-3 py-2 text-sm text-gray-600 hover:bg-white rounded border border-transparent hover:border-gray-200">
-                    View Demo
-                </a>
+
                 <form method="POST" action="{{ route('logout') }}" class="w-full">
                     @csrf
                     <button type="submit" class="w-full text-left px-3 py-2 text-sm text-gray-600 hover:bg-white rounded border border-transparent hover:border-gray-200">
