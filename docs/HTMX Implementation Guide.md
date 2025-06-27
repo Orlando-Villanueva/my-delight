@@ -14,6 +14,25 @@ HTMX follows a server-centric approach where:
 - **Minimal Client Logic**: Client handles only presentation and user interaction
 - **RESTful Design**: Embraces true REST principles with HATEOAS
 
+### HTMX-Native Philosophy
+
+Follow these principles to avoid over-engineering and maintain the HTMX way:
+
+#### ✅ **Prefer Built-in HTMX Features**
+- Use HTMX's declarative attributes over JavaScript event listeners
+- Leverage built-in error handling instead of manual DOM manipulation
+- Trust HTMX's response handling capabilities
+
+#### ❌ **Avoid JavaScript Complexity**
+- Don't use `addEventListener` for HTMX responses when attributes exist
+- Avoid manual JSON parsing when HTML responses work
+- Minimize custom JavaScript for HTMX operations
+
+#### 🎯 **Hypermedia-First Approach**
+- Return HTML fragments, not JSON when possible
+- Use appropriate HTTP status codes (422 for validation, etc.)
+- Let HTMX handle response routing with built-in attributes
+
 ```html
 <!-- Example: Reading log list that updates server-side -->
 <div id="reading-logs">
@@ -70,6 +89,68 @@ public function getReadingLogs(Request $request)
 ```
 
 ## Error Handling Patterns
+
+### Modern HTMX Error Handling (Recommended)
+
+Use HTMX's built-in error handling attributes for clean, declarative error management:
+
+#### **Setup: Response-Targets Extension Required**
+
+The `response-targets` extension is **required** for `hx-target-error` to work properly:
+
+```html
+<!-- In layout head - Load extension after main HTMX -->
+<script src="https://cdn.jsdelivr.net/npm/htmx.org@2.0.5/dist/htmx.min.js"></script>
+<script src="https://cdn.jsdelivr.net/npm/htmx.org@2.0.5/dist/ext/response-targets.js"></script>
+```
+
+#### **Implementation: Form with Error Handling**
+
+```html
+<!-- Simple, HTMX-native error handling -->
+<form hx-post="{{ route('logs.store') }}" 
+      hx-target="#form-response" 
+      hx-swap="innerHTML"
+      hx-ext="response-targets"
+      hx-target-error="#form-response">
+    @csrf
+    
+    <div id="form-response">
+        <!-- Success and error responses appear here -->
+    </div>
+    
+    <!-- Form fields... -->
+</form>
+```
+
+**Key Configuration:**
+- `hx-ext="response-targets"` - Activates the extension for this form
+- `hx-target-error="#form-response"` - Where error responses (4xx/5xx) are displayed
+- `hx-target="#form-response"` - Where success responses (2xx) are displayed
+
+**Key Benefits:**
+- ✅ **No JavaScript required** - Pure HTMX declarative approach
+- ✅ **Automatic error routing** - 4xx/5xx responses go to `hx-target-error`
+- ✅ **Hypermedia-focused** - Returns HTML fragments, not JSON
+- ✅ **Simpler debugging** - No complex event listeners to trace
+
+#### **Common Issue: Extension Not Loaded**
+
+**Problem:** `hx-target-error` doesn't work, errors only appear in network tab
+**Cause:** Missing `response-targets` extension or `hx-ext` attribute
+**Solution:** Load extension and add `hx-ext="response-targets"` to form
+
+**Avoid Complex Approaches:**
+```html
+<!-- ❌ DON'T: Complex JavaScript event listeners -->
+<script>
+document.addEventListener('htmx:responseError', function(evt) {
+    // Manual DOM manipulation - not the HTMX way
+    const target = document.querySelector('#form-response');
+    target.innerHTML = evt.detail.xhr.response;
+});
+</script>
+```
 
 ### Laravel Validation Integration
 

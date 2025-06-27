@@ -1,0 +1,122 @@
+---
+description: 
+globs: 
+alwaysApply: false
+---
+## Project Documentation Rules
+
+### Context Awareness
+- **ALWAYS keep project docs (/docs) in mind** - check them if not already in conversation context
+- **Check docs when**: request lacks technical details, unclear requirements, or when unsure about project specifications
+- **Remember**: There are established project requirements that guide all decisions
+
+### Scope Validation
+- **NEVER implement features outside documented scope** - all features must align with the Product Requirements Document
+- **ALWAYS validate requests against project documentation** before starting any implementation
+- **STOP and ask for clarification** when user requests features not mentioned in the docs
+- **Require explicit documentation updates** before implementing any out-of-scope functionality
+- **Remember the core purpose**: This is a Bible Reading Habit Builder - features must support Bible reading tracking, habit formation, or user motivation
+- **Flag scope creep immediately**: Alert user when requests don't align with the established product vision
+
+### Alignment Verification  
+- **Flag misalignments**: Notify user when requests conflict with established docs, especially significant changes
+- **Ask targeted questions**: When conflicts detected, ask about the specific conflict and whether docs should be updated
+- **Prioritize speed**: Use sufficient understanding from docs context rather than cross-referencing every minor request
+
+## Mandatory Documentation Analysis Rules
+
+### Pre-Implementation Requirements
+- **MANDATORY DOCUMENTATION CHECK**: Before writing ANY code, MUST explicitly search and review relevant project documentation
+- **ZERO ASSUMPTIONS**: Never assume how features should work - always validate against actual documentation first
+- **EXPLICIT VALIDATION**: Must cite specific documentation sources that support the implementation approach
+- **Documentation First**: If unclear about any aspect, READ THE DOCS before making implementation decisions
+
+### Required Documentation Review Process
+1. **ALWAYS search relevant docs** using codebase_search for any feature request
+2. **READ the specific documentation** that relates to the feature being implemented  
+3. **CITE the documentation source** when explaining implementation decisions
+4. **FLAG conflicts immediately** if user request differs from documented requirements
+5. **ASK for clarification** rather than making assumptions when docs are unclear
+
+### Implementation Blocking Rules
+- **BLOCK implementation** if documentation hasn't been reviewed for the specific feature
+- **BLOCK implementation** if user request conflicts with documented requirements without explicit approval
+- **BLOCK implementation** if no clear documentation exists for the requested feature scope
+- **REQUIRE documentation updates** before implementing anything not covered in existing docs
+
+### Documentation Sources to Check (in order of priority)
+1. **Product Requirements Document** - for feature scope and user requirements
+2. **Technical Architecture** - for implementation patterns and system design
+3. **UI Requirements Document** - for interface and user experience specifications
+4. **Database Schema Documentation** - for data structure requirements
+5. **Existing code comments and docstrings** - for established patterns
+
+### Enforcement Protocol
+- **State explicitly**: "Checking documentation for [feature]..." before any implementation
+- **Report findings**: "Documentation shows [specific requirement] from [source]..."
+- **Flag deviations**: "User request differs from documented requirement: [explain difference]"
+- **Require approval**: "This requires documentation update or user confirmation to proceed"
+
+### No Exceptions Policy
+- **NO feature implementation without documentation review** - regardless of how "simple" it seems
+- **NO assumptions about "obvious" behavior** - everything must be documented or explicitly clarified
+- **NO proceeding when in doubt** - always stop and check documentation first
+- **NO partial implementations** - complete documentation review before starting any code
+
+## Linear Issue Management Rules
+
+### Issue Status Updates
+- **NEVER mark an issue as "Done" unless ALL original tasks and acceptance criteria are fully completed**
+- **ALWAYS verify completion against the original issue description before changing status**
+- **If only partial progress is made, update status to "In Progress" with clear breakdown of completed vs remaining work**
+- **When in doubt about completion status, ask the user for confirmation before marking as Done**
+
+### Task Preservation
+- **NEVER remove or discard original tasks from issue descriptions unless explicitly instructed by the user**
+- **ALWAYS preserve the original task list and acceptance criteria as written in the initial issue**
+- **When updating issues, clearly separate completed tasks (✅) from remaining tasks (🔄) without removing any**
+- **If tasks need modification or removal, ask the user for explicit permission first**
+
+### Issue Updates Best Practices
+- **Use clear visual indicators**: ✅ for completed, 🔄 for in progress, ❌ for blocked
+- **Maintain original structure**: Keep the original task organization and grouping
+- **Add context, don't replace**: Add implementation details and progress notes without removing original requirements
+- **Document decisions**: When making implementation choices, explain the rationale in comments rather than changing original tasks
+
+## UI/Styling Rules
+
+### Tailwind CSS Framework
+- **ALWAYS use Tailwind CSS utility classes** for all styling instead of writing custom CSS
+- **NEVER write custom CSS rules** except for very specific framework requirements (like HTMX indicators)
+- **Follow Tailwind best practices**: Use design tokens, maintain consistency, leverage the design system
+- **Exception policy**: Only use custom CSS for technical requirements that cannot be achieved with Tailwind utilities
+
+## HTMX Implementation Standards
+
+### HTMX-Native Approach (ALWAYS Follow)
+- **Use built-in HTMX attributes** over JavaScript event listeners
+- **Prefer declarative over imperative** - use `hx-target-error` instead of `addEventListener`
+- **Return HTML fragments**, not JSON responses for HTMX requests
+- **Trust HTMX's capabilities** - don't reinvent what HTMX provides
+
+### Red Flags for HTMX Code (STOP and Simplify)
+- `document.addEventListener('htmx:*')` for basic error handling
+- Manual DOM manipulation in JavaScript for HTMX responses
+- Complex JSON parsing when HTML fragments work
+- Custom event listeners that duplicate HTMX built-in functionality
+
+### The HTMX Philosophy Test
+- "Can this be done with HTMX attributes alone?"
+- "Am I fighting against HTMX or working with it?"
+- "Is this the simplest hypermedia solution?"
+
+### Enforcement Rules
+- **ALWAYS check** `docs/HTMX Implementation Guide.md` for approved patterns before implementing HTMX features
+- **REJECT complex JavaScript solutions** when HTMX attributes can handle the same functionality
+- **PREFER modern HTMX 2.0+ features** over legacy workarounds
+- **FLAG over-engineering** when simple declarative HTMX can replace custom JavaScript
+
+
+
+
+

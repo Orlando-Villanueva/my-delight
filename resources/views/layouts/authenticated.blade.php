@@ -13,6 +13,8 @@
 
         <!-- HTMX CDN -->
         <script src="https://cdn.jsdelivr.net/npm/htmx.org@2.0.5/dist/htmx.min.js"></script>
+        <!-- HTMX Response Targets Extension for Error Handling -->
+        <script src="https://cdn.jsdelivr.net/npm/htmx.org@2.0.5/dist/ext/response-targets.js"></script>
         
         <!-- Alpine.js CDN -->
         <script defer src="https://unpkg.com/alpinejs@3.13.3/dist/cdn.min.js"></script>
