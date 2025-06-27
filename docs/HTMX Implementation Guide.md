@@ -27,6 +27,7 @@ Follow these principles to avoid over-engineering and maintain the HTMX way:
 - Don't use `addEventListener` for HTMX responses when attributes exist
 - Avoid manual JSON parsing when HTML responses work
 - Minimize custom JavaScript for HTMX operations
+- **✅ Applied in ReadingLogService**: Removed complex event dispatching, kept clean HTML responses
 
 #### 🎯 **Hypermedia-First Approach**
 - Return HTML fragments, not JSON when possible
@@ -46,7 +47,49 @@ Follow these principles to avoid over-engineering and maintain the HTMX way:
 
 ### Standard Response Patterns
 
-#### 1. Partial Content Updates
+#### 1. Content Loading Pattern (Recommended for Forms)
+
+**Use Case**: Loading forms and content sections within the main layout without full page reloads.
+
+**Pattern**: HTMX loads content into main content area, providing seamless navigation while maintaining URL accessibility.
+
+```html
+<!-- Dashboard with main content area -->
+<div id="main-content">
+    <!-- Dashboard content or loaded forms appear here -->
+    <div class="dashboard-overview">
+        <button hx-get="{{ route('logs.create') }}" 
+                hx-target="#main-content" 
+                hx-swap="innerHTML">
+            📖 Log Reading
+        </button>
+    </div>
+</div>
+```
+
+```php
+// Controller method supporting both HTMX and direct access
+public function create(Request $request)
+{
+    $books = $this->bibleReferenceService->listBibleBooks();
+    
+    // Return partial for HTMX requests
+    if ($request->header('HX-Request')) {
+        return view('partials.reading-log-form', compact('books'));
+    }
+    
+    // Return full page for direct access (graceful degradation)
+    return view('logs.create', compact('books'));
+}
+```
+
+**Benefits**:
+- ✅ **Seamless Navigation**: No page reloads, maintains app-like feel
+- ✅ **URL Accessibility**: Direct URLs still work for bookmarking
+- ✅ **Progressive Enhancement**: Graceful degradation if JavaScript disabled
+- ✅ **Consistent Layout**: Form appears within authenticated layout
+
+#### 2. Partial Content Updates
 ```php
 // Controller method returning HTML fragment
 public function getReadingLogs(Request $request)

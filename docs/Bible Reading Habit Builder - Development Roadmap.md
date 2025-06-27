@@ -80,15 +80,15 @@
 
 ### **Week 3: Reading Log Core Features**
 
-**PR 5: Reading Log Core Features (3-4 days)** 
+**🔄 PR 5: Reading Log Core Features (IN PROGRESS)**
 *Priority: High - Core user functionality*
-* Implement BibleReferenceService (config/bible.php + translations in lang/{locale}/bible.php)
-* Create dynamic Bible book/chapter selection with validation (66 books, chapter counts)
-* Build reading log form with validation using ReadingLogService
-* Implement book progress tracking with denormalized table updates (JSON storage)
-* Create minimal reading history view (unstyled, functional only)
-* Add HTMX integration for seamless form submissions and dynamic updates
-* **Note: Minimal UI only - basic HTML structure without styling/design**
+* ✅ Implemented BibleReferenceService with config/bible.php + translations
+* ✅ Created dynamic Bible book/chapter selection with validation (66 books)  
+* ✅ Built reading log form with ReadingLogService business logic
+* ✅ Implemented book progress tracking with JSON chapter storage
+* ✅ Added HTMX integration following server-driven state pattern
+* ❌ **Pending**: Reading History View (ORL-59)
+* ❌ **Pending**: Dashboard Integration & Statistics (ORL-60)
 
 ### **Week 4: Design System & Dashboard**
 

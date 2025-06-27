@@ -102,46 +102,17 @@ app/
 
 ### Service Layer Implementation
 
-#### ReadingLogService
-Handles all business logic related to Bible reading logs:
+#### ReadingLogService ✅ **IMPLEMENTED**
+Handles Bible reading log business logic with HTMX integration:
 
-```php
-namespace App\Services;
-
-use App\Models\User;
-use App\Models\ReadingLog;
-
-class ReadingLogService
-{
-    /**
-     * Log a new Bible reading entry for a user.
-     */
-    public function logReading(User $user, array $data): ReadingLog
-    {
-        // Create the reading log
-        $readingLog = $user->readingLogs()->create([
-            'book_id' => $data['book_id'],
-            'chapter' => $data['chapter'],
-            'passage_text' => $data['passage_text'],
-            'date_read' => $data['date_read'] ?? now()->toDateString(),
-            'notes_text' => $data['notes_text'] ?? null,
-        ]);
-
-        // Update book progress
-        $this->updateBookProgress($user, $data['book_id'], $data['chapter']);
-
-        return $readingLog;
-    }
-
-    /**
-     * Calculate the current reading streak for a user.
-     */
-    public function calculateCurrentStreak(User $user): int
-    {
-        // Streak calculation logic with 1-day grace period
-        // Implementation details in actual service class
-    }
-}
+**Core Features:**
+- ✅ Bible reference validation via BibleReferenceService
+- ✅ Auto-formatting ("Genesis 1", "John 1-3") 
+- ✅ Multi-chapter support (ranges as separate entries)
+- ✅ Book progress tracking with JSON chapters
+- ✅ Streak calculations (current + longest)
+- ✅ Reading history with filtering
+- ✅ HTMX-native responses (no complex JavaScript)
 ```
 
 #### UserStatisticsService
@@ -885,6 +856,7 @@ This approach allows the same backend logic to serve both the HTMX-based web int
 - **Minimal Client Logic**: Alpine.js provides "sprinkles of interactivity" for local UI state without complex state management.
 - **Progressive Enhancement**: Works well even with limited JavaScript support.
 - **Performance**: Lightweight compared to full frontend frameworks, leading to faster page loads.
+- **Seamless Navigation**: Content loading patterns provide app-like experience without full page reloads.
 
 **Implementation Details:**
 - **HTMX**: Handles server communication, form submissions, HTML fragment updates, and event triggering
