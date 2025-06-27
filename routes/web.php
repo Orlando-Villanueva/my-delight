@@ -2,6 +2,7 @@
 
 use Illuminate\Support\Facades\Route;
 use App\Http\Controllers\DemoController;
+use App\Http\Controllers\ReadingLogController;
 
 Route::get('/', function () {
     return view('welcome');
@@ -38,18 +39,19 @@ Route::middleware('auth')->group(function () {
         return view('dashboard');
     })->name('dashboard');
 
-    // Temporary routes for layout preview (these will be replaced with real controllers later)
-    Route::get('/history', function () {
-        return view('preview-layout');
-    })->name('history');
-
+    // Temporary routes (will be replaced with real controllers later)
     Route::get('/profile', function () {
         return view('preview-layout');
     })->name('profile');
 
-    Route::get('/logs/create', function () {
+    Route::get('/history', function () {
         return view('preview-layout');
-    })->name('logs.create');
+    })->name('history');
+
+    // Reading Log Routes
+    Route::get('/logs/create', [ReadingLogController::class, 'create'])->name('logs.create');
+    Route::post('/logs', [ReadingLogController::class, 'store'])->name('logs.store');
+    Route::get('/books/{book}/chapters', [ReadingLogController::class, 'getBookChapters'])->name('books.chapters');
 });
 
 // Layout Preview Route (temporary for testing - accessible without auth)

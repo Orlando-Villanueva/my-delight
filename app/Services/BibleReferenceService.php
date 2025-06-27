@@ -93,6 +93,82 @@ class BibleReferenceService
     }
 
     /**
+     * Format Bible reference range for display
+     */
+    public function formatBibleReferenceRange(int $bookId, int $startChapter, int $endChapter, ?string $locale = null): string
+    {
+        $locale = $locale ?? $this->defaultLocale;
+        
+        if (!$this->validateBookId($bookId)) {
+            throw new InvalidArgumentException("Invalid book ID: {$bookId}");
+        }
+
+        $bookName = $this->getLocalizedBookName($bookId, $locale);
+        
+        if ($startChapter === $endChapter) {
+            return "{$bookName} {$startChapter}";
+        }
+        
+        return "{$bookName} {$startChapter}-{$endChapter}";
+    }
+
+    /**
+     * Validate chapter range for a specific book
+     */
+    public function validateChapterRange(int $bookId, int $startChapter, int $endChapter): bool
+    {
+        if (!$this->validateBookId($bookId)) {
+            return false;
+        }
+
+        if ($startChapter > $endChapter) {
+            return false;
+        }
+
+        $maxChapters = $this->getBookChapterCount($bookId);
+        return $startChapter >= 1 && $endChapter <= $maxChapters;
+    }
+
+    /**
+     * Parse chapter input (single chapter or range)
+     */
+    public function parseChapterInput(string $chapterInput): array
+    {
+        $chapterInput = trim($chapterInput);
+        
+        // Check for range (e.g., "1-3")
+        if (preg_match('/^(\d+)-(\d+)$/', $chapterInput, $matches)) {
+            $start = (int) $matches[1];
+            $end = (int) $matches[2];
+            
+            // Ensure start <= end
+            if ($start > $end) {
+                [$start, $end] = [$end, $start];
+            }
+            
+            return [
+                'type' => 'range',
+                'start' => $start,
+                'end' => $end,
+                'chapters' => range($start, $end)
+            ];
+        }
+        
+        // Single chapter
+        if (preg_match('/^\d+$/', $chapterInput)) {
+            $chapter = (int) $chapterInput;
+            return [
+                'type' => 'single',
+                'start' => $chapter,
+                'end' => $chapter,
+                'chapters' => [$chapter]
+            ];
+        }
+        
+        throw new InvalidArgumentException("Invalid chapter input format: {$chapterInput}");
+    }
+
+    /**
      * Get chapter count for a specific book
      */
     public function getBookChapterCount(int $bookId): int
