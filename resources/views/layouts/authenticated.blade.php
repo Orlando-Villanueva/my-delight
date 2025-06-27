@@ -140,14 +140,16 @@
                                 <div class="w-px h-6 bg-gray-300"></div>
                             </div>
                             
-                            <!-- Log Reading Button -->
-                            <a href="{{ route('logs.create') }}" 
-                               class="btn btn-primary min-h-[44px]">
+                            <!-- Log Reading Button (HTMX Content Loading) -->
+                            <button hx-get="{{ route('logs.create') }}" 
+                                    hx-target="#main-content" 
+                                    hx-swap="innerHTML"
+                                    class="btn btn-primary min-h-[44px]">
                                 <svg class="w-5 h-5 mr-2" fill="none" stroke="currentColor" viewBox="0 0 24 24">
                                     <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M12 6.253v13m0-13C10.832 5.477 9.246 5 7.5 5S4.168 5.477 3 6.253v13C4.168 18.477 5.754 18 7.5 18s3.332.477 4.5 1.253m0-13C13.168 5.477 14.754 5 16.5 5c1.746 0 3.332.477 4.5 1.253v13C19.832 18.477 18.246 18 16.5 18c-1.746 0-3.332.477-4.5 1.253"></path>
                                 </svg>
                                 <span>Log Reading</span>
-                            </a>
+                            </button>
                         </div>
                     </div>
                 </header>

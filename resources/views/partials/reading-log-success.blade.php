@@ -17,24 +17,20 @@
     @endif
     
     <div style="margin-top: 10px;">
-        <a href="{{ route('dashboard') }}">Return to Dashboard</a> | 
-        <a href="{{ route('logs.create') }}">Log Another Reading</a>
+        <button hx-get="{{ route('dashboard') }}" 
+                hx-target="#main-content" 
+                hx-swap="innerHTML"
+                class="inline-flex items-center px-4 py-2 bg-blue-600 border border-transparent rounded-md font-semibold text-xs text-white uppercase tracking-widest hover:bg-blue-700 focus:bg-blue-700 active:bg-blue-900 focus:outline-none focus:ring-2 focus:ring-blue-500 focus:ring-offset-2 transition ease-in-out duration-150">
+            Return to Dashboard
+        </button>
+        | 
+        <button hx-get="{{ route('logs.create') }}" 
+                hx-target="#main-content" 
+                hx-swap="innerHTML"
+                class="inline-flex items-center px-4 py-2 border border-gray-300 text-gray-700 rounded-md font-semibold text-xs uppercase tracking-widest hover:bg-gray-50 focus:outline-none focus:ring-2 focus:ring-blue-500 focus:ring-offset-2 transition ease-in-out duration-150">
+            Log Another Reading
+        </button>
     </div>
 </div>
 
-<script>
-    // Clear the form after successful submission
-    if (window.readingLogForm) {
-        setTimeout(() => {
-            // Reset form data
-            const form = document.querySelector('[x-data]').__x.$data;
-            if (form) {
-                form.form.book_id = '';
-                form.form.chapter = '';
-                form.form.notes_text = '';
-                form.availableChapters = 0;
-                form.characterCount = 0;
-            }
-        }, 100);
-    }
-</script> 
+{{-- Pure HTMX approach - no complex JavaScript needed --}} 
