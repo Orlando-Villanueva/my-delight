@@ -60,6 +60,8 @@ This document outlines the user interface requirements for the Bible Habit Build
 - **Recent Activity**: Last 2-3 reading entries with book/chapter information
 - **Motivation Message**: Encouraging text based on current streak status
 
+**🎯 Critical Implementation Requirement**: The motivational messaging system must be implemented to provide encouraging, contextual messages based on the user's current reading streak and activity patterns. This is essential for the habit-building psychology of the application.
+
 #### Progress Overview
 - **Current Streak**: Large, prominent display with appropriate icon - most important element
 - **This Week**: Simple visualization showing days read this week
@@ -223,11 +225,22 @@ This document outlines the user interface requirements for the Bible Habit Build
 **Scope**: Basic numerical statistics only (Advanced analytics are post-MVP)
 
 #### Dashboard Statistics
+
+**📊 Statistics Options** (decision to be made during implementation):
+
+**Option A - Prototype Statistics (Recommended):**
+- **"16/30 This Month"**: Monthly reading progress with clear goal framing
+- **"10.5 Chapters/Week"**: Reading velocity metric showing current pace
+- **"13% Bible Progress"**: Overall completion percentage across all 66 books  
+- **"10-day Next Milestone"**: Forward-looking goal to maintain motivation
+
+**Option B - Alternative Statistics:**
 - **Current Streak**: Days count with visual indicator
-- **Longest Streak**: Historical best with comparison to current
 - **Total Chapters**: Lifetime reading count
 - **Books Started**: Count of books with at least one chapter read
 - **This Week**: Simple count of days read in current week
+
+**Decision Criteria**: Choose based on which metrics best support habit formation psychology, provide clearer user value, and encourage consistent engagement. The prototype statistics appear more actionable and goal-oriented.
 
 #### Visual Representation
 - **Numbers**: Prominent, easy-to-read typography for key metrics
@@ -398,6 +411,37 @@ The following features are explicitly **excluded from MVP** but may be considere
 - **Powerful Journaling**: Rich text editor, advanced organization features
 - **Export Options**: Data export, backup features
 - **Premium Support**: Priority customer support
+
+## UI Prototype Reference
+
+### Design Implementation Guide
+A comprehensive UI prototype has been developed in `/ui-prototype` that demonstrates the visual implementation of these requirements. **Use this prototype as the primary design reference** during implementation, with the following alignment considerations:
+
+#### ✅ **Prototype Elements to Implement As-Is**
+- Overall layout and responsive grid system
+- Color scheme (#3366CC primary, #66CC99 success, clean whites/grays)
+- Book completion grid with testament toggle
+- Streak counter design and prominence
+- Calendar heat map visualization
+- Navigation structure and user experience flow
+- Card-based component hierarchy
+
+#### ⚠️ **Prototype Elements Requiring Adjustment**
+- **Statistics Cards**: Choose between prototype statistics (recommended) or alternative metrics - document decision rationale
+- **Motivational Messaging**: Add encouraging messages based on streak status (currently missing)
+- **Pro Features**: Remove premium indicators, crown icons, and "Pro" badges for MVP
+- **Consistency**: Ensure uniform card treatments and spacing throughout
+
+#### 🔍 **Implementation Priority**
+1. **High Priority**: Core user flow, streak display, book completion tracking
+2. **Medium Priority**: Statistics alignment, motivational messaging, accessibility compliance
+3. **Low Priority**: Visual polish, micro-interactions, advanced hover states
+
+### Developer Notes
+- Translate React components to Laravel Blade templates
+- Maintain responsive design patterns shown in prototype
+- Preserve visual hierarchy and component relationships
+- Ensure accessibility standards throughout implementation
 
 ---
 

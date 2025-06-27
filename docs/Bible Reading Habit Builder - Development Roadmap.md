@@ -107,19 +107,30 @@
 * **Remove Pro features from prototype** - eliminate premium indicators, crown icons, and "Pro" badges for MVP
 * Implement responsive grid system and mobile-first approach exactly as shown in prototype
 
+**🎯 UI Alignment Adjustments (Critical for Requirements Compliance):**
+* **Ensure consistent card treatments** - standardize spacing, borders, and visual hierarchy across all components
+* **Verify accessibility standards** - confirm all interactive states meet WCAG 2.1 AA compliance with proper focus indicators
+* **Typography consistency** - apply established hierarchy throughout all components for readability
+
 **PR 7: Dashboard & User Analytics (2-3 days)**
 *Priority: High - Essential user engagement*
 * Create dashboard using exact prototype layout and component structure
 * Implement UserStatisticsService with streak calculation (1-day grace period logic)
 * Build GitHub-style calendar visualization matching calendar-visualization.tsx design
-* Implement summary statistics exactly as shown in prototype:
-  - "16/30 This Month" reading days counter
-  - "10.5 Chapters/Week" velocity metric
-  - "13% Bible Progress" overall completion
-  - "10-day Next Milestone" simple goal display
+* **📊 Statistics Implementation Decision** (to be determined during implementation):
+  - **Option A (Prototype):** "16/30 This Month", "10.5 Chapters/Week", "13% Bible Progress", "10-day Next Milestone"  
+  - **Option B (Requirements):** Current streak, Total chapters, Books started/completed, Weekly reading days
+  - **Decision criteria:** Choose based on user value, data availability, and habit-building psychology
+  - **Recommendation:** Prototype statistics appear more engaging and actionable - strongly consider implementing as-is
 * Create streak counter component matching streak-card.tsx (current: 5 days, longest: 29 days)
+* **Add motivational messaging section** based on current streak status (per UI Requirements)
 * Add dashboard reading log quick-entry (Floating Action Button mobile / Header Button desktop)
 * Implement HTMX updates for dynamic content refresh after reading log submissions
+
+**🎯 UI Requirements Alignment (Must Address):**
+* **Add encouraging motivation messages** - implement contextual messages based on streak status as specified in UI Requirements Document
+* **Statistics decision documentation** - document final choice between prototype vs. requirements statistics with rationale
+* **Recent readings enhancement** - ensure "Recent Activity" section provides the encouraging tone specified in requirements
 
 ### **Week 5: Bible Reading Tracking System**
 
