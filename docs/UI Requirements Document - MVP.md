@@ -1,354 +1,287 @@
-# Bible Reading Habit Builder - UI Requirements Document (MVP)
+# Bible Habit Builder - UI Requirements Document (MVP)
 
 ## Overview
+This document outlines the user interface requirements for the Bible Habit Builder MVP. All features described here are **free tier features** that will be included in the initial launch. The focus is on creating a clean, motivating, and mobile-first experience that encourages consistent Bible reading habits.
 
-This document outlines the specific UI requirements for the Bible Reading Habit Builder MVP. It serves as a guide for designers and developers implementing the frontend of the application, ensuring a cohesive, intuitive, and motivating user experience that aligns with the core value proposition.
+## Design Principles
 
-## Core Design Principles
+### Core Values
+- **Simplicity First**: Clean, uncluttered interface that doesn't distract from the primary goal
+- **Mobile-Optimized**: Designed primarily for mobile users who log readings throughout the day
+- **Encouraging**: Visual design that celebrates progress and motivates consistency
+- **Accessible**: Readable fonts, good contrast, intuitive navigation
 
-1. **Simplicity**: Prioritize clean, uncluttered interfaces that focus user attention on key actions and progress indicators.
-2. **Motivation-Driven**: Design elements should reinforce the user's progress and encourage continued engagement.
-3. **Responsive Design**: Ensure consistent functionality and visual appeal across all device sizes.
-4. **Accessibility**: Follow WCAG 2.1 AA standards to ensure the application is usable by people with various abilities.
-5. **Bilingual Support**: Design must accommodate both English and French language interfaces seamlessly.
+### Visual Identity
+- **Primary Color**: #3366CC (Professional Blue) - for primary actions and progress indicators
+- **Success Color**: #66CC99 (Encouraging Green) - for completed items and positive feedback
+- **Background**: Clean whites and light grays with subtle borders
+- **Typography**: Clear, readable fonts with proper line-height for mobile reading
 
-## Brand Identity
+## Core User Interface Components
 
-### Color Palette
+### 1. Authentication Pages
+**Scope**: Basic, functional authentication without social login options
 
-- **Primary**: `#3366CC` (Blue) - Used for primary actions, streak indicators, and active states
-- **Secondary**: `#66CC99` (Green) - Used for completion indicators and success states
-- **Accent**: `#FF9933` (Orange) - Used for highlighting important information and calls to action
-- **Neutral Light**: `#F5F7FA` - Background colors, light mode
-- **Neutral Mid**: `#D1D7E0` - Borders, dividers, inactive states
-- **Neutral Dark**: `#4A5568` - Primary text color
-- **Error**: `#E53E3E` - Error states and alerts
+#### Login Page
+- **Layout**: Centered card design with clean form
+- **Fields**: Email, Password with "Remember Me" option
+- **Actions**: Login button, "Forgot Password" link, "Sign Up" link
+- **Validation**: Real-time validation with clear error messages
+- **Mobile**: Single-column layout, large touch targets
 
-### Typography
+#### Registration Page
+- **Layout**: Similar to login with additional fields
+- **Fields**: Name, Email, Password, Confirm Password
+- **Actions**: Register button, "Already have an account" link
+- **Validation**: Password strength indicator, email format validation
 
-- **Primary Font**: Inter (sans-serif)
-- **Heading Sizes**:
-  - H1: 24px (mobile), 32px (desktop)
-  - H2: 20px (mobile), 24px (desktop)
-  - H3: 18px (mobile), 20px (desktop)
-  - H4: 16px (mobile), 18px (desktop)
-- **Body Text**: 16px
-- **Small Text/Captions**: 14px
-- **Line Height**: 1.5 for optimal readability
+#### Password Reset
+- **Layout**: Simple form with clear instructions
+- **Flow**: Email input → Confirmation message → Reset form
+- **Feedback**: Clear success/error states
 
-### Iconography
+### 2. Dashboard (Main Screen)
+**Scope**: Overview of user's reading progress with basic statistics
 
-- Use a consistent icon set throughout the application (recommended: Phosphor Icons)
-- Key icons needed:
-  - Bible/Book icon (for reading logs)
-  - Flame/Fire icon (for streaks)
-  - Calendar icon (for history view)
-  - Chart/Statistics icon (for stats view)
-  - Checkmark icon (for completed items)
-  - Language toggle icon
+#### Header Section
+- **User Greeting**: "Good morning, [Name]" with contextual time-based messaging
+- **Quick Stats Bar**: Current streak, total chapters read, active book count
+- **Visual Design**: Clean header with subtle background, prominent streak counter
 
-## Layout and Navigation
+#### Today's Reading Section
+- **Quick Log Button**: Prominent "Log Today's Reading" call-to-action
+- **Recent Activity**: Last 2-3 reading entries with book/chapter information
+- **Motivation Message**: Encouraging text based on current streak status
 
-### Mobile Layout
+#### Progress Overview
+- **Current Streak**: Large, prominent display with flame/streak icon
+- **This Week**: Simple bar showing days read this week (7-day view)
+- **Quick Stats**: Total chapters, reading days, books in progress
+- **Visual Design**: Card-based layout with clear visual hierarchy
 
-- **Navigation**: Bottom tab bar with 3 primary destinations:
-  - Dashboard
-  - History
-  - Profile/Settings
-- **Content Area**: Single column layout with card-based components
-- **Floating Action Button**: Primary action button for "Log Reading" positioned bottom-right, always visible across all screens for easy daily access
+### 3. Reading Log Entry Form
+**Scope**: Simple, fast form for logging daily Bible reading
 
-### Tablet/Desktop Layout
+#### Bible Reference Selection
+- **Book Selector**: Dropdown with all 66 Bible books, organized by Testament
+- **Chapter Selector**: Dynamic dropdown based on selected book
+- **Multiple Chapters**: Option to select chapter ranges (e.g., "1-3")
+- **Validation**: Ensure valid book/chapter combinations
 
-- **Navigation**: Left sidebar with always-visible navigation (256px width)
-- **Content Area**: Two-column layout on larger screens
-  - Primary content (70%)
-  - Supporting statistics/information (30%)
-- **Dashboard Layout**: Grid-based layout with resizable cards for different statistics
-- **Primary Action**: Prominent "Log Reading" button in desktop header for immediate access, replacing the floating action button pattern on larger screens
+#### Notes Section (Optional)
+- **Text Area**: Simple plain text input for reflection notes
+- **Character Limit**: 500 characters maximum (displayed with counter)
+- **Placeholder**: Encouraging prompt text
+- **Mobile**: Auto-resize textarea, easy typing experience
 
-### Hybrid Action Button Approach
+#### Form Actions
+- **Save Button**: Primary action, prominent placement
+- **Cancel**: Secondary action to return to dashboard
+- **Validation**: Real-time feedback on required fields
 
-The primary "Log Reading" action uses a **responsive hybrid approach** optimized for each platform:
+### 4. Reading History View
+**Scope**: Complete chronological list of all reading entries
 
-#### Mobile (< 1024px)
-- **Floating Action Button (FAB)**: Traditional mobile pattern
-- **Position**: Bottom-right, above bottom navigation
-- **Size**: 56px circular button with icon
-- **Behavior**: Always visible, follows mobile UX conventions
+#### List Display
+- **Entry Format**: Date, Bible reference, notes preview (if any)
+- **Sorting**: Reverse chronological (newest first)
+- **Pagination**: Load more entries as user scrolls
+- **Search**: Simple text search through Bible references and notes
 
-#### Desktop (≥ 1024px)
-- **Header Action Button**: Prominent button in page header
-- **Position**: Top-right of content area header
-- **Size**: Full-sized button with icon and text label
-- **Features**: 
-  - Quick streak indicator on extra-large screens
-  - Better visual hierarchy and accessibility
-  - Contextual placement near page content
+#### Entry Details
+- **Expandable Cards**: Tap to view full notes
+- **Edit Option**: Quick edit for recent entries (last 7 days)
+- **Visual Indicators**: Different styling for entries with/without notes
 
-This approach ensures platform-appropriate interactions while maintaining consistent functionality across all devices.
+### 5. Book Completion Grid (MVP Feature)
+**Scope**: Visual progress tracking for all 66 Bible books with percentage completion
 
-### Common UI Patterns
+#### Testament Toggle
+- **Toggle Buttons**: Switch between Old Testament (39 books) and New Testament (27 books)
+- **Visual Design**: Clean toggle with active state highlighting
+- **Default View**: Old Testament selected by default
 
-- **Cards**: Used for discrete chunks of information (streak card, statistics card)
-- **Lists**: Used for reading logs and history items
-- **Grids**: Used for Book Completion Grid and calendar visualization
-- **Progress Indicators**: Used throughout to show completion status
+#### Progress Overview
+- **Testament Label**: "Old Testament" or "New Testament" 
+- **Overall Percentage**: Large, prominent display (e.g., "34%")
+- **Progress Bar**: Visual bar showing testament completion percentage
+- **Statistics Summary**: 
+  - Completed books count (green background)
+  - In Progress books count (blue background)  
+  - Not Started books count (gray background)
 
-## Key Screen Requirements
+#### Books Grid
+- **Layout**: Responsive grid (2-6 columns based on screen size)
+- **Book Cards**: Each book shows:
+  - Book name (truncated if needed)
+  - Completion percentage (e.g., "34%")
+  - Visual status indicator (color-coded border/background)
+  - Mini progress bar for in-progress books
+  - Completion badge for finished books
+- **Status Colors**:
+  - **Completed**: Green (#66CC99) with completion badge
+  - **In Progress**: Blue (#3366CC) with mini progress bar
+  - **Not Started**: Light gray/white with subtle border
+- **Hover/Tap**: Tooltip showing detailed progress (e.g., "Genesis: 12/50 chapters (24%)")
 
-### 1. Authentication Screens
+#### Legend
+- **Visual Key**: Shows what each color/status means
+- **Position**: Bottom of grid, horizontally centered
+- **Icons**: Small colored squares matching the book card styling
 
-#### Login Screen
+### 6. Calendar Heat Map
+**Scope**: GitHub-style calendar showing reading consistency
 
-- **Required Elements**:
-  - Application logo
-  - Email input field
-  - Password input field with visibility toggle
-  - "Remember me" checkbox
-  - "Login" primary button (submits to Fortify's `/login` endpoint)
-  - "Forgot password?" link
-  - "Register" secondary link
-  - Language toggle (EN/FR)
-  - HTMX integration for seamless form submission and error handling
-  - Server-side validation error display
+#### Calendar Display
+- **Layout**: Grid showing last 365 days (or current year)
+- **Cell Colors**: Intensity based on reading activity
+  - No reading: Light gray
+  - 1 chapter: Light green
+  - 2-3 chapters: Medium green
+  - 4+ chapters: Dark green
+- **Mobile**: Horizontally scrollable, shows last 3-4 months in view
 
-#### Registration Screen
+#### Interactive Elements
+- **Hover/Tap**: Show date and reading details for each day
+- **Legend**: Color intensity explanation
+- **Navigation**: Scroll to see different time periods
 
-- **Required Elements**:
-  - Application logo
-  - Name input field
-  - Email input field
-  - Password input field with visibility toggle
-  - Password confirmation field
-  - Password strength indicator
-  - Terms of service checkbox
-  - "Register" primary button (submits to Fortify's `/register` endpoint)
-  - "Login" secondary link
-  - Language toggle (EN/FR)
-  - HTMX integration for seamless form submission and error handling
-  - Server-side validation error display from Fortify backend
+## Navigation & Layout
 
-### 2. Dashboard Screen
+### Primary Navigation
+- **Dashboard**: Home/overview (default view)
+- **Log Reading**: Quick access to entry form
+- **History**: View all past entries
+- **Progress**: Book completion grid and calendar view
 
-- **Required Components**:
-  - **Streak Card** (prominently displayed):
-    - Current streak counter with flame icon
-    - Visual emphasis (size, color)
-    - Longest streak ever display
-  - **Calendar Visualization**:
-    - Month view similar to GitHub contribution graph
-    - Color-coded squares indicating reading activity
-    - Current date highlighted
-  - **Summary Statistics**:
-    - Total chapters read
-    - Books started vs. completed
-    - First and most recent reading dates
-  - **Book Completion Grid**:
-    - All 66 Bible books displayed in canonical order
-    - Color-coding by completion status:
-      - Not started: Light gray
-      - In progress: Blue
-      - Completed: Green
-
-### 3. Reading Log Screen
-
-- **Required Elements**:
-  - Date selector (defaults to current date)
-  - Two-step Bible passage selector:
-    - Book dropdown (all 66 books)
-    - Chapter dropdown (dynamically updates based on selected book)
-  - Optional notes field (with character counter)
-  - "Save" primary button
-  - "Cancel" secondary button
-  - Success confirmation after saving
-
-### 4. History Screen
-
-- **Required Elements**:
-  - Calendar view for date selection
-  - Filterable list of reading logs
-  - Each log entry displays:
-    - Date
-    - Bible reference (Book + Chapter)
-    - Preview of notes (if any)
-    - Option to expand/collapse notes
-  - Option to filter by book, date range
-
-### 5. Statistics Screen
-
-- **Required Components**:
-  - **Bible Reading Progress**:
-    - Overall completion percentage
-    - Visual indicator of progress through the Bible
-  - **Book Completion Grid**:
-    - Books arranged by canonical order
-    - Color-coding for completion status
-    - Progress percentage for each book
-  - **Reading History Visualization**:
-    - Calendar view with color-coded days
-    - Legend explaining the color coding
-
-### 6. Profile/Settings Screen
-
-- **Required Elements**:
-  - User information display
-  - Language selection (English/French)
-  - Account settings options
-  - Logout button
-
-## Component Specifications
-
-### 1. Streak Counter Component
-
-- **Visual Design**:
-  - Large, prominent display
-  - Current streak number with flame icon
-  - Longest streak shown below in smaller text
-  - Animation when streak increases
-
-### 2. Book Completion Grid Component
-
-- **Layout**:
-  - Grid/table layout with books in canonical order
-  - Old Testament and New Testament grouping
-  - Each book shows:
-    - Book name
-    - Completion percentage
-    - Visual color indicator
-  - Should accommodate both English and French book names
-
-### 3. Calendar Visualization Component
-
-- **Visual Design**:
-  - Month-based view similar to GitHub contribution grid
-  - 7 columns (days of week)
-  - Color intensity based on number of chapters read
-  - Legend explaining the color coding
-  - Interactive squares with hover/tap state
-
-### 4. Bible Passage Selector Component
-
-- **Behavior**:
-  - Two-step selection process
-  - Step 1: Select book from dropdown (all 66 Bible books)
-  - Step 2: Dynamic chapter dropdown (based on selected book)
-  - Validation to ensure selections are valid
-  - Clear visual feedback on selection
-
-### 5. Reading Log Entry Component
-
-- **Layout**:
-  - Card-based design
-  - Date display
-  - Bible reference (Book + Chapter)
-  - Expandable notes section
-  - Visual indicator for days that extend streak
+### Mobile-First Considerations
+- **Bottom Navigation**: Primary nav tabs at bottom for thumb accessibility
+- **Touch Targets**: Minimum 44px touch targets for all interactive elements
+- **Readable Text**: Minimum 16px font size, good line-height
+- **Fast Loading**: Optimized images and minimal JavaScript
 
 ## Responsive Design Requirements
 
-### Mobile Breakpoints
+### Mobile (320px - 768px)
+- **Single Column**: All content stacked vertically
+- **Large Touch Targets**: Easy thumb navigation
+- **Readable Text**: 16px+ font sizes
+- **Simplified Navigation**: Bottom tab bar or hamburger menu
 
-- **Small Mobile**: 320px - 375px
-- **Standard Mobile**: 376px - 767px
-- **Tablet**: 768px - 1023px
-- **Desktop**: 1024px and above
+### Tablet (768px - 1024px)
+- **Two Column**: Some sections can use side-by-side layout
+- **Larger Grids**: Book completion grid shows more columns
+- **Enhanced Spacing**: More whitespace for better visual hierarchy
 
-### Mobile-Specific Adaptations
-
-- Bottom navigation with 3 tabs instead of sidebar
-- Single column layout
-- Larger touch targets (min 44px × 44px) 
-- Collapsible sections for statistics
-- Simplified Bible progress visualization
-- Floating Action Button positioned above bottom navigation for primary "Log Reading" action
-
-### Desktop Enhancements
-
-- Multi-column dashboard layout
-- Expanded statistics visualizations
-- Always-visible sidebar navigation with user profile section
-- Hover states for interactive elements
-- Keyboard shortcuts for common actions
-- **Header Action Button**: Prominent "Log Reading" button in page header with:
-  - Icon and text label for clarity
-  - Quick streak indicator on extra-large screens
-  - Better accessibility and visual hierarchy
-  - Contextual placement near page content
-
-## Language Support Requirements
-
-- All UI elements must support both English and French
-- Language toggle must be easily accessible from all screens
-- Text elements must accommodate ~30% expansion for French translations
-- Date formats must adapt to language preferences
-- Bible book names must be displayed in the selected language
+### Desktop (1024px+)
+- **Multi-Column**: Dashboard can show multiple sections side-by-side
+- **Larger Calendar**: Full year view for heat map
+- **Enhanced Interactions**: Hover states for better feedback
 
 ## Accessibility Requirements
 
-- Color contrast ratio of at least 4.5:1 for normal text
-- Focus indicators for keyboard navigation
-- Alt text for all images and icons
-- ARIA labels for interactive elements
-- Screen reader compatibility
-- Support for text resizing up to 200%
-- Touch targets minimum size of 44px × 44px
+### Visual Accessibility
+- **Color Contrast**: WCAG AA compliance (4.5:1 ratio minimum)
+- **Color Independence**: Information not conveyed by color alone
+- **Focus Indicators**: Clear focus states for keyboard navigation
+- **Text Scaling**: Interface remains functional at 200% zoom
+
+### Interaction Accessibility
+- **Keyboard Navigation**: All interactive elements accessible via keyboard
+- **Screen Reader**: Proper semantic HTML and ARIA labels
+- **Touch Accessibility**: 44px minimum touch targets
+- **Clear Language**: Simple, direct copy throughout
 
 ## Performance Requirements
 
-- First Contentful Paint (FCP) under 1.5 seconds
-- Time to Interactive (TTI) under 3.5 seconds
-- Optimize image assets for web delivery
-- Lazy loading for off-screen content
-- Implement appropriate loading indicators for HTMX requests
+### Loading Performance
+- **Initial Load**: Under 3 seconds on 3G connection
+- **Subsequent Navigation**: Under 1 second for cached content
+- **Image Optimization**: Compressed images with appropriate formats
 
-## Implementation Details
+### Interaction Performance
+- **Form Submission**: Immediate feedback, under 500ms response
+- **Search Results**: Real-time search with debounced input
+- **Smooth Animations**: 60fps for all transitions and animations
 
-### Technology Stack
+## Data Display Specifications
 
-- **Frontend Framework**: HTMX + Alpine.js
-- **CSS Framework**: Tailwind CSS
-- **Icon Library**: Phosphor Icons
-- **Localization**: Laravel's built-in localization system
+### Statistics Display
+**Scope**: Basic numerical statistics only (Advanced analytics are post-MVP)
 
-### HTMX Integration
+#### Dashboard Statistics
+- **Current Streak**: Days count with visual indicator
+- **Longest Streak**: Historical best with comparison to current
+- **Total Chapters**: Lifetime reading count
+- **Books Started**: Count of books with at least one chapter read
+- **This Week**: Simple count of days read in current week
 
-- Use `hx-get` and `hx-post` for dynamic content updates
-- Implement `hx-swap` for smooth transitions
-- Use `hx-target` to update specific page sections
-- Add appropriate loading indicators
+#### Visual Representation
+- **Numbers**: Large, easy-to-read typography
+- **Icons**: Simple, recognizable icons for each stat
+- **Comparison**: Basic "up/down" indicators where relevant
+- **No Complex Charts**: Avoid graphs, charts, or trend analysis (those are post-MVP advanced analytics)
 
-### Alpine.js Usage
+### Notes Display
+**Scope**: Plain text notes with basic formatting
 
-- Use for small interactive components (dropdowns, toggles)
-- Manage form validation states
-- Handle responsive menu behavior
-- Implement simple animations
+#### Notes Functionality
+- **Input**: Simple textarea, plain text only
+- **Character Limit**: 500 characters with live counter
+- **Display**: Plain text with line breaks preserved
+- **Search**: Text search through notes content
+- **No Rich Text**: No formatting, links, or advanced features (post-MVP)
 
-## Validation & Quality Assurance
+## Error States & Feedback
 
-- Cross-browser testing (Chrome, Firefox, Safari, Edge)
-- Mobile device testing on iOS and Android
-- WCAG 2.1 AA compliance validation
-- Performance testing using Lighthouse
-- Usability testing with representative users
+### Form Validation
+- **Real-time**: Validate fields as user types
+- **Clear Messages**: Specific, actionable error messages
+- **Visual Indicators**: Red borders, error icons
+- **Success States**: Green indicators for successful actions
 
-## Appendix: Feature Prioritization
+### Network Issues
+- **Offline Detection**: Show when user is offline
+- **Retry Options**: Clear retry buttons for failed actions
+- **Loading States**: Spinners and skeleton screens during loading
 
-### Must-Have UI Elements
-- Authentication screens
-- Reading log input
-- Current streak display
-- Basic calendar visualization
+### Empty States
+- **No Data**: Encouraging messages when user has no reading history
+- **Onboarding**: Helpful prompts for first-time users
+- **Motivational**: Positive messaging that encourages action
 
-### High-Priority UI Elements
-- Book completion grid
-- Summary statistics display
-- Mobile responsive layout
-- French language support
+## Content Strategy
 
-### Medium-Priority UI Elements (Implement if time permits)
-- Animations for streak increases
-- Detailed reading history filters
-- Interactive calendar with reading details
-- Enhanced visual styling and polish
+### Motivational Messaging
+- **Positive Tone**: Encouraging, never guilt-inducing
+- **Biblical References**: Subtle incorporation of relevant verses
+- **Progress Celebration**: Acknowledge milestones and achievements
+- **Gentle Reminders**: Helpful nudges without pressure
+
+### Microcopy
+- **Button Labels**: Clear action words ("Log Reading", "View History")
+- **Helper Text**: Contextual help without overwhelming
+- **Error Messages**: Friendly, solution-oriented language
+- **Success Messages**: Celebratory but not overly effusive
+
+## Future Considerations (Post-MVP)
+
+The following features are explicitly **excluded from MVP** but may be considered for future releases:
+
+### Post-MVP Features (Free Tier)
+- **Achievement/Badge System**: Milestone celebrations and visual rewards
+- **Social Authentication**: Google, Facebook, Apple sign-in options
+- **Advanced Statistics**: Detailed charts, reading patterns, trend analysis
+- **Enhanced Notes**: Rich text formatting, tagging, search enhancements
+- **Milestone Recognition**: Special celebrations for streaks and completions
+
+### Post-MVP Features (Potential Pro Tier)
+- **Advanced Analytics**: Detailed reading insights, pattern analysis, comparative statistics
+- **Enhanced Badge System**: Premium badge designs, exclusive achievements
+- **Powerful Journaling**: Rich text editor, advanced organization features
+- **Export Options**: Data export, backup features
+- **Premium Support**: Priority customer support
+
+---
+
+*This document focuses exclusively on MVP features that provide core value to users while establishing a foundation for future enhancements. All described features are confirmed for the free tier and initial launch.*

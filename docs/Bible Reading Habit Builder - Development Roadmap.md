@@ -94,32 +94,49 @@
 
 **PR 6: Design System Implementation (2-3 days)**
 *Priority: High - Design foundation for all components*
-* Extract design tokens from v0 prototype (CSS variables, color system)
-* Create comprehensive Tailwind design system matching UI Requirements Document
-* Build reusable Blade components (cards, buttons, forms, layouts)
+* **Use ui-prototype as design foundation** - translate React components to Blade templates
+* Extract exact design tokens from prototype (colors: #3366CC, #66CC99, spacing, typography)
+* Create comprehensive Tailwind design system matching the prototype's visual identity
+* Build reusable Blade components based on prototype structure:
+  - Card layouts and component hierarchy from dashboard-layout.tsx
+  - Streak counter component from streak-card.tsx
+  - Summary statistics cards from summary-stats.tsx
+  - Book completion grid from book-completion-grid.tsx
+  - Calendar visualization from calendar-visualization.tsx
 * Apply pixel-perfect design to ALL existing pages (auth, dashboard, forms, history)
-* Establish design patterns and component library for future features
-* Implement responsive grid system and mobile-first approach
+* **Remove Pro features from prototype** - eliminate premium indicators, crown icons, and "Pro" badges for MVP
+* Implement responsive grid system and mobile-first approach exactly as shown in prototype
 
 **PR 7: Dashboard & User Analytics (2-3 days)**
 *Priority: High - Essential user engagement*
-* Create advanced dashboard components using established design system
+* Create dashboard using exact prototype layout and component structure
 * Implement UserStatisticsService with streak calculation (1-day grace period logic)
-* Build GitHub-style calendar visualization component with color-coded activity
+* Build GitHub-style calendar visualization matching calendar-visualization.tsx design
+* Implement summary statistics exactly as shown in prototype:
+  - "16/30 This Month" reading days counter
+  - "10.5 Chapters/Week" velocity metric
+  - "13% Bible Progress" overall completion
+  - "10-day Next Milestone" simple goal display
+* Create streak counter component matching streak-card.tsx (current: 5 days, longest: 29 days)
 * Add dashboard reading log quick-entry (Floating Action Button mobile / Header Button desktop)
-* Create streak counter component with current/longest streak display
 * Implement HTMX updates for dynamic content refresh after reading log submissions
 
 ### **Week 5: Bible Reading Tracking System**
 
 **PR 8: Bible Reading Tracking System (3-4 days)**
 *Priority: Medium - Enhanced user experience*
+* Implement Book Completion Grid exactly matching book-completion-grid.tsx:
+  - Testament toggle (Old/New Testament) with 39/27 book split
+  - Individual book percentages ("Genesis 24%", "Psalms 17%", etc.)
+  - Color-coded status (blue in-progress, green completed, gray not started)
+  - Mini progress bars for in-progress books
+  - Completion badges for finished books
+  - Overall testament progress ("6%" with progress bar)
+  - Statistics summary (3 completed, 2 in progress, 34 not started)
 * Enhance book completion tracking with detailed progress calculation
 * Create advanced calendar features (hover states, reading details popup)
-* Build Book Completion Grid (66 books, canonical order, color-coded status)
 * Add reading pattern analytics and summary statistics display
 * Implement automatic progress update triggers and cache invalidation
-* Create interactive book progress visualization with completion percentages
 
 **[User Testing Session #1]** - Focus on core functionality and user flow
 
@@ -159,8 +176,8 @@
 
 1. **✅ End of Week 2:** Authentication system completed (PR-4)
 2. **End of Week 3:** Core reading log functionality with Bible reference system (PR-5)
-3. **Early Week 4:** Design system implementation with pixel-perfect UI (PR-6)
-4. **End of Week 4:** Dashboard and user analytics with streak/calendar visualization (PR-7)
+3. **Early Week 4:** Design system implementation using ui-prototype as foundation (PR-6)
+4. **End of Week 4:** Dashboard and user analytics matching prototype design exactly (PR-7)
 5. **End of Week 5:** Enhanced Bible reading tracking and book completion system (PR-8)
 6. **Mid-Week 6:** Enhanced features and multilingual support (PR-9, 2-3 days)
 7. **End of Week 8:** Production-ready application with full testing and deployment (PR-10, PR-11)
@@ -169,14 +186,21 @@
 
 After validating the MVP with real users, future phases will expand the application with:
 
-### **Phase 2: Enhanced Authentication & User Experience**
+### **Phase 2: Enhanced User Experience & Engagement**
 * **Social Authentication (Laravel Socialite)**
   - Google OAuth integration for seamless sign-in
   - Facebook OAuth for Christian community users
   - Apple Sign-In for privacy-focused authentication
   - Account linking for existing users
   - Social profile data enhancement (verified emails, profile pictures)
-* Advanced statistics and insights
+* **Achievement/Badge System (Major Feature Release)**
+  - Core badges free for all users (book completions, streak milestones)
+  - Enhanced badge features for Pro subscribers (premium designs, analytics)
+  - Achievement celebrations and milestone recognition
+* **Advanced Statistics & Analytics (Pro Tier)**
+  - Detailed reading patterns and trend analysis
+  - Advanced charts and performance insights
+  - Reading pace analysis and predictions
 * Reading plans and goals
 * Enhanced habit formation mechanics
 

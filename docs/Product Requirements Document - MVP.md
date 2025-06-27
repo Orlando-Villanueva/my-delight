@@ -96,18 +96,6 @@ This document outlines the specific requirements for the Minimum Viable Product 
      - French language support does not compromise existing functionality
      - User can switch between languages seamlessly
 
-10. **As a consistent reader**, I want to see weekly statistics about my Bible reading, so I can track my week-over-week progress. *(Medium-Priority: Post-MVP Phase 2)*
-   - **Acceptance Criteria:**
-     - System generates week-by-week reading summaries
-     - Dashboard shows number of chapters read per week
-     - Dashboard displays weekly reading consistency percentage
-     - System identifies strongest and weakest reading days in the week
-     - System compares current week to previous weeks
-     - Weekly statistics are accessible via a dedicated section on the dashboard
-     - Statistics update automatically when new readings are logged
-     - Weekly statistics can be viewed for current week and past weeks
-     - Visualization indicates patterns in weekly reading habits
-
 ### Responsive Design
 
 10. **As a mobile user**, I want to access the app on my smartphone, so I can log readings when I don't have my computer.
@@ -308,28 +296,27 @@ The MVP features have been prioritized based on the following framework:
 | User Authentication | 1: Must-Have | Essential to save individual user progress; foundational for all personalized features |
 | Daily Reading Log Input | 1: Must-Have | The primary user action; enables the core functionality of recording Bible reading |
 | Streak Calculation & Display | 1: Must-Have | The core gamification mechanic that drives consistent usage; immediate feedback loop |
-| History Visualization (Calendar) | 2: High-Priority | Powerful visual motivator; reinforces progress; relatively simple implementation |
-| Basic Responsive Design | 2: High-Priority | Essential for mobile users who may log readings throughout the day on different devices |
+| History Visualization (Calendar) | 1: Must-Have | Powerful visual motivator; reinforces progress; core to the value proposition |
+| Basic Responsive Design | 1: Must-Have | Essential for mobile users who may log readings throughout the day on different devices |
 | Notes Functionality | 2: High-Priority | Adds significant value with minimal technical complexity; captures meaningful reflections |
-| Basic Book Completion Tracking | 2: High-Priority | Provides essential progress visualization; implemented with denormalized table for performance |
+| Book Completion Tracking with Percentages | 1: Must-Have | Provides essential progress visualization; core to "See Progress" value proposition |
 | French Language Support | 2: High-Priority | Essential for serving the Quebec user base; enables broader adoption in francophone communities |
-| Weekly Statistics | 3: Medium-Priority | Enhances motivation but not essential for MVP; deferred to Phase 2 (post-MVP) |
-| Advanced Statistics | 3: Medium-Priority | Enhances motivation but not essential for the core experience; can be added incrementally |
 
 ### Features Excluded from MVP
 
 The following features have been deliberately excluded from the MVP to focus development efforts and deliver value more quickly:
 
 - **Social Authentication (Laravel Socialite)**: While OAuth integration with Google, Facebook, and Apple would enhance user onboarding, traditional email/password authentication is sufficient for MVP validation. Social auth will be added in Phase 2 post-MVP
+- **Advanced Statistics & Analytics**: Detailed charts, reading patterns, and trend analysis are reserved for the Pro tier to provide clear upgrade value
+- **Achievement/Badge System**: Will be implemented as a major feature release post-MVP, with core badges free and enhanced features for Pro supporters
 - **Reading Plans:** While valuable, structured reading plans add significant complexity and can be added post-MVP
 - **Goal Setting:** Beyond the implicit goal of streak maintenance, custom goal setting adds UI and data complexity
-- **Enhanced Notes Features:** Advanced features like tagging can be added once basic notes functionality is validated
-- **Streak Freeze / Grace Days:** The core streak mechanic should be validated before adding these modifications
-- **Badges / Achievements:** These engagement features can be added after validating the core motivational mechanic
+- **Enhanced Notes Features:** Rich-text editing and searchable journal features are reserved for Pro tier; MVP includes basic plain-text notes
+- **Milestone Celebrations:** Simple achievement notifications will be added post-MVP as part of the badge system
 - **Community Features:** Social features add considerable complexity and are better suited for later phases
 - **Bible Version Selection:** Integration with Bible text APIs adds complexity and potential licensing issues
 - **Reminders / Notifications:** Push notification infrastructure adds technical complexity
-- **Data Export:** Not essential for the core experience; can be added in response to user feedback
+- **Data Export:** Reserved for Pro tier to provide subscription value
 
 ### Rationale for this Prioritization
 
