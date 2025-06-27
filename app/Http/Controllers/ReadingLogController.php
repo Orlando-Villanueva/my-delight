@@ -18,11 +18,18 @@ class ReadingLogController extends Controller
 
     /**
      * Show the form for creating a new reading log.
+     * Supports both HTMX content loading and direct page access.
      */
-    public function create()
+    public function create(Request $request)
     {
         $books = $this->bibleReferenceService->listBibleBooks();
         
+        // Return partial view for HTMX requests (seamless content loading)
+        if ($request->header('HX-Request')) {
+            return view('partials.reading-log-form', compact('books'));
+        }
+        
+        // Return full page for direct access (graceful degradation)
         return view('logs.create', compact('books'));
     }
 
@@ -118,24 +125,5 @@ class ReadingLogController extends Controller
             // Re-throw if it's a different database error
             throw $e;
         }
-    }
-
-    /**
-     * Get chapters for a specific book (HTMX endpoint).
-     */
-    public function getBookChapters(Request $request, int $bookId)
-    {
-        if (!$this->bibleReferenceService->validateBookId($bookId)) {
-            return response()->json(['error' => 'Invalid book ID'], 400);
-        }
-
-        $chapterCount = $this->bibleReferenceService->getBookChapterCount($bookId);
-        $chapters = range(1, $chapterCount);
-
-        if ($request->header('HX-Request')) {
-            return view('partials.chapter-options', compact('chapters'));
-        }
-
-        return response()->json(['chapters' => $chapters]);
     }
 } 

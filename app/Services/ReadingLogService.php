@@ -11,11 +11,26 @@ use InvalidArgumentException;
 
 class ReadingLogService
 {
+    private BibleReferenceService $bibleService;
+
+    public function __construct(BibleReferenceService $bibleService)
+    {
+        $this->bibleService = $bibleService;
+    }
+
     /**
      * Log a new Bible reading entry for a user (supports single chapter or chapter ranges).
      */
     public function logReading(User $user, array $data): ReadingLog
     {
+        // Validate and format the Bible reference
+        $this->validateBibleReference($data['book_id'], $data);
+        
+        // Format passage text if not provided
+        if (!isset($data['passage_text'])) {
+            $data['passage_text'] = $this->formatPassageText($data['book_id'], $data);
+        }
+
         // Handle multiple chapters if provided
         if (isset($data['chapters']) && is_array($data['chapters'])) {
             return $this->logMultipleChapters($user, $data);
@@ -32,6 +47,8 @@ class ReadingLogService
 
         // Update book progress
         $this->updateBookProgress($user, $data['book_id'], $data['chapter']);
+
+        // Server-side state updated - HTMX will handle UI updates
 
         return $readingLog;
     }
@@ -63,6 +80,17 @@ class ReadingLogService
         }
 
         return $firstLog;
+    }
+
+    /**
+     * Get recent reading logs for a user (quick access method).
+     */
+    public function getRecentLogs(User $user, int $limit = 10): Collection
+    {
+        return $user->readingLogs()
+            ->recentFirst()
+            ->limit($limit)
+            ->get();
     }
 
     /**
@@ -170,14 +198,52 @@ class ReadingLogService
     }
 
     /**
+     * Validate Bible reference using BibleReferenceService.
+     */
+    private function validateBibleReference(int $bookId, array $data): void
+    {
+        if (!$this->bibleService->validateBookId($bookId)) {
+            throw new InvalidArgumentException("Invalid book ID: {$bookId}");
+        }
+
+        if (isset($data['chapter'])) {
+            if (!$this->bibleService->validateChapterNumber($bookId, $data['chapter'])) {
+                throw new InvalidArgumentException("Invalid chapter number for book ID: {$bookId}");
+            }
+        }
+
+        if (isset($data['chapters']) && is_array($data['chapters'])) {
+            foreach ($data['chapters'] as $chapter) {
+                if (!$this->bibleService->validateChapterNumber($bookId, $chapter)) {
+                    throw new InvalidArgumentException("Invalid chapter number {$chapter} for book ID: {$bookId}");
+                }
+            }
+        }
+    }
+
+    /**
+     * Format passage text using BibleReferenceService.
+     */
+    private function formatPassageText(int $bookId, array $data): string
+    {
+        if (isset($data['chapters']) && is_array($data['chapters'])) {
+            $startChapter = min($data['chapters']);
+            $endChapter = max($data['chapters']);
+            return $this->bibleService->formatBibleReferenceRange($bookId, $startChapter, $endChapter);
+        }
+
+        return $this->bibleService->formatBibleReference($bookId, $data['chapter']);
+    }
+
+    // Event handling removed - HTMX manages state updates via server responses
+
+    /**
      * Update book progress when a chapter is read.
      */
     private function updateBookProgress(User $user, int $bookId, int $chapter): void
     {
-        $bibleService = app(BibleReferenceService::class);
-        
         // Get book information from BibleReferenceService
-        $book = $bibleService->getBibleBook($bookId);
+        $book = $this->bibleService->getBibleBook($bookId);
         if (!$book) {
             throw new InvalidArgumentException("Invalid book ID: {$bookId}");
         }

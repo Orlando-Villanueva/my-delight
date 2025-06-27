@@ -1,6 +1,7 @@
 <?php
 
 use Illuminate\Support\Facades\Route;
+use Illuminate\Http\Request;
 use App\Http\Controllers\DemoController;
 use App\Http\Controllers\ReadingLogController;
 
@@ -35,7 +36,13 @@ Route::post('/demo/log', [DemoController::class, 'logReading'])->name('demo.log'
 // Authenticated Routes
 Route::middleware('auth')->group(function () {
     // Main Dashboard
-    Route::get('/dashboard', function () {
+    Route::get('/dashboard', function (Request $request) {
+        // Return partial view for HTMX requests (seamless content loading)
+        if ($request->header('HX-Request')) {
+            return view('partials.dashboard-content');
+        }
+        
+        // Return full page for direct access (graceful degradation)
         return view('dashboard');
     })->name('dashboard');
 
@@ -51,7 +58,6 @@ Route::middleware('auth')->group(function () {
     // Reading Log Routes
     Route::get('/logs/create', [ReadingLogController::class, 'create'])->name('logs.create');
     Route::post('/logs', [ReadingLogController::class, 'store'])->name('logs.store');
-    Route::get('/books/{book}/chapters', [ReadingLogController::class, 'getBookChapters'])->name('books.chapters');
 });
 
 // Layout Preview Route (temporary for testing - accessible without auth)
