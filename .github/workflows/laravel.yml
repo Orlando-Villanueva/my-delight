@@ -30,10 +30,10 @@ jobs:
         restore-keys: composer-
         
     - name: Install Dependencies
-      run: composer install --no-progress --prefer-dist --optimize-autoloader --no-dev
+      run: composer install --no-progress --prefer-dist --optimize-autoloader
       
     - name: Copy Environment File
-      run: cp .env.example .env
+      run: cp .env.testing .env
       
     - name: Generate Application Key
       run: php artisan key:generate
@@ -41,28 +41,8 @@ jobs:
     - name: Directory Permissions
       run: chmod -R 755 storage bootstrap/cache
       
-    - name: Create Database
-      run: |
-        mkdir -p database
-        touch database/database.sqlite
-        
     - name: Run Database Migrations
-      env:
-        DB_CONNECTION: sqlite
-        DB_DATABASE: database/database.sqlite
-      run: php artisan migrate --force
+      run: php artisan migrate --force --env=testing
       
     - name: Run Tests
-      env:
-        DB_CONNECTION: sqlite
-        DB_DATABASE: database/database.sqlite
-      run: php artisan test --parallel
-      
-    - name: Run Feature Tests (Bible Reading Core)
-      env:
-        DB_CONNECTION: sqlite
-        DB_DATABASE: database/database.sqlite
-      run: |
-        php artisan test --filter=UserAuthenticationTest
-        php artisan test --filter=ReadingLogTest
-        php artisan test --filter=BibleReferenceServiceTest 
+      run: ./vendor/bin/pest --parallel 
