@@ -3,7 +3,7 @@
 
 @if($logs->count() > 0)
     {{-- Reading Log Entries --}}
-    <div class="space-y-4">
+    <div class="space-y-4 pb-4 lg:pb-0">
         @foreach($logs as $log)
             @include('partials.reading-log-item', ['log' => $log])
         @endforeach
@@ -11,13 +11,13 @@
     
     {{-- Pagination --}}
     @if($logs->hasPages())
-        <div class="mt-8">
+        <div class="mt-8 pb-20 lg:pb-0">
             {{ $logs->links() }}
         </div>
     @endif
 @else
     {{-- Empty State --}}
-    <div class="text-center py-12">
+    <div class="text-center py-12 pb-20 lg:pb-12">
         <div class="w-16 h-16 mx-auto mb-4 text-gray-400">
             <svg fill="none" stroke="currentColor" viewBox="0 0 24 24">
                 <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M12 6.253v13m0-13C10.832 5.477 9.246 5 7.5 5S4.168 5.477 3 6.253v13C4.168 18.477 5.754 18 7.5 18s3.332.477 4.5 1.253m0-13C13.168 5.477 14.754 5 16.5 5c1.746 0 3.332.477 4.5 1.253v13C19.832 18.477 18.246 18 16.5 18c-1.746 0-3.332.477-4.5 1.253"></path>
@@ -46,8 +46,10 @@
             <p class="text-gray-600 mb-6">No readings logged in {{ $filterText }}. Try expanding your date range or log a new reading.</p>
             <div class="space-x-4">
                 <button hx-get="{{ route('logs.index', ['filter' => 'all']) }}" 
-                        hx-target="#log-list" 
+                        hx-target="#reading-content" 
                         hx-swap="innerHTML"
+                        hx-indicator="#loading"
+                        onclick="updateActiveFilter(this, 'all')"
                         class="inline-flex items-center px-4 py-2 border border-gray-300 text-gray-700 rounded-md font-semibold text-xs uppercase tracking-widest hover:bg-gray-50 focus:outline-none focus:ring-2 focus:ring-blue-500 focus:ring-offset-2 transition ease-in-out duration-150">
                     View All Readings
                 </button>

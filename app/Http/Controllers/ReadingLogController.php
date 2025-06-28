@@ -129,4 +129,49 @@ class ReadingLogController extends Controller
             throw $e;
         }
     }
+
+    /**
+     * Display a listing of reading logs with filtering options.
+     * Supports both HTMX content loading and direct page access.
+     */
+    public function index(Request $request)
+    {
+        $user = $request->user();
+        
+        // Get filter parameter (days back)
+        $filter = $request->get('filter', '30'); // Default to last 30 days
+        $validFilters = ['7', '30', '90', 'all'];
+        
+        if (!in_array($filter, $validFilters)) {
+            $filter = '30';
+        }
+        
+        // Calculate date range based on filter
+        $startDate = null;
+        if ($filter !== 'all') {
+            $startDate = now()->subDays((int)$filter)->toDateString();
+        }
+        
+        // Get reading logs with pagination
+        $logsQuery = $user->readingLogs()->recentFirst();
+        
+        if ($startDate) {
+            $logsQuery->dateRange($startDate);
+        }
+        
+        $logs = $logsQuery->paginate(15)->withQueryString();
+        
+        // Return partial view for HTMX requests
+        if ($request->header('HX-Request')) {
+            // If it's a filter request (has filter parameter), return just the content
+            if ($request->has('filter')) {
+                return view('partials.reading-log-list', compact('logs', 'filter'));
+            }
+            // Otherwise, return the full page content for navigation
+            return view('partials.reading-log-page-content', compact('logs', 'filter'));
+        }
+        
+        // Return full page for direct access (graceful degradation)
+        return view('logs.index', compact('logs', 'filter'));
+    }
 } 

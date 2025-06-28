@@ -1,7 +1,7 @@
 {{-- Dashboard Content Partial --}}
 {{-- This partial is loaded via HTMX for seamless content loading --}}
 
-<div class="space-y-6">
+<div class="space-y-6 pb-20 lg:pb-0">
     <!-- Welcome Section -->
     <x-ui.card>
         <h1 class="text-2xl font-bold mb-2">Welcome back, {{ auth()->user()->name }}!</h1>
@@ -55,6 +55,7 @@
             <button hx-get="{{ route('logs.create') }}" 
                     hx-target="#main-content" 
                     hx-swap="innerHTML"
+                    @click="previousView = currentView"
                     class="inline-flex items-center px-4 py-2 bg-blue-600 border border-transparent rounded-md font-semibold text-xs text-white uppercase tracking-widest hover:bg-blue-700 focus:bg-blue-700 active:bg-blue-900 focus:outline-none focus:ring-2 focus:ring-blue-500 focus:ring-offset-2 transition ease-in-out duration-150">
                 📖 Log Reading
             </button>
@@ -67,12 +68,16 @@
                         <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M8 7V3m8 4V3m-9 8h10M5 21h14a2 2 0 002-2V7a2 2 0 00-2-2H5a2 2 0 00-2-2v16a2 2 0 002 2z"></path>
                     </svg>
                 </div>
-                <h3 class="text-lg font-semibold text-gray-700 ml-3">View History</h3>
+                <h3 class="text-lg font-semibold text-gray-700 ml-3">Reading History</h3>
             </div>
-            <p class="text-gray-600 text-sm mb-4">See your reading calendar and streaks (Coming in Week 5)</p>
-            <span class="inline-flex items-center px-3 py-1 rounded-full text-xs font-medium bg-yellow-100 text-yellow-800 border border-yellow-200">
-                In Development
-            </span>
+            <p class="text-gray-600 text-sm mb-4">View your past Bible readings and notes</p>
+            <button hx-get="{{ route('logs.index') }}" 
+                    hx-target="#main-content" 
+                    hx-swap="innerHTML"
+                    @click="previousView = currentView; currentView = 'logs'"
+                    class="inline-flex items-center px-4 py-2 bg-green-600 border border-transparent rounded-md font-semibold text-xs text-white uppercase tracking-widest hover:bg-green-700 focus:bg-green-700 active:bg-green-900 focus:outline-none focus:ring-2 focus:ring-green-500 focus:ring-offset-2 transition ease-in-out duration-150">
+                📚 View History
+            </button>
         </x-ui.card>
 
         <x-ui.card>
@@ -90,6 +95,4 @@
             </span>
         </x-ui.card>
     </div>
-
-
 </div> 

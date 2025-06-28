@@ -49,13 +49,8 @@ Route::middleware('auth')->group(function () {
         ]);
     })->name('profile');
 
-    Route::get('/history', function () {
-        return response()->view('dashboard', [
-            'message' => 'Reading history coming soon in post-MVP!'
-        ]);
-    })->name('history');
-
     // Reading Log Routes
+    Route::get('/logs', [ReadingLogController::class, 'index'])->name('logs.index');
     Route::get('/logs/create', [ReadingLogController::class, 'create'])->name('logs.create');
     Route::post('/logs', [ReadingLogController::class, 'store'])->name('logs.store');
 });

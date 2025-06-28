@@ -4,7 +4,7 @@
 @section('page-subtitle', 'Welcome back, ' . auth()->user()->name)
 
 @section('content')
-    <div id="main-content">
+    <div id="main-content" class="h-full">
         @include('partials.dashboard-content')
     </div>
 @endsection
