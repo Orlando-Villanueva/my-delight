@@ -2,19 +2,11 @@
 {{-- This partial is loaded via HTMX for seamless filtering --}}
 
 @if($logs->count() > 0)
-    {{-- Reading Log Entries --}}
-    <div class="space-y-4 pb-4 lg:pb-0">
-        @foreach($logs as $log)
-            @include('partials.reading-log-item', ['log' => $log])
-        @endforeach
+    {{-- Reading Log Entries Container --}}
+    <div id="log-list" class="space-y-4 pb-10">
+        {{-- Include the infinite scroll partial which handles both items and scroll sentinel --}}
+        @include('partials.reading-log-infinite-scroll', compact('logs', 'filter'))
     </div>
-    
-    {{-- Pagination --}}
-    @if($logs->hasPages())
-        <div class="mt-8 pb-20 lg:pb-0">
-            {{ $logs->links() }}
-        </div>
-    @endif
 @else
     {{-- Empty State --}}
     <div class="text-center py-12 pb-20 lg:pb-12">

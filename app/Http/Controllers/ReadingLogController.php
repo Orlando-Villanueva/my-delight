@@ -86,7 +86,7 @@ class ReadingLogController extends Controller
 
             // Return appropriate response based on request type
             if ($request->header('HX-Request')) {
-                return view('partials.reading-log-success', compact('log'));
+                return view('partials.reading-log-success-message', compact('log'));
             }
 
             return redirect()->route('dashboard')->with('success', 'Reading logged successfully!');
@@ -94,7 +94,7 @@ class ReadingLogController extends Controller
         } catch (ValidationException $e) {
             if ($request->header('HX-Request')) {
                 return response()
-                    ->view('partials.form-errors', ['errors' => $e->errors()])
+                    ->view('partials.validation-errors', ['errors' => $e->errors()])
                     ->setStatusCode(422);
             }
             
@@ -105,7 +105,7 @@ class ReadingLogController extends Controller
             
             if ($request->header('HX-Request')) {
                 return response()
-                    ->view('partials.form-errors', ['errors' => $error])
+                    ->view('partials.validation-errors', ['errors' => $error])
                     ->setStatusCode(422);
             }
             
@@ -118,7 +118,7 @@ class ReadingLogController extends Controller
                 
                 if ($request->header('HX-Request')) {
                     return response()
-                        ->view('partials.form-errors', ['errors' => $error])
+                        ->view('partials.validation-errors', ['errors' => $error])
                         ->setStatusCode(422);
                 }
                 
@@ -159,14 +159,20 @@ class ReadingLogController extends Controller
             $logsQuery->dateRange($startDate);
         }
         
-        $logs = $logsQuery->paginate(15)->withQueryString();
+        $logs = $logsQuery->paginate(10)->withQueryString();
         
         // Return partial view for HTMX requests
         if ($request->header('HX-Request')) {
+            // If it's an infinite scroll request (has page parameter), return just the items
+            if ($request->has('page') && $request->get('page') > 1) {
+                return view('partials.reading-log-infinite-scroll', compact('logs', 'filter'));
+            }
+            
             // If it's a filter request (has filter parameter), return just the content
             if ($request->has('filter')) {
                 return view('partials.reading-log-list', compact('logs', 'filter'));
             }
+            
             // Otherwise, return the full page content for navigation
             return view('partials.reading-log-page-content', compact('logs', 'filter'));
         }
