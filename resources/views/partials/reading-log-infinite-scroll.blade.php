@@ -23,7 +23,7 @@
 
 {{-- Desktop Pagination (hidden on mobile) --}}
 @if ($logs->hasPages())
-    <div class="hidden md:block mt-8 pb-20 lg:pb-0">
+    <div class="hidden md:block mt-8">
         {{ $logs->links() }}
     </div>
 @endif
