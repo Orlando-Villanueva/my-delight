@@ -89,6 +89,63 @@ public function create(Request $request)
 - ✅ **Progressive Enhancement**: Graceful degradation if JavaScript disabled
 - ✅ **Consistent Layout**: Form appears within authenticated layout
 
+### URL Management with `hx-push-url`
+
+For navigation between different pages (not just content loading), use `hx-push-url="true"` to maintain proper browser history and URL state:
+
+```html
+<!-- Navigation buttons with URL management -->
+<button hx-get="{{ route('logs.index') }}" 
+        hx-target="#main-content" 
+        hx-swap="innerHTML"
+        hx-push-url="true">
+    View History
+</button>
+
+<button hx-get="{{ route('dashboard') }}" 
+        hx-target="#main-content" 
+        hx-swap="innerHTML"
+        hx-push-url="true">
+    Dashboard
+</button>
+```
+
+**How `hx-push-url` Works:**
+1. **HTMX makes request** to the URL specified in `hx-get` (e.g., `/logs`)
+2. **Server responds** with appropriate content (partial for HTMX, full page for direct access)
+3. **HTMX updates DOM** with the response content
+4. **HTMX updates browser URL** to match the request URL (e.g., `/logs`)
+5. **Browser history** gets a new entry, enabling back/forward navigation
+
+**Controller Pattern for URL Management:**
+```php
+public function index(Request $request)
+{
+    $logs = $this->getReadingLogs($request->user());
+    
+    // Return partial view for HTMX requests (navigation)
+    if ($request->header('HX-Request')) {
+        return view('partials.reading-log-page-content', compact('logs'));
+    }
+    
+    // Return full page for direct URL access (bookmarking, refresh)
+    return view('logs.index', compact('logs'));
+}
+```
+
+**When to Use `hx-push-url`:**
+- ✅ **Page Navigation**: Moving between distinct application pages
+- ✅ **Bookmarkable Content**: Users should be able to bookmark and share URLs
+- ❌ **Modal/Form Loading**: Temporary content that shouldn't change the URL
+- ❌ **Filter Updates**: Content updates within the same logical page
+
+**Benefits of URL Management:**
+- ✅ **Bookmarking**: Users can bookmark `/logs` and return directly
+- ✅ **Sharing**: URLs can be shared and accessed directly
+- ✅ **Browser Navigation**: Back/forward buttons work as expected
+- ✅ **Refresh Handling**: Page refresh loads the correct content
+- ✅ **SEO Friendly**: Proper URLs for different application states
+
 #### 2. Partial Content Updates
 ```php
 // Controller method returning HTML fragment
