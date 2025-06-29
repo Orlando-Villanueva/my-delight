@@ -1,7 +1,7 @@
 {{-- Reading Log Page Content Partial --}}
 {{-- This partial is loaded via HTMX for seamless navigation --}}
 
-<div class="max-w-4xl mx-auto p-6">
+<div class="max-w-4xl mx-auto p-6 pb-20">
     <div class="flex items-center justify-between mb-8">
         <h1 class="text-3xl font-bold text-gray-900">Reading History</h1>
         

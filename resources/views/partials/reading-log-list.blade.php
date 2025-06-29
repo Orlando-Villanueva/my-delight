@@ -3,7 +3,7 @@
 
 @if($logs->count() > 0)
     {{-- Reading Log Entries Container --}}
-    <div id="log-list" class="space-y-4 pb-10">
+    <div id="log-list" class="relative flex flex-col gap-y-4">
         {{-- Include the infinite scroll partial which handles both items and scroll sentinel --}}
         @include('partials.reading-log-infinite-scroll', compact('logs', 'filter'))
     </div>

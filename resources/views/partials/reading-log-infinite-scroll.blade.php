@@ -12,9 +12,9 @@
         hx-trigger="intersect once"
         hx-swap="outerHTML"
         hx-indicator=".htmx-indicator"
-        class="flex justify-center py-0 md:hidden">
+        class="absolute inset-x-0 bottom-0 h-1 md:hidden flex justify-center">
         {{-- Loading indicator that shows during fetch --}}
-        <div class="htmx-indicator flex items-center space-x-2 text-gray-500">
+        <div class="htmx-indicator flex items-center space-x-2 text-gray-500 translate-y-full py-2">
             <div class="animate-spin h-5 w-5 border-2 border-blue-600 border-t-transparent rounded-full"></div>
             <span class="text-sm">Loading more readings...</span>
         </div>

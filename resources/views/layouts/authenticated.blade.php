@@ -178,7 +178,7 @@
                 </main>
             </div>
             <!-- Mobile Bottom Navigation -->
-            <nav class="mobile-nav lg:hidden fixed bottom-0 left-0 right-0 px-4 py-2 z-40">
+            <nav class="mobile-nav md:hidden fixed bottom-0 left-0 right-0 px-4 py-2 z-40 h-20">
                 <div class="flex justify-around">
                     <button hx-get="{{ route('dashboard') }}" 
                             hx-target="#main-content" 
