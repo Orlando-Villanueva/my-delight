@@ -32,7 +32,7 @@ class AuthenticationMiddlewareTest extends TestCase
         $response = $this->actingAs($user)->get('/dashboard');
         $response->assertOk();
 
-        $response = $this->actingAs($user)->get('/history');
+        $response = $this->actingAs($user)->get('/logs');
         $response->assertOk();
 
         $response = $this->actingAs($user)->get('/profile');
