@@ -46,6 +46,7 @@
                     <button hx-get="{{ route('dashboard') }}" 
                             hx-target="#main-content" 
                             hx-swap="innerHTML"
+                            hx-push-url="true"
                             @click="previousView = currentView; currentView = 'dashboard'"
                             :class="currentView === 'dashboard' ? 'nav-active' : 'text-gray-600 hover:bg-gray-100'"
                             class="flex items-center px-4 py-3 text-sm font-medium rounded-lg min-h-[44px] w-full text-left">
@@ -58,6 +59,7 @@
                     <button hx-get="{{ route('logs.index') }}" 
                             hx-target="#main-content" 
                             hx-swap="innerHTML"
+                            hx-push-url="true"
                             @click="previousView = currentView; currentView = 'logs'"
                             :class="currentView === 'logs' ? 'nav-active' : 'text-gray-600 hover:bg-gray-100'"
                             class="flex items-center px-4 py-3 text-sm font-medium rounded-lg min-h-[44px] w-full text-left">
@@ -181,6 +183,7 @@
                     <button hx-get="{{ route('dashboard') }}" 
                             hx-target="#main-content" 
                             hx-swap="innerHTML"
+                            hx-push-url="true"
                             @click="previousView = currentView; currentView = 'dashboard'"
                             :class="currentView === 'dashboard' ? 'text-blue-600' : 'text-gray-500'"
                             class="flex flex-col items-center py-2 px-3 min-w-[44px] min-h-[44px] justify-center">
@@ -193,6 +196,7 @@
                     <button hx-get="{{ route('logs.index') }}" 
                             hx-target="#main-content" 
                             hx-swap="innerHTML"
+                            hx-push-url="true"
                             @click="previousView = currentView; currentView = 'logs'"
                             :class="currentView === 'logs' ? 'text-blue-600' : 'text-gray-500'"
                             class="flex flex-col items-center py-2 px-3 min-w-[44px] min-h-[44px] justify-center">

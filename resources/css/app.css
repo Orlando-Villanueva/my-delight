@@ -156,4 +156,13 @@
         white-space: nowrap;
         border: 0;
     }
+    
+    /* HTMX Loading Indicator - ensure no space when hidden */
+    .htmx-indicator {
+        display: none;
+    }
+    
+    .htmx-indicator.htmx-request {
+        display: flex;
+    }
 }
