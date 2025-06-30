@@ -4,7 +4,7 @@
 <!-- Full-width Content when no sidebar is defined -->
 <div class="flex-1 p-4 lg:p-6">
     <div id="main-content" class="h-full">
-        <div class="max-w-4xl mx-auto p-6 pb-20 md:pb-12 lg:pb-0">
+        <div class="max-w-4xl mx-auto pb-20 md:pb-4">
             <div class="flex items-center justify-between mb-8">
                 <h1 class="text-3xl font-bold text-gray-900">Reading History</h1>
                 
