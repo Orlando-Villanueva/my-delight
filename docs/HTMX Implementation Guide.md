@@ -581,4 +581,81 @@ public function getDashboardStatistics(Request $request)
 }
 ```
 
+## Modal / Slide-over Pattern (Reading Log Entry)
+
+> 📖 **Context**: Starting June 2025 we now open the *Log Reading* form in a right-hand slide-over (modal) instead of replacing the main content area. This keeps the dashboard and history pages visible in the background, creates a focused flow, and removes layout inconsistencies between pages.
+
+### Why a modal?
+1. **Visual continuity** – the user still "sees" where they are (dashboard, history, etc.).
+2. **Task focus** – dimmed background reduces distractions while filling the form.
+3. **Single source of truth** – the exact same Blade partial is used for both HTMX modal loading and full-page fallback (`/logs/create`).
+4. **URL hygiene** – temporary overlays should not change `window.location`; therefore **DO NOT** use `hx-push-url` for modal loads.
+
+### Anatomy
+```html
+<!-- Trigger (Dashboard, History, Anywhere) -->
+<button hx-get="{{ route('logs.create') }}"
+        hx-target="#reading-log-modal-content"
+        hx-swap="innerHTML"
+        @click="modalOpen = true"
+        class="btn btn-primary">
+    📖 Log Reading
+</button>
+
+<!-- Modal / Slide-over Container (once per layout) -->
+<div x-data="{ modalOpen: false }">
+    <!-- Backdrop -->
+    <div x-show="modalOpen" x-transition.opacity class="fixed inset-0 bg-black/40 z-40" @click="modalOpen = false"></div>
+
+    <!-- Panel -->
+    <aside x-show="modalOpen"
+           x-transition:enter="transition ease-out duration-200"
+           x-transition:enter-start="translate-x-full"
+           x-transition:enter-end="translate-x-0"
+           x-transition:leave="transition ease-in duration-150"
+           x-transition:leave-start="translate-x-0"
+           x-transition:leave-end="translate-x-full"
+           class="fixed right-0 top-0 bottom-0 w-full max-w-lg bg-white shadow-xl z-50 overflow-y-auto">
+        <div id="reading-log-modal-content" class="p-6">
+            <!-- HTMX will inject the form here -->
+        </div>
+    </aside>
+</div>
+```
+
+### Controller contract
+```php
+public function create(Request $request)
+{
+    $books = $this->bibleReferenceService->listBibleBooks();
+
+    // 1️⃣ Modal / HTMX request – return the *form partial only*
+    if ($request->header('HX-Request')) {
+        return view('partials.reading-log-form', compact('books'));
+    }
+
+    // 2️⃣ Direct page access – return full layout (graceful degrade)
+    return view('logs.create', compact('books'));
+}
+```
+
+### Implementation rules
+- **No `hx-push-url`** for modal triggers; it's transient UI.
+- Put the modal container in `layouts/authenticated.blade.php` so it's globally available.
+- Load Alpine.js *Focus* plugin for accessible focus-trap if needed.
+- Use the [`Penguin UI` modal blueprint](https://www.penguinui.com/components/modal) as a starting point for transitions and a11y.
+- **Escape hatch** – a `<button type="button">Cancel</button>` inside the form simply triggers `modalOpen = false` (no network request).
+- **Success state** – on 2xx response, replace modal content with a success partial; auto-close after 2 seconds via Alpine `setTimeout` if desired.
+
+### Accessibility checklist
+- Trap focus within the panel while open (`x-trap.inert.noscroll` from Alpine v3 plugin).
+- Close on *Esc* key and backdrop click.
+- Maintain high contrast; respect reduced-motion.
+
+### Test plan
+1. Desktop – open/close modal from dashboard & history.
+2. Mobile – ensure panel slides up from bottom and covers at least 75 vh.
+3. Refresh safety – direct `/logs/create` URL still shows full-width page.
+4. Keyboard – Esc closes, focus returns to original *Log Reading* button.
+
 This implementation guide provides the foundation for building robust, server-driven interactions using HTMX while maintaining clean separation of concerns and excellent user experience. 
