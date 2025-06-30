@@ -35,7 +35,7 @@ class DatabaseSeeder extends Seeder
 
         // Recent readings (last 7 days) - 3 entries (reduced activity recently)
         $recentLogs = [
-            ['book_id' => 43, 'chapter' => 1, 'passage_text' => 'John 1', 'date' => $today, 'notes' => 'In the beginning was the Word. Beautiful opening to John\'s Gospel.'],
+            ['book_id' => 43, 'chapter' => 1, 'passage_text' => 'John 1', 'date' => $today->copy()->subDay(), 'notes' => 'In the beginning was the Word. Beautiful opening to John\'s Gospel.'],
             ['book_id' => 19, 'chapter' => 23, 'passage_text' => 'Psalms 23', 'date' => $today->copy()->subDays(3), 'notes' => 'The Lord is my shepherd. Such comfort in this psalm.'],
             ['book_id' => 45, 'chapter' => 8, 'passage_text' => 'Romans 8', 'date' => $today->copy()->subDays(5), 'notes' => 'No condemnation for those in Christ Jesus. Powerful chapter!'],
         ];

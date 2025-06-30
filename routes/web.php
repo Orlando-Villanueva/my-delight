@@ -33,9 +33,9 @@ Route::middleware('guest')->group(function () {
 Route::middleware('auth')->group(function () {
     // Main Dashboard
     Route::get('/dashboard', function (Request $request) {
-        // Return partial view for HTMX requests (seamless content loading)
+        // Return partial view for HTMX requests (includes sidebar structure)
         if ($request->header('HX-Request')) {
-            return view('partials.dashboard-content');
+            return view('partials.dashboard-page');
         }
         
         // Return full page for direct access (graceful degradation)

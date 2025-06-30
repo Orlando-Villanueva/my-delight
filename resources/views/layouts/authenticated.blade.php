@@ -44,7 +44,7 @@
                 <!-- Navigation Links -->
                 <nav class="flex-1 p-4 space-y-2">
                     <button hx-get="{{ route('dashboard') }}" 
-                            hx-target="#main-content" 
+                            hx-target="#page-container" 
                             hx-swap="innerHTML"
                             hx-push-url="true"
                             @click="previousView = currentView; currentView = 'dashboard'"
@@ -57,7 +57,7 @@
                     </button>
 
                     <button hx-get="{{ route('logs.index') }}" 
-                            hx-target="#main-content" 
+                            hx-target="#page-container" 
                             hx-swap="innerHTML"
                             hx-push-url="true"
                             @click="previousView = currentView; currentView = 'logs'"
@@ -164,7 +164,7 @@
 
                 <!-- Page Content -->
                 <main class="flex-1 overflow-y-auto">
-                    <div class="lg:flex lg:h-full">
+                    <div id="page-container" class="lg:flex lg:h-full">
                         @hasSection('sidebar')
                             <!-- Main Content (70% on desktop when sidebar present) -->
                             <div class="lg:flex-1 lg:max-w-[70%] p-4 lg:p-6">
@@ -188,7 +188,7 @@
             <nav class="mobile-nav md:hidden fixed bottom-0 left-0 right-0 px-4 py-2 z-40 h-20">
                 <div class="flex justify-around">
                     <button hx-get="{{ route('dashboard') }}" 
-                            hx-target="#main-content" 
+                            hx-target="#page-container" 
                             hx-swap="innerHTML"
                             hx-push-url="true"
                             @click="previousView = currentView; currentView = 'dashboard'"
@@ -201,7 +201,7 @@
                     </button>
 
                     <button hx-get="{{ route('logs.index') }}" 
-                            hx-target="#main-content" 
+                            hx-target="#page-container" 
                             hx-swap="innerHTML"
                             hx-push-url="true"
                             @click="previousView = currentView; currentView = 'logs'"

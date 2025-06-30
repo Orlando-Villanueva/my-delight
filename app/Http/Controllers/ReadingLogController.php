@@ -173,8 +173,8 @@ class ReadingLogController extends Controller
                 return view('partials.reading-log-list', compact('logs', 'filter'));
             }
             
-            // Otherwise, return the full page content for navigation
-            return view('partials.reading-log-page-content', compact('logs', 'filter'));
+            // Otherwise, return the full page container for navigation (no sidebar)
+            return view('partials.logs-page', compact('logs', 'filter'));
         }
         
         // Return full page for direct access (graceful degradation)

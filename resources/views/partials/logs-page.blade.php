@@ -1,11 +1,10 @@
-@extends('layouts.authenticated')
+{{-- Reading Log Page Container Partial (No Sidebar) --}}
+{{-- This partial is loaded via HTMX and includes full-width content structure --}}
 
-@section('page-title', 'Reading History')
-@section('page-subtitle', 'View your Bible reading journey')
-
-@section('content')
+<!-- Full-width Content when no sidebar is defined -->
+<div class="flex-1 p-4 lg:p-6">
     <div id="main-content" class="h-full">
-        <div class="max-w-4xl mx-auto pb-20 md:pb-4">
+        <div class="max-w-4xl mx-auto p-6 pb-20 md:pb-12 lg:pb-0">
             <div class="flex items-center justify-between mb-8">
                 <h1 class="text-3xl font-bold text-gray-900">Reading History</h1>
                 
@@ -95,26 +94,27 @@
                 
                 @include('partials.reading-log-list', compact('logs', 'filter'))
             </div>
+
+            <script>
+            function updateActiveFilter(clickedButton, filterValue) {
+                // Update desktop buttons
+                const buttons = document.querySelectorAll('#filter-buttons button[data-filter]');
+                buttons.forEach(button => {
+                    if (button.dataset.filter === filterValue) {
+                        button.className = 'px-4 py-2 text-sm font-medium rounded-md border bg-blue-600 text-white border-blue-600';
+                    } else {
+                        button.className = 'px-4 py-2 text-sm font-medium rounded-md border bg-white text-gray-700 border-gray-300 hover:bg-gray-50';
+                    }
+                });
+                
+                // Update mobile dropdown
+                const select = document.getElementById('filter-select');
+                if (select) {
+                    select.value = filterValue;
+                }
+            }
+            </script>
+
         </div>
     </div>
-
-    <script>
-    function updateActiveFilter(clickedButton, filterValue) {
-        // Update desktop buttons
-        const buttons = document.querySelectorAll('#filter-buttons button[data-filter]');
-        buttons.forEach(button => {
-            if (button.dataset.filter === filterValue) {
-                button.className = 'px-4 py-2 text-sm font-medium rounded-md border bg-blue-600 text-white border-blue-600';
-            } else {
-                button.className = 'px-4 py-2 text-sm font-medium rounded-md border bg-white text-gray-700 border-gray-300 hover:bg-gray-50';
-            }
-        });
-        
-        // Update mobile dropdown
-        const select = document.getElementById('filter-select');
-        if (select) {
-            select.value = filterValue;
-        }
-    }
-    </script>
-@endsection 
+</div> 

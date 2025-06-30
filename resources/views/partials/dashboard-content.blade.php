@@ -72,7 +72,7 @@
             </div>
             <p class="text-gray-600 text-sm mb-4">View your past Bible readings and notes</p>
             <button hx-get="{{ route('logs.index') }}" 
-                    hx-target="#main-content" 
+                    hx-target="#page-container" 
                     hx-swap="innerHTML"
                     hx-push-url="true"
                     @click="previousView = currentView; currentView = 'logs'"

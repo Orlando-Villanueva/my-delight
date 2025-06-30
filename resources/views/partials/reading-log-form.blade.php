@@ -7,8 +7,9 @@
         
         {{-- Cancel Button - Returns to Previous View via HTMX --}}
         <button :hx-get="previousView === 'logs' ? '{{ route('logs.index') }}' : '{{ route('dashboard') }}'"
-                hx-target="#main-content" 
+                hx-target="#page-container" 
                 hx-swap="innerHTML"
+                hx-push-url="true"
                 @click="currentView = previousView"
                 class="inline-flex items-center px-4 py-2 border border-gray-300 text-sm font-medium rounded-md text-gray-700 bg-white hover:bg-gray-50 focus:outline-none focus:ring-2 focus:ring-offset-2 focus:ring-blue-500">
             <span x-text="previousView === 'logs' ? '← Back to History' : '← Back to Dashboard'"></span>
@@ -151,8 +152,9 @@
             
             <button type="button"
                     :hx-get="previousView === 'logs' ? '{{ route('logs.index') }}' : '{{ route('dashboard') }}'"
-                    hx-target="#main-content" 
+                    hx-target="#page-container" 
                     hx-swap="innerHTML"
+                    hx-push-url="true"
                     @click="currentView = previousView"
                     class="inline-flex items-center px-6 py-3 border border-gray-300 text-base font-medium rounded-md text-gray-700 bg-white hover:bg-gray-50 focus:outline-none focus:ring-2 focus:ring-offset-2 focus:ring-blue-500">
                 Cancel
