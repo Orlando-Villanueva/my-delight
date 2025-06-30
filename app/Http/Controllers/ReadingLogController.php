@@ -159,7 +159,7 @@ class ReadingLogController extends Controller
             $logsQuery->dateRange($startDate);
         }
         
-        $logs = $logsQuery->paginate(10)->withQueryString();
+        $logs = $logsQuery->paginate(5)->withQueryString();
         
         // Return partial view for HTMX requests
         if ($request->header('HX-Request')) {
