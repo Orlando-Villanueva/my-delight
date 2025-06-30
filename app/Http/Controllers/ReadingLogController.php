@@ -139,11 +139,11 @@ class ReadingLogController extends Controller
         $user = $request->user();
         
         // Get filter parameter (days back)
-        $filter = $request->get('filter', '30'); // Default to last 30 days
+        $filter = $request->get('filter', '7'); // Default to last 7 days
         $validFilters = ['7', '30', '90', 'all'];
         
         if (!in_array($filter, $validFilters)) {
-            $filter = '30';
+            $filter = '7';
         }
         
         // Calculate date range based on filter
