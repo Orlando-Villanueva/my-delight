@@ -101,7 +101,8 @@ class ReadingLogController extends Controller
             return back()->withErrors($e->errors())->withInput();
 
         } catch (InvalidArgumentException $e) {
-            $error = ['chapter_input' => $e->getMessage()];
+            // Wrap message in array to match ValidationException structure
+            $error = ['chapter_input' => [$e->getMessage()]];
             
             if ($request->header('HX-Request')) {
                 return response()
@@ -114,7 +115,8 @@ class ReadingLogController extends Controller
         } catch (QueryException $e) {
             // Handle unique constraint violation (duplicate reading log)
             if ($e->getCode() === '23000') {
-                $error = ['chapter_input' => 'You have already logged one or more of these chapters for today.'];
+                // Duplicate entry message wrapped in array to align with view expectations
+                $error = ['chapter_input' => ['You have already logged one or more of these chapters for today.']];
                 
                 if ($request->header('HX-Request')) {
                     return response()
