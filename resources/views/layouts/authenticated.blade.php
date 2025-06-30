@@ -165,15 +165,22 @@
                 <!-- Page Content -->
                 <main class="flex-1 overflow-y-auto">
                     <div class="lg:flex lg:h-full">
-                        <!-- Main Content (70% on desktop) -->
-                        <div class="lg:flex-1 lg:max-w-[70%] p-4 lg:p-6">
-                            @yield('content')
-                        </div>
+                        @hasSection('sidebar')
+                            <!-- Main Content (70% on desktop when sidebar present) -->
+                            <div class="lg:flex-1 lg:max-w-[70%] p-4 lg:p-6">
+                                @yield('content')
+                            </div>
 
-                        <!-- Sidebar Content (30% on desktop) -->
-                        <div class="hidden lg:block lg:w-[30%] lg:min-w-[300px] bg-white border-l border-gray-200 p-6">
-                            @yield('sidebar')
-                        </div>
+                            <!-- Sidebar Content (30% on desktop) -->
+                            <div class="hidden lg:block lg:w-[30%] lg:min-w-[300px] bg-white border-l border-gray-200 p-6">
+                                @yield('sidebar')
+                            </div>
+                        @else
+                            <!-- Full-width Content when no sidebar is defined -->
+                            <div class="flex-1 p-4 lg:p-6">
+                                @yield('content')
+                            </div>
+                        @endif
                     </div>
                 </main>
             </div>
