@@ -1428,7 +1428,42 @@ DB_DATABASE=/path/to/database.sqlite
 
 ### Caching Strategy
 
-As user growth occurs, implementing a robust caching strategy will be essential for maintaining performance and scalability. Here's the planned approach:
+Based on performance assessment of the PR5 implementation, a robust caching strategy is essential for maintaining performance and scalability. Here's the detailed approach targeting specific bottlenecks:
+
+#### Critical Performance Bottlenecks (Identified in PR5 Assessment)
+
+1. **UserStatisticsService::getDashboardStatistics()** - Multiple uncached queries:
+   - Current/longest streak calculations load all reading dates into PHP
+   - Book progress summary loads all user progress records
+   - Recent activity executes separate query
+   - Reading summary executes 3 separate queries (count, oldest, latest)
+
+2. **Streak Calculations** - Inefficient PHP processing:
+   - `calculateCurrentStreak()` - fetches all dates, processes in PHP memory
+   - `calculateLongestStreak()` - fetches all dates, processes in PHP memory
+   - Should be converted to SQL window functions for better performance
+
+3. **Calendar Data Generation** - PHP array processing:
+   - `getCalendarData()` creates 365 array entries in PHP
+   - Could be optimized with database aggregation
+
+#### High-Impact Caching Implementation
+
+**Primary Cache Targets with TTL Strategy:**
+```php
+// Dashboard statistics (recalculated only on new readings)
+Cache::remember("user_dashboard_stats_{$userId}", 300, fn() => $this->getDashboardStatistics($user));
+
+// Streak calculations (longer TTL since they change infrequently)
+Cache::remember("user_current_streak_{$userId}", 900, fn() => $this->calculateCurrentStreak($user));
+Cache::remember("user_longest_streak_{$userId}", 3600, fn() => $this->calculateLongestStreak($user));
+
+// Bible reference data (static data, cache indefinitely)
+Cache::remember("bible_books_{$locale}", 86400, fn() => $this->listBibleBooks(null, $locale));
+
+// Calendar data (updated only on new readings for the year)
+Cache::remember("user_calendar_{$userId}_{$year}", 1800, fn() => $this->getCalendarData($user, $year));
+```
 
 #### Cache Layers
 
@@ -1436,10 +1471,12 @@ As user growth occurs, implementing a robust caching strategy will be essential 
    - User statistics and streak data (invalidated only on new reading logs)
    - Bible reference metadata (book/chapter/verse counts)
    - User reading history summaries
+   - Calendar visualization data
 
 2. **Database Query Cache**:
    - Frequently executed queries, particularly for statistics calculations
    - Results of complex aggregations
+   - Book progress summaries
 
 3. **HTTP Cache**:
    - Static assets with appropriate cache headers
@@ -1447,44 +1484,58 @@ As user growth occurs, implementing a robust caching strategy will be essential 
 
 #### Implementation Technologies
 
-1. **Laravel KV Store (via Laravel Cloud)**:
-   - Redis API-compatible key-value store
-   - Supports complex data structures needed for statistics
-   - Enables atomic operations for counters and leaderboards
-   - Provides pub/sub capabilities for cache invalidation
-   - Managed platform with automatic scaling and monitoring
+1. **Current Setup (Database Cache)**:
+   - Default Laravel cache using database driver
+   - Suitable for MVP launch and initial user load
+   - Zero configuration required
 
-2. **Laravel Cache**:
-   - Abstraction layer for different cache backends
-   - Tag-based cache invalidation for related items
-   - Automatic serialization/deserialization of complex objects
-   - Seamless integration with Laravel Cloud's KV Store
+2. **Production Scaling (Laravel Cloud + Redis)**:
+   - Laravel KV Store (Redis API-compatible)
+   - Upgrade path without code changes: `CACHE_STORE=redis`
+   - Advanced features: pub/sub, atomic operations, complex data structures
 
 #### Cache Invalidation Strategy
 
-1. **Time-Based**:
-   - Short TTL (5-15 minutes) for frequently changing data
-   - Longer TTL (24+ hours) for relatively static data like Bible reference information
+1. **Event-Based Invalidation** (Primary):
+   ```php
+   // Clear user stats cache on new reading log creation
+   Cache::forget("user_dashboard_stats_{$userId}");
+   Cache::forget("user_current_streak_{$userId}");
+   Cache::forget("user_calendar_{$userId}_{$currentYear}");
+   ```
 
-2. **Event-Based**:
-   - Invalidate user statistics cache when new reading logs are added
-   - Invalidate streak cache at midnight (user's local time) when streaks may change
+2. **Time-Based TTL** (Secondary):
+   - Dashboard stats: 5 minutes (frequent changes)
+   - Streak calculations: 15 minutes (infrequent changes)
+   - Bible reference data: 24 hours (static data)
+   - Calendar data: 30 minutes (daily granularity)
 
 3. **Selective Invalidation**:
-   - Use cache tags to invalidate only affected portions of the cache
-   - Maintain cache warmth for high-traffic users and common queries
+   - Use cache tags to invalidate only affected portions
+   - Maintain cache warmth for high-traffic users
 
 #### Performance Monitoring
 
-1. **Cache Hit Ratio**:
-   - Track and optimize for high cache hit rates (target: >90%)
-   - Identify and address cache misses for common operations
+1. **Cache Hit Ratio Tracking**:
+   - Target: >90% hit rate for dashboard statistics
+   - Monitor cache effectiveness for each service method
 
-2. **Cache Size Monitoring**:
-   - Monitor memory usage to prevent cache eviction
-   - Implement size-based policies for cache entry limits
+2. **Query Performance Metrics**:
+   - Measure query execution time before/after caching
+   - Identify additional optimization opportunities
 
-This caching strategy will be implemented incrementally as user load increases, with the most performance-critical features receiving caching support first.
+3. **Cache Size Monitoring**:
+   - Monitor memory usage patterns
+   - Implement automatic cleanup for stale entries
+
+#### SQL Optimization Targets (Complementary to Caching)
+
+- Convert streak calculations from PHP loops to SQL window functions
+- Batch book progress updates during reading log creation
+- Add composite indexes for calendar queries: `(user_id, date_read)`
+- Optimize book progress aggregation queries
+
+This caching strategy targets the specific performance bottlenecks identified in the current implementation and will be implemented incrementally, starting with the highest-impact optimizations first.
 
 ### Social Authentication Implementation Strategy (Phase 2)
 

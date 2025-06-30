@@ -171,6 +171,51 @@
 * Add HTMX loading indicators and error handling
 * Implement performance monitoring and optimization
 
+**🚀 Detailed Performance Optimization Plan:**
+
+**Critical Performance Bottlenecks (Identified in PR5 Assessment):**
+1. **UserStatisticsService::getDashboardStatistics()** - Multiple uncached queries:
+   - Current/longest streak calculations load all reading dates into PHP
+   - Book progress summary loads all user progress records
+   - Recent activity executes separate query
+   - Reading summary executes 3 separate queries (count, oldest, latest)
+
+2. **Streak Calculations** - Inefficient PHP processing:
+   - `calculateCurrentStreak()` - fetches all dates, processes in PHP memory
+   - `calculateLongestStreak()` - fetches all dates, processes in PHP memory
+   - Should be converted to SQL window functions for better performance
+
+3. **Calendar Data Generation** - PHP array processing:
+   - `getCalendarData()` creates 365 array entries in PHP
+   - Could be optimized with database aggregation
+
+**Caching Implementation Strategy:**
+```php
+// High-impact caching targets
+Cache::remember("user_dashboard_stats_{$userId}", 300, fn() => $this->getDashboardStatistics($user));
+Cache::remember("user_current_streak_{$userId}", 900, fn() => $this->calculateCurrentStreak($user));
+Cache::remember("user_longest_streak_{$userId}", 3600, fn() => $this->calculateLongestStreak($user));
+Cache::remember("bible_books_{$locale}", 86400, fn() => $this->listBibleBooks(null, $locale));
+Cache::remember("user_calendar_{$userId}_{$year}", 1800, fn() => $this->getCalendarData($user, $year));
+```
+
+**SQL Optimization Targets:**
+- Convert streak calculations from PHP loops to SQL window functions
+- Batch book progress updates during reading log creation
+- Add composite indexes for calendar queries: `(user_id, date_read)`
+- Optimize book progress aggregation queries
+
+**Cache Invalidation Strategy:**
+- Clear user stats cache on new reading log creation
+- Clear streak cache on reading log CRUD operations
+- Cache user progress indefinitely until book completion changes
+
+**Performance Monitoring Setup:**
+- Install Laravel Telescope for query analysis
+- Set up database query logging for production
+- Monitor cache hit rates and query execution times
+- Add performance benchmarks for critical user flows
+
 **[User Testing Session #2]** - Focus on performance, accessibility, and final UX
 
 ### **Week 8: Final Polish & Production Deployment**

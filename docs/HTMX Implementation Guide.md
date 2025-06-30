@@ -459,11 +459,42 @@ Route::middleware(['guest'])->group(function () {
 
 ### Performance Optimization
 
-#### Fragment Caching
+#### Fragment Caching for HTMX Responses
+
+Based on PR5 performance assessment, HTMX endpoints should implement strategic caching for expensive operations:
+
 ```php
+// Dashboard statistics caching (high-impact optimization)
+public function getDashboardStatistics(Request $request)
+{
+    $userId = auth()->id();
+    $cacheKey = "user_dashboard_stats_{$userId}";
+    
+    $statistics = Cache::remember($cacheKey, 300, function () use ($userId) {
+        return $this->statisticsService->getDashboardStatistics(auth()->user());
+    });
+    
+    return view('partials.dashboard-stats', compact('statistics'));
+}
+
+// Streak counter caching (frequently requested via HTMX)
+public function getCurrentStreak(Request $request)
+{
+    $userId = auth()->id();
+    $cacheKey = "user_current_streak_{$userId}";
+    
+    $streak = Cache::remember($cacheKey, 900, function () {
+        return $this->readingLogService->calculateCurrentStreak(auth()->user());
+    });
+    
+    return view('partials.streak-counter', compact('streak'));
+}
+
+// Book progress caching (for reading log form updates)
 public function getBookProgress(Request $request)
 {
-    $cacheKey = "book_progress_" . auth()->id();
+    $userId = auth()->id();
+    $cacheKey = "user_book_progress_{$userId}";
     
     $progress = Cache::remember($cacheKey, 300, function () {
         return BookProgress::where('user_id', auth()->id())
@@ -472,6 +503,81 @@ public function getBookProgress(Request $request)
     });
     
     return view('partials.book-progress', compact('progress'));
+}
+```
+
+#### Cache Invalidation for HTMX Updates
+
+```php
+// Clear relevant caches when reading logs are created
+public function store(Request $request)
+{
+    $validated = $request->validate([...]);
+    
+    $log = $this->readingLogService->logReading($request->user(), $validated);
+    
+    // Invalidate affected caches for immediate UI consistency
+    $userId = auth()->id();
+    $currentYear = now()->year;
+    
+    Cache::forget("user_dashboard_stats_{$userId}");
+    Cache::forget("user_current_streak_{$userId}");
+    Cache::forget("user_book_progress_{$userId}");
+    Cache::forget("user_calendar_{$userId}_{$currentYear}");
+    
+    if ($request->header('HX-Request')) {
+        return view('partials.reading-log-success', compact('log'));
+    }
+    
+    return redirect()->route('dashboard')->with('success', 'Reading logged!');
+}
+```
+
+#### HTMX Response Optimization
+
+```html
+<!-- Optimize HTMX requests with appropriate triggers and targets -->
+<!-- Only update streak when readings actually change -->
+<div id="streak-display" 
+     hx-get="{{ route('dashboard.streak') }}" 
+     hx-trigger="reading-logged from:body delay:100ms">
+    {{ $currentStreak }} days
+</div>
+
+<!-- Cache-friendly calendar updates -->
+<div id="calendar-view" 
+     hx-get="{{ route('dashboard.calendar') }}" 
+     hx-trigger="reading-logged from:body delay:200ms"
+     hx-swap="innerHTML settle:100ms">
+    @include('partials.calendar-grid')
+</div>
+```
+
+#### Performance Monitoring for HTMX
+
+```php
+// Add performance logging for HTMX endpoints
+public function getDashboardStatistics(Request $request)
+{
+    $startTime = microtime(true);
+    
+    $statistics = Cache::remember("user_dashboard_stats_" . auth()->id(), 300, 
+        fn() => $this->statisticsService->getDashboardStatistics(auth()->user())
+    );
+    
+    $executionTime = microtime(true) - $startTime;
+    
+    // Log slow HTMX responses for optimization
+    if ($executionTime > 0.5) {
+        Log::info('Slow HTMX response', [
+            'endpoint' => 'dashboard.statistics',
+            'user_id' => auth()->id(),
+            'execution_time' => $executionTime,
+            'is_cache_hit' => $executionTime < 0.1
+        ]);
+    }
+    
+    return view('partials.dashboard-stats', compact('statistics'));
 }
 ```
 
