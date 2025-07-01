@@ -1,6 +1,8 @@
 {{-- Dashboard Page Container Partial --}}
 {{-- This partial is loaded via HTMX and includes both content and sidebar structure --}}
 
+@include('partials.dashboard-header-update')
+
 <!-- Main Content (70% on desktop when sidebar present) -->
 <div class="lg:flex-1 lg:max-w-[70%] p-4 lg:p-6">
     <div id="main-content" class="h-full">

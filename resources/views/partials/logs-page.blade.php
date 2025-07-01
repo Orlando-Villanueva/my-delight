@@ -1,6 +1,8 @@
 {{-- Reading Log Page Container Partial (No Sidebar) --}}
 {{-- This partial is loaded via HTMX and includes full-width content structure --}}
 
+@include('partials.logs-header-update')
+
 <!-- Full-width Content when no sidebar is defined -->
 <div class="flex-1 p-4 lg:p-6">
     <div id="main-content" class="h-full">
