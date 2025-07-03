@@ -51,9 +51,23 @@ class UserStatisticsService
             'days_since_first_reading' => $firstReading 
                 ? Carbon::parse($firstReading->date_read)->diffInDays(now()) + 1
                 : 0,
-            'this_month_readings' => $this->getThisMonthReadings($user),
+            'this_month_days' => $this->getThisMonthReadingDays($user),
             'this_week_days' => $this->getThisWeekReadingDays($user),
         ];
+    }
+
+    /**
+     * Get reading days count for current month.
+     */
+    private function getThisMonthReadingDays(User $user): int
+    {
+        return $user->readingLogs()
+            ->whereMonth('date_read', now()->month)
+            ->whereYear('date_read', now()->year)
+            ->pluck('date_read')
+            ->map(fn($date) => Carbon::parse($date)->toDateString())
+            ->unique()
+            ->count();
     }
 
     /**
@@ -77,8 +91,9 @@ class UserStatisticsService
 
         return $user->readingLogs()
             ->whereBetween('date_read', [$startOfWeek, $endOfWeek])
-            ->selectRaw('DATE(date_read) as reading_date')
-            ->distinct()
+            ->pluck('date_read')
+            ->map(fn($date) => Carbon::parse($date)->toDateString())
+            ->unique()
             ->count();
     }
 
@@ -109,7 +124,19 @@ class UserStatisticsService
      */
     public function getRecentActivity(User $user, int $limit = 5): array
     {
-        $recentReadings = $this->readingLogService->getReadingHistory($user, $limit);
+        // Group by reading session to avoid duplicates for chapter ranges
+        $recentReadings = $user->readingLogs()
+            ->recentFirst()
+            ->get()
+            ->groupBy(function ($log) {
+                return $log->passage_text . '|' . $log->date_read . '|' . $log->created_at->format('Y-m-d H:i:s');
+            })
+            ->map(function ($group) {
+                return $group->first(); // Take the first entry from each group
+            })
+            ->values()
+            ->sortByDesc('created_at')
+            ->take($limit);
         
         return $recentReadings->map(function ($reading) {
             return [

@@ -154,14 +154,38 @@ class ReadingLogController extends Controller
             $startDate = now()->subDays((int)$filter)->toDateString();
         }
         
-        // Get reading logs with pagination
-        $logsQuery = $user->readingLogs()->recentFirst();
+        // Get reading logs and group by reading session to avoid duplicates
+        $allLogs = $user->readingLogs()->recentFirst();
         
         if ($startDate) {
-            $logsQuery->dateRange($startDate);
+            $allLogs->dateRange($startDate);
         }
         
-        $logs = $logsQuery->paginate(5)->withQueryString();
+        // Group by passage_text + date_read + created_at (same reading session)
+        $groupedLogs = $allLogs->get()
+            ->groupBy(function ($log) {
+                return $log->passage_text . '|' . $log->date_read . '|' . $log->created_at->format('Y-m-d H:i:s');
+            })
+            ->map(function ($group) {
+                return $group->first(); // Take the first entry from each group
+            })
+            ->values()
+            ->sortByDesc('created_at');
+        
+        // Manual pagination
+        $perPage = 5;
+        $currentPage = $request->get('page', 1);
+        $offset = ($currentPage - 1) * $perPage;
+        
+        $paginatedLogs = $groupedLogs->slice($offset, $perPage);
+        $logs = new \Illuminate\Pagination\LengthAwarePaginator(
+            $paginatedLogs,
+            $groupedLogs->count(),
+            $perPage,
+            $currentPage,
+            ['path' => $request->url(), 'pageName' => 'page']
+        );
+        $logs->withQueryString();
         
         // Return partial view for HTMX requests
         if ($request->header('HX-Request')) {

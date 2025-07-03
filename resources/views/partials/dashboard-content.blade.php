@@ -59,16 +59,16 @@
             <h3 class="text-lg font-semibold text-gray-700 mb-4">📊 Your Progress</h3>
             
             <div class="space-y-4">
-                <!-- This Month -->
-                <div class="flex justify-between items-center">
-                    <span class="text-gray-600">This Month</span>
-                    <span class="font-semibold text-blue-600">{{ $stats['reading_summary']['this_month_readings'] }}/{{ now()->daysInMonth }} chapters</span>
-                </div>
-
                 <!-- This Week -->
                 <div class="flex justify-between items-center">
                     <span class="text-gray-600">This Week</span>
                     <span class="font-semibold text-green-600">{{ $stats['reading_summary']['this_week_days'] }}/7 days reading</span>
+                </div>
+
+                <!-- This Month -->
+                <div class="flex justify-between items-center">
+                    <span class="text-gray-600">This Month</span>
+                    <span class="font-semibold text-blue-600">{{ $stats['reading_summary']['this_month_days'] }}/{{ now()->daysInMonth }} days reading</span>
                 </div>
 
                 <!-- All-Time Total -->
