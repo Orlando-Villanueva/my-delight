@@ -33,7 +33,7 @@ Route::middleware('guest')->group(function () {
 Route::middleware('auth')->group(function () {
     // Main Dashboard
     Route::get('/dashboard', function (Request $request) {
-        // Return partial view for HTMX requests (includes sidebar structure)
+        // Return page container for HTMX navigation requests
         if ($request->header('HX-Request')) {
             return view('partials.dashboard-page');
         }

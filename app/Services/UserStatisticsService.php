@@ -51,7 +51,35 @@ class UserStatisticsService
             'days_since_first_reading' => $firstReading 
                 ? Carbon::parse($firstReading->date_read)->diffInDays(now()) + 1
                 : 0,
+            'this_month_readings' => $this->getThisMonthReadings($user),
+            'this_week_days' => $this->getThisWeekReadingDays($user),
         ];
+    }
+
+    /**
+     * Get readings count for current month.
+     */
+    private function getThisMonthReadings(User $user): int
+    {
+        return $user->readingLogs()
+            ->whereMonth('date_read', now()->month)
+            ->whereYear('date_read', now()->year)
+            ->count();
+    }
+
+    /**
+     * Get reading days count for current week.
+     */
+    private function getThisWeekReadingDays(User $user): int
+    {
+        $startOfWeek = now()->startOfWeek();
+        $endOfWeek = now()->endOfWeek();
+
+        return $user->readingLogs()
+            ->whereBetween('date_read', [$startOfWeek, $endOfWeek])
+            ->selectRaw('DATE(date_read) as reading_date')
+            ->distinct()
+            ->count();
     }
 
     /**

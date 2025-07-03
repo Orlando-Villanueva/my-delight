@@ -116,46 +116,49 @@ class ReadingLogService
      */
     public function calculateCurrentStreak(User $user): int
     {
+        // Get all unique reading dates as Carbon objects, normalized to start of day
         $readingDates = $user->readingLogs()
             ->select('date_read')
             ->distinct()
             ->orderBy('date_read', 'desc')
             ->pluck('date_read')
-            ->map(fn($date) => Carbon::parse($date));
+            ->map(fn($date) => Carbon::parse($date)->startOfDay())
+            ->unique()
+            ->values();
 
         if ($readingDates->isEmpty()) {
             return 0;
         }
 
-        $streak = 0;
-        $currentDate = Carbon::today();
+        $today = Carbon::today();
+        $yesterday = Carbon::yesterday();
         
-        // Late Logging Grace: Check if user has read today or yesterday (1-day grace period for forgotten logs)
+        // Check if user has read recently (today or yesterday - grace period)
         $hasRecentReading = $readingDates->contains(fn($date) => 
-            $date->isSameDay($currentDate) || $date->isSameDay($currentDate->subDay())
+            $date->equalTo($today) || $date->equalTo($yesterday)
         );
 
         if (!$hasRecentReading) {
             return 0;
         }
 
-        // Calculate consecutive days
-        $previousDate = null;
-        foreach ($readingDates as $date) {
-            if ($previousDate === null) {
-                $streak = 1;
-                $previousDate = $date;
-                continue;
-            }
+        // Convert to array of date strings for easier lookup
+        $readingDateStrings = $readingDates->map(fn($date) => $date->toDateString())->toArray();
+        
+        // Start streak calculation from today or yesterday (whichever has a reading)
+        $streak = 0;
+        $checkDate = $today->copy();
+        
+        // If no reading today but reading yesterday, start from yesterday
+        if (!in_array($today->toDateString(), $readingDateStrings) && 
+            in_array($yesterday->toDateString(), $readingDateStrings)) {
+            $checkDate = $yesterday->copy();
+        }
 
-            $daysDifference = $previousDate->diffInDays($date);
-            
-            if ($daysDifference <= 1) {
-                $streak++;
-                $previousDate = $date;
-            } else {
-                break;
-            }
+        // Count consecutive days backwards from the starting date
+        while (in_array($checkDate->toDateString(), $readingDateStrings)) {
+            $streak++;
+            $checkDate->subDay();
         }
 
         return $streak;
@@ -166,12 +169,15 @@ class ReadingLogService
      */
     public function calculateLongestStreak(User $user): int
     {
+        // Get all unique reading dates, normalized and sorted ascending
         $readingDates = $user->readingLogs()
             ->select('date_read')
             ->distinct()
             ->orderBy('date_read', 'asc')
             ->pluck('date_read')
-            ->map(fn($date) => Carbon::parse($date));
+            ->map(fn($date) => Carbon::parse($date)->startOfDay())
+            ->unique()
+            ->values();
 
         if ($readingDates->isEmpty()) {
             return 0;
@@ -184,10 +190,12 @@ class ReadingLogService
         foreach ($readingDates->skip(1) as $date) {
             $daysDifference = $previousDate->diffInDays($date);
             
-            if ($daysDifference <= 1) {
+            // Consecutive days should have exactly 1 day difference
+            if ($daysDifference === 1) {
                 $currentStreak++;
                 $longestStreak = max($longestStreak, $currentStreak);
             } else {
+                // Gap found, reset current streak
                 $currentStreak = 1;
             }
             

@@ -1,4 +1,7 @@
-<div style="color: green; border: 1px solid green; padding: 10px; margin: 10px 0;" class="pb-20 lg:pb-0">
+<div style="color: green; border: 1px solid green; padding: 10px; margin: 10px 0;" 
+     class="pb-20 lg:pb-0"
+     x-data="{}"
+     x-init="$dispatch('readingLogAdded')"
     <h3>Reading Logged Successfully! 🎉</h3>
     <p><strong>{{ $log->passage_text }}</strong> recorded for {{ $log->date_read->format('M d, Y') }}</p>
     @if($log->notes_text)

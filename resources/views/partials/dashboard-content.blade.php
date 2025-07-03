@@ -1,29 +1,94 @@
 {{-- Dashboard Content Partial --}}
 {{-- This partial is loaded via HTMX for seamless content loading --}}
 
-<div class="space-y-6 pb-20 lg:pb-0">
-    <!-- Welcome Section -->
-    <x-ui.card>
-        <h1 class="text-2xl font-bold mb-2">Welcome back, {{ auth()->user()->name }}!</h1>
-        <p class="text-gray-600 mb-4">You're successfully logged in to your Bible reading journey.</p>
-        
-        <div class="grid grid-cols-1 md:grid-cols-3 gap-4 text-sm">
-            <div class="p-3 bg-gray-50 rounded border">
-                <div class="font-medium text-gray-700">Account Status</div>
-                <div class="text-gray-600">✅ Active</div>
-            </div>
-            <div class="p-3 bg-gray-50 rounded border">
-                <div class="font-medium text-gray-700">Email</div>
-                <div class="text-gray-600">{{ auth()->user()->email }}</div>
-            </div>
-            <div class="p-3 bg-gray-50 rounded border">
-                <div class="font-medium text-gray-700">Member Since</div>
-                <div class="text-gray-600">{{ auth()->user()->created_at->format('M j, Y') }}</div>
-            </div>
-        </div>
-    </x-ui.card>
+@php
+    $statisticsService = app(\App\Services\UserStatisticsService::class);
+    $stats = $statisticsService->getDashboardStatistics(auth()->user());
+@endphp
 
-    <!-- MVP Status Notice -->
+<div class="space-y-6 pb-20 lg:pb-0" 
+     hx-trigger="readingLogAdded from:body" 
+     hx-get="{{ route('dashboard') }}" 
+     hx-target="#main-content" 
+     hx-swap="innerHTML"
+     hx-select="#main-content > div">
+    <!-- Top Widgets: Streak and Stats -->
+    <div class="grid grid-cols-1 md:grid-cols-2 gap-6">
+        <!-- Streak Widget -->
+    <x-ui.card>
+            <div class="text-center">
+                <h3 class="text-lg font-semibold text-gray-700 mb-4">🔥 Reading Streak</h3>
+                
+                <!-- Current Streak -->
+                <div class="mb-4">
+                    <div class="text-4xl font-bold text-blue-600 mb-2">{{ $stats['streaks']['current_streak'] }}</div>
+                    <div class="text-gray-600">
+                        @if($stats['streaks']['current_streak'] === 1)
+                            Day
+                        @else
+                            Days
+                        @endif
+                    </div>
+                </div>
+
+                <!-- Longest Streak -->
+                <div class="mb-4 p-3 bg-gray-50 rounded">
+                    <div class="text-sm text-gray-600">Personal Best</div>
+                    <div class="text-xl font-semibold text-gray-700">
+                        {{ $stats['streaks']['longest_streak'] }} {{ Str::plural('day', $stats['streaks']['longest_streak']) }}
+                    </div>
+                </div>
+
+                <!-- Motivational Messaging -->
+                <div class="text-sm">
+                    @if($stats['streaks']['current_streak'] >= 7)
+                        <p class="text-green-600 font-medium">🎉 Amazing! You're on fire with your {{ $stats['streaks']['current_streak'] }}-day streak!</p>
+                    @elseif($stats['streaks']['current_streak'] >= 3)
+                        <p class="text-blue-600 font-medium">💪 Great momentum! {{ $stats['streaks']['current_streak'] }} days in a row!</p>
+                    @elseif($stats['streaks']['current_streak'] >= 1)
+                        <p class="text-blue-600">🌟 You're building the habit! Keep it up!</p>
+                    @else
+                        <p class="text-gray-600">📖 Ready to start your Bible reading journey?</p>
+                    @endif
+            </div>
+            </div>
+        </x-ui.card>
+
+        <!-- Stats Widget -->
+        <x-ui.card>
+            <h3 class="text-lg font-semibold text-gray-700 mb-4">📊 Your Progress</h3>
+            
+            <div class="space-y-4">
+                <!-- This Month -->
+                <div class="flex justify-between items-center">
+                    <span class="text-gray-600">This Month</span>
+                    <span class="font-semibold text-blue-600">{{ $stats['reading_summary']['this_month_readings'] }}/{{ now()->daysInMonth }} chapters</span>
+                </div>
+
+                <!-- This Week -->
+                <div class="flex justify-between items-center">
+                    <span class="text-gray-600">This Week</span>
+                    <span class="font-semibold text-green-600">{{ $stats['reading_summary']['this_week_days'] }}/7 days reading</span>
+                </div>
+
+                <!-- All-Time Total -->
+                <div class="flex justify-between items-center">
+                    <span class="text-gray-600">Total Chapters</span>
+                    <span class="font-semibold text-purple-600">{{ $stats['reading_summary']['total_readings'] }} chapters</span>
+                </div>
+
+                <!-- Bible Progress -->
+                <div class="flex justify-between items-center">
+                    <span class="text-gray-600">Bible Progress</span>
+                    <span class="font-semibold text-orange-600">{{ $stats['book_progress']['overall_progress_percent'] }}% completed</span>
+                </div>
+            </div>
+        </x-ui.card>
+        </div>
+
+
+
+    <!-- Book Progress Section (Work in Progress) -->
     <x-ui.card class="bg-yellow-50 border-yellow-200">
         <div class="flex items-start">
             <div class="flex-shrink-0">
@@ -32,68 +97,22 @@
                 </svg>
             </div>
             <div class="ml-3">
-                <h3 class="text-sm font-medium text-yellow-800">MVP Development Status</h3>
+                <h3 class="text-sm font-medium text-yellow-800">📖 Book Progress Visualization</h3>
                 <div class="mt-2 text-sm text-yellow-700">
-                    <p>You're seeing the authenticated dashboard! 🎉 The core Bible reading features will be implemented in the coming weeks according to our development roadmap.</p>
+                    <p><strong>Work in Progress:</strong> Visual Bible book completion grid coming soon! You'll see all 66 books with completion status, progress percentages, and testament toggling.</p>
+                    <div class="mt-3 p-3 bg-yellow-100 rounded">
+                        <p class="font-medium mb-2">Preview of what's coming:</p>
+                        <ul class="text-xs space-y-1">
+                            <li>• Old Testament (39 books) / New Testament (27 books) toggle</li>
+                            <li>• Book completion grid with visual progress indicators</li>
+                            <li>• Color-coded status: ✅ Completed, 🔄 In Progress, ⭕ Not Started</li>
+                            <li>• Overall testament progress percentages</li>
+                        </ul>
+                    </div>
                 </div>
             </div>
         </div>
     </x-ui.card>
 
-    <!-- Quick Actions -->
-    <div class="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-4">
-        <x-ui.card>
-            <div class="flex items-center mb-4">
-                <div class="w-10 h-10 bg-blue-100 rounded-lg flex items-center justify-center">
-                    <svg class="w-6 h-6 text-blue-600" fill="none" stroke="currentColor" viewBox="0 0 24 24">
-                        <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M12 6.253v13m0-13C10.832 5.477 9.246 5 7.5 5S4.168 5.477 3 6.253v13C4.168 18.477 5.754 18 7.5 18s3.332.477 4.5 1.253m0-13C13.168 5.477 14.754 5 16.5 5c1.746 0 3.332.477 4.5 1.253v13C19.832 18.477 18.246 18 16.5 18c-1.746 0-3.332.477-4.5 1.253"></path>
-                    </svg>
-                </div>
-                <h3 class="text-lg font-semibold text-gray-700 ml-3">Log Reading</h3>
-            </div>
-            <p class="text-gray-600 text-sm mb-4">Record your daily Bible reading progress</p>
-            <button hx-get="{{ route('logs.create') }}" 
-                    hx-target="#main-content" 
-                    hx-swap="innerHTML"
-                    @click="previousView = currentView"
-                    class="inline-flex items-center px-4 py-2 bg-blue-600 border border-transparent rounded-md font-semibold text-xs text-white uppercase tracking-widest hover:bg-blue-700 focus:bg-blue-700 active:bg-blue-900 focus:outline-none focus:ring-2 focus:ring-blue-500 focus:ring-offset-2 transition ease-in-out duration-150">
-                📖 Log Reading
-            </button>
-        </x-ui.card>
 
-        <x-ui.card>
-            <div class="flex items-center mb-4">
-                <div class="w-10 h-10 bg-green-100 rounded-lg flex items-center justify-center">
-                    <svg class="w-6 h-6 text-green-600" fill="none" stroke="currentColor" viewBox="0 0 24 24">
-                        <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M8 7V3m8 4V3m-9 8h10M5 21h14a2 2 0 002-2V7a2 2 0 00-2-2H5a2 2 0 00-2-2v16a2 2 0 002 2z"></path>
-                    </svg>
-                </div>
-                <h3 class="text-lg font-semibold text-gray-700 ml-3">Reading History</h3>
-            </div>
-            <p class="text-gray-600 text-sm mb-4">View your past Bible readings and notes</p>
-            <button hx-get="{{ route('logs.index') }}" 
-                    hx-target="#page-container" 
-                    hx-swap="innerHTML"
-                    hx-push-url="true"
-                    @click="previousView = currentView; currentView = 'logs'"
-                    class="inline-flex items-center px-4 py-2 bg-green-600 border border-transparent rounded-md font-semibold text-xs text-white uppercase tracking-widest hover:bg-green-700 focus:bg-green-700 active:bg-green-900 focus:outline-none focus:ring-2 focus:ring-green-500 focus:ring-offset-2 transition ease-in-out duration-150">
-                📚 View History
-            </button>
-        </x-ui.card>
-
-        <x-ui.card>
-            <div class="flex items-center mb-4">
-                <div class="w-10 h-10 bg-orange-100 rounded-lg flex items-center justify-center">
-                    <svg class="w-6 h-6 text-orange-600" fill="none" stroke="currentColor" viewBox="0 0 24 24">
-                        <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M9 19v-6a2 2 0 00-2-2H5a2 2 0 00-2 2v6a2 2 0 002 2h2a2 2 0 002-2zm0 0V9a2 2 0 012-2h2a2 2 0 012 2v10m-6 0a2 2 0 002 2h2a2 2 0 002-2m0 0V5a2 2 0 012-2h2a2 2 0 012 2v4a2 2 0 01-2 2h-2a2 2 0 01-2-2z"></path>
-                    </svg>
-                </div>
-                <h3 class="text-lg font-semibold text-gray-700 ml-3">View Statistics</h3>
-            </div>
-            <p class="text-gray-600 text-sm mb-4">Track your progress and achievements (Coming in Week 6)</p>
-            <span class="inline-flex items-center px-3 py-1 rounded-full text-xs font-medium bg-yellow-100 text-yellow-800 border border-yellow-200">
-                In Development
-            </span>
-        </x-ui.card>
-    </div>
 </div> 
