@@ -863,6 +863,48 @@ This approach allows the same backend logic to serve both the HTMX-based web int
 - **Alpine.js**: Manages local UI state (dropdowns, modals), client-side validation, and reactive data binding
 - **Integration**: Both technologies work together seamlessly, with HTMX handling server interactions and Alpine managing client-side enhancements
 
+### Zero-Duplication Architecture Pattern
+
+**Core Principle**: Each UI component exists in exactly one place to prevent HTML duplication across HTMX views.
+
+#### **Component Architecture:**
+```
+resources/views/
+├── partials/
+│   ├── {feature}-content.blade.php      # Shared content components
+│   ├── {feature}-page.blade.php         # HTMX page containers  
+│   ├── header-update.blade.php          # Parameterized shared components
+│   └── {feature}-sidebar.blade.php      # Feature-specific reusable components
+├── {feature}/
+│   └── index.blade.php                  # Main views (use @include for components)
+```
+
+#### **HTMX Implementation Standards:**
+```blade
+// Page navigation (layout changes)
+hx-get="{{ route('feature.index') }}" 
+hx-target="#page-container"
+return view('partials.feature-page')
+
+// Content updates (same layout)  
+hx-get="{{ route('feature.action') }}"
+hx-target="#main-content"
+return view('partials.feature-content')
+
+// Parameterized components
+@include('partials.header-update', [
+    'title' => 'Page Title',
+    'subtitle' => 'Optional description'
+])
+```
+
+#### **Component Creation Process:**
+1. Create shared content partial first
+2. Create HTMX page container using `@include` statements
+3. Use parameterized includes for reusable elements
+4. Main view includes shared components
+5. Controller supports both HTMX and direct access patterns
+
 For detailed implementation patterns, see:
 - [HTMX Implementation Guide](./HTMX%20Implementation%20Guide.md)
 - [Alpine.js Component Guide](./Alpine.js%20Component%20Guide.md)

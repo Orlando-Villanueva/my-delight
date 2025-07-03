@@ -188,6 +188,122 @@ public function getReadingLogs(Request $request)
 @endforelse
 ```
 
+## Zero-Duplication Architecture Pattern
+
+**Principle**: Prevent HTML duplication across HTMX views by ensuring each UI component exists in exactly one place.
+
+### Component-Based Architecture
+
+#### **1. Shared Component Structure**
+
+```blade
+{{-- partials/{feature}-sidebar.blade.php --}}
+<div class="lg:w-1/4 bg-white rounded-lg p-6 shadow-sm">
+    <div class="mb-8">
+        <h3 class="text-lg font-semibold mb-4 text-gray-800">📅 Widget Title</h3>
+        <!-- Widget implementation -->
+    </div>
+</div>
+```
+
+#### **2. Page Container Pattern**
+
+```blade
+{{-- Main view: dashboard.blade.php --}}
+@extends('layouts.authenticated')
+@section('content')
+<div id="page-container" class="flex gap-6">
+    @include('partials.dashboard-content')
+    @include('partials.dashboard-sidebar')
+</div>
+@endsection
+
+{{-- HTMX container: partials/dashboard-page.blade.php --}}
+<div class="flex gap-6">
+    @include('partials.dashboard-content')
+    @include('partials.dashboard-sidebar')
+</div>
+```
+
+#### **3. Parameterized Components**
+
+```blade
+{{-- partials/header-update.blade.php --}}
+<div id="page-header" hx-swap-oob="true">
+    <div class="flex justify-between items-center">
+        <div>
+            <h1 class="text-2xl font-bold text-gray-900">{{ $title }}</h1>
+            @if(isset($subtitle))
+                <p class="text-gray-600 mt-1">{{ $subtitle }}</p>
+            @endif
+        </div>
+    </div>
+</div>
+
+{{-- Usage --}}
+@include('partials.header-update', [
+    'title' => 'Page Title', 
+    'subtitle' => 'Optional description'
+])
+```
+
+#### **4. Controller Dual Response Pattern**
+
+```php
+public function index(Request $request)
+{
+    $data = $this->service->getData($request->user());
+    
+    // HTMX navigation - return page container only
+    if ($request->header('HX-Request')) {
+        return view('partials.feature-page', compact('data'));
+    }
+    
+    // Direct access - return full page with layout
+    return view('feature.index', compact('data'));
+}
+```
+
+### HTMX Implementation Patterns
+
+#### **Navigation Pattern (Page Changes)**
+```html
+<button hx-get="{{ route('feature.index') }}" 
+        hx-target="#page-container" 
+        hx-swap="innerHTML"
+        hx-push-url="true">
+    Navigate
+</button>
+```
+
+#### **Content Update Pattern (Same Page)**
+```html
+<div hx-get="{{ route('feature.action') }}" 
+     hx-target="#content-area"
+     hx-trigger="customEvent from:body">
+    Loading...
+</div>
+```
+
+#### **Out-of-Band Updates**
+```blade
+{{-- Include in any response to update header --}}
+@include('partials.header-update', [
+    'title' => 'Updated Title',
+    'subtitle' => 'Status message'
+])
+```
+
+### Implementation Checklist for New Features
+
+- [ ] Create shared content partial first (`partials/{feature}-content.blade.php`)
+- [ ] Create HTMX page container using `@include` statements (`partials/{feature}-page.blade.php`)
+- [ ] Use parameterized includes for reusable elements
+- [ ] Main view includes shared components via `@include`
+- [ ] Controller supports both HTMX and direct access patterns
+- [ ] Test both navigation paths for consistency
+- [ ] Verify no HTML duplication between files
+
 ## Error Handling Patterns
 
 ### Modern HTMX Error Handling (Recommended)
