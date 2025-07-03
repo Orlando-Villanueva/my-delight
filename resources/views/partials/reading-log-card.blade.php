@@ -31,17 +31,20 @@
                         <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M12 8v4l3 3m6-3a9 9 0 11-18 0 9 9 0 0118 0z"></path>
                     </svg>
                     @php
-                        $hoursAgo = floor($log->date_read->diffInHours(now()));
-                        $daysAgo = floor($log->date_read->diffInDays(now()));
+                        // Since date_read is cast as date (no time), compare dates properly
+                        $readingDate = $log->date_read->startOfDay();
+                        $today = now()->startOfDay();
+                        $yesterday = now()->subDay()->startOfDay();
+                        $daysAgo = $readingDate->diffInDays($today);
                     @endphp
-                    @if($hoursAgo < 1)
-                        Just now
-                    @elseif($hoursAgo < 24)
-                        {{ $hoursAgo }} hour{{ $hoursAgo === 1 ? '' : 's' }} ago
-                    @elseif($daysAgo === 1)
+                    @if($readingDate->equalTo($today))
+                        Today
+                    @elseif($readingDate->equalTo($yesterday))
                         Yesterday
+                    @elseif($daysAgo === 1)
+                        1 day ago
                     @else
-                        {{ $daysAgo }} day{{ $daysAgo === 1 ? '' : 's' }} ago
+                        {{ $daysAgo }} days ago
                     @endif
                 </span>
             </div>
