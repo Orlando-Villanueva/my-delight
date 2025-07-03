@@ -1,8 +1,3 @@
----
-description: 
-globs: 
-alwaysApply: false
----
 # Bible Reading Habit Builder - Project Rules
 
 ## 🔄 PR Sub-Issue Completion Workflow
@@ -107,6 +102,16 @@ When testing the system, use these methods instead of starting a development ser
 - **GOOD**: Add `use Illuminate\Http\Request;` at top, then use `function (Request $request)`
 - **Apply to all contexts**: Controllers, routes, services, models, tests, and any PHP files
 - **Rationale**: Improves readability, follows PSR standards, enables IDE autocompletion
+
+### Database Query Standards
+- **NEVER use raw SQL methods** - always use Eloquent methods and Laravel's query builder
+- **BAD**: `selectRaw()`, `whereRaw()`, `havingRaw()`, `orderByRaw()`, or any raw SQL strings
+- **GOOD**: Use Eloquent collection methods, query builder methods, and Laravel's built-in functions
+- **Examples**:
+  - ❌ `->selectRaw('DATE(created_at) as date')->distinct()`
+  - ✅ `->pluck('created_at')->map(fn($date) => Carbon::parse($date)->toDateString())->unique()`
+- **Apply to all contexts**: Models, services, controllers, and any database interactions
+- **Rationale**: Better security, maintainability, database portability, and follows Laravel best practices
 
 ## Issue Completion Criteria
 - All features must be testable via the Herd-configured domain
