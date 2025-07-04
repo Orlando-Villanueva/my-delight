@@ -306,143 +306,220 @@ public function index(Request $request)
 
 ## Error Handling Patterns
 
-### Modern HTMX Error Handling (Recommended)
+### Unified Response Pattern (Recommended)
 
-Use HTMX's built-in error handling attributes for clean, declarative error management:
+**Philosophy:** Always return 200 OK with appropriate HTML fragments. Let the server decide what to render based on validation results.
 
-#### **Setup: Response-Targets Extension Required**
+#### **Why This Approach?**
 
-The `response-targets` extension is **required** for `hx-target-error` to work properly:
+- ✅ **Pure HTMX** - No extensions or custom JavaScript needed
+- ✅ **Reliable** - Doesn't depend on HTTP status codes or browser extensions
+- ✅ **Consistent** - Same target for both success and error responses
+- ✅ **Maintainable** - Simple, declarative approach
+- ✅ **Better UX** - Form validation errors are expected user behavior, not server errors
 
-```html
-<!-- In layout head - Load extension after main HTMX -->
-<script src="https://cdn.jsdelivr.net/npm/htmx.org@2.0.5/dist/htmx.min.js"></script>
-<script src="https://cdn.jsdelivr.net/npm/htmx.org@2.0.5/dist/ext/response-targets.js"></script>
-```
-
-#### **Implementation: Form with Error Handling**
+#### **Implementation: Clean Form Error Handling**
 
 ```html
-<!-- Simple, HTMX-native error handling -->
+<!-- Clean: Single target, server decides what to render -->
 <form hx-post="{{ route('logs.store') }}" 
       hx-target="#form-response" 
       hx-swap="innerHTML"
-      hx-ext="response-targets"
-      hx-target-error="#form-response">
+      x-data="readingLogForm()"
+      class="space-y-6">
     @csrf
     
     <div id="form-response">
-        <!-- Success and error responses appear here -->
+        <!-- Success message OR error message appears here -->
     </div>
     
     <!-- Form fields... -->
 </form>
 ```
 
-**Key Configuration:**
-- `hx-ext="response-targets"` - Activates the extension for this form
-- `hx-target-error="#form-response"` - Where error responses (4xx/5xx) are displayed
-- `hx-target="#form-response"` - Where success responses (2xx) are displayed
+#### **Controller Pattern: Unified Response**
 
-**Key Benefits:**
-- ✅ **No JavaScript required** - Pure HTMX declarative approach
-- ✅ **Automatic error routing** - 4xx/5xx responses go to `hx-target-error`
-- ✅ **Hypermedia-focused** - Returns HTML fragments, not JSON
-- ✅ **Simpler debugging** - No complex event listeners to trace
-
-#### **Common Issue: Extension Not Loaded**
-
-**Problem:** `hx-target-error` doesn't work, errors only appear in network tab
-**Cause:** Missing `response-targets` extension or `hx-ext` attribute
-**Solution:** Load extension and add `hx-ext="response-targets"` to form
-
-**Avoid Complex Approaches:**
-```html
-<!-- ❌ DON'T: Complex JavaScript event listeners -->
-<script>
-document.addEventListener('htmx:responseError', function(evt) {
-    // Manual DOM manipulation - not the HTMX way
-    const target = document.querySelector('#form-response');
-    target.innerHTML = evt.detail.xhr.response;
-});
-</script>
-```
-
-### Laravel Validation Integration
-
-#### 1. Form Validation with HTMX
 ```php
-public function storeReadingLog(Request $request)
+public function store(Request $request)
 {
     try {
         $validated = $request->validate([
             'book_id' => 'required|integer|min:1|max:66',
-            'chapter' => 'required|integer|min:1',
+            'chapter_input' => ['required', 'string', 'regex:/^(\d+|\d+-\d+)$/'],
             'date_read' => 'required|date|before_or_equal:today',
             'notes_text' => 'nullable|string|max:500'
         ]);
-        
-        // Use Service Layer for reading log creation (includes validation)
-        $log = $this->readingLogService->logReading(
-            $request->user(),
-            $validated
-        );
-        
-        return view('partials.reading-log-success', compact('log'));
-        
-    } catch (ValidationException $e) {
-        return response()
-            ->view('partials.form-errors', ['errors' => $e->errors()])
-            ->setStatusCode(422);
-    }
-}
-```
 
-#### 2. Database Constraint Violations
+        // Create reading log
+        $log = $this->readingLogService->logReading($request->user(), $validated);
 
-Handle database integrity constraint violations, such as the unique constraint on reading logs that prevents duplicate chapter readings on the same date.
-
-```php
-use Illuminate\Database\QueryException;
-use Illuminate\Validation\ValidationException;
-
-public function storeReadingLog(Request $request)
-{
-    try {
-        $validated = $request->validate([
-            'book_id' => 'required|integer|min:1|max:66',
-            'chapter' => 'required|integer|min:1',
-            'date_read' => 'required|date|before_or_equal:today',
-            'notes_text' => 'nullable|string|max:500'
-        ]);
-        
-        // Use Service Layer for reading log creation (includes validation)
-        $log = $this->readingLogService->logReading(
-            $request->user(),
-            $validated
-        );
-        
-        return view('partials.reading-log-success', compact('log'));
-        
-    } catch (ValidationException $e) {
-        return response()
-            ->view('partials.form-errors', ['errors' => $e->errors()])
-            ->setStatusCode(422);
-    } catch (QueryException $e) {
-        // Handle unique constraint violation (duplicate reading log)
-        if ($e->getCode() === '23000') { // Integrity constraint violation
-            return response()
-                ->view('partials.form-errors', [
-                    'errors' => ['chapter' => 'You have already logged this chapter for today.']
-                ])
-                ->setStatusCode(422);
+        // Return success response (200 OK)
+        if ($request->header('HX-Request')) {
+            return view('partials.reading-log-success-message', compact('log'));
         }
-        
-        // Re-throw if it's a different database error
+        return redirect()->route('dashboard')->with('success', 'Reading logged successfully!');
+
+    } catch (ValidationException $e) {
+        // Return validation errors (200 OK with error HTML)
+        if ($request->header('HX-Request')) {
+            return view('partials.validation-errors', ['errors' => $e->errors()]);
+        }
+        return back()->withErrors($e->errors())->withInput();
+
+    } catch (QueryException $e) {
+        // Handle database constraint violations (200 OK with error HTML)
+        if ($e->getCode() === '23000') {
+            $error = ['chapter_input' => ['You have already logged one or more of these chapters for today.']];
+            
+            if ($request->header('HX-Request')) {
+                return view('partials.validation-errors', ['errors' => $error]);
+            }
+            return back()->withErrors($error)->withInput();
+        }
         throw $e;
     }
 }
 ```
+
+#### **Error Display Template**
+
+```blade
+{{-- partials/validation-errors.blade.php --}}
+<div class="bg-red-50 border border-red-200 rounded-lg p-4 mb-4">
+    <div class="flex items-start">
+        <div class="flex-shrink-0">
+            <svg class="w-5 h-5 text-red-400" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M12 9v2m0 4h.01m-6.938 4h13.856c1.54 0 2.502-1.667 1.732-2.5L13.732 4c-.77-.833-1.964-.833-2.732 0L3.732 16.5c-.77.833.192 2.5 1.732 2.5z"></path>
+            </svg>
+        </div>
+        <div class="ml-3">
+            <h3 class="text-sm font-medium text-red-800">
+                Please fix the following errors:
+            </h3>
+            <div class="mt-2 text-sm text-red-700">
+                <ul class="list-disc list-inside space-y-1">
+                    @foreach($errors as $field => $fieldErrors)
+                        @foreach($fieldErrors as $error)
+                            <li><strong>{{ ucfirst(str_replace('_', ' ', $field)) }}:</strong> {{ $error }}</li>
+                        @endforeach
+                    @endforeach
+                </ul>
+            </div>
+        </div>
+    </div>
+</div>
+```
+
+### ❌ Deprecated: Response-Targets Extension Approach
+
+**Note:** The following approach using `response-targets` extension and HTTP error codes is **deprecated** in favor of the unified response pattern above.
+
+<details>
+<summary>Click to view deprecated approach (for reference only)</summary>
+
+#### **Old Setup: Response-Targets Extension**
+
+```html
+<!-- ❌ DEPRECATED: Don't use this approach -->
+<script src="https://cdn.jsdelivr.net/npm/htmx.org@2.0.5/dist/ext/response-targets.js"></script>
+
+<form hx-post="{{ route('logs.store') }}" 
+      hx-target="#form-response" 
+      hx-swap="innerHTML"
+      hx-ext="response-targets"
+      hx-target-error="#form-response">
+    <!-- Form content -->
+</form>
+```
+
+#### **Why This Approach Was Problematic:**
+
+- ❌ **Fragile** - Depends on extension loading correctly
+- ❌ **Complex** - Requires understanding of HTTP status codes vs HTML responses
+- ❌ **Inconsistent** - Different behavior for success vs error cases
+- ❌ **Network Noise** - Validation errors appear as HTTP errors in logs/network tab
+
+</details>
+
+### **When to Use HTTP Error Codes**
+
+Reserve HTTP error codes for **actual errors**, not form validation:
+
+- **500** - Server errors (database down, code bugs)
+- **401/403** - Authentication/authorization failures  
+- **404** - Resource not found
+- **NOT 422** - Form validation (this is expected user behavior)
+
+### **Key Principle**
+
+> **Form validation errors are not HTTP errors** - they're expected user interactions that should be handled gracefully with appropriate HTML responses.
+
+### Laravel Validation Integration
+
+The unified response pattern integrates seamlessly with Laravel's validation system:
+
+#### **Validation Exception Handling**
+```php
+public function store(Request $request)
+{
+    try {
+        $validated = $request->validate([
+            'book_id' => 'required|integer|min:1|max:66',
+            'chapter_input' => ['required', 'string', 'regex:/^(\d+|\d+-\d+)$/'],
+            'date_read' => 'required|date|before_or_equal:today',
+            'notes_text' => 'nullable|string|max:500'
+        ]);
+        
+        $log = $this->readingLogService->logReading($request->user(), $validated);
+        
+        // Always return 200 OK with success HTML
+        if ($request->header('HX-Request')) {
+            return view('partials.reading-log-success-message', compact('log'));
+        }
+        return redirect()->route('dashboard')->with('success', 'Reading logged!');
+        
+    } catch (ValidationException $e) {
+        // Always return 200 OK with error HTML
+        if ($request->header('HX-Request')) {
+            return view('partials.validation-errors', ['errors' => $e->errors()]);
+        }
+        return back()->withErrors($e->errors())->withInput();
+    }
+}
+```
+
+#### **Database Constraint Violations**
+```php
+use Illuminate\Database\QueryException;
+
+public function store(Request $request)
+{
+    try {
+        // ... validation and creation logic ...
+        
+    } catch (QueryException $e) {
+        // Handle unique constraint violations gracefully
+        if ($e->getCode() === '23000') {
+            $error = ['chapter_input' => ['You have already logged one or more of these chapters for today.']];
+            
+            // Always return 200 OK with error HTML
+            if ($request->header('HX-Request')) {
+                return view('partials.validation-errors', ['errors' => $error]);
+            }
+            return back()->withErrors($error)->withInput();
+        }
+        
+        // Re-throw actual server errors
+        throw $e;
+    }
+}
+```
+
+#### **Benefits of This Integration**
+- ✅ **Consistent Response Format** - All validation errors use the same template
+- ✅ **Laravel Compatibility** - Works seamlessly with Laravel's validation system
+- ✅ **Error Consistency** - Database constraints and validation errors look the same to users
+- ✅ **Graceful Degradation** - Non-HTMX requests still work with standard Laravel error handling
 
 ## Loading States and User Feedback
 

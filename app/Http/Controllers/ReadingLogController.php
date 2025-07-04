@@ -93,9 +93,7 @@ class ReadingLogController extends Controller
 
         } catch (ValidationException $e) {
             if ($request->header('HX-Request')) {
-                return response()
-                    ->view('partials.validation-errors', ['errors' => $e->errors()])
-                    ->setStatusCode(422);
+                return view('partials.validation-errors', ['errors' => $e->errors()]);
             }
             
             return back()->withErrors($e->errors())->withInput();
@@ -105,9 +103,7 @@ class ReadingLogController extends Controller
             $error = ['chapter_input' => [$e->getMessage()]];
             
             if ($request->header('HX-Request')) {
-                return response()
-                    ->view('partials.validation-errors', ['errors' => $error])
-                    ->setStatusCode(422);
+                return view('partials.validation-errors', ['errors' => $error]);
             }
             
             return back()->withErrors($error)->withInput();
@@ -119,9 +115,7 @@ class ReadingLogController extends Controller
                 $error = ['chapter_input' => ['You have already logged one or more of these chapters for today.']];
                 
                 if ($request->header('HX-Request')) {
-                    return response()
-                        ->view('partials.validation-errors', ['errors' => $error])
-                        ->setStatusCode(422);
+                    return view('partials.validation-errors', ['errors' => $error]);
                 }
                 
                 return back()->withErrors($error)->withInput();

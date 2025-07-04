@@ -20,16 +20,14 @@
     </p>
     
     <form hx-post="{{ route('logs.store') }}" 
-          hx-target="#reading-log-modal-content" 
+          hx-target="#form-response" 
           hx-swap="innerHTML"
-          hx-ext="response-targets"
-          hx-target-error="#form-response"
           x-data="readingLogForm()"
           class="space-y-6">
         @csrf
         
         <div id="form-response">
-            <!-- HTMX validation errors will appear here -->
+            <!-- HTMX responses (success or errors) will appear here -->
         </div>
 
         <!-- Date Selection: Today or Yesterday (Late Logging Grace) -->

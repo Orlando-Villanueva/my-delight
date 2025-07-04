@@ -13,8 +13,7 @@
 
         <!-- HTMX CDN -->
         <script src="https://cdn.jsdelivr.net/npm/htmx.org@2.0.5/dist/htmx.min.js"></script>
-        <!-- HTMX Response Targets Extension for Error Handling -->
-        <script src="https://cdn.jsdelivr.net/npm/htmx.org@2.0.5/dist/ext/response-targets.js"></script>
+
         
         <!-- Alpine.js Focus Plugin for Modal Accessibility -->
         <script defer src="https://unpkg.com/@alpinejs/focus@3.13.3/dist/cdn.min.js"></script>
@@ -33,17 +32,7 @@
         <div class="flex h-screen" x-data="{ 
             currentView: '{{ request()->routeIs('logs.*') ? 'logs' : 'dashboard' }}',
             previousView: 'dashboard',
-            modalOpen: false,
-            
-            init() {
-                console.log('Alpine.js initialized, modalOpen:', this.modalOpen);
-            },
-            
-            openModal() {
-                console.log('Opening modal, before:', this.modalOpen);
-                this.modalOpen = true;
-                console.log('Opening modal, after:', this.modalOpen);
-            }
+            modalOpen: false
         }"
         @keydown.escape.window="modalOpen = false">
             <!-- Desktop Sidebar Navigation -->
@@ -166,7 +155,7 @@
                                     hx-target="#reading-log-modal-content" 
                                     hx-swap="innerHTML"
                                     hx-indicator="#modal-loading"
-                                    @click="openModal()"
+                                    @click="modalOpen = true"
                                     class="btn btn-primary min-h-[44px]">
                                 <svg class="w-5 h-5 mr-2" fill="none" stroke="currentColor" viewBox="0 0 24 24">
                                     <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M12 6.253v13m0-13C10.832 5.477 9.246 5 7.5 5S4.168 5.477 3 6.253v13C4.168 18.477 5.754 18 7.5 18s3.332.477 4.5 1.253m0-13C13.168 5.477 14.754 5 16.5 5c1.746 0 3.332.477 4.5 1.253v13C19.832 18.477 18.246 18 16.5 18c-1.746 0-3.332.477-4.5 1.253"></path>
