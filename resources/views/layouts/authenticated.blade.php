@@ -16,6 +16,8 @@
         <!-- HTMX Response Targets Extension for Error Handling -->
         <script src="https://cdn.jsdelivr.net/npm/htmx.org@2.0.5/dist/ext/response-targets.js"></script>
         
+        <!-- Alpine.js Focus Plugin for Modal Accessibility -->
+        <script defer src="https://unpkg.com/@alpinejs/focus@3.13.3/dist/cdn.min.js"></script>
         <!-- Alpine.js CDN -->
         <script defer src="https://unpkg.com/alpinejs@3.13.3/dist/cdn.min.js"></script>
 
@@ -30,8 +32,20 @@
     <body class="bg-gray-50 text-gray-600 min-h-screen font-sans antialiased">
         <div class="flex h-screen" x-data="{ 
             currentView: '{{ request()->routeIs('logs.*') ? 'logs' : 'dashboard' }}',
-            previousView: 'dashboard'
-        }">
+            previousView: 'dashboard',
+            modalOpen: false,
+            
+            init() {
+                console.log('Alpine.js initialized, modalOpen:', this.modalOpen);
+            },
+            
+            openModal() {
+                console.log('Opening modal, before:', this.modalOpen);
+                this.modalOpen = true;
+                console.log('Opening modal, after:', this.modalOpen);
+            }
+        }"
+        @keydown.escape.window="modalOpen = false">
             <!-- Desktop Sidebar Navigation -->
             <aside class="hidden lg:flex lg:flex-col w-64 bg-white border-r border-gray-200">
                 <!-- Logo Section -->
@@ -147,11 +161,12 @@
                                 <div class="w-px h-6 bg-gray-300"></div>
                             </div>
                             
-                            <!-- Log Reading Button (HTMX Content Loading) -->
+                            <!-- Log Reading Button (Modal Trigger) -->
                             <button hx-get="{{ route('logs.create') }}" 
-                                    hx-target="#main-content" 
+                                    hx-target="#reading-log-modal-content" 
                                     hx-swap="innerHTML"
-                                    @click="previousView = currentView"
+                                    hx-indicator="#modal-loading"
+                                    @click="openModal()"
                                     class="btn btn-primary min-h-[44px]">
                                 <svg class="w-5 h-5 mr-2" fill="none" stroke="currentColor" viewBox="0 0 24 24">
                                     <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M12 6.253v13m0-13C10.832 5.477 9.246 5 7.5 5S4.168 5.477 3 6.253v13C4.168 18.477 5.754 18 7.5 18s3.332.477 4.5 1.253m0-13C13.168 5.477 14.754 5 16.5 5c1.746 0 3.332.477 4.5 1.253v13C19.832 18.477 18.246 18 16.5 18c-1.746 0-3.332.477-4.5 1.253"></path>
@@ -219,14 +234,48 @@
 
             <!-- Floating Action Button - Mobile Only -->
             <button hx-get="{{ route('logs.create') }}" 
-                    hx-target="#main-content" 
+                    hx-target="#reading-log-modal-content" 
                     hx-swap="innerHTML"
-                    @click="previousView = currentView"
+                    hx-indicator="#modal-loading"
+                    @click="modalOpen = true"
                     class="lg:hidden fixed bottom-22 right-4 w-14 h-14 bg-blue-600 hover:bg-blue-700 text-white rounded-full flex items-center justify-center z-50">
                 <svg class="w-6 h-6" fill="none" stroke="currentColor" viewBox="0 0 24 24">
                     <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M12 6.253v13m0-13C10.832 5.477 9.246 5 7.5 5S4.168 5.477 3 6.253v13C4.168 18.477 5.754 18 7.5 18s3.332.477 4.5 1.253m0-13C13.168 5.477 14.754 5 16.5 5c1.746 0 3.332.477 4.5 1.253v13C19.832 18.477 18.246 18 16.5 18c-1.746 0-3.332.477-4.5 1.253"></path>
                 </svg>
             </button>
+        
+            <!-- Reading Log Modal / Slide-over Container -->
+            <!-- Modal Backdrop -->
+            <div x-show="modalOpen" 
+                 x-transition.opacity 
+                 class="fixed inset-0 bg-black/40 z-40" 
+                 @click="modalOpen = false">
+            </div>
+
+            <!-- Modal / Slide-over Panel -->
+            <aside x-show="modalOpen"
+                   x-transition:enter="transform transition ease-in-out duration-300"
+                   x-transition:enter-start="translate-x-full"
+                   x-transition:enter-end="translate-x-0"
+                   x-transition:leave="transform transition ease-in duration-150"
+                   x-transition:leave-start="translate-x-0"
+                   x-transition:leave-end="translate-x-full"
+                   class="fixed right-0 top-0 bottom-0 w-full max-w-lg bg-white shadow-xl z-50 overflow-y-auto"
+                   x-trap.inert.noscroll="modalOpen"
+                   role="dialog"
+                   aria-modal="true"
+                   aria-labelledby="modal-title"
+                   aria-describedby="modal-description">
+                <div id="reading-log-modal-content" class="p-6">
+                    <!-- HTMX will inject the form here -->
+                    
+                    <!-- Loading Indicator (shown during HTMX requests) -->
+                    <div id="modal-loading" class="htmx-indicator flex items-center justify-center h-32">
+                        <div class="animate-spin rounded-full h-8 w-8 border-b-2 border-blue-600"></div>
+                        <span class="ml-3 text-gray-600">Loading form...</span>
+                    </div>
+                </div>
+            </aside>
         </div>
     </body>
 </html> 

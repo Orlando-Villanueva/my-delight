@@ -1,9 +1,10 @@
 <div class="space-y-6"
+     id="dashboard-sidebar"
      hx-trigger="readingLogAdded from:body" 
      hx-get="{{ route('dashboard') }}" 
      hx-target="this" 
-     hx-swap="innerHTML"
-     hx-select=".space-y-6">
+     hx-swap="outerHTML"
+     hx-select="#dashboard-sidebar">
 
     <!-- Calendar Heat Map (Work in Progress) -->
     <x-ui.card class="bg-yellow-50 border-yellow-200">

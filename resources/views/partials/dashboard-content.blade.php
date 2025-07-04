@@ -7,11 +7,12 @@
 @endphp
 
 <div class="space-y-6 pb-20 lg:pb-0" 
+     id="dashboard-main-content-wrapper"
      hx-trigger="readingLogAdded from:body" 
      hx-get="{{ route('dashboard') }}" 
      hx-target="#main-content" 
-     hx-swap="innerHTML"
-     hx-select="#main-content > div">
+     hx-swap="outerHTML"
+     hx-select="#main-content">
     <!-- Top Widgets: Streak and Stats -->
     <div class="grid grid-cols-1 md:grid-cols-2 gap-6">
         <!-- Streak Widget -->

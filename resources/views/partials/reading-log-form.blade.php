@@ -1,23 +1,26 @@
 {{-- Reading Log Form Content Partial --}}
-{{-- This partial is loaded via HTMX for seamless content loading --}}
+{{-- This partial is loaded via HTMX for modal display --}}
 
-<div class="max-w-2xl mx-auto p-6 pb-20 lg:pb-6">
-    <div class="flex items-center justify-between mb-8">
-        <h1 class="text-3xl font-bold text-gray-900">Log Bible Reading</h1>
+<div>
+    <div class="flex items-center justify-between mb-6">
+        <h2 id="modal-title" class="text-2xl font-bold text-gray-900">Log Bible Reading</h2>
         
-        {{-- Cancel Button - Returns to Previous View via HTMX --}}
-        <button :hx-get="previousView === 'logs' ? '{{ route('logs.index') }}' : '{{ route('dashboard') }}'"
-                hx-target="#page-container" 
-                hx-swap="innerHTML"
-                hx-push-url="true"
-                @click="currentView = previousView"
-                class="inline-flex items-center px-4 py-2 border border-gray-300 text-sm font-medium rounded-md text-gray-700 bg-white hover:bg-gray-50 focus:outline-none focus:ring-2 focus:ring-offset-2 focus:ring-blue-500">
-            <span x-text="previousView === 'logs' ? '← Back to History' : '← Back to Dashboard'"></span>
+        {{-- Modal Close Button --}}
+        <button type="button"
+                @click="modalOpen = false"
+                class="text-gray-400 hover:text-gray-600 focus:outline-none focus:ring-2 focus:ring-blue-500 rounded-md p-1">
+            <svg class="w-6 h-6" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M6 18L18 6M6 6l12 12"></path>
+            </svg>
         </button>
     </div>
     
+    <p id="modal-description" class="sr-only">
+        Form to log your daily Bible reading with book, chapter, and optional notes
+    </p>
+    
     <form hx-post="{{ route('logs.store') }}" 
-          hx-target="#form-response" 
+          hx-target="#reading-log-modal-content" 
           hx-swap="innerHTML"
           hx-ext="response-targets"
           hx-target-error="#form-response"
@@ -26,7 +29,7 @@
         @csrf
         
         <div id="form-response">
-            <!-- HTMX responses will appear here -->
+            <!-- HTMX validation errors will appear here -->
         </div>
 
         <!-- Date Selection: Today or Yesterday (Late Logging Grace) -->
@@ -151,11 +154,7 @@
             </button>
             
             <button type="button"
-                    :hx-get="previousView === 'logs' ? '{{ route('logs.index') }}' : '{{ route('dashboard') }}'"
-                    hx-target="#page-container" 
-                    hx-swap="innerHTML"
-                    hx-push-url="true"
-                    @click="currentView = previousView"
+                    @click="modalOpen = false"
                     class="inline-flex items-center px-6 py-3 border border-gray-300 text-base font-medium rounded-md text-gray-700 bg-white hover:bg-gray-50 focus:outline-none focus:ring-2 focus:ring-offset-2 focus:ring-blue-500">
                 Cancel
             </button>
