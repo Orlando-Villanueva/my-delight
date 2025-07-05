@@ -34,7 +34,8 @@
             previousView: 'dashboard',
             modalOpen: false
         }"
-        @keydown.escape.window="modalOpen = false">
+        @keydown.escape.window="modalOpen = false"
+        @close-modal.window="modalOpen = false">
             <!-- Desktop Sidebar Navigation -->
             <aside class="hidden lg:flex lg:flex-col w-64 bg-white border-r border-gray-200">
                 <!-- Logo Section -->

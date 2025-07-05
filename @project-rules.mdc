@@ -113,12 +113,56 @@ When testing the system, use these methods instead of starting a development ser
 - **Apply to all contexts**: Models, services, controllers, and any database interactions
 - **Rationale**: Better security, maintainability, database portability, and follows Laravel best practices
 
+## Frontend Development Standards
+
+### Alpine.js Component Organization
+- **NEVER use complex JavaScript logic inline in x-data attributes** - extract to separate JavaScript functions
+- **BAD**: `x-data="{ timer: null, startTimer() { /* complex logic */ }, clearTimer() { /* more logic */ } }"`
+- **GOOD**: `x-data="componentNameFunction()"` with function defined in `<script>` tag
+- **Benefits**: Proper syntax highlighting, better IDE support, improved readability, easier debugging
+- **Structure Requirements**:
+  - Use descriptive function names (e.g., `successMessageComponent()`, `readingLogForm()`)
+  - Organize methods by purpose (state, lifecycle, features, user interaction)
+  - Include JSDoc comments for complex components
+  - Group related properties and methods logically
+
+### Alpine.js Code Quality
+- **Use proper method organization**:
+  ```javascript
+  function componentName() {
+      return {
+          // State - data properties
+          property: value,
+          
+          // Lifecycle methods
+          init() { ... },
+          destroy() { ... },
+          
+          // Feature methods
+          doSomething() { ... },
+          
+          // User interaction
+          handleClick() { ... }
+      };
+  }
+  ```
+- **Always include cleanup**: Use `x-destroy` for timers, event listeners, etc.
+- **Use descriptive method names**: `startTimer()` not `start()`, `pauseTimer()` not `pause()`
+- **Add inline comments**: Explain complex logic and edge cases
+
+### Alpine.js Event Communication
+- **Use $dispatch() for component communication**: Never access parent scope directly
+- **Event naming**: Use kebab-case (`close-modal`, `reading-log-added`)
+- **Event listeners**: Use `@event-name.window` for global events
+- **Maintain loose coupling**: Components should not directly manipulate other components
+
 ## Issue Completion Criteria
 - All features must be testable via the Herd-configured domain
 - Tests must pass: `php artisan test`
 - No critical errors in Laravel logs
 - HTMX functionality verified in browser
 - Database operations confirmed via tinker or migrations
+- Alpine.js components follow organization standards
 
 
 
