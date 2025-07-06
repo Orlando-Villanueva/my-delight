@@ -51,7 +51,35 @@ class UserStatisticsService
             'days_since_first_reading' => $firstReading 
                 ? Carbon::parse($firstReading->date_read)->diffInDays(now()) + 1
                 : 0,
+            'this_month_days' => $this->getThisMonthReadingDays($user),
+            'this_week_days' => $this->getThisWeekReadingDays($user),
         ];
+    }
+
+    /**
+     * Get reading days count for current month.
+     */
+    private function getThisMonthReadingDays(User $user): int
+    {
+        return $user->readingLogs()
+            ->whereMonth('date_read', now()->month)
+            ->whereYear('date_read', now()->year)
+            ->distinct('date_read')
+            ->count('date_read');
+    }
+
+    /**
+     * Get reading days count for current week.
+     */
+    private function getThisWeekReadingDays(User $user): int
+    {
+        $startOfWeek = now()->startOfWeek();
+        $endOfWeek = now()->endOfWeek();
+
+        return $user->readingLogs()
+            ->whereBetween('date_read', [$startOfWeek, $endOfWeek])
+            ->distinct('date_read')
+            ->count('date_read');
     }
 
     /**
@@ -81,7 +109,19 @@ class UserStatisticsService
      */
     public function getRecentActivity(User $user, int $limit = 5): array
     {
-        $recentReadings = $this->readingLogService->getReadingHistory($user, $limit);
+        // Apply limit at database level to avoid loading all records into memory
+        // Then handle deduplication on the smaller result set
+        $recentReadings = $user->readingLogs()
+            ->select('id', 'passage_text', 'date_read', 'notes_text', 'created_at')
+            ->orderBy('date_read', 'desc')
+            ->orderBy('created_at', 'desc')
+            ->limit($limit * 3) // Get more records to account for potential duplicates
+            ->get()
+            ->unique(function ($log) {
+                // Use a safer separator that won't appear in passage text
+                return $log->passage_text . '::' . $log->date_read;
+            })
+            ->take($limit);
         
         return $recentReadings->map(function ($reading) {
             return [
@@ -91,7 +131,7 @@ class UserStatisticsService
                 'notes_text' => $reading->notes_text,
                 'days_ago' => Carbon::parse($reading->date_read)->diffInDays(now()),
             ];
-        })->toArray();
+        })->values()->toArray();
     }
 
     /**

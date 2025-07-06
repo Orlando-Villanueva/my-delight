@@ -286,17 +286,91 @@ return new class extends Migration
 
 ## Performance Considerations
 
+### Critical Query Optimization Targets (PR5 Assessment)
+
+Based on performance analysis of the current implementation, these are the highest-impact optimization targets:
+
+#### 1. Streak Calculation Optimization
+
+**Current Implementation Issues:**
+```php
+// Inefficient: Loads all reading dates into PHP memory
+$readingDates = $user->readingLogs()
+    ->select('date_read')
+    ->distinct()
+    ->orderBy('date_read', 'desc')
+    ->pluck('date_read');
+```
+
+**Optimization Target:**
+- Convert to SQL window functions for database-level calculation
+- Add composite index: `(user_id, date_read)` (already exists)
+- Consider materialized view for frequently accessed streak data
+
+#### 2. Dashboard Statistics Optimization
+
+**Current Bottleneck:**
+- `UserStatisticsService::getDashboardStatistics()` executes 5+ separate queries
+- No caching of expensive calculations
+- Book progress summary loads all user records
+
+**Optimization Targets:**
+- Implement `Cache::remember()` for dashboard statistics (5-15 min TTL)
+- Batch related queries into single optimized query
+- Add specific indexes for common statistics patterns
+
+#### 3. Calendar Data Generation Optimization
+
+**Current Issue:**
+```php
+// Inefficient: Creates 365 array entries in PHP
+while ($currentDate->lte($endDate)) {
+    $calendar[$dateString] = [...];
+    $currentDate->addDay();
+}
+```
+
+**Optimization Target:**
+- Use database aggregation with date generation
+- Cache calendar data per user/year (30 min TTL)
+- Consider PostgreSQL generate_series() for date ranges
+
 ### Query Optimization
 
 1. **Denormalized BookProgress**: Eliminates need to scan reading_logs for statistics
-2. **Composite Indexes**: Optimized for common query patterns
+2. **Composite Indexes**: Optimized for common query patterns:
+   - `idx_user_date (user_id, date_read)` - Streak calculations ✅
+   - `idx_user_book_chapter (user_id, book_id, chapter)` - Book progress ✅
+   - `idx_user_completion (user_id, completion_percent)` - Statistics ✅
+   - `idx_user_completed (user_id, is_completed)` - Book completion queries ✅
 3. **JSON Storage**: Efficient storage for variable-length chapter lists
+
+### Caching Strategy Integration
+
+**High-Impact Cache Targets:**
+```php
+// Cache expensive dashboard statistics
+Cache::remember("user_stats_{$userId}", 300, $statisticsCallback);
+
+// Cache streak calculations (infrequent changes)
+Cache::remember("user_streak_{$userId}", 900, $streakCallback);
+
+// Cache calendar data (daily granularity)
+Cache::remember("user_calendar_{$userId}_{$year}", 1800, $calendarCallback);
+```
+
+**Cache Invalidation Triggers:**
+- Clear user caches on reading log creation/deletion
+- Clear calendar cache on any reading date change
+- Time-based fallback with appropriate TTL values
 
 ### Scaling Strategies
 
 1. **Partitioning**: reading_logs table can be partitioned by user_id or date_read
 2. **Archiving**: Old reading_logs can be archived while maintaining book_progress
-3. **Caching**: Frequently accessed statistics cached in Redis
+3. **Caching**: Database and application-level caching for frequent queries
+4. **Query Monitoring**: Use Laravel Telescope for production query analysis
+5. **Index Optimization**: Add indexes based on actual query patterns in production
 
 ## Data Migration Strategy
 

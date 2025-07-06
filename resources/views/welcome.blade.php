@@ -116,11 +116,7 @@
                                 Deploy now
                             </a>
                         </li>
-                        <li>
-                            <a href="{{ route('demo') }}" class="inline-block ml-2 dark:bg-[#F61500] dark:border-[#F61500] dark:text-white dark:hover:bg-[#FF4433] dark:hover:border-[#FF4433] hover:bg-[#F53003] hover:border-[#F53003] px-5 py-1.5 bg-white rounded-sm border border-[#F53003] text-[#F53003] text-sm leading-normal">
-                                HTMX + Alpine.js Demo
-                            </a>
-                        </li>
+
                     </ul>
                 </div>
                 <div class="bg-[#fff2f2] dark:bg-[#1D0002] relative lg:-ml-px -mb-px lg:mb-0 rounded-t-lg lg:rounded-t-none lg:rounded-r-lg aspect-[335/376] lg:aspect-auto w-full lg:w-[438px] shrink-0 overflow-hidden">

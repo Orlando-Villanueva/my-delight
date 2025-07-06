@@ -3,6 +3,7 @@
 namespace App\Services;
 
 use InvalidArgumentException;
+use Exception;
 
 class BibleReferenceService
 {
@@ -46,7 +47,7 @@ class BibleReferenceService
             $bookId = (int) $identifier;
             if (isset($this->bibleConfig['books'][$bookId])) {
                 $book = $this->bibleConfig['books'][$bookId];
-                // Add translated name to the response
+                // Return localized name for the requested locale
                 $book['name'] = $this->getLocalizedBookName($bookId, $locale);
                 return $book;
             }
@@ -57,7 +58,8 @@ class BibleReferenceService
         foreach ($this->bibleConfig['books'] as $bookId => $book) {
             $translatedName = $this->getLocalizedBookName($bookId, $locale);
             if (strtolower($translatedName) === strtolower($identifier)) {
-                $book['name'] = $translatedName;
+                // Return localized name for the requested locale
+                $book['name'] = $this->getLocalizedBookName($bookId, $locale);
                 return $book;
             }
         }
@@ -90,6 +92,82 @@ class BibleReferenceService
 
         $bookName = $this->getLocalizedBookName($bookId, $locale);
         return "{$bookName} {$chapter}";
+    }
+
+    /**
+     * Format Bible reference range for display
+     */
+    public function formatBibleReferenceRange(int $bookId, int $startChapter, int $endChapter, ?string $locale = null): string
+    {
+        $locale = $locale ?? $this->defaultLocale;
+        
+        if (!$this->validateBookId($bookId)) {
+            throw new InvalidArgumentException("Invalid book ID: {$bookId}");
+        }
+
+        $bookName = $this->getLocalizedBookName($bookId, $locale);
+        
+        if ($startChapter === $endChapter) {
+            return "{$bookName} {$startChapter}";
+        }
+        
+        return "{$bookName} {$startChapter}-{$endChapter}";
+    }
+
+    /**
+     * Validate chapter range for a specific book
+     */
+    public function validateChapterRange(int $bookId, int $startChapter, int $endChapter): bool
+    {
+        if (!$this->validateBookId($bookId)) {
+            return false;
+        }
+
+        if ($startChapter > $endChapter) {
+            return false;
+        }
+
+        $maxChapters = $this->getBookChapterCount($bookId);
+        return $startChapter >= 1 && $endChapter <= $maxChapters;
+    }
+
+    /**
+     * Parse chapter input (single chapter or range)
+     */
+    public function parseChapterInput(string $chapterInput): array
+    {
+        $chapterInput = trim($chapterInput);
+        
+        // Check for range (e.g., "1-3")
+        if (preg_match('/^(\d+)-(\d+)$/', $chapterInput, $matches)) {
+            $start = (int) $matches[1];
+            $end = (int) $matches[2];
+            
+            // Ensure start <= end
+            if ($start > $end) {
+                [$start, $end] = [$end, $start];
+            }
+            
+            return [
+                'type' => 'range',
+                'start' => $start,
+                'end' => $end,
+                'chapters' => range($start, $end)
+            ];
+        }
+        
+        // Single chapter
+        if (preg_match('/^\d+$/', $chapterInput)) {
+            $chapter = (int) $chapterInput;
+            return [
+                'type' => 'single',
+                'start' => $chapter,
+                'end' => $chapter,
+                'chapters' => [$chapter]
+            ];
+        }
+        
+        throw new InvalidArgumentException("Invalid chapter input format: {$chapterInput}");
     }
 
     /**
@@ -161,27 +239,32 @@ class BibleReferenceService
             throw new InvalidArgumentException("Invalid book ID: {$bookId}");
         }
 
-        // Use Laravel's translation system
+        // Use Laravel's translation system if available
         $translationKey = "bible.books.{$bookId}";
         
         // Try to get translation, fallback to English if not found
-        if (function_exists('__')) {
-            $translation = __($translationKey, [], $locale);
-            
-            // If translation key is returned unchanged, try fallback locale
-            if ($translation === $translationKey && $locale !== $this->defaultLocale) {
-                $translation = __($translationKey, [], $this->defaultLocale);
+        if (function_exists('__') && app()->bound('translator')) {
+            try {
+                $translation = __($translationKey, [], $locale);
+                
+                // If translation key is returned unchanged, try fallback locale
+                if ($translation === $translationKey && $locale !== $this->defaultLocale) {
+                    $translation = __($translationKey, [], $this->defaultLocale);
+                }
+                
+                // If still no translation, use fallback
+                if ($translation === $translationKey) {
+                    return $this->getTranslationFallback($bookId, $locale);
+                }
+                
+                return $translation;
+            } catch (Exception $e) {
+                // If translation fails, use fallback
+                return $this->getTranslationFallback($bookId, $locale);
             }
-            
-            // If still no translation, return a fallback
-            if ($translation === $translationKey) {
-                return "Book {$bookId}";
-            }
-            
-            return $translation;
         }
         
-        // Fallback for testing environment
+        // Fallback for testing environment or when translator not available
         return $this->getTranslationFallback($bookId, $locale);
     }
 
@@ -282,7 +365,9 @@ class BibleReferenceService
         
         // Get localized testament name
         $translationKey = "bible.testaments.{$testament}";
-        $name = function_exists('__') ? __($translationKey, [], $locale) : $this->getTestamentFallback($testament, $locale);
+        $name = (function_exists('__') && app()->bound('translator')) 
+            ? __($translationKey, [], $locale) 
+            : $this->getTestamentFallback($testament, $locale);
         
         return [
             'name' => $name,

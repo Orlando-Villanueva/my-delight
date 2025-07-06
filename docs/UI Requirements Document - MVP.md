@@ -76,6 +76,12 @@ This document outlines the user interface requirements for the Bible Habit Build
 ### 3. Reading Log Entry Form
 **Scope**: Simple, fast form for logging daily Bible reading
 
+#### Navigation Pattern
+- **Content Loading**: Form loads via HTMX within main dashboard layout (no page reload)
+- **Quick Access**: "Log Reading" button provides seamless access from dashboard
+- **Graceful Degradation**: Direct URL access (`/logs/create`) still works for bookmarking
+- **Cancel Behavior**: Returns to dashboard content via HTMX, maintaining seamless experience
+
 #### Bible Reference Selection
 - **Book Selector**: Dropdown with all 66 Bible books, organized by Testament
 - **Chapter Selector**: Dynamic dropdown based on selected book

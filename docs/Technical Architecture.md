@@ -102,46 +102,17 @@ app/
 
 ### Service Layer Implementation
 
-#### ReadingLogService
-Handles all business logic related to Bible reading logs:
+#### ReadingLogService ✅ **IMPLEMENTED**
+Handles Bible reading log business logic with HTMX integration:
 
-```php
-namespace App\Services;
-
-use App\Models\User;
-use App\Models\ReadingLog;
-
-class ReadingLogService
-{
-    /**
-     * Log a new Bible reading entry for a user.
-     */
-    public function logReading(User $user, array $data): ReadingLog
-    {
-        // Create the reading log
-        $readingLog = $user->readingLogs()->create([
-            'book_id' => $data['book_id'],
-            'chapter' => $data['chapter'],
-            'passage_text' => $data['passage_text'],
-            'date_read' => $data['date_read'] ?? now()->toDateString(),
-            'notes_text' => $data['notes_text'] ?? null,
-        ]);
-
-        // Update book progress
-        $this->updateBookProgress($user, $data['book_id'], $data['chapter']);
-
-        return $readingLog;
-    }
-
-    /**
-     * Calculate the current reading streak for a user.
-     */
-    public function calculateCurrentStreak(User $user): int
-    {
-        // Streak calculation logic with 1-day grace period
-        // Implementation details in actual service class
-    }
-}
+**Core Features:**
+- ✅ Bible reference validation via BibleReferenceService
+- ✅ Auto-formatting ("Genesis 1", "John 1-3") 
+- ✅ Multi-chapter support (ranges as separate entries)
+- ✅ Book progress tracking with JSON chapters
+- ✅ Streak calculations (current + longest)
+- ✅ Reading history with filtering
+- ✅ HTMX-native responses (no complex JavaScript)
 ```
 
 #### UserStatisticsService
@@ -885,11 +856,54 @@ This approach allows the same backend logic to serve both the HTMX-based web int
 - **Minimal Client Logic**: Alpine.js provides "sprinkles of interactivity" for local UI state without complex state management.
 - **Progressive Enhancement**: Works well even with limited JavaScript support.
 - **Performance**: Lightweight compared to full frontend frameworks, leading to faster page loads.
+- **Seamless Navigation**: Content loading patterns provide app-like experience without full page reloads.
 
 **Implementation Details:**
 - **HTMX**: Handles server communication, form submissions, HTML fragment updates, and event triggering
 - **Alpine.js**: Manages local UI state (dropdowns, modals), client-side validation, and reactive data binding
 - **Integration**: Both technologies work together seamlessly, with HTMX handling server interactions and Alpine managing client-side enhancements
+
+### Zero-Duplication Architecture Pattern
+
+**Core Principle**: Each UI component exists in exactly one place to prevent HTML duplication across HTMX views.
+
+#### **Component Architecture:**
+```
+resources/views/
+├── partials/
+│   ├── {feature}-content.blade.php      # Shared content components
+│   ├── {feature}-page.blade.php         # HTMX page containers  
+│   ├── header-update.blade.php          # Parameterized shared components
+│   └── {feature}-sidebar.blade.php      # Feature-specific reusable components
+├── {feature}/
+│   └── index.blade.php                  # Main views (use @include for components)
+```
+
+#### **HTMX Implementation Standards:**
+```blade
+// Page navigation (layout changes)
+hx-get="{{ route('feature.index') }}" 
+hx-target="#page-container"
+return view('partials.feature-page')
+
+// Content updates (same layout)  
+hx-get="{{ route('feature.action') }}"
+hx-target="#main-content"
+return view('partials.feature-content')
+
+// Parameterized components
+@include('partials.header-update', [
+    'title' => 'Page Title',
+    'subtitle' => 'Optional description'
+])
+```
+
+#### **Component Creation Process:**
+1. Create shared content partial first
+2. Create HTMX page container using `@include` statements
+3. Use parameterized includes for reusable elements
+4. Main view includes shared components
+5. Controller supports both HTMX and direct access patterns
 
 For detailed implementation patterns, see:
 - [HTMX Implementation Guide](./HTMX%20Implementation%20Guide.md)
@@ -1456,7 +1470,42 @@ DB_DATABASE=/path/to/database.sqlite
 
 ### Caching Strategy
 
-As user growth occurs, implementing a robust caching strategy will be essential for maintaining performance and scalability. Here's the planned approach:
+Based on performance assessment of the PR5 implementation, a robust caching strategy is essential for maintaining performance and scalability. Here's the detailed approach targeting specific bottlenecks:
+
+#### Critical Performance Bottlenecks (Identified in PR5 Assessment)
+
+1. **UserStatisticsService::getDashboardStatistics()** - Multiple uncached queries:
+   - Current/longest streak calculations load all reading dates into PHP
+   - Book progress summary loads all user progress records
+   - Recent activity executes separate query
+   - Reading summary executes 3 separate queries (count, oldest, latest)
+
+2. **Streak Calculations** - Inefficient PHP processing:
+   - `calculateCurrentStreak()` - fetches all dates, processes in PHP memory
+   - `calculateLongestStreak()` - fetches all dates, processes in PHP memory
+   - Should be converted to SQL window functions for better performance
+
+3. **Calendar Data Generation** - PHP array processing:
+   - `getCalendarData()` creates 365 array entries in PHP
+   - Could be optimized with database aggregation
+
+#### High-Impact Caching Implementation
+
+**Primary Cache Targets with TTL Strategy:**
+```php
+// Dashboard statistics (recalculated only on new readings)
+Cache::remember("user_dashboard_stats_{$userId}", 300, fn() => $this->getDashboardStatistics($user));
+
+// Streak calculations (longer TTL since they change infrequently)
+Cache::remember("user_current_streak_{$userId}", 900, fn() => $this->calculateCurrentStreak($user));
+Cache::remember("user_longest_streak_{$userId}", 3600, fn() => $this->calculateLongestStreak($user));
+
+// Bible reference data (static data, cache indefinitely)
+Cache::remember("bible_books_{$locale}", 86400, fn() => $this->listBibleBooks(null, $locale));
+
+// Calendar data (updated only on new readings for the year)
+Cache::remember("user_calendar_{$userId}_{$year}", 1800, fn() => $this->getCalendarData($user, $year));
+```
 
 #### Cache Layers
 
@@ -1464,10 +1513,12 @@ As user growth occurs, implementing a robust caching strategy will be essential 
    - User statistics and streak data (invalidated only on new reading logs)
    - Bible reference metadata (book/chapter/verse counts)
    - User reading history summaries
+   - Calendar visualization data
 
 2. **Database Query Cache**:
    - Frequently executed queries, particularly for statistics calculations
    - Results of complex aggregations
+   - Book progress summaries
 
 3. **HTTP Cache**:
    - Static assets with appropriate cache headers
@@ -1475,44 +1526,58 @@ As user growth occurs, implementing a robust caching strategy will be essential 
 
 #### Implementation Technologies
 
-1. **Laravel KV Store (via Laravel Cloud)**:
-   - Redis API-compatible key-value store
-   - Supports complex data structures needed for statistics
-   - Enables atomic operations for counters and leaderboards
-   - Provides pub/sub capabilities for cache invalidation
-   - Managed platform with automatic scaling and monitoring
+1. **Current Setup (Database Cache)**:
+   - Default Laravel cache using database driver
+   - Suitable for MVP launch and initial user load
+   - Zero configuration required
 
-2. **Laravel Cache**:
-   - Abstraction layer for different cache backends
-   - Tag-based cache invalidation for related items
-   - Automatic serialization/deserialization of complex objects
-   - Seamless integration with Laravel Cloud's KV Store
+2. **Production Scaling (Laravel Cloud + Redis)**:
+   - Laravel KV Store (Redis API-compatible)
+   - Upgrade path without code changes: `CACHE_STORE=redis`
+   - Advanced features: pub/sub, atomic operations, complex data structures
 
 #### Cache Invalidation Strategy
 
-1. **Time-Based**:
-   - Short TTL (5-15 minutes) for frequently changing data
-   - Longer TTL (24+ hours) for relatively static data like Bible reference information
+1. **Event-Based Invalidation** (Primary):
+   ```php
+   // Clear user stats cache on new reading log creation
+   Cache::forget("user_dashboard_stats_{$userId}");
+   Cache::forget("user_current_streak_{$userId}");
+   Cache::forget("user_calendar_{$userId}_{$currentYear}");
+   ```
 
-2. **Event-Based**:
-   - Invalidate user statistics cache when new reading logs are added
-   - Invalidate streak cache at midnight (user's local time) when streaks may change
+2. **Time-Based TTL** (Secondary):
+   - Dashboard stats: 5 minutes (frequent changes)
+   - Streak calculations: 15 minutes (infrequent changes)
+   - Bible reference data: 24 hours (static data)
+   - Calendar data: 30 minutes (daily granularity)
 
 3. **Selective Invalidation**:
-   - Use cache tags to invalidate only affected portions of the cache
-   - Maintain cache warmth for high-traffic users and common queries
+   - Use cache tags to invalidate only affected portions
+   - Maintain cache warmth for high-traffic users
 
 #### Performance Monitoring
 
-1. **Cache Hit Ratio**:
-   - Track and optimize for high cache hit rates (target: >90%)
-   - Identify and address cache misses for common operations
+1. **Cache Hit Ratio Tracking**:
+   - Target: >90% hit rate for dashboard statistics
+   - Monitor cache effectiveness for each service method
 
-2. **Cache Size Monitoring**:
-   - Monitor memory usage to prevent cache eviction
-   - Implement size-based policies for cache entry limits
+2. **Query Performance Metrics**:
+   - Measure query execution time before/after caching
+   - Identify additional optimization opportunities
 
-This caching strategy will be implemented incrementally as user load increases, with the most performance-critical features receiving caching support first.
+3. **Cache Size Monitoring**:
+   - Monitor memory usage patterns
+   - Implement automatic cleanup for stale entries
+
+#### SQL Optimization Targets (Complementary to Caching)
+
+- Convert streak calculations from PHP loops to SQL window functions
+- Batch book progress updates during reading log creation
+- Add composite indexes for calendar queries: `(user_id, date_read)`
+- Optimize book progress aggregation queries
+
+This caching strategy targets the specific performance bottlenecks identified in the current implementation and will be implemented incrementally, starting with the highest-impact optimizations first.
 
 ### Social Authentication Implementation Strategy (Phase 2)
 

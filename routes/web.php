@@ -1,7 +1,8 @@
 <?php
 
 use Illuminate\Support\Facades\Route;
-use App\Http\Controllers\DemoController;
+use Illuminate\Http\Request;
+use App\Http\Controllers\ReadingLogController;
 
 Route::get('/', function () {
     return view('welcome');
@@ -26,33 +27,30 @@ Route::middleware('guest')->group(function () {
     })->name('password.reset');
 });
 
-// HTMX and Alpine.js Demo Routes
-Route::get('/demo', [DemoController::class, 'index'])->name('demo');
-Route::get('/demo/verse', [DemoController::class, 'getRandomVerse'])->name('demo.verse');
-Route::post('/demo/log', [DemoController::class, 'logReading'])->name('demo.log');
+
 
 // Authenticated Routes
 Route::middleware('auth')->group(function () {
     // Main Dashboard
-    Route::get('/dashboard', function () {
+    Route::get('/dashboard', function (Request $request) {
+        // Return page container for HTMX navigation requests
+        if ($request->header('HX-Request')) {
+            return view('partials.dashboard-page');
+        }
+        
+        // Return full page for direct access (graceful degradation)
         return view('dashboard');
     })->name('dashboard');
 
-    // Temporary routes for layout preview (these will be replaced with real controllers later)
-    Route::get('/history', function () {
-        return view('preview-layout');
-    })->name('history');
-
+    // Coming Soon Routes (MVP placeholders)
     Route::get('/profile', function () {
-        return view('preview-layout');
+        return response()->view('dashboard', [
+            'message' => 'Profile management coming soon in post-MVP!'
+        ]);
     })->name('profile');
 
-    Route::get('/logs/create', function () {
-        return view('preview-layout');
-    })->name('logs.create');
+    // Reading Log Routes
+    Route::get('/logs', [ReadingLogController::class, 'index'])->name('logs.index');
+    Route::get('/logs/create', [ReadingLogController::class, 'create'])->name('logs.create');
+    Route::post('/logs', [ReadingLogController::class, 'store'])->name('logs.store');
 });
-
-// Layout Preview Route (temporary for testing - accessible without auth)
-Route::get('/preview-layout', function () {
-    return view('preview-layout');
-})->name('layout.preview');

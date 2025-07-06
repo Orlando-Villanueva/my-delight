@@ -3,13 +3,19 @@
 namespace Tests\Feature;
 
 use App\Models\User;
-use Illuminate\Foundation\Testing\RefreshDatabase;
+use Illuminate\Foundation\Http\Middleware\VerifyCsrfToken;
 use Illuminate\Support\Facades\Hash;
 use Tests\TestCase;
 
 class UserAuthenticationTest extends TestCase
 {
-    use RefreshDatabase;
+    protected function setUp(): void
+    {
+        parent::setUp();
+        
+        // Disable CSRF middleware for all tests in this class
+        $this->withoutMiddleware(VerifyCsrfToken::class);
+    }
 
     public function test_user_can_register_with_valid_credentials()
     {

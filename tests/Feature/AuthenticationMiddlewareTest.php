@@ -17,7 +17,7 @@ class AuthenticationMiddlewareTest extends TestCase
         $response->assertRedirect('/login');
 
         // Test other protected routes
-        $protectedRoutes = ['/history', '/profile', '/logs/create'];
+        $protectedRoutes = ['/logs', '/profile', '/logs/create'];
         
         foreach ($protectedRoutes as $route) {
             $response = $this->get($route);
@@ -32,7 +32,7 @@ class AuthenticationMiddlewareTest extends TestCase
         $response = $this->actingAs($user)->get('/dashboard');
         $response->assertOk();
 
-        $response = $this->actingAs($user)->get('/history');
+        $response = $this->actingAs($user)->get('/logs');
         $response->assertOk();
 
         $response = $this->actingAs($user)->get('/profile');
@@ -66,22 +66,26 @@ class AuthenticationMiddlewareTest extends TestCase
             'password' => bcrypt('ValidPass123!'),
         ]);
 
-        $response = $this->post('/login', [
-            'email' => 'test@example.com',
-            'password' => 'ValidPass123!',
-        ]);
+        $response = $this->withSession(['_token' => 'test-token'])
+            ->post('/login', [
+                'email' => 'test@example.com',
+                'password' => 'ValidPass123!',
+                '_token' => 'test-token',
+            ]);
 
         $response->assertRedirect('/dashboard');
     }
 
     public function test_registration_redirects_to_dashboard()
     {
-        $response = $this->post('/register', [
-            'name' => 'Test User',
-            'email' => 'test@example.com',
-            'password' => 'ValidPass123!',
-            'password_confirmation' => 'ValidPass123!',
-        ]);
+        $response = $this->withSession(['_token' => 'test-token'])
+            ->post('/register', [
+                'name' => 'Test User',
+                'email' => 'test@example.com',
+                'password' => 'ValidPass123!',
+                'password_confirmation' => 'ValidPass123!',
+                '_token' => 'test-token',
+            ]);
 
         $response->assertRedirect('/dashboard');
     }
@@ -90,7 +94,9 @@ class AuthenticationMiddlewareTest extends TestCase
     {
         $user = User::factory()->create();
 
-        $response = $this->actingAs($user)->post('/logout');
+        $response = $this->actingAs($user)
+            ->withSession(['_token' => 'test-token'])
+            ->post('/logout', ['_token' => 'test-token']);
         
         // Fortify typically redirects to root path after logout
         $response->assertRedirect('/');
