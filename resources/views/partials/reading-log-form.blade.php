@@ -18,8 +18,8 @@
         Form to log your daily Bible reading with book, chapter, and optional notes
     </p>
 
-    <form hx-post="{{ route('logs.store') }}" hx-target="#form-response" hx-swap="innerHTML" x-data="readingLogForm()"
-        class="space-y-6">
+    <form hx-post="{{ route('logs.store') }}" hx-target="#reading-log-modal-content" hx-swap="innerHTML"
+        x-data="readingLogForm()" class="space-y-6">
         @csrf
 
         <div id="form-response">

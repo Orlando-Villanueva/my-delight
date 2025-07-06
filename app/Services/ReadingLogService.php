@@ -20,6 +20,12 @@ class ReadingLogService
 
     /**
      * Log a new Bible reading entry for a user (supports single chapter or chapter ranges).
+     * 
+     * Expected data format:
+     * - For single chapter: ['book_id' => int, 'chapter' => int, ...]
+     * - For chapter ranges: ['book_id' => int, 'chapters' => [int, int, ...], ...]
+     * 
+     * Note: The controller parses 'chapter_input' from forms and converts it to the appropriate format.
      */
     public function logReading(User $user, array $data): ReadingLog
     {

@@ -114,7 +114,7 @@ class UserStatisticsService
             ->recentFirst()
             ->get()
             ->groupBy(function ($log) {
-                return $log->passage_text . '|' . $log->date_read . '|' . $log->created_at->format('Y-m-d H:i:s');
+                return $log->passage_text . '|' . $log->date_read;
             })
             ->map(function ($group) {
                 return $group->first(); // Take the first entry from each group

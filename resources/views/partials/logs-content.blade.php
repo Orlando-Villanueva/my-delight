@@ -56,7 +56,8 @@
     </div>
 
     {{-- Reading Log Content Container --}}
-    <div id="reading-content" class="relative">
+    <div id="reading-content" class="relative" hx-get="{{ route('logs.index', ['filter' => $filter]) }}"
+        hx-trigger="readingLogAdded from:body" hx-target="#reading-content" hx-swap="innerHTML">
         {{-- Loading Indicator - Only covers the logs area --}}
         <div id="loading"
             class="htmx-indicator absolute inset-0 bg-white bg-opacity-90 items-center justify-center z-10">
