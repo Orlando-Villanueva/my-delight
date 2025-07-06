@@ -109,18 +109,18 @@ class UserStatisticsService
      */
     public function getRecentActivity(User $user, int $limit = 5): array
     {
-        // Group by reading session to avoid duplicates for chapter ranges
+        // Apply limit at database level to avoid loading all records into memory
+        // Then handle deduplication on the smaller result set
         $recentReadings = $user->readingLogs()
-            ->recentFirst()
+            ->select('id', 'passage_text', 'date_read', 'notes_text', 'created_at')
+            ->orderBy('date_read', 'desc')
+            ->orderBy('created_at', 'desc')
+            ->limit($limit * 3) // Get more records to account for potential duplicates
             ->get()
-            ->groupBy(function ($log) {
-                return $log->passage_text . '|' . $log->date_read;
+            ->unique(function ($log) {
+                // Use a safer separator that won't appear in passage text
+                return $log->passage_text . '::' . $log->date_read;
             })
-            ->map(function ($group) {
-                return $group->first(); // Take the first entry from each group
-            })
-            ->values()
-            ->sortByDesc('created_at')
             ->take($limit);
         
         return $recentReadings->map(function ($reading) {
@@ -131,7 +131,7 @@ class UserStatisticsService
                 'notes_text' => $reading->notes_text,
                 'days_ago' => Carbon::parse($reading->date_read)->diffInDays(now()),
             ];
-        })->toArray();
+        })->values()->toArray();
     }
 
     /**
