@@ -47,11 +47,8 @@ class BibleReferenceService
             $bookId = (int) $identifier;
             if (isset($this->bibleConfig['books'][$bookId])) {
                 $book = $this->bibleConfig['books'][$bookId];
-                // Add translated names for all supported locales
-                $book['name'] = [];
-                foreach ($this->supportedLocales as $supportedLocale) {
-                    $book['name'][$supportedLocale] = $this->getLocalizedBookName($bookId, $supportedLocale);
-                }
+                // Return localized name for the requested locale
+                $book['name'] = $this->getLocalizedBookName($bookId, $locale);
                 return $book;
             }
             return null;
@@ -61,11 +58,8 @@ class BibleReferenceService
         foreach ($this->bibleConfig['books'] as $bookId => $book) {
             $translatedName = $this->getLocalizedBookName($bookId, $locale);
             if (strtolower($translatedName) === strtolower($identifier)) {
-                // Add translated names for all supported locales
-                $book['name'] = [];
-                foreach ($this->supportedLocales as $supportedLocale) {
-                    $book['name'][$supportedLocale] = $this->getLocalizedBookName($bookId, $supportedLocale);
-                }
+                // Return localized name for the requested locale
+                $book['name'] = $this->getLocalizedBookName($bookId, $locale);
                 return $book;
             }
         }

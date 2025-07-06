@@ -14,7 +14,7 @@ describe('BibleReferenceService', function () {
             
             expect($book)->not->toBeNull()
                 ->and($book['id'])->toBe(1)
-                ->and($book['name']['en'])->toBe('Genesis')
+                ->and($book['name'])->toBe('Genesis')
                 ->and($book['chapters'])->toBe(50)
                 ->and($book['testament'])->toBe('old');
         });
@@ -24,7 +24,7 @@ describe('BibleReferenceService', function () {
             
             expect($book)->not->toBeNull()
                 ->and($book['id'])->toBe(1)
-                ->and($book['name']['en'])->toBe('Genesis');
+                ->and($book['name'])->toBe('Genesis');
         });
 
         it('can get a book by French name', function () {
@@ -32,7 +32,7 @@ describe('BibleReferenceService', function () {
             
             expect($book)->not->toBeNull()
                 ->and($book['id'])->toBe(1)
-                ->and($book['name']['fr'])->toBe('Genèse');
+                ->and($book['name'])->toBe('Genèse');
         });
 
         it('returns null for invalid book ID', function () {
