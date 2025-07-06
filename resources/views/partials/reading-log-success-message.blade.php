@@ -48,8 +48,8 @@
             Close
         </button>
 
-        <button hx-get="{{ route('logs.create') }}" hx-target="#reading-log-modal-content" hx-swap="innerHTML"
-            hx-indicator="#modal-loading"
+        <button type="button" hx-get="{{ route('logs.create') }}" hx-target="#reading-log-modal-content"
+            hx-swap="innerHTML" hx-indicator="#modal-loading"
             class="inline-flex items-center px-4 py-2 border border-gray-300 rounded-md font-medium text-sm text-gray-700 bg-white hover:bg-gray-50 focus:outline-none focus:ring-2 focus:ring-offset-2 focus:ring-blue-500">
             Log Another Reading
         </button>
