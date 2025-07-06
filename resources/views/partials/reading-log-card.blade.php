@@ -43,8 +43,9 @@
                 <span class="flex items-center">
                     <svg class="w-4 h-4 mr-1" fill="none" stroke="currentColor" viewBox="0 0 24 24">
                         <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2"
-                            d="M8 7V3m8 4V3m-9 8h10M5 21h14a2 2 0 002-2V7a2 2 0 00-2-2H5a2 2 0 00-2 2v12a2 2 0 002 2z">
+                            d="M12 8v4l3 3m6-3a9 9 0 11-18 0 9 9 0 0118 0z M1 12s4-8 11-8 11 8 11 8-4 8-11 8-11-8-11-8z">
                         </path>
+                        <circle cx="12" cy="12" r="3"></circle>
                     </svg>
                     @php
                         // Since date_read is cast as date (no time), compare dates properly
