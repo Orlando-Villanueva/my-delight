@@ -68,18 +68,7 @@ class UserStatisticsService
             ->map(fn($date) => Carbon::parse($date)->toDateString())
             ->unique()
             ->count();
-    }
-
-    /**
-     * Get readings count for current month.
-     */
-    private function getThisMonthReadings(User $user): int
-    {
-        return $user->readingLogs()
-            ->whereMonth('date_read', now()->month)
-            ->whereYear('date_read', now()->year)
-            ->count();
-    }
+            }
 
     /**
      * Get reading days count for current week.
