@@ -64,11 +64,9 @@ class UserStatisticsService
         return $user->readingLogs()
             ->whereMonth('date_read', now()->month)
             ->whereYear('date_read', now()->year)
-            ->pluck('date_read')
-            ->map(fn($date) => Carbon::parse($date)->toDateString())
-            ->unique()
-            ->count();
-            }
+            ->distinct('date_read')
+            ->count('date_read');
+    }
 
     /**
      * Get reading days count for current week.
@@ -80,10 +78,8 @@ class UserStatisticsService
 
         return $user->readingLogs()
             ->whereBetween('date_read', [$startOfWeek, $endOfWeek])
-            ->pluck('date_read')
-            ->map(fn($date) => Carbon::parse($date)->toDateString())
-            ->unique()
-            ->count();
+            ->distinct('date_read')
+            ->count('date_read');
     }
 
     /**

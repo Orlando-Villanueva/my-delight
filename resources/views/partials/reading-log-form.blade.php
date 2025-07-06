@@ -249,11 +249,12 @@
             },
 
             isFormValid() {
-                // Temporarily relaxed for testing - allow submission even with some validation errors
+                const MAX_NOTE_LENGTH = 500; // Define maximum note length
                 return this.form.book_id &&
                     this.form.chapter_input &&
-                    this.form.date_read;
-                // Removed strict chapter validation and character count to test backend
+                    this.form.date_read &&
+                    this.form.chapter_validation_valid &&
+                    this.characterCount <= MAX_NOTE_LENGTH;
             }
         }
     }
