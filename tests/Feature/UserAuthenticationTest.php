@@ -3,11 +3,20 @@
 namespace Tests\Feature;
 
 use App\Models\User;
+use Illuminate\Foundation\Http\Middleware\VerifyCsrfToken;
 use Illuminate\Support\Facades\Hash;
 use Tests\TestCase;
 
 class UserAuthenticationTest extends TestCase
 {
+    protected function setUp(): void
+    {
+        parent::setUp();
+        
+        // Disable CSRF middleware for all tests in this class
+        $this->withoutMiddleware(VerifyCsrfToken::class);
+    }
+
     public function test_user_can_register_with_valid_credentials()
     {
         $userData = [
@@ -17,8 +26,7 @@ class UserAuthenticationTest extends TestCase
             'password_confirmation' => 'ValidPass123!',
         ];
 
-        $response = $this->withSession(['_token' => 'test-token'])
-            ->post('/register', array_merge($userData, ['_token' => 'test-token']));
+        $response = $this->post('/register', $userData);
 
         $response->assertRedirect('/dashboard');
         
@@ -40,8 +48,7 @@ class UserAuthenticationTest extends TestCase
             'password_confirmation' => 'ValidPass123!',
         ];
 
-        $response = $this->withSession(['_token' => 'test-token'])
-            ->post('/register', array_merge($userData, ['_token' => 'test-token']));
+        $response = $this->post('/register', $userData);
         
         $response->assertSessionHasErrors('email');
         $this->assertDatabaseMissing('users', ['email' => 'invalid-email']);
@@ -56,8 +63,7 @@ class UserAuthenticationTest extends TestCase
             'password_confirmation' => 'different-password',
         ];
 
-        $response = $this->withSession(['_token' => 'test-token'])
-            ->post('/register', array_merge($userData, ['_token' => 'test-token']));
+        $response = $this->post('/register', $userData);
         
         $response->assertSessionHasErrors('password');
         $this->assertDatabaseMissing('users', ['email' => 'john@example.com']);
@@ -73,8 +79,7 @@ class UserAuthenticationTest extends TestCase
             'password_confirmation' => 'Pass12!',
         ];
 
-        $response = $this->withSession(['_token' => 'test-token'])
-            ->post('/register', array_merge($userData, ['_token' => 'test-token']));
+        $response = $this->post('/register', $userData);
         
         $response->assertSessionHasErrors('password');
         $this->assertDatabaseMissing('users', ['email' => 'john@example.com']);
@@ -90,8 +95,7 @@ class UserAuthenticationTest extends TestCase
             'password_confirmation' => 'ValidPassword!',
         ];
 
-        $response = $this->withSession(['_token' => 'test-token'])
-            ->post('/register', array_merge($userData, ['_token' => 'test-token']));
+        $response = $this->post('/register', $userData);
         
         $response->assertSessionHasErrors('password');
         $this->assertDatabaseMissing('users', ['email' => 'john@example.com']);
@@ -109,8 +113,7 @@ class UserAuthenticationTest extends TestCase
             'password_confirmation' => 'ValidPass123!',
         ];
 
-        $response = $this->withSession(['_token' => 'test-token'])
-            ->post('/register', array_merge($userData, ['_token' => 'test-token']));
+        $response = $this->post('/register', $userData);
         
         $response->assertSessionHasErrors('email');
         
@@ -125,12 +128,10 @@ class UserAuthenticationTest extends TestCase
             'password' => Hash::make('ValidPass123!'),
         ]);
 
-        $response = $this->withSession(['_token' => 'test-token'])
-            ->post('/login', [
-                'email' => 'john@example.com',
-                'password' => 'ValidPass123!',
-                '_token' => 'test-token',
-            ]);
+        $response = $this->post('/login', [
+            'email' => 'john@example.com',
+            'password' => 'ValidPass123!',
+        ]);
 
         $response->assertRedirect('/dashboard');
         $this->assertAuthenticatedAs($user);
@@ -143,12 +144,10 @@ class UserAuthenticationTest extends TestCase
             'password' => Hash::make('ValidPass123!'),
         ]);
 
-        $response = $this->withSession(['_token' => 'test-token'])
-            ->post('/login', [
-                'email' => 'john@example.com',
-                'password' => 'wrong-password',
-                '_token' => 'test-token',
-            ]);
+        $response = $this->post('/login', [
+            'email' => 'john@example.com',
+            'password' => 'wrong-password',
+        ]);
 
         $response->assertSessionHasErrors();
         $this->assertGuest();
@@ -158,9 +157,7 @@ class UserAuthenticationTest extends TestCase
     {
         $user = User::factory()->create();
 
-        $response = $this->actingAs($user)
-            ->withSession(['_token' => 'test-token'])
-            ->post('/logout', ['_token' => 'test-token']);
+        $response = $this->actingAs($user)->post('/logout');
 
         $response->assertRedirect('/');
         $this->assertGuest();
@@ -210,13 +207,11 @@ class UserAuthenticationTest extends TestCase
         ]);
 
         // Login with remember me
-        $response = $this->withSession(['_token' => 'test-token'])
-            ->post('/login', [
-                'email' => 'john@example.com',
-                'password' => 'ValidPass123!',
-                'remember' => true,
-                '_token' => 'test-token',
-            ]);
+        $response = $this->post('/login', [
+            'email' => 'john@example.com',
+            'password' => 'ValidPass123!',
+            'remember' => true,
+        ]);
 
         $response->assertRedirect('/dashboard');
         $this->assertAuthenticatedAs($user);
