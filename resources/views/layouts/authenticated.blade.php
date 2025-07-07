@@ -62,7 +62,7 @@
                 <button type="button" hx-get="{{ route('dashboard') }}" hx-target="#page-container"
                     hx-swap="innerHTML" hx-push-url="true"
                     @click="previousView = currentView; currentView = 'dashboard'"
-                    :class="currentView === 'dashboard' ? 'nav-active' : 'text-gray-600 hover:bg-gray-100'"
+                    :class="currentView === 'dashboard' ? 'bg-blue-600 text-white' : 'text-gray-600 hover:bg-gray-100'"
                     class="flex items-center px-4 py-3 text-sm font-medium rounded-lg min-h-[44px] w-full text-left">
                     <svg class="w-5 h-5 mr-3" fill="none" stroke="currentColor" viewBox="0 0 24 24">
                         <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2"
@@ -73,7 +73,7 @@
 
                 <button type="button" hx-get="{{ route('logs.index') }}" hx-target="#page-container"
                     hx-swap="innerHTML" hx-push-url="true" @click="previousView = currentView; currentView = 'logs'"
-                    :class="currentView === 'logs' ? 'nav-active' : 'text-gray-600 hover:bg-gray-100'"
+                    :class="currentView === 'logs' ? 'bg-blue-600 text-white' : 'text-gray-600 hover:bg-gray-100'"
                     class="flex items-center px-4 py-3 text-sm font-medium rounded-lg min-h-[44px] w-full text-left">
                     <svg class="w-5 h-5 mr-3" fill="none" stroke="currentColor" viewBox="0 0 24 24">
                         <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2"
@@ -211,7 +211,7 @@
             </main>
         </div>
         <!-- Mobile Bottom Navigation -->
-        <nav class="mobile-nav md:hidden fixed bottom-0 left-0 right-0 px-4 py-2 z-40 h-20">
+        <nav class="md:hidden fixed bottom-0 left-0 right-0 bg-white border-t border-gray-200 px-4 py-2 z-40 h-20">
             <div class="flex justify-around">
                 <button type="button" hx-get="{{ route('dashboard') }}" hx-target="#page-container"
                     hx-swap="innerHTML" hx-push-url="true"
