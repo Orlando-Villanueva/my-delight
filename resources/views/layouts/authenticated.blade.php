@@ -8,6 +8,11 @@
 
     <title>{{ config('app.name', 'Bible Habit Builder') }}</title>
 
+    <!-- Favicon -->
+    <link rel="icon" href="{{ asset('favicon.ico') }}" type="image/x-icon">
+    <link rel="apple-touch-icon" sizes="192x192" href="{{ asset('images/logo-192.png') }}">
+    <meta name="theme-color" content="#3366CC">
+
     <!-- Fonts -->
     <link rel="preconnect" href="https://fonts.bunny.net">
     <link href="https://fonts.bunny.net/css?family=inter:400,500,600,700" rel="stylesheet" />
@@ -43,8 +48,10 @@
         <aside class="hidden lg:flex lg:flex-col w-64 bg-white border-r border-gray-200">
             <!-- Logo Section -->
             <div class="px-6 py-4 border-b border-gray-200">
-                <a href="{{ route('dashboard') }}" class="text-xl font-bold text-blue-600 hover:text-blue-700">
-                    Bible Habit Builder
+                <a href="{{ route('dashboard') }}"
+                    class="flex items-center text-xl font-bold text-blue-600 hover:text-blue-700">
+                    <img src="{{ asset('images/logo-64.png') }}" alt="Bible Habit Builder Logo" class="h-8 w-auto mr-3">
+                    <span>Bible Habit Builder</span>
                 </a>
             </div>
 
@@ -104,9 +111,13 @@
             <!-- Mobile Header -->
             <header class="lg:hidden bg-white border-b border-gray-200 px-4 py-3">
                 <div class="flex items-center justify-between">
-                    <h1 id="mobile-page-title" class="text-lg font-semibold text-blue-600">
-                        @yield('page-title', 'Bible Habit Builder')
-                    </h1>
+                    <div class="flex items-center">
+                        <img src="{{ asset('images/logo-64.png') }}" alt="Bible Habit Builder Logo"
+                            class="h-8 w-auto mr-3">
+                        <h1 id="mobile-page-title" class="text-lg font-semibold text-blue-600">
+                            @yield('page-title', 'Bible Habit Builder')
+                        </h1>
+                    </div>
 
                     <!-- Mobile User Menu -->
                     <div x-data="{ open: false }" class="relative">
