@@ -194,7 +194,8 @@ class ReadingLogService
         $previousDate = $readingDates->first();
 
         foreach ($readingDates->skip(1) as $date) {
-            $daysDifference = $previousDate->diffInDays($date);
+            // Cast to int as diffInDays may return float depending on Carbon version
+            $daysDifference = (int) $previousDate->diffInDays($date);
             
             // Consecutive days should have exactly 1 day difference
             if ($daysDifference === 1) {
