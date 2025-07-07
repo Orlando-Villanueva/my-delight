@@ -50,15 +50,18 @@
             <div class="px-6 py-4 border-b border-gray-200">
                 <a href="{{ route('dashboard') }}"
                     class="flex items-center text-xl font-bold text-blue-600 hover:text-blue-700">
-                    <img src="{{ asset('images/logo-64.png') }}" alt="Bible Habit Builder Logo" class="h-8 w-auto mr-3">
+                    <img src="{{ asset('images/logo-64.png') }}"
+                        srcset="{{ asset('images/logo-64.png') }} 1x, {{ asset('images/logo-64-2x.png') }} 2x"
+                        alt="Bible Habit Builder Logo" class="h-10 w-auto mr-3">
                     <span>Bible Habit Builder</span>
                 </a>
             </div>
 
             <!-- Navigation Links -->
             <nav class="flex-1 p-4 space-y-2">
-                <button type="button" hx-get="{{ route('dashboard') }}" hx-target="#page-container" hx-swap="innerHTML"
-                    hx-push-url="true" @click="previousView = currentView; currentView = 'dashboard'"
+                <button type="button" hx-get="{{ route('dashboard') }}" hx-target="#page-container"
+                    hx-swap="innerHTML" hx-push-url="true"
+                    @click="previousView = currentView; currentView = 'dashboard'"
                     :class="currentView === 'dashboard' ? 'nav-active' : 'text-gray-600 hover:bg-gray-100'"
                     class="flex items-center px-4 py-3 text-sm font-medium rounded-lg min-h-[44px] w-full text-left">
                     <svg class="w-5 h-5 mr-3" fill="none" stroke="currentColor" viewBox="0 0 24 24">
@@ -112,8 +115,9 @@
             <header class="lg:hidden bg-white border-b border-gray-200 px-4 py-3">
                 <div class="flex items-center justify-between">
                     <div class="flex items-center">
-                        <img src="{{ asset('images/logo-64.png') }}" alt="Bible Habit Builder Logo"
-                            class="h-8 w-auto mr-3">
+                        <img src="{{ asset('images/logo-64.png') }}"
+                            srcset="{{ asset('images/logo-64.png') }} 1x, {{ asset('images/logo-64-2x.png') }} 2x"
+                            alt="Bible Habit Builder Logo" class="h-8 w-auto mr-3">
                         <h1 id="mobile-page-title" class="text-lg font-semibold text-blue-600">
                             @yield('page-title', 'Bible Habit Builder')
                         </h1>

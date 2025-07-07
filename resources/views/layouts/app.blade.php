@@ -59,8 +59,9 @@
             <div class="flex flex-col sm:flex-row sm:items-center sm:justify-between">
                 <a href="{{ url('/') }}"
                     class="flex items-center text-2xl font-bold text-primary dark:text-primary hover:opacity-90 transition">
-                    <img src="{{ asset('images/logo-header.png') }}" alt="Bible Habit Builder Logo"
-                        class="h-12 w-auto mr-3">
+                    <img src="{{ asset('images/logo-header.png') }}"
+                        srcset="{{ asset('images/logo-header.png') }} 1x, {{ asset('images/logo-header-2x.png') }} 2x"
+                        alt="Bible Habit Builder Logo" class="h-14 w-auto mr-3">
                     <span class="hidden sm:inline">Bible Habit Builder</span>
                 </a>
 
