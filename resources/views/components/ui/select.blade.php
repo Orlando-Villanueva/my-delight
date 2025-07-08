@@ -15,17 +15,15 @@
     $selectId = $id ?? $name ?? 'select_' . uniqid();
     $hasError = !empty($error);
     
-    $selectClasses = 'block w-full px-3 py-2 border rounded-lg shadow-sm focus:outline-none focus:ring-2 text-neutral-600';
+    $selectClasses = 'form-input';
     if ($hasError) {
-        $selectClasses .= ' border-error focus:ring-error focus:border-error';
-    } else {
-        $selectClasses .= ' border-neutral-300 focus:ring-primary focus:border-primary';
+        $selectClasses .= ' border-destructive focus:ring-destructive';
     }
 @endphp
 
 <div {{ $attributes->merge(['class' => 'space-y-1']) }}>
     @if($label)
-        <label for="{{ $selectId }}" class="block text-sm font-medium text-neutral-700 mb-2 {{ $required ? 'after:content-[\'*\'] after:ml-0.5 after:text-error' : '' }}">
+        <label for="{{ $selectId }}" class="form-label {{ $required ? 'after:content-[\'*\'] after:ml-0.5 after:text-destructive' : '' }}">
             {{ $label }}
         </label>
     @endif
@@ -55,11 +53,11 @@
     </select>
     
     @if($hasError)
-        <p id="{{ $selectId }}-error" class="text-sm text-error mt-1" role="alert">
+        <p id="{{ $selectId }}-error" class="form-error" role="alert">
             {{ $error }}
         </p>
     @elseif($help)
-        <p id="{{ $selectId }}-help" class="text-sm text-neutral-500 mt-1">
+        <p id="{{ $selectId }}-help" class="text-sm text-muted-foreground mt-1">
             {{ $help }}
         </p>
     @endif

@@ -11,7 +11,7 @@
 @php
     $inputClasses = 'form-input';
     if ($error) {
-        $inputClasses .= ' border-red-500';
+        $inputClasses .= ' border-destructive focus:ring-destructive';
     }
 @endphp
 

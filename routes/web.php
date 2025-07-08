@@ -27,8 +27,6 @@ Route::middleware('guest')->group(function () {
     })->name('password.reset');
 });
 
-
-
 // Authenticated Routes
 Route::middleware('auth')->group(function () {
     // Main Dashboard
