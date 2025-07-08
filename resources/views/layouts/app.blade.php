@@ -24,26 +24,7 @@
     <script defer src="https://unpkg.com/alpinejs@3.13.3/dist/cdn.min.js"></script>
 
     <!-- Styles / Scripts -->
-    @if (file_exists(public_path('build/manifest.json')) || file_exists(public_path('hot')))
-        @vite(['resources/css/app.css', 'resources/js/app.js'])
-    @else
-        <!-- Tailwind CDN (Fallback if Vite is not running) -->
-        <script src="https://cdn.tailwindcss.com"></script>
-        <script>
-            tailwind.config = {
-                darkMode: 'class',
-                theme: {
-                    extend: {
-                        colors: {
-                            primary: '#3366CC',
-                            secondary: '#66CC99',
-                            accent: '#FF9933',
-                        }
-                    }
-                }
-            }
-        </script>
-    @endif
+    @vite(['resources/css/app.css', 'resources/js/app.js'])
 
     <!-- Alpine.js Cloak -->
     <style>
