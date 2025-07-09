@@ -37,7 +37,7 @@
     </style>
 </head>
 
-<body class="bg-gray-50 text-gray-600 min-h-screen font-sans antialiased">
+<body class="bg-[#F5F7FA] dark:bg-gray-900 text-gray-600 min-h-screen font-sans antialiased transition-colors">
     <div class="flex h-screen" x-data="{
         currentView: '{{ request()->routeIs('logs.*') ? 'logs' : 'dashboard' }}',
         previousView: 'dashboard',
@@ -45,25 +45,27 @@
     }" @keydown.escape.window="modalOpen = false"
         @close-modal.window="modalOpen = false">
         <!-- Desktop Sidebar Navigation -->
-        <aside class="hidden lg:flex lg:flex-col w-64 bg-white border-r border-gray-200">
+        <aside class="hidden lg:flex lg:flex-col w-64 bg-white border-r border-[#D1D7E0] dark:border-gray-700">
             <!-- Logo Section -->
-            <div class="px-6 py-4 border-b border-gray-200">
+            <div class="px-6 py-4 border-b border-[#D1D7E0] dark:border-gray-700">
                 <a href="{{ route('dashboard') }}"
-                    class="flex items-center text-xl font-bold text-blue-600 hover:text-blue-700">
-                    <img src="{{ asset('images/logo-64.png') }}"
-                        srcset="{{ asset('images/logo-64.png') }} 1x, {{ asset('images/logo-64-2x.png') }} 2x"
-                        alt="Bible Habit Builder Logo" class="h-10 w-auto mr-3">
-                    <span>Bible Habit Builder</span>
+                    class="flex items-center text-xl font-semibold text-[#4A5568] dark:text-gray-200 hover:text-[#3366CC] dark:hover:text-[#3366CC] leading-[1.5]">
+                    <div class="w-8 h-8 bg-[#3366CC] rounded-lg flex items-center justify-center mr-3">
+                        <svg class="w-5 h-5 text-white" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                            <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M12 6.253v13m0-13C10.832 5.477 9.246 5 7.5 5S4.168 5.477 3 6.253v13C4.168 18.477 5.754 18 7.5 18s3.332.477 4.5 1.253m0-13C13.168 5.477 14.754 5 16.5 5c1.746 0 3.332.477 4.5 1.253v13C19.832 18.477 18.246 18 16.5 18c-1.746 0-3.332.477-4.5 1.253"></path>
+                        </svg>
+                    </div>
+                    <span>Bible Habit</span>
                 </a>
             </div>
 
             <!-- Navigation Links -->
-            <nav class="flex-1 p-4 space-y-2">
+            <nav class="flex-1 px-2 pt-6 space-y-1">
                 <button type="button" hx-get="{{ route('dashboard') }}" hx-target="#page-container"
                     hx-swap="innerHTML" hx-push-url="true"
                     @click="previousView = currentView; currentView = 'dashboard'"
-                    :class="currentView === 'dashboard' ? 'bg-blue-600 text-white' : 'text-gray-600 hover:bg-gray-100'"
-                    class="flex items-center px-4 py-3 text-sm font-medium rounded-lg min-h-[44px] w-full text-left">
+                    :class="currentView === 'dashboard' ? 'bg-[#3366CC] text-white' : 'text-[#4A5568] dark:text-gray-300 hover:bg-[#F5F7FA] dark:hover:bg-gray-700 hover:text-[#3366CC] dark:hover:text-[#3366CC]'"
+                    class="group flex items-center px-2 py-2 text-base font-medium rounded-md transition-colors leading-[1.5] w-full text-left">
                     <svg class="w-5 h-5 mr-3" fill="none" stroke="currentColor" viewBox="0 0 24 24">
                         <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2"
                             d="M3 7v10a2 2 0 002 2h14a2 2 0 002-2V9a2 2 0 00-2-2H5a2 2 0 00-2-2z"></path>
@@ -73,8 +75,8 @@
 
                 <button type="button" hx-get="{{ route('logs.index') }}" hx-target="#page-container"
                     hx-swap="innerHTML" hx-push-url="true" @click="previousView = currentView; currentView = 'logs'"
-                    :class="currentView === 'logs' ? 'bg-blue-600 text-white' : 'text-gray-600 hover:bg-gray-100'"
-                    class="flex items-center px-4 py-3 text-sm font-medium rounded-lg min-h-[44px] w-full text-left">
+                    :class="currentView === 'logs' ? 'bg-[#3366CC] text-white' : 'text-[#4A5568] dark:text-gray-300 hover:bg-[#F5F7FA] dark:hover:bg-gray-700 hover:text-[#3366CC] dark:hover:text-[#3366CC]'"
+                    class="group flex items-center px-2 py-2 text-base font-medium rounded-md transition-colors leading-[1.5] w-full text-left">
                     <svg class="w-5 h-5 mr-3" fill="none" stroke="currentColor" viewBox="0 0 24 24">
                         <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2"
                             d="M8 7V3m8 4V3m-9 8h10M5 21h14a2 2 0 002-2V7a2 2 0 00-2-2H5a2 2 0 00-2-2v16a2 2 0 002 2z">
@@ -82,66 +84,96 @@
                     </svg>
                     History
                 </button>
-
-
             </nav>
 
-            <!-- User Info & Logout -->
-            <div class="p-4 border-t border-gray-200">
-                <div class="flex items-center mb-3">
-                    <div
-                        class="w-8 h-8 bg-blue-600 rounded-full flex items-center justify-center text-white text-sm font-medium">
-                        {{ auth()->check() ? substr(auth()->user()->name, 0, 1) : 'J' }}
-                    </div>
-                    <div class="ml-3">
-                        <p class="text-sm font-medium text-gray-600">
-                            {{ auth()->check() ? auth()->user()->name : 'John Doe (Preview)' }}</p>
-                        <p class="text-xs text-gray-500">
-                            {{ auth()->check() ? auth()->user()->email : 'john@example.com' }}</p>
+            <!-- User Profile Section - Enhanced Design (No Pro Features) -->
+            <div class="flex-shrink-0 px-2 pb-2">
+                <!-- User Info Card - Subtle Design -->
+                <div class="bg-gray-50 dark:bg-gray-750 rounded-lg p-3 mb-3 transition-colors border border-gray-100 dark:border-gray-600">
+                    <div class="flex items-center space-x-3">
+                        <div class="relative">
+                            <div class="w-10 h-10 bg-[#3366CC] rounded-full flex items-center justify-center text-white text-sm font-medium">
+                                {{ auth()->check() ? substr(auth()->user()->name, 0, 1) : 'J' }}
+                            </div>
+                        </div>
+                        <div class="flex-1 min-w-0">
+                            <p class="text-base font-medium text-gray-900 dark:text-gray-100 truncate leading-[1.5]">
+                                {{ auth()->check() ? auth()->user()->name : 'John Doe' }}
+                            </p>
+                            <p class="text-sm text-gray-500 dark:text-gray-400 truncate leading-[1.5]">
+                                {{ auth()->check() ? auth()->user()->email : 'john@example.com' }}
+                            </p>
+                            <!-- Subtle Status Indicators -->
+                            <div class="flex items-center space-x-1 mt-1">
+                                <div class="w-1.5 h-1.5 bg-gray-400 dark:bg-gray-500 rounded-full"></div>
+                                <span class="text-sm text-gray-500 dark:text-gray-400 leading-[1.5]">
+                                    7 day streak
+                                </span>
+                            </div>
+                        </div>
                     </div>
                 </div>
-                <form method="POST" action="{{ route('logout') }}">
-                    @csrf
-                    <button type="submit" class="w-full text-left px-4 py-2 text-sm text-gray-500 hover:text-gray-600">
-                        Sign out
-                    </button>
-                </form>
+
+                <!-- Action Buttons - Subtle with Blue Accents on Hover -->
+                <div class="space-y-1">
+                    <x-ui.button variant="ghost" 
+                        class="w-full justify-start text-base text-gray-600 dark:text-gray-300 hover:bg-gray-100 dark:hover:bg-gray-700 hover:text-[#3366CC] dark:hover:text-[#3366CC] leading-[1.5]">
+                        <svg class="w-4 h-4 mr-3" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                            <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M10.325 4.317c.426-1.756 2.924-1.756 3.35 0a1.724 1.724 0 002.573 1.066c1.543-.94 3.31.826 2.37 2.37a1.724 1.724 0 001.065 2.572c1.756.426 1.756 2.924 0 3.35a1.724 1.724 0 00-1.066 2.573c.94 1.543-.826 3.31-2.37 2.37a1.724 1.724 0 00-2.572 1.065c-.426 1.756-2.924 1.756-3.35 0a1.724 1.724 0 00-2.573-1.066c-1.543.94-3.31-.826-2.37-2.37a1.724 1.724 0 00-1.065-2.572c-1.756-.426-1.756-2.924 0-3.35a1.724 1.724 0 001.066-2.573c-.94-1.543.826-3.31 2.37-2.37.996.608 2.296.07 2.572-1.065z"></path>
+                            <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M15 12a3 3 0 11-6 0 3 3 0 016 0z"></path>
+                        </svg>
+                        Settings
+                    </x-ui.button>
+                    
+                    <form method="POST" action="{{ route('logout') }}" class="w-full">
+                        @csrf
+                        <x-ui.button type="submit" variant="ghost" 
+                            class="w-full justify-start text-base text-gray-600 dark:text-gray-300 hover:bg-gray-100 dark:hover:bg-gray-700 hover:text-gray-700 dark:hover:text-gray-200 leading-[1.5]">
+                            <svg class="w-4 h-4 mr-3" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                                <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M17 16l4-4m0 0l-4-4m4 4H7m6 4v1a3 3 0 01-3 3H6a3 3 0 01-3-3V7a3 3 0 013-3h4a3 3 0 013 3v1"></path>
+                            </svg>
+                            Sign Out
+                        </x-ui.button>
+                    </form>
+                </div>
             </div>
         </aside>
 
         <!-- Main Content Area -->
         <div class="flex-1 flex flex-col overflow-hidden">
             <!-- Mobile Header -->
-            <header class="lg:hidden bg-white border-b border-gray-200 px-4 py-3">
+            <header class="lg:hidden bg-white dark:bg-gray-800 border-b border-[#D1D7E0] dark:border-gray-700 px-4 py-3 transition-colors">
                 <div class="flex items-center justify-between">
-                    <div class="flex items-center">
-                        <img src="{{ asset('images/logo-64.png') }}"
-                            srcset="{{ asset('images/logo-64.png') }} 1x, {{ asset('images/logo-64-2x.png') }} 2x"
-                            alt="Bible Habit Builder Logo" class="h-8 w-auto mr-3">
-                        <h1 id="mobile-page-title" class="text-lg font-semibold text-blue-600">
-                            @yield('page-title', 'Bible Habit Builder')
+                    <div class="flex items-center space-x-2">
+                        <div class="w-8 h-8 bg-[#3366CC] rounded-lg flex items-center justify-center">
+                            <svg class="w-5 h-5 text-white" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                                <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M12 6.253v13m0-13C10.832 5.477 9.246 5 7.5 5S4.168 5.477 3 6.253v13C4.168 18.477 5.754 18 7.5 18s3.332.477 4.5 1.253m0-13C13.168 5.477 14.754 5 16.5 5c1.746 0 3.332.477 4.5 1.253v13C19.832 18.477 18.246 18 16.5 18c-1.746 0-3.332.477-4.5 1.253"></path>
+                            </svg>
+                        </div>
+                        <h1 id="mobile-page-title" class="text-lg sm:text-xl font-semibold text-[#4A5568] dark:text-gray-200 leading-[1.5]">
+                            Bible Habit
                         </h1>
                     </div>
 
                     <!-- Mobile User Menu -->
                     <div x-data="{ open: false }" class="relative">
                         <button type="button" @click="open = !open"
-                            class="w-8 h-8 bg-blue-600 rounded-full flex items-center justify-center text-white text-sm font-medium">
+                            class="w-8 h-8 bg-[#3366CC] rounded-full flex items-center justify-center text-white text-sm font-medium">
                             {{ auth()->check() ? substr(auth()->user()->name, 0, 1) : 'J' }}
                         </button>
 
                         <div x-show="open" @click.away="open = false" x-cloak
-                            class="absolute right-0 mt-2 w-48 bg-white rounded-lg border border-gray-200 py-1 z-50">
-                            <div class="px-4 py-2 border-b border-gray-200">
-                                <p class="text-sm font-medium text-gray-600">
-                                    {{ auth()->check() ? auth()->user()->name : 'John Doe (Preview)' }}</p>
-                                <p class="text-xs text-gray-500">
+                            class="absolute right-0 mt-2 w-48 bg-white dark:bg-gray-800 rounded-lg border border-[#D1D7E0] dark:border-gray-700 py-1 z-50 transition-colors">
+                            <div class="px-4 py-2 border-b border-[#D1D7E0] dark:border-gray-700">
+                                <p class="text-sm font-medium text-gray-900 dark:text-gray-100">
+                                    {{ auth()->check() ? auth()->user()->name : 'John Doe' }}</p>
+                                <p class="text-xs text-gray-500 dark:text-gray-400">
                                     {{ auth()->check() ? auth()->user()->email : 'john@example.com' }}</p>
                             </div>
                             <form method="POST" action="{{ route('logout') }}">
                                 @csrf
                                 <button type="submit"
-                                    class="w-full text-left px-4 py-2 text-sm text-gray-500 hover:text-gray-600">
+                                    class="w-full text-left px-4 py-2 text-sm text-gray-700 dark:text-gray-300 hover:bg-gray-100 dark:hover:bg-gray-700">
                                     Sign out
                                 </button>
                             </form>
@@ -151,36 +183,25 @@
             </header>
 
             <!-- Desktop Header with Log Reading Button -->
-            <header class="hidden lg:block bg-white border-b border-gray-200 px-6 py-4">
+            <header class="hidden lg:block bg-white dark:bg-gray-800 border-b border-[#D1D7E0] dark:border-gray-700 px-6 py-4 transition-colors">
                 <div class="flex items-center justify-between">
                     <div>
-                        <h1 id="desktop-page-title" class="text-2xl font-bold text-gray-700">
+                        <h1 id="desktop-page-title" class="text-2xl lg:text-[32px] font-semibold text-[#4A5568] dark:text-gray-200 leading-[1.5]">
                             @yield('page-title', 'Dashboard')
                         </h1>
-                        <p id="desktop-page-subtitle" class="text-sm text-gray-500 mt-1">
-                            @yield('page-subtitle', 'Track your Bible reading journey')
+                        <p id="desktop-page-subtitle" class="text-base text-gray-600 dark:text-gray-400 mt-1 leading-[1.5]">
+                            @yield('page-subtitle', 'Track your Bible reading progress')
                         </p>
                     </div>
 
                     <!-- Primary Action Button - Desktop -->
-                    <div class="flex items-center space-x-4">
-                        <!-- Quick Stats Badge -->
-                        <div class="hidden xl:flex items-center space-x-4 text-sm">
-                            <div class="flex items-center text-gray-500">
-                                <span class="text-2xl mr-2">🔥</span>
-                                <span class="font-medium">7 day streak</span>
-                            </div>
-                            <div class="w-px h-6 bg-gray-300"></div>
-                        </div>
-
-                        <!-- Log Reading Button (Modal Trigger) -->
+                    <div class="flex items-center space-x-3">
                         <button type="button" hx-get="{{ route('logs.create') }}"
                             hx-target="#reading-log-modal-content" hx-swap="innerHTML" hx-indicator="#modal-loading"
-                            @click="modalOpen = true" class="btn btn-primary min-h-[44px]">
-                            <svg class="w-5 h-5 mr-2" fill="none" stroke="currentColor" viewBox="0 0 24 24">
-                                <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2"
-                                    d="M12 6.253v13m0-13C10.832 5.477 9.246 5 7.5 5S4.168 5.477 3 6.253v13C4.168 18.477 5.754 18 7.5 18s3.332.477 4.5 1.253m0-13C13.168 5.477 14.754 5 16.5 5c1.746 0 3.332.477 4.5 1.253v13C19.832 18.477 18.246 18 16.5 18c-1.746 0-3.332.477-4.5 1.253">
-                                </path>
+                            @click="modalOpen = true" 
+                            class="bg-[#3366CC] hover:bg-[#2952A3] text-white px-6 py-2 rounded-lg flex items-center space-x-2 text-base leading-[1.5] transition-colors">
+                            <svg class="w-4 h-4" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                                <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M12 6v6m0 0v6m0-6h6m-6 0H6"></path>
                             </svg>
                             <span>Log Reading</span>
                         </button>
@@ -211,13 +232,13 @@
             </main>
         </div>
         <!-- Mobile Bottom Navigation -->
-        <nav class="md:hidden fixed bottom-0 left-0 right-0 bg-white border-t border-gray-200 px-4 py-2 z-40 h-20">
+        <nav class="md:hidden fixed bottom-0 left-0 right-0 bg-white dark:bg-gray-800 border-t border-[#D1D7E0] dark:border-gray-700 px-4 py-2 z-40 h-20 transition-colors">
             <div class="flex justify-around">
                 <button type="button" hx-get="{{ route('dashboard') }}" hx-target="#page-container"
                     hx-swap="innerHTML" hx-push-url="true"
                     @click="previousView = currentView; currentView = 'dashboard'"
-                    :class="currentView === 'dashboard' ? 'text-blue-600' : 'text-gray-500'"
-                    class="flex flex-col items-center py-2 px-3 min-w-[44px] min-h-[44px] justify-center">
+                    :class="currentView === 'dashboard' ? 'text-[#3366CC]' : 'text-gray-500 dark:text-gray-400 hover:text-[#3366CC]'"
+                    class="flex flex-col items-center py-2 px-3 min-w-[44px] min-h-[44px] justify-center transition-colors leading-[1.5]">
                     <svg class="w-6 h-6" fill="none" stroke="currentColor" viewBox="0 0 24 24">
                         <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2"
                             d="M3 7v10a2 2 0 002 2h14a2 2 0 002-2V9a2 2 0 00-2-2H5a2 2 0 00-2-2z"></path>
@@ -227,8 +248,8 @@
 
                 <button type="button" hx-get="{{ route('logs.index') }}" hx-target="#page-container"
                     hx-swap="innerHTML" hx-push-url="true" @click="previousView = currentView; currentView = 'logs'"
-                    :class="currentView === 'logs' ? 'text-blue-600' : 'text-gray-500'"
-                    class="flex flex-col items-center py-2 px-3 min-w-[44px] min-h-[44px] justify-center">
+                    :class="currentView === 'logs' ? 'text-[#3366CC]' : 'text-gray-500 dark:text-gray-400 hover:text-[#3366CC]'"
+                    class="flex flex-col items-center py-2 px-3 min-w-[44px] min-h-[44px] justify-center transition-colors leading-[1.5]">
                     <svg class="w-6 h-6" fill="none" stroke="currentColor" viewBox="0 0 24 24">
                         <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2"
                             d="M8 7V3m8 4V3m-9 8h10M5 21h14a2 2 0 002-2V7a2 2 0 00-2-2H5a2 2 0 00-2-2v16a2 2 0 002 2z">
@@ -236,19 +257,15 @@
                     </svg>
                     <span class="text-xs mt-1">History</span>
                 </button>
-
-
             </div>
         </nav>
 
         <!-- Floating Action Button - Mobile Only -->
         <button type="button" hx-get="{{ route('logs.create') }}" hx-target="#reading-log-modal-content"
             hx-swap="innerHTML" hx-indicator="#modal-loading" @click="modalOpen = true"
-            class="lg:hidden fixed bottom-24 right-4 w-14 h-14 bg-blue-600 hover:bg-blue-700 text-white rounded-full flex items-center justify-center z-50">
+            class="lg:hidden fixed bottom-24 right-4 w-14 h-14 bg-[#3366CC] hover:bg-[#2952A3] text-white rounded-full flex items-center justify-center z-50 shadow-lg transition-colors">
             <svg class="w-6 h-6" fill="none" stroke="currentColor" viewBox="0 0 24 24">
-                <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2"
-                    d="M12 6.253v13m0-13C10.832 5.477 9.246 5 7.5 5S4.168 5.477 3 6.253v13C4.168 18.477 5.754 18 7.5 18s3.332.477 4.5 1.253m0-13C13.168 5.477 14.754 5 16.5 5c1.746 0 3.332.477 4.5 1.253v13C19.832 18.477 18.246 18 16.5 18c-1.746 0-3.332.477-4.5 1.253">
-                </path>
+                <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M12 6v6m0 0v6m0-6h6m-6 0H6"></path>
             </svg>
         </button>
 

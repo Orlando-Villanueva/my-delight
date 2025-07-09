@@ -14,78 +14,41 @@
      hx-swap="outerHTML"
      hx-select="#main-content">
     <!-- Top Widgets: Streak and Stats -->
-    <div class="grid grid-cols-1 md:grid-cols-2 gap-6">
-        <!-- Streak Widget -->
-    <x-ui.card>
-            <div class="text-center">
-                <h3 class="text-lg font-semibold text-gray-700 mb-4">🔥 Reading Streak</h3>
-                
-                <!-- Current Streak -->
-                <div class="mb-4">
-                    <div class="text-4xl font-bold text-blue-600 mb-2">{{ $stats['streaks']['current_streak'] }}</div>
-                    <div class="text-gray-600">
-                        @if($stats['streaks']['current_streak'] === 1)
-                            Day
-                        @else
-                            Days
-                        @endif
-                    </div>
-                </div>
-
-                <!-- Longest Streak -->
-                <div class="mb-4 p-3 bg-gray-50 rounded">
-                    <div class="text-sm text-gray-600">Personal Best</div>
-                    <div class="text-xl font-semibold text-gray-700">
-                        {{ $stats['streaks']['longest_streak'] }} {{ Str::plural('day', $stats['streaks']['longest_streak']) }}
-                    </div>
-                </div>
-
-                <!-- Motivational Messaging -->
-                <div class="text-sm">
-                    @if($stats['streaks']['current_streak'] >= 7)
-                        <p class="text-green-600 font-medium">🎉 Amazing! You're on fire with your {{ $stats['streaks']['current_streak'] }}-day streak!</p>
-                    @elseif($stats['streaks']['current_streak'] >= 3)
-                        <p class="text-blue-600 font-medium">💪 Great momentum! {{ $stats['streaks']['current_streak'] }} days in a row!</p>
-                    @elseif($stats['streaks']['current_streak'] >= 1)
-                        <p class="text-blue-600">🌟 You're building the habit! Keep it up!</p>
-                    @else
-                        <p class="text-gray-600">📖 Ready to start your Bible reading journey?</p>
-                    @endif
-            </div>
-            </div>
-        </x-ui.card>
-
-        <!-- Stats Widget -->
-        <x-ui.card>
-            <h3 class="text-lg font-semibold text-gray-700 mb-4">📊 Your Progress</h3>
-            
-            <div class="space-y-4">
-                <!-- This Week -->
-                <div class="flex justify-between items-center">
-                    <span class="text-gray-600">This Week</span>
-                    <span class="font-semibold text-green-600">{{ $stats['reading_summary']['this_week_days'] }}/7 days reading</span>
-                </div>
-
-                <!-- This Month -->
-                <div class="flex justify-between items-center">
-                    <span class="text-gray-600">This Month</span>
-                    <span class="font-semibold text-blue-600">{{ $stats['reading_summary']['this_month_days'] }}/{{ now()->daysInMonth }} days reading</span>
-                </div>
-
-                <!-- All-Time Total -->
-                <div class="flex justify-between items-center">
-                    <span class="text-gray-600">Total Chapters</span>
-                    <span class="font-semibold text-purple-600">{{ $stats['reading_summary']['total_readings'] }} chapters</span>
-                </div>
-
-                <!-- Bible Progress -->
-                <div class="flex justify-between items-center">
-                    <span class="text-gray-600">Bible Progress</span>
-                    <span class="font-semibold text-orange-600">{{ $stats['book_progress']['overall_progress_percent'] }}% completed</span>
-                </div>
-            </div>
-        </x-ui.card>
+    <div class="grid grid-cols-1 lg:grid-cols-5 gap-6">
+        <!-- Enhanced Streak Card -->
+        <div class="lg:col-span-2">
+            <x-ui.streak-counter 
+                :currentStreak="$stats['streaks']['current_streak']"
+                :longestStreak="$stats['streaks']['longest_streak']"
+                class="h-full"
+            />
         </div>
+
+        <!-- Enhanced Summary Stats Card -->
+        <div class="lg:col-span-3">
+            <x-ui.summary-stats 
+                :thisWeekDays="$stats['reading_summary']['this_week_days']"
+                :thisMonthDays="$stats['reading_summary']['this_month_days']"
+                :daysInMonth="now()->daysInMonth"
+                :totalChapters="$stats['reading_summary']['total_readings']"
+                :bibleProgress="$stats['book_progress']['overall_progress_percent']"
+                class="h-full"
+            />
+        </div>
+    </div>
+
+    <!-- Motivational Messaging Section -->
+    <div class="bg-gradient-to-r from-blue-50 to-indigo-50 dark:from-gray-800 dark:to-gray-700 rounded-lg p-6 text-center border border-[#D1D7E0] dark:border-gray-600">
+        @if($stats['streaks']['current_streak'] >= 7)
+            <p class="text-lg text-green-600 dark:text-green-400 font-medium">🎉 Amazing! You're on fire with your {{ $stats['streaks']['current_streak'] }}-day streak!</p>
+        @elseif($stats['streaks']['current_streak'] >= 3)
+            <p class="text-lg text-[#3366CC] dark:text-blue-400 font-medium">💪 Great momentum! {{ $stats['streaks']['current_streak'] }} days in a row!</p>
+        @elseif($stats['streaks']['current_streak'] >= 1)
+            <p class="text-lg text-[#3366CC] dark:text-blue-400">🌟 You're building the habit! Keep it up!</p>
+        @else
+            <p class="text-lg text-[#4A5568] dark:text-gray-300">📖 Ready to start your Bible reading journey?</p>
+        @endif
+    </div>
 
 
 
