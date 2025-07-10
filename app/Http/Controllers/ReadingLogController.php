@@ -18,7 +18,7 @@ class ReadingLogController extends Controller
 
     /**
      * Show the form for creating a new reading log.
-     * Supports both HTMX content loading and direct page access.
+     * Returns the modal form partial for HTMX loading.
      */
     public function create(Request $request)
     {
@@ -27,13 +27,8 @@ class ReadingLogController extends Controller
         $locale = $request->get('lang', 'en'); // Allow testing via ?lang=fr
         $books = $this->bibleReferenceService->listBibleBooks(null, $locale);
         
-        // Return partial view for HTMX requests (seamless content loading)
-        if ($request->header('HX-Request')) {
-            return view('partials.reading-log-form', compact('books'));
-        }
-        
-        // Return full page for direct access (graceful degradation)
-        return view('logs.create', compact('books'));
+        // Always return partial view for modal display
+        return view('partials.reading-log-form', compact('books'));
     }
 
     /**
@@ -84,29 +79,19 @@ class ReadingLogController extends Controller
             // Create reading log using service
             $log = $this->readingLogService->logReading($request->user(), $validated);
 
-            // Return appropriate response based on request type
-            if ($request->header('HX-Request')) {
-                return view('partials.reading-log-success-message', compact('log'));
-            }
-
-            return redirect()->route('dashboard')->with('success', 'Reading logged successfully!');
+            // Always return HTMX success partial
+            return view('partials.reading-log-success-message', compact('log'));
 
         } catch (ValidationException $e) {
-            if ($request->header('HX-Request')) {
-                return view('partials.validation-errors', ['errors' => $e->errors()]);
-            }
-            
-            return back()->withErrors($e->errors())->withInput();
+            // Always return HTMX validation errors
+            return view('partials.validation-errors', ['errors' => $e->errors()]);
 
         } catch (InvalidArgumentException $e) {
             // Wrap message in array to match ValidationException structure
             $error = ['chapter_input' => [$e->getMessage()]];
             
-            if ($request->header('HX-Request')) {
-                return view('partials.validation-errors', ['errors' => $error]);
-            }
-            
-            return back()->withErrors($error)->withInput();
+            // Always return HTMX validation errors
+            return view('partials.validation-errors', ['errors' => $error]);
 
         } catch (QueryException $e) {
             // Handle unique constraint violation (duplicate reading log)
@@ -114,11 +99,8 @@ class ReadingLogController extends Controller
                 // Duplicate entry message wrapped in array to align with view expectations
                 $error = ['chapter_input' => ['You have already logged one or more of these chapters for today.']];
                 
-                if ($request->header('HX-Request')) {
-                    return view('partials.validation-errors', ['errors' => $error]);
-                }
-                
-                return back()->withErrors($error)->withInput();
+                // Always return HTMX validation errors
+                return view('partials.validation-errors', ['errors' => $error]);
             }
             
             // Re-throw if it's a different database error
@@ -181,7 +163,7 @@ class ReadingLogController extends Controller
         );
         $logs->withQueryString();
         
-        // Return partial view for HTMX requests
+        // Return appropriate view based on request type
         if ($request->header('HX-Request')) {
             // If it's an infinite scroll request (has page parameter), return just the items
             if ($request->has('page') && $request->get('page') > 1) {
@@ -193,11 +175,11 @@ class ReadingLogController extends Controller
                 return view('partials.reading-log-list', compact('logs', 'filter'));
             }
             
-            // Otherwise, return the page container for navigation (no sidebar)
+            // Otherwise, return the page container for HTMX navigation
             return view('partials.logs-page', compact('logs', 'filter'));
         }
         
-        // Return full page for direct access (graceful degradation)
+        // Return full page for direct access (browser URL)
         return view('logs.index', compact('logs', 'filter'));
     }
 } 

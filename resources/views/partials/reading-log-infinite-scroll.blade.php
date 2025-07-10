@@ -3,7 +3,7 @@
 
 <div class="space-y-4">
     @foreach ($logs as $log)
-        @include('partials.reading-log-card', ['log' => $log])
+        <x-bible.reading-log-card :log="$log" />
     @endforeach
 </div>
 

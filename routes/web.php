@@ -3,9 +3,30 @@
 use Illuminate\Support\Facades\Route;
 use Illuminate\Http\Request;
 use App\Http\Controllers\ReadingLogController;
+use App\Services\BookProgressService;
 
 Route::get('/', function () {
     return view('welcome');
+});
+
+// Debug route to test BibleReferenceService (outside auth middleware)
+Route::get('/debug-books', function () {
+    try {
+        $bibleService = app(\App\Services\BibleReferenceService::class);
+        $books = $bibleService->listBibleBooks();
+        return response()->json([
+            'success' => true,
+            'books_count' => count($books),
+            'first_book' => $books[0] ?? null,
+            'sample' => array_slice($books, 0, 3)
+        ]);
+    } catch (\Exception $e) {
+        return response()->json([
+            'success' => false,
+            'error' => $e->getMessage(),
+            'trace' => $e->getTraceAsString()
+        ]);
+    }
 });
 
 // Authentication Routes (GET routes for views - POST routes handled by Fortify)
@@ -31,14 +52,31 @@ Route::middleware('guest')->group(function () {
 Route::middleware('auth')->group(function () {
     // Main Dashboard
     Route::get('/dashboard', function (Request $request) {
-        // Return page container for HTMX navigation requests
+        // Return partial for HTMX navigation, full page for direct access
         if ($request->header('HX-Request')) {
             return view('partials.dashboard-page');
         }
         
-        // Return full page for direct access (graceful degradation)
+        // Return full page for direct access (browser URL)
         return view('dashboard');
     })->name('dashboard');
+
+    // Dashboard Book Progress (HTMX endpoint for testament switching)
+    Route::get('/dashboard/books', function (Request $request) {
+        $testament = $request->get('testament', 'Old');
+        $bookProgressService = app(BookProgressService::class);
+        
+        $data = $bookProgressService->getTestamentProgress(auth()->user(), $testament);
+        
+        return view('partials.book-progress-content', [
+            'testament' => $data['testament'],
+            'processedBooks' => $data['processed_books'],
+            'testamentProgress' => $data['testament_progress'],
+            'completedBooks' => $data['completed_books'],
+            'inProgressBooks' => $data['in_progress_books'],
+            'notStartedBooks' => $data['not_started_books'],
+        ]);
+    })->name('dashboard.books');
 
     // Coming Soon Routes (MVP placeholders)
     Route::get('/profile', function () {

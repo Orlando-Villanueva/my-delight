@@ -73,13 +73,8 @@ public function create(Request $request)
 {
     $books = $this->bibleReferenceService->listBibleBooks();
     
-    // Return partial for HTMX requests
-    if ($request->header('HX-Request')) {
-        return view('partials.reading-log-form', compact('books'));
-    }
-    
-    // Return full page for direct access (graceful degradation)
-    return view('logs.create', compact('books'));
+    // Always return partial view for modal display
+    return view('partials.reading-log-form', compact('books'));
 }
 ```
 
@@ -87,6 +82,7 @@ public function create(Request $request)
 - ✅ **Seamless Navigation**: No page reloads, maintains app-like feel
 - ✅ **URL Accessibility**: Direct URLs still work for bookmarking
 - ✅ **Progressive Enhancement**: Graceful degradation if JavaScript disabled
+ ✅ **Modal-First**: Focused user experience with slide-over form
 - ✅ **Consistent Layout**: Form appears within authenticated layout
 
 ### URL Management with `hx-push-url`
@@ -781,7 +777,7 @@ public function getDashboardStatistics(Request $request)
 ### Why a modal?
 1. **Visual continuity** – the user still "sees" where they are (dashboard, history, etc.).
 2. **Task focus** – dimmed background reduces distractions while filling the form.
-3. **Single source of truth** – the exact same Blade partial is used for both HTMX modal loading and full-page fallback (`/logs/create`).
+3. **Single source of truth** – the reading-log-form partial is used exclusively for modal display.
 4. **URL hygiene** – temporary overlays should not change `window.location`; therefore **DO NOT** use `hx-push-url` for modal loads.
 
 ### Anatomy
@@ -822,13 +818,8 @@ public function create(Request $request)
 {
     $books = $this->bibleReferenceService->listBibleBooks();
 
-    // 1️⃣ Modal / HTMX request – return the *form partial only*
-    if ($request->header('HX-Request')) {
-        return view('partials.reading-log-form', compact('books'));
-    }
-
-    // 2️⃣ Direct page access – return full layout (graceful degrade)
-    return view('logs.create', compact('books'));
+    // Always return the form partial for modal display
+    return view('partials.reading-log-form', compact('books'));
 }
 ```
 
@@ -848,7 +839,7 @@ public function create(Request $request)
 ### Test plan
 1. Desktop – open/close modal from dashboard & history.
 2. Mobile – ensure panel slides up from bottom and covers at least 75 vh.
-3. Refresh safety – direct `/logs/create` URL still shows full-width page.
+3. Modal-first approach – simplified architecture focused on slide-over experience.
 4. Keyboard – Esc closes, focus returns to original *Log Reading* button.
 
 This implementation guide provides the foundation for building robust, server-driven interactions using HTMX while maintaining clean separation of concerns and excellent user experience. 

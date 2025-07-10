@@ -54,49 +54,22 @@
         </div>
 
         <!-- Bible Book Selection -->
-        <div class="space-y-2">
-            <label for="book_id" class="block text-sm font-medium text-gray-700">Bible Book:</label>
-            <select id="book_id" name="book_id" x-model="form.book_id" @change="updateChapters()" required
-                class="w-full max-w-md px-3 py-2 border border-gray-300 rounded-md shadow-sm focus:outline-none focus:ring-2 focus:ring-blue-500 focus:border-blue-500 bg-white">
-                <option value="">Select a book...</option>
-                @foreach ($books as $book)
-                    <option value="{{ $book['id'] }}" data-chapters="{{ $book['chapters'] }}"
-                        {{ old('book_id') == $book['id'] ? 'selected' : '' }}>
-                        {{ $book['name'] }}
-                    </option>
-                @endforeach
-            </select>
-        </div>
+        <x-bible.book-selector 
+            name="book_id"
+            :books="$books"
+            x-model="form.book_id"
+            @change="updateChapters()"
+            required
+            class="max-w-md" />
 
         <!-- Chapter Selection - Supports Single or Range -->
-        <div class="space-y-2">
-            <label for="chapter_input" class="block text-sm font-medium text-gray-700">Chapter(s):</label>
-            <div class="space-y-3">
-                <!-- Chapter Input Field -->
-                <input type="text" id="chapter_input" name="chapter_input" x-model="form.chapter_input"
-                    :disabled="!form.book_id" @input="validateChapterInput()" placeholder="e.g., 3 or 1-5" required
-                    class="w-full max-w-md px-3 py-2 border border-gray-300 rounded-md shadow-sm focus:outline-none focus:ring-2 focus:ring-blue-500 focus:border-blue-500 disabled:bg-gray-50 disabled:text-gray-500 disabled:cursor-not-allowed">
-
-                <!-- Helper Text -->
-                <div class="text-sm text-gray-500">
-                    <div x-show="!form.book_id" x-cloak class="italic">
-                        📚 Please select a book first
-                    </div>
-                    <div x-show="form.book_id" x-cloak>
-                        💡 Enter a single chapter (e.g., <strong>3</strong>) or range (e.g., <strong>1-5</strong>)
-                        <br>
-                        📖 <span x-text="form.book_name"></span> has <span x-text="availableChapters"></span> chapters
-                    </div>
-                </div>
-
-                <!-- Validation Feedback -->
-                <div x-show="form.chapter_validation_message" x-cloak
-                    :class="form.chapter_validation_valid ? 'text-green-600' : 'text-red-600'"
-                    class="text-sm font-medium">
-                    <span x-text="form.chapter_validation_message"></span>
-                </div>
-            </div>
-        </div>
+        <x-bible.chapter-selector 
+            name="chapter_input"
+            x-model="form.chapter_input"
+            x-bind:disabled="!form.book_id"
+            @input="validateChapterInput()"
+            required
+            class="max-w-md" />
 
         <!-- Notes Section -->
         <div class="space-y-2">

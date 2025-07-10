@@ -616,7 +616,7 @@ The navigation system expects these core routes:
 - `dashboard` - Main landing page with streak and calendar
 - `history` - Reading log history and filtering
 - `profile` - User settings and account management  
-- `logs.create` - Reading log entry form (FAB target)
+- `logs.create` - Reading log modal form (HTMX endpoint)
 - `logout` - Authentication termination
 
 ### Advanced Statistics Implementation
