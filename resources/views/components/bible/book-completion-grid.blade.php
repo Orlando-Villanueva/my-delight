@@ -1,15 +1,17 @@
+@use('App\Services\BookProgressService')
 @props([
     'testament' => 'Old'
 ])
 
 @php
     $user = auth()->user();
-    $bookProgressService = app(\App\Services\BookProgressService::class);
+    $bookProgressService = app(BookProgressService::class);
     
     $oldData = $bookProgressService->getTestamentProgress($user, 'Old');
     $newData = $bookProgressService->getTestamentProgress($user, 'New');
     
-    $testament = $attributes->get('testament', 'Old'); // Maintain initial testament for Alpine
+    // Use session preference, fallback to component prop, then default to 'Old'
+    $testament = session('testament_preference', $attributes->get('testament', 'Old'));
 @endphp
 
 <x-ui.card {{ $attributes->merge(['class' => 'bg-white dark:bg-gray-800 border border-[#D1D7E0] dark:border-gray-700 transition-colors']) }}>
@@ -36,7 +38,7 @@
                  x-transition:leave="transition ease-in duration-200"
                  x-transition:leave-start="opacity-100"
                  x-transition:leave-end="opacity-0"
-                 x-cloak>
+                 {{ $testament === 'New' ? 'x-cloak' : '' }}>
                 @include('partials.book-progress-content', [
                     'testament' => 'Old',
                     'processedBooks' => $oldData['processed_books'],
@@ -55,7 +57,7 @@
                  x-transition:leave="transition ease-in duration-200"
                  x-transition:leave-start="opacity-100"
                  x-transition:leave-end="opacity-0"
-                 x-cloak>
+                 {{ $testament === 'Old' ? 'x-cloak' : '' }}>
                 @include('partials.book-progress-content', [
                     'testament' => 'New',
                     'processedBooks' => $newData['processed_books'],
@@ -71,21 +73,13 @@
 
 <script>
     /**
-     * Book Progress Component - Manages Testament Selection with Persistence
-     * Maintains user's testament preference across HTMX refreshes using localStorage
+     * Book Progress Component - Simple Testament Selection
+     * Server handles all persistence via session, client just manages UI state
      */
-    function bookProgressComponent(defaultTestament) {
+    function bookProgressComponent(serverDefault) {
         return {
-            // State - Load from localStorage or use server default
-            activeTestament: localStorage.getItem('selectedTestament') || defaultTestament,
-            
-            // Lifecycle - Set up persistence watcher
-            init() {
-                // Watch for testament changes and save to localStorage
-                this.$watch('activeTestament', value => {
-                    localStorage.setItem('selectedTestament', value);
-                });
-            }
+            // State - Use server preference (from session)
+            activeTestament: serverDefault
         };
     }
 </script> 

@@ -20,7 +20,6 @@
     <!-- HTMX CDN -->
     <script src="https://cdn.jsdelivr.net/npm/htmx.org@2.0.5/dist/htmx.min.js"></script>
 
-
     <!-- Alpine.js Focus Plugin for Modal Accessibility -->
     <script defer src="https://unpkg.com/@alpinejs/focus@3.13.3/dist/cdn.min.js"></script>
     <!-- Alpine.js CDN -->
@@ -271,12 +270,12 @@
 
         <!-- Reading Log Modal / Slide-over Container -->
         <!-- Modal Backdrop -->
-        <div x-show="modalOpen" x-transition.opacity class="fixed inset-0 bg-black/40 z-40"
+        <div x-show="modalOpen" x-cloak x-transition.opacity class="fixed inset-0 bg-black/40 z-40"
             @click="modalOpen = false">
         </div>
 
         <!-- Modal / Slide-over Panel -->
-        <aside x-show="modalOpen" x-transition:enter="transform transition ease-in-out duration-300"
+        <aside x-show="modalOpen" x-cloak x-transition:enter="transform transition ease-in-out duration-300"
             x-transition:enter-start="translate-x-full" x-transition:enter-end="translate-x-0"
             x-transition:leave="transform transition ease-in duration-150" x-transition:leave-start="translate-x-0"
             x-transition:leave-end="translate-x-full"
