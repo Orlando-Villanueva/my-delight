@@ -1,7 +1,16 @@
 {{-- Reading Log Items Partial - Used for infinite scroll --}}
 {{-- This partial renders individual log items and the intersection observer sentinel --}}
 
-<div class="space-y-4">
+@php
+    // Add top margin when this partial is loaded for page > 1
+    // This ensures spacing between the previous batch and the new items
+    $containerClasses = 'space-y-4';
+    if (!$logs->onFirstPage()) {
+        $containerClasses .= ' mt-4'; // Tailwind margin-top
+    }
+@endphp
+
+<div class="{{ $containerClasses }}">
     @foreach ($logs as $log)
         <x-bible.reading-log-card :log="$log" />
     @endforeach
