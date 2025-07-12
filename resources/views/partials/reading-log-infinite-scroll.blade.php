@@ -2,24 +2,26 @@
 {{-- This partial renders individual log items and the intersection observer sentinel --}}
 
 @php
-    // Add top margin when this partial is loaded for page > 1
-    // This ensures spacing between the previous batch and the new items
-    $containerClasses = 'space-y-4';
-    if (!$logs->onFirstPage()) {
-        $containerClasses .= ' mt-4'; // Tailwind margin-top
-    }
+    // Ensure filter parameter is properly preserved in pagination
+    $logs->appends(['filter' => $filter]);
 @endphp
 
-<div class="{{ $containerClasses }}">
-    @foreach ($logs as $log)
-        <x-bible.reading-log-card :log="$log" />
+<div class="space-y-4">
+    @foreach ($logs as $logsForDay)
+        @if ($logsForDay->count() === 1)
+            {{-- Single reading: use individual card --}}
+            <x-bible.reading-log-card :log="$logsForDay->first()" />
+        @else
+            {{-- Multiple readings: use daily grouped card --}}
+            <x-bible.daily-reading-card :logsForDay="$logsForDay" />
+        @endif
     @endforeach
 </div>
 
 {{-- Intersection Observer Sentinel for Infinite Scroll (Mobile Only) --}}
 @if ($logs->hasMorePages())
-    <div hx-get="{{ $logs->nextPageUrl() }}&filter={{ $filter }}" hx-trigger="intersect once" hx-swap="outerHTML"
-        hx-indicator=".htmx-indicator" class="absolute inset-x-0 bottom-0 h-1 md:hidden flex justify-center">
+    <div hx-get="{{ $logs->nextPageUrl() }}" hx-trigger="intersect once" hx-swap="outerHTML"
+        hx-indicator=".htmx-indicator" class="absolute inset-x-0 bottom-0 h-1 md:hidden flex justify-center z-0">
         {{-- Loading indicator that shows during fetch --}}
         <div class="htmx-indicator flex items-center space-x-2 text-gray-500 translate-y-full py-2">
             <div class="animate-spin h-5 w-5 border-2 border-blue-600 border-t-transparent rounded-full"></div>
@@ -30,7 +32,7 @@
 
 {{-- Desktop HTMX Pagination (hidden on mobile) --}}
 @if ($logs->hasPages())
-    <div class="hidden md:block mt-8">
+    <div class="hidden md:block mt-8 relative z-10">
         <nav class="flex items-center justify-between border-t border-gray-200 px-4 sm:px-0">
             <div class="-mt-px flex w-0 flex-1">
                 @if ($logs->onFirstPage())
@@ -44,7 +46,7 @@
                         Previous
                     </span>
                 @else
-                    <button type="button" hx-get="{{ $logs->previousPageUrl() }}&filter={{ $filter }}"
+                    <button type="button" hx-get="{{ $logs->previousPageUrl() }}"
                         hx-target="#reading-content" hx-swap="innerHTML" hx-indicator="#loading"
                         class="inline-flex items-center border-t-2 border-transparent pr-1 pt-4 text-sm font-medium text-gray-500 hover:border-gray-300 hover:text-gray-700">
                         <svg class="mr-3 h-5 w-5" viewBox="0 0 20 20" fill="currentColor" aria-hidden="true">
@@ -65,7 +67,7 @@
                             {{ $page }}
                         </span>
                     @else
-                        <button type="button" hx-get="{{ $url }}&filter={{ $filter }}"
+                        <button type="button" hx-get="{{ $url }}"
                             hx-target="#reading-content" hx-swap="innerHTML" hx-indicator="#loading"
                             class="inline-flex items-center border-t-2 border-transparent px-4 pt-4 text-sm font-medium text-gray-500 hover:border-gray-300 hover:text-gray-700">
                             {{ $page }}
@@ -76,7 +78,7 @@
 
             <div class="-mt-px flex w-0 flex-1 justify-end">
                 @if ($logs->hasMorePages())
-                    <button type="button" hx-get="{{ $logs->nextPageUrl() }}&filter={{ $filter }}"
+                    <button type="button" hx-get="{{ $logs->nextPageUrl() }}"
                         hx-target="#reading-content" hx-swap="innerHTML" hx-indicator="#loading"
                         class="inline-flex items-center border-t-2 border-transparent pl-1 pt-4 text-sm font-medium text-gray-500 hover:border-gray-300 hover:text-gray-700">
                         Next

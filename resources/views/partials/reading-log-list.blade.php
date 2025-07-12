@@ -42,7 +42,7 @@
             <div class="space-x-4">
                 <button type="button" hx-get="{{ route('logs.index', ['filter' => 'all']) }}"
                     hx-target="#reading-content" hx-swap="innerHTML" hx-indicator="#loading"
-                    onclick="updateActiveFilter(this, 'all')"
+                    data-filter="all"
                     class="inline-flex items-center px-4 py-2 border border-gray-300 text-gray-700 rounded-md font-semibold text-xs uppercase tracking-widest hover:bg-gray-50 focus:outline-none focus:ring-2 focus:ring-blue-500 focus:ring-offset-2 transition ease-in-out duration-150">
                     View All Readings
                 </button>

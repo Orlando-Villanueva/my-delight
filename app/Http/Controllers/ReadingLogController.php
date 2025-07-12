@@ -180,25 +180,37 @@ class ReadingLogController extends Controller
             $allLogs->dateRange($startDate);
         }
         
-        // Group by passage_text + date_read + created_at (same reading session)
+        // Group by date_read to show all readings for each day
         $groupedLogs = $allLogs->get()
             ->groupBy(function ($log) {
-                return $log->passage_text . '|' . $log->date_read . '|' . $log->created_at->format('Y-m-d H:i:s');
+                return $log->date_read->format('Y-m-d'); // Group by date only
             })
-            ->map(function ($group) {
-                return $group->first(); // Take the first entry from each group
+            ->map(function ($logsForDay) {
+                // Deduplicate readings within each day by passage + date + created_at (same session)
+                $deduplicated = $logsForDay->groupBy(function ($log) {
+                    return $log->passage_text . '|' . $log->date_read . '|' . $log->created_at->format('Y-m-d H:i:s');
+                })
+                ->map(function ($group) {
+                    return $group->first(); // Take the first entry from each group
+                })
+                ->values();
+                
+                // Sort readings within each day by created_at (newest first)
+                return $deduplicated->sortByDesc('created_at')->values();
             })
-            ->values()
-            ->sortByDesc('created_at');
+            ->sortByDesc(function ($logsForDay, $date) {
+                return $date; // Sort days by date (newest first)
+            });
         
-        // Manual pagination
-        $perPage = 5;
+        // Manual pagination by days (not individual logs)
+        $perPage = 8; // Number of days to show per page
         $currentPage = $request->get('page', 1);
         $offset = ($currentPage - 1) * $perPage;
         
-        $paginatedLogs = $groupedLogs->slice($offset, $perPage);
+        // Paginate the day groups
+        $paginatedDays = $groupedLogs->slice($offset, $perPage);
         $logs = new LengthAwarePaginator(
-            $paginatedLogs,
+            $paginatedDays,
             $groupedLogs->count(),
             $perPage,
             $currentPage,
