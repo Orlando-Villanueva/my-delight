@@ -35,56 +35,72 @@
 </head>
 
 <body class="bg-gray-50 dark:bg-gray-900 text-gray-900 dark:text-gray-100 min-h-screen font-sans">
-    <div class="container mx-auto px-4 py-6">
-        <header class="mb-8 border-b border-gray-200 dark:border-gray-700 pb-4">
-            <div class="flex flex-col sm:flex-row sm:items-center sm:justify-between">
-                <a href="{{ url('/') }}"
-                    class="flex items-center text-2xl font-bold text-primary dark:text-primary hover:opacity-90 transition">
-                    <img src="{{ asset('images/logo-header.png') }}"
-                        srcset="{{ asset('images/logo-header.png') }} 1x, {{ asset('images/logo-header-2x.png') }} 2x"
-                        alt="Bible Habit Builder Logo" class="h-14 w-auto mr-3">
-                    <span class="hidden sm:inline">Bible Habit Builder</span>
-                </a>
+    @if(request()->routeIs('login') || request()->routeIs('register') || request()->routeIs('password.*'))
+        <!-- Full-height auth layout -->
+        <div class="min-h-screen">
+            <header class="absolute top-0 left-0 right-0 z-10">
+                <div class="container mx-auto px-6 py-4">
+                    <a href="{{ url('/') }}"
+                        class="flex items-center text-lg font-bold text-white hover:text-white hover:opacity-90 transition">
+                        <span>Bible Habit Builder</span>
+                    </a>
+                </div>
+            </header>
+            
+            <main>
+                @yield('content')
+            </main>
+        </div>
+    @else
+        <!-- Regular layout for dashboard/other pages -->
+        <div class="container mx-auto px-4 py-4 min-h-screen flex flex-col">
+            <header class="mb-4 border-b border-gray-200 dark:border-gray-700 pb-2">
+                <div class="flex flex-col sm:flex-row sm:items-center sm:justify-between">
+                    <a href="{{ url('/') }}"
+                        class="flex items-center text-xl font-bold text-primary-500 dark:text-primary-500 hover:opacity-90 transition">
+                        <span>Bible Habit Builder</span>
+                    </a>
 
-                @if (Route::has('login'))
-                    <nav class="flex items-center gap-4 mt-4 sm:mt-0">
-                        @auth
-                            <a href="{{ url('/dashboard') }}"
-                                class="px-4 py-2 bg-primary text-white rounded hover:bg-blue-700 transition text-sm font-medium">
-                                Dashboard
-                            </a>
-                        @else
-                            <a href="{{ route('login') }}"
-                                class="px-4 py-2 text-gray-700 dark:text-gray-300 hover:text-primary dark:hover:text-primary transition text-sm font-medium">
-                                Log in
-                            </a>
-
-                            @if (Route::has('register'))
-                                <a href="{{ route('register') }}"
-                                    class="px-4 py-2 bg-primary text-white rounded hover:bg-blue-700 transition text-sm font-medium">
-                                    Register
+                    @if (Route::has('login'))
+                        <nav class="flex items-center gap-2 mt-3 sm:mt-0">
+                            @auth
+                                <a href="{{ url('/dashboard') }}"
+                                    class="px-3 py-1.5 bg-primary-500 text-white rounded-lg hover:bg-primary-600 transition text-sm font-medium shadow-sm">
+                                    Dashboard
                                 </a>
-                            @endif
-                        @endauth
-                    </nav>
-                @endif
-                <a href="{{ url('/') }}"
-                    class="px-4 py-2 text-gray-700 dark:text-gray-300 hover:text-primary dark:hover:text-primary transition text-sm font-medium">
-                    Welcome
-                </a>
+                            @else
+                                <a href="{{ url('/') }}"
+                                    class="px-3 py-1.5 transition text-sm font-medium rounded-lg shadow-sm {{ request()->routeIs('welcome') ? 'bg-primary-500 text-white' : 'text-gray-700 hover:text-primary-500 hover:bg-gray-50 border border-gray-300 hover:border-primary-500' }}">
+                                    Welcome
+                                </a>
+                                <a href="{{ route('login') }}"
+                                    class="px-3 py-1.5 transition text-sm font-medium rounded-lg shadow-sm {{ request()->routeIs('login') || request()->routeIs('password.*') ? 'bg-primary-500 text-white' : 'text-gray-700 hover:text-primary-500 hover:bg-gray-50 border border-gray-300 hover:border-primary-500' }}">
+                                    Log in
+                                </a>
 
-            </div>
-        </header>
+                                @if (Route::has('register'))
+                                    <a href="{{ route('register') }}"
+                                        class="px-3 py-1.5 transition text-sm font-medium rounded-lg shadow-sm {{ request()->routeIs('register') ? 'bg-primary-500 text-white' : 'text-gray-700 hover:text-primary-500 hover:bg-gray-50 border border-gray-300 hover:border-primary-500' }}">
+                                        Register
+                                    </a>
+                                @endif
+                            @endauth
+                        </nav>
+                    @endif
 
-        <main>
-            @yield('content')
-        </main>
+                </div>
+            </header>
 
-        <footer
-            class="mt-12 pt-6 border-t border-gray-200 dark:border-gray-700 text-sm text-gray-600 dark:text-gray-400">
-            <p>&copy; {{ date('Y') }} Bible Habit Builder. All rights reserved.</p>
-        </footer>
-    </div>
+            <main class="flex-grow flex flex-col justify-center">
+                @yield('content')
+            </main>
+
+            <footer
+                class="mt-4 pt-4 border-t border-gray-200 dark:border-gray-700 text-sm text-gray-600 dark:text-gray-400">
+                <p>&copy; {{ date('Y') }} Bible Habit Builder. All rights reserved.</p>
+            </footer>
+        </div>
+    @endif
 </body>
 
 </html>

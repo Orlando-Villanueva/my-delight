@@ -1,34 +1,54 @@
 @extends('layouts.app')
 
 @section('content')
-<div class="min-h-screen flex items-center justify-center py-12 px-4 sm:px-6 lg:px-8">
-    <div class="max-w-md w-full space-y-8">
-        <!-- Logo and Header -->
-        <div class="text-center">
-            <h1 class="text-3xl font-bold text-blue-600 mb-2">
-                Bible Habit Builder
+<div class="min-h-screen flex">
+    <!-- Left Side - Brand/Info -->
+    <div class="hidden lg:flex lg:w-1/2 bg-gradient-to-br from-[#3366CC] to-[#1e40af] relative overflow-hidden">
+        <div class="flex flex-col justify-center items-center text-center text-white p-12 w-full h-full">
+            <div class="w-16 h-16 bg-white bg-opacity-20 rounded-2xl flex items-center justify-center mb-8 p-3">
+                <img 
+                    src="{{ asset('images/logo-64.png') }}"
+                    srcset="{{ asset('images/logo-64.png') }} 1x, {{ asset('images/logo-64-2x.png') }} 2x"
+                    alt="Bible Habit Builder Logo" 
+                    class="w-full h-full object-contain"
+                />
+            </div>
+            <h1 class="text-4xl font-bold mb-4">
+                Start Your Bible Journey
             </h1>
-            <h2 class="text-xl font-semibold text-gray-700 mb-2">
-                Start your journey
-            </h2>
-            <p class="text-gray-500">
-                Create your account to begin tracking your Bible reading habit
+            <p class="text-xl text-white text-opacity-90 leading-relaxed max-w-md">
+                Join thousands of believers building consistent Bible reading habits. Track your progress and grow in your faith daily.
             </p>
         </div>
+    </div>
 
-        <!-- Registration Form Card -->
-        <x-ui.card elevated="true" class="mt-8">
-            <form method="POST" action="{{ route('register') }}" class="space-y-6">
+    <!-- Right Side - Register Form -->
+    <div class="w-full lg:w-1/2 flex items-center justify-center p-6 bg-gray-50">
+        <div class="w-full max-w-md mx-auto">
+            <!-- Register Card -->
+            <div class="bg-white rounded-2xl shadow-lg p-8">
+                <!-- Header -->
+                <div class="text-center mb-8">
+                    <h2 class="text-2xl font-bold text-gray-900 mb-2">
+                        Create account
+                    </h2>
+                    <p class="text-gray-600">
+                        Start your Bible reading journey today
+                    </p>
+                </div>
+
+                <!-- Registration Form -->
+                <form method="POST" action="{{ route('register') }}" class="space-y-5">
                 @csrf
                 
                 <!-- Display Validation Errors -->
                 @if ($errors->any())
                     <div class="bg-red-50 border border-red-200 rounded-lg p-4">
                         <div class="flex items-center mb-2">
-                            <svg class="w-5 h-5 text-red-600 mr-2" fill="currentColor" viewBox="0 0 20 20">
+                            <svg class="w-4 h-4 text-red-600 mr-2" fill="currentColor" viewBox="0 0 20 20">
                                 <path fill-rule="evenodd" d="M10 18a8 8 0 100-16 8 8 0 000 16zM8.707 7.293a1 1 0 00-1.414 1.414L8.586 10l-1.293 1.293a1 1 0 101.414 1.414L10 11.414l1.293 1.293a1 1 0 001.414-1.414L11.414 10l1.293-1.293a1 1 0 00-1.414-1.414L10 8.586 8.707 7.293z" clip-rule="evenodd"></path>
                             </svg>
-                            <span class="text-red-800 font-medium">Please correct the following errors:</span>
+                            <span class="text-red-800 font-medium text-sm">Please correct the following errors:</span>
                         </div>
                         <ul class="text-sm text-red-700 space-y-1">
                             @foreach ($errors->all() as $error)
@@ -38,104 +58,116 @@
                     </div>
                 @endif
                 
-                <!-- Name Field -->
-                <x-ui.input 
-                    type="text"
-                    name="name"
-                    label="Full Name"
-                    placeholder="Enter your full name"
-                    required="true"
-                    :value="old('name')"
-                    :error="$errors->first('name')"
-                />
-                
-                <!-- Email Field -->
-                <x-ui.input 
-                    type="email"
-                    name="email"
-                    label="Email Address"
-                    placeholder="Enter your email"
-                    required="true"
-                    :value="old('email')"
-                    :error="$errors->first('email')"
-                />
-                
-                <!-- Password Field -->
-                <x-ui.input 
-                    type="password"
-                    name="password"
-                    label="Password"
-                    placeholder="Create a strong password"
-                    required="true"
-                    :error="$errors->first('password')"
-                />
-                
-                <!-- Password Confirmation Field -->
-                <x-ui.input 
-                    type="password"
-                    name="password_confirmation"
-                    label="Confirm Password"
-                    placeholder="Confirm your password"
-                    required="true"
-                    :error="$errors->first('password_confirmation')"
-                />
-                
-                <!-- Terms of Service Checkbox -->
-                <div class="flex items-start">
-                    <div class="flex items-center h-5">
+                    <!-- Name Field -->
+                    <div>
+                        <label for="name" class="block text-sm font-semibold text-gray-700 mb-2">Full Name</label>
                         <input 
-                            id="terms"
-                            name="terms"
-                            type="checkbox"
+                            type="text"
+                            id="name"
+                            name="name"
+                            value="{{ old('name') }}"
                             required
-                            class="h-4 w-4 text-blue-600 border-gray-300 rounded"
+                            class="w-full px-4 py-3 border border-gray-300 rounded-lg focus:outline-none focus:ring-2 focus:ring-primary-500 focus:border-transparent transition-all bg-white {{ $errors->has('name') ? 'border-red-300 focus:ring-red-500' : '' }}"
+                            placeholder=""
                         />
+                        @if($errors->has('name'))
+                            <p class="mt-1 text-sm text-red-600">{{ $errors->first('name') }}</p>
+                        @endif
                     </div>
-                    <div class="ml-3 text-sm">
-                        <label for="terms" class="text-gray-600">
-                            I agree to the 
-                            <a href="#" class="font-medium text-blue-600 hover:text-blue-500">
-                                Terms of Service
-                            </a>
-                            and 
-                            <a href="#" class="font-medium text-blue-600 hover:text-blue-500">
-                                Privacy Policy
-                            </a>
-                        </label>
+                    
+                    <!-- Email Field -->
+                    <div>
+                        <label for="email" class="block text-sm font-semibold text-gray-700 mb-2">Email</label>
+                        <input 
+                            type="email"
+                            id="email"
+                            name="email"
+                            value="{{ old('email') }}"
+                            required
+                            class="w-full px-4 py-3 border border-gray-300 rounded-lg focus:outline-none focus:ring-2 focus:ring-primary-500 focus:border-transparent transition-all bg-white {{ $errors->has('email') ? 'border-red-300 focus:ring-red-500' : '' }}"
+                            placeholder=""
+                        />
+                        @if($errors->has('email'))
+                            <p class="mt-1 text-sm text-red-600">{{ $errors->first('email') }}</p>
+                        @endif
                     </div>
-                </div>
+                    
+                    <!-- Password Field -->
+                    <div>
+                        <label for="password" class="block text-sm font-semibold text-gray-700 mb-2">Password</label>
+                        <input 
+                            type="password"
+                            id="password"
+                            name="password"
+                            required
+                            class="w-full px-4 py-3 border border-gray-300 rounded-lg focus:outline-none focus:ring-2 focus:ring-primary-500 focus:border-transparent transition-all bg-white {{ $errors->has('password') ? 'border-red-300 focus:ring-red-500' : '' }}"
+                            placeholder=""
+                        />
+                        @if($errors->has('password'))
+                            <p class="mt-1 text-sm text-red-600">{{ $errors->first('password') }}</p>
+                        @endif
+                    </div>
+                    
+                    <!-- Password Confirmation Field -->
+                    <div>
+                        <label for="password_confirmation" class="block text-sm font-semibold text-gray-700 mb-2">Confirm Password</label>
+                        <input 
+                            type="password"
+                            id="password_confirmation"
+                            name="password_confirmation"
+                            required
+                            class="w-full px-4 py-3 border border-gray-300 rounded-lg focus:outline-none focus:ring-2 focus:ring-primary-500 focus:border-transparent transition-all bg-white {{ $errors->has('password_confirmation') ? 'border-red-300 focus:ring-red-500' : '' }}"
+                            placeholder=""
+                        />
+                        @if($errors->has('password_confirmation'))
+                            <p class="mt-1 text-sm text-red-600">{{ $errors->first('password_confirmation') }}</p>
+                        @endif
+                    </div>
+                    
+                    <!-- Terms of Service Checkbox -->
+                    <div class="flex items-start">
+                        <div class="flex items-center h-5">
+                            <input 
+                                id="terms"
+                                name="terms"
+                                type="checkbox"
+                                required
+                                class="h-4 w-4 text-primary-600 border-gray-300 rounded focus:ring-primary-500"
+                            />
+                        </div>
+                        <div class="ml-3 text-sm">
+                            <label for="terms" class="text-gray-600">
+                                I agree to the 
+                                <a href="#" class="font-semibold text-primary-600 hover:text-primary-500 transition-colors">
+                                    Terms of Service
+                                </a>
+                                and 
+                                <a href="#" class="font-semibold text-primary-600 hover:text-primary-500 transition-colors">
+                                    Privacy Policy
+                                </a>
+                            </label>
+                        </div>
+                    </div>
+                    
+                    <!-- Submit Button -->
+                    <button 
+                        type="submit" 
+                        class="w-full bg-primary-500 text-white py-3 px-4 rounded-lg font-semibold hover:bg-primary-600 focus:outline-none focus:ring-2 focus:ring-primary-500 focus:ring-offset-2 transition-colors"
+                    >
+                        Create Account
+                    </button>
+                </form>
                 
-                <!-- Submit Button -->
-                <x-ui.button 
-                    type="submit" 
-                    variant="primary" 
-                    class="w-full"
-                >
-                    Create account
-                </x-ui.button>
-            </form>
-        </x-ui.card>
-        
-        <!-- Login Link -->
-        <div class="text-center">
-            <p class="text-gray-500">
-                Already have an account?
-                <a href="{{ route('login') }}" 
-                   class="font-medium text-blue-600 hover:text-blue-500">
-                    Sign in here
-                </a>
-            </p>
-        </div>
-        
-        <!-- Language Toggle -->
-        <div class="text-center">
-            <div class="inline-flex rounded-lg border border-gray-300 p-1">
-                <button class="px-3 py-1 text-sm font-medium text-blue-600 bg-blue-50 rounded-md">
-                    EN
-                </button>
-                <button class="px-3 py-1 text-sm font-medium text-gray-500 hover:text-gray-700 rounded-md">
-                    FR
-                </button>
+                <!-- Login Link -->
+                <div class="text-center mt-8">
+                    <p class="text-gray-600">
+                        Already have an account? 
+                        <a href="{{ route('login') }}" 
+                           class="font-semibold text-primary-600 hover:text-primary-500 transition-colors">
+                            Sign in
+                        </a>
+                    </p>
+                </div>
             </div>
         </div>
     </div>
