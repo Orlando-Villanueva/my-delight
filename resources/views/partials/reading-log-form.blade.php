@@ -150,7 +150,7 @@
         <!-- Form Actions -->
         <div class="pt-6 border-t border-gray-200 dark:border-gray-600 flex items-center space-x-4">
             <button type="submit" hx-indicator="#save-loading"
-                class="inline-flex items-center px-6 py-3 border border-transparent text-base font-medium rounded-md shadow-sm text-white bg-blue-600 hover:bg-blue-700 focus:outline-none focus:ring-2 focus:ring-offset-2 focus:ring-blue-500">
+                class="btn btn-primary px-6 py-3 text-base font-medium shadow-sm">
                 <span id="save-loading" class="htmx-indicator hidden">
                     <svg class="animate-spin -ml-1 mr-3 h-5 w-5 text-white" xmlns="http://www.w3.org/2000/svg" fill="none" viewBox="0 0 24 24">
                         <circle class="opacity-25" cx="12" cy="12" r="10" stroke="currentColor" stroke-width="4"></circle>
@@ -162,7 +162,7 @@
             </button>
 
             <button type="button" @click="modalOpen = false"
-                class="inline-flex items-center px-6 py-3 border border-gray-300 dark:border-gray-600 text-base font-medium rounded-md text-gray-700 dark:text-gray-300 bg-white dark:bg-gray-800 hover:bg-gray-50 dark:hover:bg-gray-700 focus:outline-none focus:ring-2 focus:ring-offset-2 focus:ring-blue-500">
+                class="btn btn-outline px-6 py-3 text-base font-medium">
                 Cancel
             </button>
         </div>
