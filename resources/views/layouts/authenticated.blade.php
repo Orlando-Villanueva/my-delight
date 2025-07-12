@@ -6,7 +6,7 @@
     <meta name="viewport" content="width=device-width, initial-scale=1">
     <meta name="csrf-token" content="{{ csrf_token() }}">
 
-    <title x-text="currentView === 'dashboard' ? 'Dashboard - {{ config('app.name', 'Bible Habit Builder') }}' : 'History - {{ config('app.name', 'Bible Habit Builder') }}'">{{ config('app.name', 'Bible Habit Builder') }}</title>
+    <title>{{ config('app.name', 'Bible Habit Builder') }}</title>
 
     <!-- Favicon -->
     <link rel="icon" href="{{ asset('favicon.ico') }}" type="image/x-icon">
@@ -34,13 +34,39 @@
             display: none !important;
         }
     </style>
+
+    <!-- Dynamic Title Script -->
+    <script>
+        function updateTitle(currentView) {
+            const appName = '{{ config('app.name', 'Bible Habit Builder') }}';
+            
+            if (currentView === 'dashboard') {
+                document.title = `Dashboard - ${appName}`;
+            } else if (currentView === 'logs') {
+                document.title = `History - ${appName}`;
+            } else {
+                document.title = appName;
+            }
+        }
+
+        // Set initial title on page load
+        document.addEventListener('DOMContentLoaded', () => {
+            const initialView = '{{ request()->routeIs('logs.*') ? 'logs' : 'dashboard' }}';
+            updateTitle(initialView);
+        });
+    </script>
 </head>
 
 <body class="bg-[#F5F7FA] dark:bg-gray-900 text-gray-600 min-h-screen font-sans antialiased transition-colors">
     <div class="flex h-screen" x-data="{
         currentView: '{{ request()->routeIs('logs.*') ? 'logs' : 'dashboard' }}',
         previousView: 'dashboard',
-        modalOpen: false
+        modalOpen: false,
+        init() {
+            this.$watch('currentView', (value) => {
+                updateTitle(value);
+            });
+        }
     }" @keydown.escape.window="modalOpen = false"
         @close-modal.window="modalOpen = false">
         <!-- Desktop Sidebar Navigation -->
