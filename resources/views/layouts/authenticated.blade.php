@@ -6,7 +6,7 @@
     <meta name="viewport" content="width=device-width, initial-scale=1">
     <meta name="csrf-token" content="{{ csrf_token() }}">
 
-    <title>{{ config('app.name', 'Bible Habit Builder') }}</title>
+    <title x-text="currentView === 'dashboard' ? 'Dashboard - {{ config('app.name', 'Bible Habit Builder') }}' : 'History - {{ config('app.name', 'Bible Habit Builder') }}'">{{ config('app.name', 'Bible Habit Builder') }}</title>
 
     <!-- Favicon -->
     <link rel="icon" href="{{ asset('favicon.ico') }}" type="image/x-icon">
