@@ -61,23 +61,6 @@ Route::middleware('auth')->group(function () {
         return view('dashboard');
     })->name('dashboard');
 
-    // Dashboard Book Progress (HTMX endpoint for testament switching)
-    Route::get('/dashboard/books', function (Request $request) {
-        $testament = $request->get('testament', 'Old');
-        $bookProgressService = app(BookProgressService::class);
-        
-        $data = $bookProgressService->getTestamentProgress(auth()->user(), $testament);
-        
-        return view('partials.book-progress-content', [
-            'testament' => $data['testament'],
-            'processedBooks' => $data['processed_books'],
-            'testamentProgress' => $data['testament_progress'],
-            'completedBooks' => $data['completed_books'],
-            'inProgressBooks' => $data['in_progress_books'],
-            'notStartedBooks' => $data['not_started_books'],
-        ]);
-    })->name('dashboard.books');
-
     // Coming Soon Routes (MVP placeholders)
     Route::get('/profile', function () {
         return response()->view('dashboard', [

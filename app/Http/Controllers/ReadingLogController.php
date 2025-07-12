@@ -5,6 +5,7 @@ namespace App\Http\Controllers;
 use App\Services\BibleReferenceService;
 use App\Services\ReadingLogService;
 use Illuminate\Http\Request;
+use Illuminate\Support\MessageBag;
 use Illuminate\Validation\ValidationException;
 use Illuminate\Database\QueryException;
 use InvalidArgumentException;
@@ -27,8 +28,11 @@ class ReadingLogController extends Controller
         $locale = $request->get('lang', 'en'); // Allow testing via ?lang=fr
         $books = $this->bibleReferenceService->listBibleBooks(null, $locale);
         
+        // Pass empty error bag for consistent template behavior
+        $errors = new MessageBag();
+        
         // Always return partial view for modal display
-        return view('partials.reading-log-form', compact('books'));
+        return view('partials.reading-log-form', compact('books', 'errors'));
     }
 
     /**
@@ -83,24 +87,36 @@ class ReadingLogController extends Controller
             return view('partials.reading-log-success-message', compact('log'));
 
         } catch (ValidationException $e) {
-            // Always return HTMX validation errors
-            return view('partials.validation-errors', ['errors' => $e->errors()]);
+            // Get books data for form re-display
+            $books = $this->bibleReferenceService->listBibleBooks(null, 'en');
+            
+            // Pass errors directly to the view
+            $errors = new MessageBag($e->errors());
+            
+            // Return form with validation errors
+            return view('partials.reading-log-form', compact('books', 'errors'));
 
         } catch (InvalidArgumentException $e) {
-            // Wrap message in array to match ValidationException structure
-            $error = ['chapter_input' => [$e->getMessage()]];
+            // Get books data for form re-display
+            $books = $this->bibleReferenceService->listBibleBooks(null, 'en');
             
-            // Always return HTMX validation errors
-            return view('partials.validation-errors', ['errors' => $error]);
+            // Create error bag for form display
+            $errors = new MessageBag(['chapter_input' => [$e->getMessage()]]);
+            
+            // Return form with validation errors
+            return view('partials.reading-log-form', compact('books', 'errors'));
 
         } catch (QueryException $e) {
             // Handle unique constraint violation (duplicate reading log)
             if ($e->getCode() === '23000') {
-                // Duplicate entry message wrapped in array to align with view expectations
-                $error = ['chapter_input' => ['You have already logged one or more of these chapters for today.']];
+                // Get books data for form re-display
+                $books = $this->bibleReferenceService->listBibleBooks(null, 'en');
                 
-                // Always return HTMX validation errors
-                return view('partials.validation-errors', ['errors' => $error]);
+                // Create error bag for form display
+                $errors = new MessageBag(['chapter_input' => ['You have already logged one or more of these chapters for today.']]);
+                
+                // Return form with validation errors
+                return view('partials.reading-log-form', compact('books', 'errors'));
             }
             
             // Re-throw if it's a different database error

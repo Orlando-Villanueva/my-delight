@@ -1,11 +1,5 @@
-@props([
-    'testament' => 'Old',
-    'processedBooks',
-    'testamentProgress',
-    'completedBooks',
-    'inProgressBooks', 
-    'notStartedBooks'
-])
+{{-- Remove @props since this is an include, not a component --}}
+{{-- Variables: $testament, $processedBooks, $testamentProgress, $completedBooks, $inProgressBooks, $notStartedBooks --}}
 
 <!-- Progress Section -->
 <div class="space-y-3 mb-6">

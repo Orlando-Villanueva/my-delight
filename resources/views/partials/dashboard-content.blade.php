@@ -55,7 +55,6 @@
 
             <!-- Book Progress Visualization -->
             <x-bible.book-completion-grid 
-                :user="auth()->user()"
                 testament="Old"
             />
         </div>
