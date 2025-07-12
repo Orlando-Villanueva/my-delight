@@ -4,17 +4,20 @@ namespace App\Http\Controllers;
 
 use App\Services\BibleReferenceService;
 use App\Services\ReadingLogService;
+use App\Services\ReadingFormService;
 use Illuminate\Http\Request;
 use Illuminate\Support\MessageBag;
 use Illuminate\Validation\ValidationException;
 use Illuminate\Database\QueryException;
+use Illuminate\Pagination\LengthAwarePaginator;
 use InvalidArgumentException;
 
 class ReadingLogController extends Controller
 {
     public function __construct(
         private BibleReferenceService $bibleReferenceService,
-        private ReadingLogService $readingLogService
+        private ReadingLogService $readingLogService,
+        private ReadingFormService $readingFormService
     ) {}
 
     /**
@@ -31,8 +34,14 @@ class ReadingLogController extends Controller
         // Pass empty error bag for consistent template behavior
         $errors = new MessageBag();
         
+        // Get form context data (yesterday logic, streak info)
+        $formContext = $this->readingFormService->getFormContextData($request->user());
+        
         // Always return partial view for modal display
-        return view('partials.reading-log-form', compact('books', 'errors'));
+        return view('partials.reading-log-form', array_merge(
+            compact('books', 'errors'),
+            $formContext
+        ));
     }
 
     /**
@@ -49,7 +58,7 @@ class ReadingLogController extends Controller
                 'book_id' => 'required|integer|min:1|max:66',
                 'chapter_input' => ['required', 'string', 'regex:/^(\d+|\d+-\d+)$/'],
                 'date_read' => "required|date|in:{$today},{$yesterday}",
-                'notes_text' => 'nullable|string|max:500'
+                'notes_text' => 'nullable|string|max:1000'
             ]);
 
             // Parse chapter input (single or range)
@@ -93,8 +102,14 @@ class ReadingLogController extends Controller
             // Pass errors directly to the view
             $errors = new MessageBag($e->errors());
             
+            // Get form context data (yesterday logic, streak info)
+            $formContext = $this->readingFormService->getFormContextData($request->user());
+            
             // Return form with validation errors
-            return view('partials.reading-log-form', compact('books', 'errors'));
+            return view('partials.reading-log-form', array_merge(
+                compact('books', 'errors'),
+                $formContext
+            ));
 
         } catch (InvalidArgumentException $e) {
             // Get books data for form re-display
@@ -103,8 +118,14 @@ class ReadingLogController extends Controller
             // Create error bag for form display
             $errors = new MessageBag(['chapter_input' => [$e->getMessage()]]);
             
+            // Get form context data (yesterday logic, streak info)
+            $formContext = $this->readingFormService->getFormContextData($request->user());
+            
             // Return form with validation errors
-            return view('partials.reading-log-form', compact('books', 'errors'));
+            return view('partials.reading-log-form', array_merge(
+                compact('books', 'errors'),
+                $formContext
+            ));
 
         } catch (QueryException $e) {
             // Handle unique constraint violation (duplicate reading log)
@@ -115,8 +136,14 @@ class ReadingLogController extends Controller
                 // Create error bag for form display
                 $errors = new MessageBag(['chapter_input' => ['You have already logged one or more of these chapters for today.']]);
                 
+                // Get form context data (yesterday logic, streak info)
+                $formContext = $this->readingFormService->getFormContextData($request->user());
+                
                 // Return form with validation errors
-                return view('partials.reading-log-form', compact('books', 'errors'));
+                return view('partials.reading-log-form', array_merge(
+                    compact('books', 'errors'),
+                    $formContext
+                ));
             }
             
             // Re-throw if it's a different database error
@@ -170,7 +197,7 @@ class ReadingLogController extends Controller
         $offset = ($currentPage - 1) * $perPage;
         
         $paginatedLogs = $groupedLogs->slice($offset, $perPage);
-        $logs = new \Illuminate\Pagination\LengthAwarePaginator(
+        $logs = new LengthAwarePaginator(
             $paginatedLogs,
             $groupedLogs->count(),
             $perPage,

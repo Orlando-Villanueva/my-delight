@@ -77,16 +77,16 @@
 
             <!-- Recent Readings -->
             @if(!empty($stats['recent_activity']))
-                <x-ui.card class="bg-white border border-[#D1D7E0] transition-colors">
+                <x-ui.card class="bg-white dark:bg-gray-800 border border-[#D1D7E0] dark:border-gray-700 transition-colors">
                     <div class="p-4">
-                        <h3 class="font-semibold text-[#4A5568] mb-3">Recent Readings</h3>
+                        <h3 class="font-semibold text-[#4A5568] dark:text-gray-200 mb-3">Recent Readings</h3>
                         <div class="space-y-2">
                             @foreach(array_slice($stats['recent_activity'], 0, 5) as $reading)
                                 <div class="text-sm">
-                                    <div class="font-medium text-[#4A5568]">
+                                    <div class="font-medium text-[#4A5568] dark:text-gray-200">
                                         {{ $reading['passage_text'] }}
                                     </div>
-                                    <div class="text-gray-500 text-xs">
+                                    <div class="text-gray-500 dark:text-gray-400 text-xs">
                                         @if($reading['days_ago'] === 0)
                                             Today
                                         @elseif($reading['days_ago'] === 1)

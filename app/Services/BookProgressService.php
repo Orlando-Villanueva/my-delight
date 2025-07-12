@@ -40,7 +40,7 @@ class BookProgressService
             
             // Ensure book chapters is an integer
             $totalChapters = is_numeric($book['chapters']) ? (int) $book['chapters'] : 0;
-            $percentage = $totalChapters > 0 ? round(($chaptersRead / $totalChapters) * 100) : 0;
+            $percentage = $totalChapters > 0 ? round(($chaptersRead / $totalChapters) * 100, 1) : 0;
             
             $status = $this->determineBookStatus($chaptersRead, $totalChapters);
             
@@ -101,7 +101,7 @@ class BookProgressService
         // Calculate overall testament progress
         $totalChapters = $processedBooks->sum('chapter_count');
         $readChapters = $processedBooks->sum('chapters_read');
-        $testamentProgress = $totalChapters > 0 ? round(($readChapters / $totalChapters) * 100) : 0;
+        $testamentProgress = $totalChapters > 0 ? round(($readChapters / $totalChapters) * 100, 1) : 0;
         
         return [
             'testament_progress' => $testamentProgress,
@@ -128,7 +128,7 @@ class BookProgressService
         $totalCompleted = $oldTestament['completed_books'] + $newTestament['completed_books'];
         $totalInProgress = $oldTestament['in_progress_books'] + $newTestament['in_progress_books'];
         
-        $overallPercentage = $totalBooks > 0 ? round(($totalCompleted / $totalBooks) * 100) : 0;
+        $overallPercentage = $totalBooks > 0 ? round(($totalCompleted / $totalBooks) * 100, 1) : 0;
         
         return [
             'total_books' => $totalBooks,

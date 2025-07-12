@@ -44,7 +44,7 @@
     }" @keydown.escape.window="modalOpen = false"
         @close-modal.window="modalOpen = false">
         <!-- Desktop Sidebar Navigation -->
-        <aside class="hidden lg:flex lg:flex-col w-64 bg-white border-r border-[#D1D7E0] dark:border-gray-700">
+        <aside class="hidden lg:flex lg:flex-col w-64 bg-white dark:bg-gray-800 border-r border-[#D1D7E0] dark:border-gray-700">
             <!-- Logo Section -->
             <div class="px-6 py-4 border-b border-[#D1D7E0] dark:border-gray-700">
                 <a href="{{ route('dashboard') }}"
@@ -279,7 +279,7 @@
             x-transition:enter-start="translate-x-full" x-transition:enter-end="translate-x-0"
             x-transition:leave="transform transition ease-in duration-150" x-transition:leave-start="translate-x-0"
             x-transition:leave-end="translate-x-full"
-            class="fixed right-0 top-0 bottom-0 w-full max-w-lg bg-white shadow-xl z-50 overflow-y-auto"
+            class="fixed right-0 top-0 bottom-0 w-full max-w-lg bg-white dark:bg-gray-800 shadow-xl z-50 overflow-y-auto"
             x-trap.inert.noscroll="modalOpen" role="dialog" aria-modal="true" aria-labelledby="modal-title"
             aria-describedby="modal-description">
             <div id="reading-log-modal-content" class="p-6">

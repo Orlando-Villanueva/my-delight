@@ -3,11 +3,11 @@
 
 <div>
     <div class="flex items-center justify-between mb-6">
-        <h2 id="modal-title" class="text-2xl font-bold text-gray-900">Log Bible Reading</h2>
+        <h2 id="modal-title" class="text-2xl font-bold text-gray-900 dark:text-gray-100">Log Bible Reading</h2>
 
         {{-- Modal Close Button --}}
         <button type="button" @click="modalOpen = false"
-            class="text-gray-400 hover:text-gray-600 focus:outline-none focus:ring-2 focus:ring-blue-500 rounded-md p-1">
+            class="text-gray-400 hover:text-gray-600 dark:text-gray-500 dark:hover:text-gray-400 focus:outline-none focus:ring-2 focus:ring-blue-500 rounded-md p-1">
             <svg class="w-6 h-6" fill="none" stroke="currentColor" viewBox="0 0 24 24">
                 <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M6 18L18 6M6 6l12 12"></path>
             </svg>
@@ -23,16 +23,16 @@
 
         {{-- Display validation errors --}}
         @if ($errors->any())
-            <div class="bg-red-50 border border-red-200 rounded-md p-4">
+            <div class="bg-red-50 dark:bg-red-900/20 border border-red-200 dark:border-red-800 rounded-md p-4">
                 <div class="flex">
-                    <div class="text-red-400">
+                    <div class="text-red-400 dark:text-red-500">
                         <svg class="h-5 w-5" fill="currentColor" viewBox="0 0 20 20">
                             <path fill-rule="evenodd" d="M10 18a8 8 0 100-16 8 8 0 000 16zM8.707 7.293a1 1 0 00-1.414 1.414L8.586 10l-1.293 1.293a1 1 0 101.414 1.414L10 11.414l1.293 1.293a1 1 0 001.414-1.414L11.414 10l1.293-1.293a1 1 0 00-1.414-1.414L10 8.586 8.707 7.293z" clip-rule="evenodd"/>
                         </svg>
                     </div>
                     <div class="ml-3">
-                        <h3 class="text-sm font-medium text-red-800">Please fix the following errors:</h3>
-                        <ul class="mt-2 text-sm text-red-700 list-disc list-inside">
+                        <h3 class="text-sm font-medium text-red-800 dark:text-red-400">Please fix the following errors:</h3>
+                        <ul class="mt-2 text-sm text-red-700 dark:text-red-300 list-disc list-inside">
                             @foreach ($errors->all() as $error)
                                 <li>{{ $error }}</li>
                             @endforeach
@@ -44,69 +44,123 @@
 
         <!-- Date Selection: Today or Yesterday -->
         <div class="space-y-2">
-            <label class="block text-sm font-medium text-gray-700">When did you read?</label>
+            <label class="block text-sm font-medium text-gray-700 dark:text-gray-300">When did you read?</label>
             <div class="space-y-3">
                 <div class="flex items-center">
                     <input type="radio" id="today" name="date_read" value="{{ today()->toDateString() }}" 
                         {{ old('date_read', today()->toDateString()) == today()->toDateString() ? 'checked' : '' }}
-                        class="h-4 w-4 text-blue-600 focus:ring-blue-500 border-gray-300">
-                    <label for="today" class="ml-3 block text-sm font-medium text-gray-700">
+                        class="h-4 w-4 text-blue-600 focus:ring-blue-500 border-gray-300 dark:border-gray-600 dark:bg-gray-700">
+                    <label for="today" class="ml-3 block text-sm font-medium text-gray-700 dark:text-gray-300">
                         📖 Today ({{ today()->format('M d, Y') }})
                     </label>
                 </div>
-                <div class="flex items-center">
-                    <input type="radio" id="yesterday" name="date_read" value="{{ today()->subDay()->toDateString() }}" 
-                        {{ old('date_read') == today()->subDay()->toDateString() ? 'checked' : '' }}
-                        class="h-4 w-4 text-blue-600 focus:ring-blue-500 border-gray-300">
-                    <label for="yesterday" class="ml-3 block text-sm font-medium text-gray-700">
-                        📅 Yesterday ({{ today()->subDay()->format('M d, Y') }}) - <span class="text-gray-500 italic">I forgot to log it</span>
-                    </label>
-                </div>
+                
+                @if(isset($allowYesterday) && $allowYesterday)
+                    <div class="flex items-center">
+                        <input type="radio" id="yesterday" name="date_read" value="{{ today()->subDay()->toDateString() }}" 
+                            {{ old('date_read') == today()->subDay()->toDateString() ? 'checked' : '' }}
+                            class="h-4 w-4 text-blue-600 focus:ring-blue-500 border-gray-300 dark:border-gray-600 dark:bg-gray-700">
+                        <label for="yesterday" class="ml-3 block text-sm font-medium text-gray-700 dark:text-gray-300">
+                            📅 Yesterday ({{ today()->subDay()->format('M d, Y') }}) - <span class="text-gray-500 dark:text-gray-400 italic">I forgot to log it</span>
+                        </label>
+                    </div>
+                @elseif(isset($allowYesterday))
+                    {{-- Show why yesterday is not available --}}
+                    <div class="flex items-center opacity-50">
+                        <input type="radio" disabled 
+                            class="h-4 w-4 text-gray-400 border-gray-300 dark:border-gray-600 cursor-not-allowed">
+                        <label class="ml-3 block text-sm font-medium text-gray-400 dark:text-gray-500 cursor-not-allowed">
+                            📅 Yesterday ({{ today()->subDay()->format('M d, Y') }}) - 
+                            @if(isset($hasReadYesterday) && !$hasReadYesterday && isset($currentStreak) && $currentStreak > 0 && isset($hasReadToday) && !$hasReadToday)
+                                <span class="italic">Would break your {{ $currentStreak }}-day streak</span>
+                            @else
+                                <span class="italic">Already logged</span>
+                            @endif
+                        </label>
+                    </div>
+                @endif
             </div>
-            <div class="text-xs text-gray-500 mt-2">
+            <div class="text-xs text-gray-500 dark:text-gray-400 mt-2">
                 💡 <strong>Grace Period:</strong> You can log today's reading or catch up on yesterday if you forgot.
+                @if(isset($currentStreak) && $currentStreak > 0)
+                    <br>🔥 <strong>Current Streak:</strong> {{ $currentStreak }} day{{ $currentStreak === 1 ? '' : 's' }} - keep it going!
+                @endif
             </div>
         </div>
 
         <!-- Bible Book Selection -->
         <div class="space-y-2">
-            <label for="book_id" class="block text-sm font-medium text-gray-700">Bible Book</label>
+            <label for="book_id" class="block text-sm font-medium text-gray-700 dark:text-gray-300">📚 Bible Book</label>
             <select id="book_id" name="book_id" required 
-                class="w-full max-w-md px-3 py-2 border border-gray-300 rounded-md shadow-sm focus:outline-none focus:ring-2 focus:ring-blue-500 focus:border-blue-500 {{ $errors->has('book_id') ? 'border-red-300' : '' }}">
+                class="w-full max-w-md px-3 py-2 border border-gray-300 dark:border-gray-600 rounded-md shadow-sm focus:outline-none focus:ring-2 focus:ring-blue-500 focus:border-blue-500 bg-white dark:bg-gray-700 text-gray-900 dark:text-gray-100 {{ $errors->has('book_id') ? 'border-red-300 dark:border-red-600' : '' }}">
                 <option value="">Select a Bible book...</option>
-                @foreach($books as $book)
-                    <option value="{{ $book['id'] }}" {{ old('book_id') == $book['id'] ? 'selected' : '' }}>
-                        {{ $book['name'] }}
-                    </option>
-                @endforeach
+                
+                {{-- Old Testament Group --}}
+                @php
+                    $oldTestament = collect($books)->where('testament', 'old')->values();
+                    $newTestament = collect($books)->where('testament', 'new')->values();
+                @endphp
+                
+                @if($oldTestament->isNotEmpty())
+                    <optgroup label="📜 Old Testament ({{ $oldTestament->count() }} books)">
+                        @foreach($oldTestament as $book)
+                            <option value="{{ $book['id'] }}" {{ old('book_id') == $book['id'] ? 'selected' : '' }}>
+                                {{ $book['name'] }} ({{ $book['chapters'] }} chapters)
+                            </option>
+                        @endforeach
+                    </optgroup>
+                @endif
+                
+                {{-- New Testament Group --}}
+                @if($newTestament->isNotEmpty())
+                    <optgroup label="✝️ New Testament ({{ $newTestament->count() }} books)">
+                        @foreach($newTestament as $book)
+                            <option value="{{ $book['id'] }}" {{ old('book_id') == $book['id'] ? 'selected' : '' }}>
+                                {{ $book['name'] }} ({{ $book['chapters'] }} chapters)
+                            </option>
+                        @endforeach
+                    </optgroup>
+                @endif
+                
+                {{-- Fallback: All books without grouping if testament data not available --}}
+                @if($oldTestament->isEmpty() && $newTestament->isEmpty())
+                    @foreach($books as $book)
+                        <option value="{{ $book['id'] }}" {{ old('book_id') == $book['id'] ? 'selected' : '' }}>
+                            {{ $book['name'] }}
+                        </option>
+                    @endforeach
+                @endif
             </select>
+            <div class="text-xs text-gray-500 dark:text-gray-400">
+                💡 Books are organized by Old Testament (39 books) and New Testament (27 books)
+            </div>
         </div>
 
         <!-- Chapter Input -->
         <div class="space-y-2">
-            <label for="chapter_input" class="block text-sm font-medium text-gray-700">Chapter</label>
-            <input type="number" id="chapter_input" name="chapter_input" min="1" required 
+            <label for="chapter_input" class="block text-sm font-medium text-gray-700 dark:text-gray-300">Chapter(s)</label>
+            <input type="text" id="chapter_input" name="chapter_input" required 
                 value="{{ old('chapter_input') }}"
-                placeholder="Enter chapter number (e.g., 3)"
-                class="w-full max-w-md px-3 py-2 border border-gray-300 rounded-md shadow-sm focus:outline-none focus:ring-2 focus:ring-blue-500 focus:border-blue-500 {{ $errors->has('chapter_input') ? 'border-red-300' : '' }}">
-            <div class="text-xs text-gray-500">
-                Enter a single chapter number. Chapter ranges will be added in a future update.
+                placeholder="e.g., 3 or 1-5"
+                class="w-full max-w-md px-3 py-2 border border-gray-300 dark:border-gray-600 rounded-md shadow-sm focus:outline-none focus:ring-2 focus:ring-blue-500 focus:border-blue-500 bg-white dark:bg-gray-700 text-gray-900 dark:text-gray-100 {{ $errors->has('chapter_input') ? 'border-red-300 dark:border-red-600' : '' }}">
+            <div class="text-xs text-gray-500 dark:text-gray-400">
+                💡 Enter a single chapter (e.g., <strong>3</strong>) or range (e.g., <strong>1-5</strong>)
             </div>
         </div>
 
         <!-- Notes Section -->
         <div class="space-y-2">
-            <label for="notes_text" class="block text-sm font-medium text-gray-700">Notes (Optional)</label>
+            <label for="notes_text" class="block text-sm font-medium text-gray-700 dark:text-gray-300">Notes (Optional)</label>
             <textarea id="notes_text" name="notes_text" rows="4" maxlength="500" 
                 placeholder="Share any thoughts, insights, or questions from your reading..."
-                class="w-full px-3 py-2 border border-gray-300 rounded-md shadow-sm focus:outline-none focus:ring-2 focus:ring-blue-500 focus:border-blue-500 resize-vertical {{ $errors->has('notes_text') ? 'border-red-300' : '' }}">{{ old('notes_text') }}</textarea>
-            <div class="text-xs text-gray-500">
+                class="w-full px-3 py-2 border border-gray-300 dark:border-gray-600 rounded-md shadow-sm focus:outline-none focus:ring-2 focus:ring-blue-500 focus:border-blue-500 resize-vertical bg-white dark:bg-gray-700 text-gray-900 dark:text-gray-100 placeholder-gray-500 dark:placeholder-gray-400 {{ $errors->has('notes_text') ? 'border-red-300 dark:border-red-600' : '' }}">{{ old('notes_text') }}</textarea>
+            <div class="text-xs text-gray-500 dark:text-gray-400">
                 Maximum 500 characters
             </div>
         </div>
 
         <!-- Form Actions -->
-        <div class="pt-6 border-t border-gray-200 flex items-center space-x-4">
+        <div class="pt-6 border-t border-gray-200 dark:border-gray-600 flex items-center space-x-4">
             <button type="submit" hx-indicator="#save-loading"
                 class="inline-flex items-center px-6 py-3 border border-transparent text-base font-medium rounded-md shadow-sm text-white bg-blue-600 hover:bg-blue-700 focus:outline-none focus:ring-2 focus:ring-offset-2 focus:ring-blue-500">
                 <span id="save-loading" class="htmx-indicator hidden">
@@ -120,7 +174,7 @@
             </button>
 
             <button type="button" @click="modalOpen = false"
-                class="inline-flex items-center px-6 py-3 border border-gray-300 text-base font-medium rounded-md text-gray-700 bg-white hover:bg-gray-50 focus:outline-none focus:ring-2 focus:ring-offset-2 focus:ring-blue-500">
+                class="inline-flex items-center px-6 py-3 border border-gray-300 dark:border-gray-600 text-base font-medium rounded-md text-gray-700 dark:text-gray-300 bg-white dark:bg-gray-800 hover:bg-gray-50 dark:hover:bg-gray-700 focus:outline-none focus:ring-2 focus:ring-offset-2 focus:ring-blue-500">
                 Cancel
             </button>
         </div>
