@@ -12,12 +12,12 @@
     $testament = $attributes->get('testament', 'Old'); // Maintain initial testament for Alpine
 @endphp
 
-<x-ui.card {{ $attributes->merge(['class' => 'bg-white border border-[#D1D7E0] transition-colors']) }}>
+<x-ui.card {{ $attributes->merge(['class' => 'bg-white dark:bg-gray-800 border border-[#D1D7E0] dark:border-gray-700 transition-colors']) }}>
     <div class="p-6">
         <div x-data="bookProgressComponent('{{ $testament }}')">
             <!-- Header with Title and Testament Toggle -->
             <div class="flex items-start justify-between mb-6">
-                <h3 class="text-lg lg:text-xl font-semibold text-[#4A5568] leading-[1.5]">
+                <h3 class="text-lg lg:text-xl font-semibold text-[#4A5568] dark:text-gray-200 leading-[1.5]">
                     Bible Reading Progress
                 </h3>
                 
