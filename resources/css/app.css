@@ -9,6 +9,33 @@
 /* Bible Habit Brand Colors for reference */
 /* Primary: #3366CC, Success: #66CC99 */
 
+/* Custom Theme Configuration */
+@theme {
+    --color-primary-50: #eff6ff;
+    --color-primary-100: #dbeafe;
+    --color-primary-200: #bfdbfe;
+    --color-primary-300: #93c5fd;
+    --color-primary-400: #60a5fa;
+    --color-primary-500: #3366CC;
+    --color-primary-600: #2c5aa0;
+    --color-primary-700: #1d4ed8;
+    --color-primary-800: #1e40af;
+    --color-primary-900: #1e3a8a;
+    --color-primary-950: #172554;
+    
+    --color-success-50: #f0fdf4;
+    --color-success-100: #dcfce7;
+    --color-success-200: #bbf7d0;
+    --color-success-300: #86efac;
+    --color-success-400: #4ade80;
+    --color-success-500: #66CC99;
+    --color-success-600: #16a34a;
+    --color-success-700: #15803d;
+    --color-success-800: #166534;
+    --color-success-900: #14532d;
+    --color-success-950: #052e16;
+}
+
 /* Essential Component Classes - Only what we actually use */
 @layer components {
     /* Button variants - using Bible Habit colors */
@@ -17,16 +44,7 @@
     }
     
     .btn-primary {
-        background-color: #3366CC;
-        color: white;
-    }
-    
-    .btn-primary:hover {
-        background-color: #2c5aa0;
-    }
-    
-    .btn-primary:focus {
-        @apply ring-2 ring-blue-500 ring-offset-2;
+        @apply bg-primary-500 text-white hover:bg-primary-600 focus:ring-primary-500;
     }
     
     .btn-secondary {
@@ -34,16 +52,7 @@
     }
     
     .btn-success {
-        background-color: #66CC99;
-        color: white;
-    }
-    
-    .btn-success:hover {
-        background-color: #4ade80;
-    }
-    
-    .btn-success:focus {
-        @apply ring-2 ring-green-500 ring-offset-2;
+        @apply bg-success-500 text-white hover:bg-success-400 focus:ring-success-500;
     }
     
     .btn-outline {
@@ -85,7 +94,7 @@
     
     /* Form components */
     .form-input {
-        @apply w-full px-3 py-2 border border-gray-300 rounded-md shadow-sm focus:outline-none focus:ring-2 focus:ring-blue-500 focus:border-blue-500;
+        @apply w-full px-3 py-2 border border-gray-300 rounded-md shadow-sm focus:outline-none focus:ring-2 focus:ring-primary-500 focus:border-primary-500;
     }
     
     .form-label {

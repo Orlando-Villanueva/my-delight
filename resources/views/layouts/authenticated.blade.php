@@ -74,8 +74,8 @@
             <!-- Logo Section -->
             <div class="px-6 py-4 border-b border-[#D1D7E0] dark:border-gray-700">
                 <a href="{{ route('dashboard') }}"
-                    class="flex items-center text-xl font-semibold text-[#4A5568] dark:text-gray-200 hover:text-[#3366CC] dark:hover:text-[#3366CC] leading-[1.5]">
-                    <div class="w-8 h-8 bg-[#3366CC] rounded-lg flex items-center justify-center mr-3">
+                    class="flex items-center text-xl font-semibold text-[#4A5568] dark:text-gray-200 hover:text-primary-500 dark:hover:text-primary-500 leading-[1.5]">
+                                            <div class="w-8 h-8 bg-primary-500 rounded-lg flex items-center justify-center mr-3">
                         <svg class="w-5 h-5 text-white" fill="none" stroke="currentColor" viewBox="0 0 24 24">
                             <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M12 6.253v13m0-13C10.832 5.477 9.246 5 7.5 5S4.168 5.477 3 6.253v13C4.168 18.477 5.754 18 7.5 18s3.332.477 4.5 1.253m0-13C13.168 5.477 14.754 5 16.5 5c1.746 0 3.332.477 4.5 1.253v13C19.832 18.477 18.246 18 16.5 18c-1.746 0-3.332.477-4.5 1.253"></path>
                         </svg>
@@ -89,7 +89,7 @@
                 <button type="button" hx-get="{{ route('dashboard') }}" hx-target="#page-container"
                     hx-swap="innerHTML" hx-push-url="true"
                     @click="previousView = currentView; currentView = 'dashboard'"
-                    :class="currentView === 'dashboard' ? 'bg-[#3366CC] text-white' : 'text-[#4A5568] dark:text-gray-300 hover:bg-[#F5F7FA] dark:hover:bg-gray-700 hover:text-[#3366CC] dark:hover:text-[#3366CC]'"
+                    :class="currentView === 'dashboard' ? 'bg-primary-500 text-white' : 'text-[#4A5568] dark:text-gray-300 hover:bg-[#F5F7FA] dark:hover:bg-gray-700 hover:text-primary-500 dark:hover:text-primary-500'"
                     class="group flex items-center px-2 py-2 text-base font-medium rounded-md transition-colors leading-[1.5] w-full text-left">
                     <svg class="w-5 h-5 mr-3" fill="none" stroke="currentColor" viewBox="0 0 24 24">
                         <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2"
@@ -100,7 +100,7 @@
 
                 <button type="button" hx-get="{{ route('logs.index') }}" hx-target="#page-container"
                     hx-swap="innerHTML" hx-push-url="true" @click="previousView = currentView; currentView = 'logs'"
-                    :class="currentView === 'logs' ? 'bg-[#3366CC] text-white' : 'text-[#4A5568] dark:text-gray-300 hover:bg-[#F5F7FA] dark:hover:bg-gray-700 hover:text-[#3366CC] dark:hover:text-[#3366CC]'"
+                    :class="currentView === 'logs' ? 'bg-primary-500 text-white' : 'text-[#4A5568] dark:text-gray-300 hover:bg-[#F5F7FA] dark:hover:bg-gray-700 hover:text-primary-500 dark:hover:text-primary-500'"
                     class="group flex items-center px-2 py-2 text-base font-medium rounded-md transition-colors leading-[1.5] w-full text-left">
                     <svg class="w-5 h-5 mr-3" fill="none" stroke="currentColor" viewBox="0 0 24 24">
                         <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2"
@@ -117,7 +117,7 @@
                 <div class="bg-gray-50 dark:bg-gray-750 rounded-lg p-3 mb-3 transition-colors border border-gray-100 dark:border-gray-600">
                     <div class="flex items-center space-x-3">
                         <div class="relative">
-                            <div class="w-10 h-10 bg-[#3366CC] rounded-full flex items-center justify-center text-white text-sm font-medium">
+                            <div class="w-10 h-10 bg-primary-500 rounded-full flex items-center justify-center text-white text-sm font-medium">
                                 {{ auth()->check() ? substr(auth()->user()->name, 0, 1) : 'J' }}
                             </div>
                         </div>
@@ -142,7 +142,7 @@
                 <!-- Action Buttons - Subtle with Blue Accents on Hover -->
                 <div class="space-y-1">
                     <x-ui.button variant="ghost" 
-                        class="w-full justify-start text-base text-gray-600 dark:text-gray-300 hover:bg-gray-100 dark:hover:bg-gray-700 hover:text-[#3366CC] dark:hover:text-[#3366CC] leading-[1.5]">
+                        class="w-full justify-start text-base text-gray-600 dark:text-gray-300 hover:bg-gray-100 dark:hover:bg-gray-700 hover:text-primary-500 dark:hover:text-primary-500 leading-[1.5]">
                         <svg class="w-4 h-4 mr-3" fill="none" stroke="currentColor" viewBox="0 0 24 24">
                             <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M10.325 4.317c.426-1.756 2.924-1.756 3.35 0a1.724 1.724 0 002.573 1.066c1.543-.94 3.31.826 2.37 2.37a1.724 1.724 0 001.065 2.572c1.756.426 1.756 2.924 0 3.35a1.724 1.724 0 00-1.066 2.573c.94 1.543-.826 3.31-2.37 2.37a1.724 1.724 0 00-2.572 1.065c-.426 1.756-2.924 1.756-3.35 0a1.724 1.724 0 00-2.573-1.066c-1.543.94-3.31-.826-2.37-2.37a1.724 1.724 0 00-1.065-2.572c-1.756-.426-1.756-2.924 0-3.35a1.724 1.724 0 001.066-2.573c-.94-1.543.826-3.31 2.37-2.37.996.608 2.296.07 2.572-1.065z"></path>
                             <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M15 12a3 3 0 11-6 0 3 3 0 016 0z"></path>
@@ -170,7 +170,7 @@
             <header class="lg:hidden bg-white dark:bg-gray-800 border-b border-[#D1D7E0] dark:border-gray-700 px-4 py-3 transition-colors">
                 <div class="flex items-center justify-between">
                     <div class="flex items-center space-x-2">
-                        <div class="w-8 h-8 bg-[#3366CC] rounded-lg flex items-center justify-center">
+                        <div class="w-8 h-8 bg-primary-500 rounded-lg flex items-center justify-center">
                             <svg class="w-5 h-5 text-white" fill="none" stroke="currentColor" viewBox="0 0 24 24">
                                 <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M12 6.253v13m0-13C10.832 5.477 9.246 5 7.5 5S4.168 5.477 3 6.253v13C4.168 18.477 5.754 18 7.5 18s3.332.477 4.5 1.253m0-13C13.168 5.477 14.754 5 16.5 5c1.746 0 3.332.477 4.5 1.253v13C19.832 18.477 18.246 18 16.5 18c-1.746 0-3.332.477-4.5 1.253"></path>
                             </svg>
@@ -183,7 +183,7 @@
                     <!-- Mobile User Menu -->
                     <div x-data="{ open: false }" class="relative">
                         <button type="button" @click="open = !open"
-                            class="w-8 h-8 bg-[#3366CC] rounded-full flex items-center justify-center text-white text-sm font-medium">
+                            class="w-8 h-8 bg-primary-500 rounded-full flex items-center justify-center text-white text-sm font-medium">
                             {{ auth()->check() ? substr(auth()->user()->name, 0, 1) : 'J' }}
                         </button>
 
@@ -224,7 +224,7 @@
                         <button type="button" hx-get="{{ route('logs.create') }}"
                             hx-target="#reading-log-modal-content" hx-swap="innerHTML" hx-indicator="#modal-loading"
                             @click="modalOpen = true" 
-                            class="bg-[#3366CC] hover:bg-[#2952A3] text-white px-6 py-2 rounded-lg flex items-center space-x-2 text-base leading-[1.5] transition-colors">
+                                                            class="bg-primary-500 hover:bg-primary-600 text-white px-6 py-2 rounded-lg flex items-center space-x-2 text-base leading-[1.5] transition-colors">
                             <svg class="w-4 h-4" fill="none" stroke="currentColor" viewBox="0 0 24 24">
                                 <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M12 6v6m0 0v6m0-6h6m-6 0H6"></path>
                             </svg>
@@ -262,7 +262,7 @@
                 <button type="button" hx-get="{{ route('dashboard') }}" hx-target="#page-container"
                     hx-swap="innerHTML" hx-push-url="true"
                     @click="previousView = currentView; currentView = 'dashboard'"
-                    :class="currentView === 'dashboard' ? 'text-[#3366CC]' : 'text-gray-500 dark:text-gray-400 hover:text-[#3366CC]'"
+                                                :class="currentView === 'dashboard' ? 'text-primary-500' : 'text-gray-500 dark:text-gray-400 hover:text-primary-500'"
                     class="flex flex-col items-center py-2 px-3 min-w-[44px] min-h-[44px] justify-center transition-colors leading-[1.5]">
                     <svg class="w-6 h-6" fill="none" stroke="currentColor" viewBox="0 0 24 24">
                         <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2"
@@ -273,7 +273,7 @@
 
                 <button type="button" hx-get="{{ route('logs.index') }}" hx-target="#page-container"
                     hx-swap="innerHTML" hx-push-url="true" @click="previousView = currentView; currentView = 'logs'"
-                    :class="currentView === 'logs' ? 'text-[#3366CC]' : 'text-gray-500 dark:text-gray-400 hover:text-[#3366CC]'"
+                                                :class="currentView === 'logs' ? 'text-primary-500' : 'text-gray-500 dark:text-gray-400 hover:text-primary-500'"
                     class="flex flex-col items-center py-2 px-3 min-w-[44px] min-h-[44px] justify-center transition-colors leading-[1.5]">
                     <svg class="w-6 h-6" fill="none" stroke="currentColor" viewBox="0 0 24 24">
                         <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2"
@@ -288,7 +288,7 @@
         <!-- Floating Action Button - Mobile Only -->
         <button type="button" hx-get="{{ route('logs.create') }}" hx-target="#reading-log-modal-content"
             hx-swap="innerHTML" hx-indicator="#modal-loading" @click="modalOpen = true"
-            class="lg:hidden fixed bottom-24 right-4 w-14 h-14 bg-[#3366CC] hover:bg-[#2952A3] text-white rounded-full flex items-center justify-center z-50 shadow-lg transition-colors">
+                            class="lg:hidden fixed bottom-24 right-4 w-14 h-14 bg-primary-500 hover:bg-primary-600 text-white rounded-full flex items-center justify-center z-50 shadow-lg transition-colors">
             <svg class="w-6 h-6" fill="none" stroke="currentColor" viewBox="0 0 24 24">
                 <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M12 6v6m0 0v6m0-6h6m-6 0H6"></path>
             </svg>
@@ -313,7 +313,7 @@
 
                 <!-- Loading Indicator (shown during HTMX requests) -->
                 <div id="modal-loading" class="htmx-indicator flex items-center justify-center h-32">
-                    <div class="animate-spin rounded-full h-8 w-8 border-b-2 border-blue-600"></div>
+                    <div class="animate-spin rounded-full h-8 w-8 border-b-2 border-primary-500"></div>
                     <span class="ml-3 text-gray-600">Loading form...</span>
                 </div>
             </div>
