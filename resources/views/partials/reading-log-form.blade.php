@@ -82,9 +82,6 @@
             </div>
             <div class="text-xs text-gray-500 dark:text-gray-400 mt-2">
                 💡 <strong>Grace Period:</strong> You can log today's reading or catch up on yesterday if you forgot.
-                @if(isset($currentStreak) && $currentStreak > 0)
-                    <br>🔥 <strong>Current Streak:</strong> {{ $currentStreak }} day{{ $currentStreak === 1 ? '' : 's' }} - keep it going!
-                @endif
             </div>
         </div>
 
@@ -131,9 +128,6 @@
                     @endforeach
                 @endif
             </select>
-            <div class="text-xs text-gray-500 dark:text-gray-400">
-                💡 Books are organized by Old Testament (39 books) and New Testament (27 books)
-            </div>
         </div>
 
         <!-- Chapter Input -->
@@ -143,9 +137,6 @@
                 value="{{ old('chapter_input') }}"
                 placeholder="e.g., 3 or 1-5"
                 class="w-full max-w-md px-3 py-2 border border-gray-300 dark:border-gray-600 rounded-md shadow-sm focus:outline-none focus:ring-2 focus:ring-blue-500 focus:border-blue-500 bg-white dark:bg-gray-700 text-gray-900 dark:text-gray-100 {{ $errors->has('chapter_input') ? 'border-red-300 dark:border-red-600' : '' }}">
-            <div class="text-xs text-gray-500 dark:text-gray-400">
-                💡 Enter a single chapter (e.g., <strong>3</strong>) or range (e.g., <strong>1-5</strong>)
-            </div>
         </div>
 
         <!-- Notes Section -->
@@ -154,9 +145,6 @@
             <textarea id="notes_text" name="notes_text" rows="4" maxlength="1000" 
                 placeholder="Share any thoughts, insights, or questions from your reading..."
                 class="w-full px-3 py-2 border border-gray-300 dark:border-gray-600 rounded-md shadow-sm focus:outline-none focus:ring-2 focus:ring-blue-500 focus:border-blue-500 resize-vertical bg-white dark:bg-gray-700 text-gray-900 dark:text-gray-100 placeholder-gray-500 dark:placeholder-gray-400 {{ $errors->has('notes_text') ? 'border-red-300 dark:border-red-600' : '' }}">{{ old('notes_text') }}</textarea>
-            <div class="text-xs text-gray-500 dark:text-gray-400">
-                Maximum 1000 characters
-            </div>
         </div>
 
         <!-- Form Actions -->
