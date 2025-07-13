@@ -69,7 +69,13 @@
             <span class="ml-3 text-gray-600 dark:text-gray-400">Loading readings...</span>
         </div>
 
-        @include('partials.reading-log-list', compact('logs', 'filter'))
+        <div id="reading-list-container"
+             hx-trigger="readingLogAdded from:body" 
+             hx-get="{{ route('logs.index', ['filter' => $filter]) }}" 
+             hx-target="this" 
+             hx-swap="innerHTML">
+            @include('partials.reading-log-list', compact('logs', 'filter'))
+        </div>
     </div>
 </div>
 
