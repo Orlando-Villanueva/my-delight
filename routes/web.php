@@ -9,25 +9,7 @@ Route::get('/', function () {
     return view('welcome');
 });
 
-// Debug route to test BibleReferenceService (outside auth middleware)
-Route::get('/debug-books', function () {
-    try {
-        $bibleService = app(\App\Services\BibleReferenceService::class);
-        $books = $bibleService->listBibleBooks();
-        return response()->json([
-            'success' => true,
-            'books_count' => count($books),
-            'first_book' => $books[0] ?? null,
-            'sample' => array_slice($books, 0, 3)
-        ]);
-    } catch (\Exception $e) {
-        return response()->json([
-            'success' => false,
-            'error' => $e->getMessage(),
-            'trace' => $e->getTraceAsString()
-        ]);
-    }
-});
+
 
 // Authentication Routes (GET routes for views - POST routes handled by Fortify)
 Route::middleware('guest')->group(function () {
