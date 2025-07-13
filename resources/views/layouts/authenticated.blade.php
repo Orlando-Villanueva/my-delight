@@ -117,7 +117,7 @@
             <!-- User Profile Section - Enhanced Design (No Pro Features) -->
             <div class="flex-shrink-0 px-2 pb-2">
                 <!-- User Info Card - Subtle Design -->
-                <div class="bg-gray-50 dark:bg-gray-750 rounded-lg p-3 mb-3 transition-colors border border-gray-100 dark:border-gray-600">
+                <div class="bg-gray-50 dark:bg-gray-700 rounded-lg p-3 mb-3 transition-colors border border-gray-100 dark:border-gray-600">
                     <div class="flex items-center space-x-3">
                         <div class="relative">
                             <div class="w-10 h-10 bg-primary-500 rounded-full flex items-center justify-center text-white text-sm font-medium">
@@ -131,13 +131,6 @@
                             <p class="text-sm text-gray-500 dark:text-gray-400 truncate leading-[1.5]">
                                 {{ auth()->check() ? auth()->user()->email : 'john@example.com' }}
                             </p>
-                            <!-- Subtle Status Indicators -->
-                            <div class="flex items-center space-x-1 mt-1">
-                                <div class="w-1.5 h-1.5 bg-gray-400 dark:bg-gray-500 rounded-full"></div>
-                                <span class="text-sm text-gray-500 dark:text-gray-400 leading-[1.5]">
-                                    7 day streak
-                                </span>
-                            </div>
                         </div>
                     </div>
                 </div>
