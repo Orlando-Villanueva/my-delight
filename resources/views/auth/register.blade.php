@@ -17,11 +17,11 @@
         </div>
 
         <!-- Form Card -->
-        <div class="bg-white dark:bg-gray-800 rounded-2xl shadow-lg border border-[#D1D7E0] dark:border-gray-700 p-6 sm:p-8">
-            <div class="space-y-5">
+        <div class="bg-white dark:bg-gray-800 rounded-2xl shadow-lg border border-[#D1D7E0] dark:border-gray-700 p-8 sm:p-10 mt-8">
+            <div class="space-y-6">
                 <!-- Header -->
-                <div class="text-center mb-6">
-                    <h2 class="text-2xl font-bold text-[#4A5568] dark:text-gray-200 mb-1">
+                <div class="text-center mb-8">
+                    <h2 class="text-2xl font-bold text-[#4A5568] dark:text-gray-200 mb-2">
                         Create account
                     </h2>
                     <p class="text-[#4A5568] dark:text-gray-300 opacity-75">
@@ -30,7 +30,7 @@
                 </div>
 
                 <!-- Registration Form -->
-                <form method="POST" action="{{ route('register') }}" class="space-y-4">
+                <form method="POST" action="{{ route('register') }}" class="space-y-6">
                 @csrf
                 
                 <!-- Display Validation Errors -->
@@ -52,14 +52,14 @@
                 
                     <!-- Name Field -->
                     <div>
-                        <label for="name" class="block text-sm font-semibold text-gray-700 dark:text-gray-300 mb-1">Name</label>
+                        <label for="name" class="block text-sm font-semibold text-gray-700 dark:text-gray-300 mb-2">Name</label>
                         <input 
                             type="text"
                             id="name"
                             name="name"
                             value="{{ old('name') }}"
                             required
-                            class="w-full px-4 py-2.5 border border-gray-300 dark:border-gray-600 rounded-lg focus:outline-none focus:ring-2 focus:ring-primary-500 focus:border-transparent transition-all bg-white dark:bg-gray-700 text-gray-900 dark:text-gray-200 placeholder-gray-500 dark:placeholder-gray-400 {{ $errors->has('name') ? 'border-red-300 focus:ring-red-500' : '' }}"
+                            class="w-full px-4 py-3 border border-gray-300 dark:border-gray-600 rounded-lg focus:outline-none focus:ring-2 focus:ring-primary-500 focus:border-transparent transition-all bg-white dark:bg-gray-700 text-gray-900 dark:text-gray-200 placeholder-gray-500 dark:placeholder-gray-400 {{ $errors->has('name') ? 'border-red-300 focus:ring-red-500' : '' }}"
                             placeholder=""
                         />
                         @if($errors->has('name'))
@@ -69,14 +69,14 @@
                     
                     <!-- Email Field -->
                     <div>
-                        <label for="email" class="block text-sm font-semibold text-gray-700 dark:text-gray-300 mb-1">Email</label>
+                        <label for="email" class="block text-sm font-semibold text-gray-700 dark:text-gray-300 mb-2">Email</label>
                         <input 
                             type="email"
                             id="email"
                             name="email"
                             value="{{ old('email') }}"
                             required
-                            class="w-full px-4 py-2.5 border border-gray-300 dark:border-gray-600 rounded-lg focus:outline-none focus:ring-2 focus:ring-primary-500 focus:border-transparent transition-all bg-white dark:bg-gray-700 text-gray-900 dark:text-gray-200 placeholder-gray-500 dark:placeholder-gray-400 {{ $errors->has('email') ? 'border-red-300 focus:ring-red-500' : '' }}"
+                            class="w-full px-4 py-3 border border-gray-300 dark:border-gray-600 rounded-lg focus:outline-none focus:ring-2 focus:ring-primary-500 focus:border-transparent transition-all bg-white dark:bg-gray-700 text-gray-900 dark:text-gray-200 placeholder-gray-500 dark:placeholder-gray-400 {{ $errors->has('email') ? 'border-red-300 focus:ring-red-500' : '' }}"
                             placeholder=""
                         />
                         @if($errors->has('email'))
@@ -86,28 +86,28 @@
                     
                     <!-- Password Field -->
                     <div>
-                        <label for="password" class="block text-sm font-semibold text-gray-700 dark:text-gray-300 mb-1">Password</label>
-                        <div class="relative">
+                        <label for="register-password" class="block text-sm font-semibold text-gray-700 dark:text-gray-300 mb-2">Password</label>
+                        <div class="relative flex items-center" x-data="{ showPassword: false }">
                             <input 
-                                type="password"
-                                id="password"
+                                :type="showPassword ? 'text' : 'password'"
+                                id="register-password"
                                 name="password"
                                 required
-                                class="w-full px-4 py-2.5 pr-12 border border-gray-300 dark:border-gray-600 rounded-lg focus:outline-none focus:ring-2 focus:ring-primary-500 focus:border-transparent transition-all bg-white dark:bg-gray-700 text-gray-900 dark:text-gray-200 placeholder-gray-500 dark:placeholder-gray-400 {{ $errors->has('password') ? 'border-red-300 focus:ring-red-500' : '' }}"
+                                class="w-full px-4 py-3 pr-12 border border-gray-300 dark:border-gray-600 rounded-lg focus:outline-none focus:ring-2 focus:ring-primary-500 focus:border-transparent transition-all bg-white dark:bg-gray-700 text-gray-900 dark:text-gray-200 placeholder-gray-500 dark:placeholder-gray-400 {{ $errors->has('password') ? 'border-red-300 focus:ring-red-500' : '' }}"
                                 placeholder="Minimum 8 characters"
                             />
                             <button 
                                 type="button" 
-                                onclick="togglePassword()"
-                                class="absolute inset-y-0 right-0 flex items-center pr-3 text-gray-400 dark:text-gray-500 hover:text-gray-600 dark:hover:text-gray-300 focus:outline-none"
+                                @click="showPassword = !showPassword"
+                                class="absolute right-4 text-gray-400 dark:text-gray-500 hover:text-gray-600 dark:hover:text-gray-300 focus:outline-none"
                                 aria-label="Toggle password visibility"
                             >
-                                <svg id="eye-open" class="w-5 h-5" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                                <svg x-show="!showPassword" class="w-5 h-5" fill="none" stroke="currentColor" viewBox="0 0 24 24">
                                     <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M15 12a3 3 0 11-6 0 3 3 0 016 0z"/>
                                     <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M2.458 12C3.732 7.943 7.523 5 12 5c4.478 0 8.268 2.943 9.542 7-1.274 4.057-5.064 7-9.542 7-4.477 0-8.268-2.943-9.542-7z"/>
                                 </svg>
-                                <svg id="eye-closed" class="w-5 h-5 hidden" fill="none" stroke="currentColor" viewBox="0 0 24 24">
-                                    <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M13.875 18.825A10.05 10.05 0 0112 19c-4.478 0-8.268-2.943-9.543-7a9.97 9.97 0 011.563-3.029m5.858.908a3 3 0 114.243 4.243M9.878 9.878l4.242 4.242M9.878 9.878L8.465 8.465m1.413 1.413L11.5 11.5m4.242 4.242L17.5 17.5m-1.758-1.758L13.12 13.12"/>
+                                <svg x-show="showPassword" class="w-5 h-5" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                                    <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M17.94 17.94A10.05 10.05 0 0112 19c-4.478 0-8.268-2.943-9.543-7a9.97 9.97 0 011.563-3.029m2.13-2.13C7.523 5 12 5 12 5c4.478 0 8.268 2.943 9.542 7a9.97 9.97 0 01-1.67 2.882M15 12a3 3 0 11-6 0 3 3 0 016 0zM3 3l18 18"/>
                                 </svg>
                             </button>
                         </div>
@@ -119,18 +119,18 @@
                     <!-- Submit Button -->
                     <button 
                         type="submit" 
-                        class="w-full bg-primary-500 text-white py-2.5 px-4 rounded-lg font-semibold hover:bg-primary-600 hover:scale-[1.02] focus:outline-none focus:ring-2 focus:ring-primary-500 focus:ring-offset-2 transition-all duration-200 mt-6"
+                        class="w-full bg-primary-500 text-white py-3 px-4 rounded-lg font-semibold hover:bg-primary-600 hover:scale-[1.02] focus:outline-none focus:ring-2 focus:ring-primary-500 focus:ring-offset-2 transition-all duration-200"
                     >
                         Create Account
                     </button>
                 </form>
                 
                 <!-- Login Link -->
-                <div class="text-center mt-6">
+                <div class="text-center mt-8">
                     <p class="text-[#4A5568] dark:text-gray-300 opacity-75">
                         Already have an account? 
                         <a href="{{ route('login') }}" 
-                           class="font-semibold text-primary-600 dark:text-primary-400 hover:text-primary-500 dark:hover:text-primary-300 transition-colors">
+                           class="font-semibold text-primary-600 dark:text-blue-400 hover:text-primary-500 dark:hover:text-blue-300 transition-colors">
                             Sign in
                         </a>
                     </p>
@@ -139,22 +139,4 @@
         </div>
     </div>
 </div>
-@endsection
-
-<script>
-function togglePassword() {
-    const passwordInput = document.getElementById('password');
-    const eyeOpen = document.getElementById('eye-open');
-    const eyeClosed = document.getElementById('eye-closed');
-    
-    if (passwordInput.type === 'password') {
-        passwordInput.type = 'text';
-        eyeOpen.classList.add('hidden');
-        eyeClosed.classList.remove('hidden');
-    } else {
-        passwordInput.type = 'password';
-        eyeOpen.classList.remove('hidden');
-        eyeClosed.classList.add('hidden');
-    }
-}
-</script> 
+@endsection 
