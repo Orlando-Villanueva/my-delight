@@ -6,29 +6,57 @@
         <span class="block text-sm font-medium text-gray-700 dark:text-gray-300 mb-3 md:mb-4 md:inline md:mr-4">Show readings from:</span>
         
         <div class="grid grid-cols-2 gap-2 md:inline-flex md:space-x-2">
-            <button type="button" hx-get="{{ route('logs.index', ['filter' => '7']) }}" hx-target="#reading-content"
-                hx-swap="innerHTML" hx-indicator="#loading" data-filter="7"
-                :class="currentFilter === '7' ? 'px-4 py-2 md:py-2 text-sm font-medium rounded-md border bg-primary-500 text-white border-primary-500' : 'px-4 py-2 md:py-2 text-sm font-medium rounded-md border bg-white dark:bg-gray-800 text-gray-700 dark:text-gray-300 border-gray-300 dark:border-gray-600 hover:bg-gray-50 dark:hover:bg-gray-700'">
+            <x-ui.button 
+                variant="outline"
+                size="default"
+                hx-get="{{ route('logs.index', ['filter' => '7']) }}" 
+                hx-target="#reading-content"
+                hx-swap="innerHTML" 
+                hx-indicator="#loading" 
+                data-filter="7"
+                x-bind:class="currentFilter === '7' ? '!bg-primary-500 !text-white !border-primary-500' : ''"
+            >
                 Last 7 days
-            </button>
+            </x-ui.button>
 
-            <button type="button" hx-get="{{ route('logs.index', ['filter' => '30']) }}" hx-target="#reading-content"
-                hx-swap="innerHTML" hx-indicator="#loading" data-filter="30"
-                :class="currentFilter === '30' ? 'px-4 py-2 md:py-2 text-sm font-medium rounded-md border bg-primary-500 text-white border-primary-500' : 'px-4 py-2 md:py-2 text-sm font-medium rounded-md border bg-white dark:bg-gray-800 text-gray-700 dark:text-gray-300 border-gray-300 dark:border-gray-600 hover:bg-gray-50 dark:hover:bg-gray-700'">
+            <x-ui.button 
+                variant="outline"
+                size="default"
+                hx-get="{{ route('logs.index', ['filter' => '30']) }}" 
+                hx-target="#reading-content"
+                hx-swap="innerHTML" 
+                hx-indicator="#loading" 
+                data-filter="30"
+                x-bind:class="currentFilter === '30' ? '!bg-primary-500 !text-white !border-primary-500' : ''"
+            >
                 Last 30 days
-            </button>
+            </x-ui.button>
 
-            <button type="button" hx-get="{{ route('logs.index', ['filter' => '90']) }}" hx-target="#reading-content"
-                hx-swap="innerHTML" hx-indicator="#loading" data-filter="90"
-                :class="currentFilter === '90' ? 'px-4 py-2 md:py-2 text-sm font-medium rounded-md border bg-primary-500 text-white border-primary-500' : 'px-4 py-2 md:py-2 text-sm font-medium rounded-md border bg-white dark:bg-gray-800 text-gray-700 dark:text-gray-300 border-gray-300 dark:border-gray-600 hover:bg-gray-50 dark:hover:bg-gray-700'">
+            <x-ui.button 
+                variant="outline"
+                size="default"
+                hx-get="{{ route('logs.index', ['filter' => '90']) }}" 
+                hx-target="#reading-content"
+                hx-swap="innerHTML" 
+                hx-indicator="#loading" 
+                data-filter="90"
+                x-bind:class="currentFilter === '90' ? '!bg-primary-500 !text-white !border-primary-500' : ''"
+            >
                 Last 90 days
-            </button>
+            </x-ui.button>
 
-            <button type="button" hx-get="{{ route('logs.index', ['filter' => 'all']) }}" hx-target="#reading-content"
-                hx-swap="innerHTML" hx-indicator="#loading" data-filter="all"
-                :class="currentFilter === 'all' ? 'px-4 py-2 md:py-2 text-sm font-medium rounded-md border bg-primary-500 text-white border-primary-500' : 'px-4 py-2 md:py-2 text-sm font-medium rounded-md border bg-white dark:bg-gray-800 text-gray-700 dark:text-gray-300 border-gray-300 dark:border-gray-600 hover:bg-gray-50 dark:hover:bg-gray-700'">
+            <x-ui.button 
+                variant="outline"
+                size="default"
+                hx-get="{{ route('logs.index', ['filter' => 'all']) }}" 
+                hx-target="#reading-content"
+                hx-swap="innerHTML" 
+                hx-indicator="#loading" 
+                data-filter="all"
+                x-bind:class="currentFilter === 'all' ? '!bg-primary-500 !text-white !border-primary-500' : ''"
+            >
                 All time
-            </button>
+            </x-ui.button>
         </div>
     </div>
 

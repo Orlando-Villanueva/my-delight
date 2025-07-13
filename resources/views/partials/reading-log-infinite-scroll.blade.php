@@ -24,7 +24,7 @@
         hx-indicator=".htmx-indicator" class="absolute inset-x-0 bottom-0 h-1 md:hidden flex justify-center z-0">
         {{-- Loading indicator that shows during fetch --}}
         <div class="htmx-indicator flex items-center space-x-2 text-gray-500 translate-y-full py-2">
-            <div class="animate-spin h-5 w-5 border-2 border-blue-600 border-t-transparent rounded-full"></div>
+            <div class="animate-spin h-5 w-5 border-2 border-primary-600 border-t-transparent rounded-full"></div>
             <span class="text-sm">Loading more readings...</span>
         </div>
     </div>
@@ -63,7 +63,7 @@
                 @foreach ($logs->getUrlRange(1, $logs->lastPage()) as $page => $url)
                     @if ($page == $logs->currentPage())
                         <span
-                            class="inline-flex items-center border-t-2 border-blue-500 px-4 pt-4 text-sm font-medium text-blue-600">
+                            class="inline-flex items-center border-t-2 border-primary-500 px-4 pt-4 text-sm font-medium text-primary-600">
                             {{ $page }}
                         </span>
                     @else

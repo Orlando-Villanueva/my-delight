@@ -23,11 +23,17 @@
         @if ($filter === 'all')
             <p class="text-gray-600 mb-6">You haven't logged any Bible readings yet. Start building your reading habit!
             </p>
-            <button type="button" hx-get="{{ route('logs.create') }}" hx-target="#reading-log-modal-content"
-                hx-swap="innerHTML" hx-indicator="#modal-loading" @click="modalOpen = true"
-                class="inline-flex items-center px-4 py-2 bg-blue-600 border border-transparent rounded-md font-semibold text-xs text-white uppercase tracking-widest hover:bg-blue-700 focus:bg-blue-700 active:bg-blue-900 focus:outline-none focus:ring-2 focus:ring-blue-500 focus:ring-offset-2 transition ease-in-out duration-150">
+            <x-ui.button 
+                variant="primary"
+                size="default"
+                hx-get="{{ route('logs.create') }}" 
+                hx-target="#reading-log-modal-content"
+                hx-swap="innerHTML" 
+                hx-indicator="#modal-loading" 
+                @click="modalOpen = true"
+            >
                 📖 Log Your First Reading
-            </button>
+            </x-ui.button>
         @else
             @php
                 $filterText = match ($filter) {
@@ -40,17 +46,28 @@
             <p class="text-gray-600 mb-6">No readings logged in {{ $filterText }}. Try expanding your date range or
                 log a new reading.</p>
             <div class="space-x-4">
-                <button type="button" hx-get="{{ route('logs.index', ['filter' => 'all']) }}"
-                    hx-target="#reading-content" hx-swap="innerHTML" hx-indicator="#loading"
+                <x-ui.button 
+                    variant="outline"
+                    size="default"
+                    hx-get="{{ route('logs.index', ['filter' => 'all']) }}"
+                    hx-target="#reading-content" 
+                    hx-swap="innerHTML" 
+                    hx-indicator="#loading"
                     data-filter="all"
-                    class="inline-flex items-center px-4 py-2 border border-gray-300 text-gray-700 rounded-md font-semibold text-xs uppercase tracking-widest hover:bg-gray-50 focus:outline-none focus:ring-2 focus:ring-blue-500 focus:ring-offset-2 transition ease-in-out duration-150">
+                >
                     View All Readings
-                </button>
-                <button type="button" hx-get="{{ route('logs.create') }}" hx-target="#reading-log-modal-content"
-                    hx-swap="innerHTML" hx-indicator="#modal-loading" @click="modalOpen = true"
-                    class="inline-flex items-center px-4 py-2 bg-blue-600 border border-transparent rounded-md font-semibold text-xs text-white uppercase tracking-widest hover:bg-blue-700 focus:bg-blue-700 active:bg-blue-900 focus:outline-none focus:ring-2 focus:ring-blue-500 focus:ring-offset-2 transition ease-in-out duration-150">
+                </x-ui.button>
+                <x-ui.button 
+                    variant="primary"
+                    size="default"
+                    hx-get="{{ route('logs.create') }}" 
+                    hx-target="#reading-log-modal-content"
+                    hx-swap="innerHTML" 
+                    hx-indicator="#modal-loading" 
+                    @click="modalOpen = true"
+                >
                     📖 Log Reading
-                </button>
+                </x-ui.button>
             </div>
         @endif
     </div>
