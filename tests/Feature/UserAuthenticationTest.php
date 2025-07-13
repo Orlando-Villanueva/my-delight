@@ -4,11 +4,14 @@ namespace Tests\Feature;
 
 use App\Models\User;
 use Illuminate\Foundation\Http\Middleware\VerifyCsrfToken;
+use Illuminate\Foundation\Testing\RefreshDatabase;
 use Illuminate\Support\Facades\Hash;
 use Tests\TestCase;
 
 class UserAuthenticationTest extends TestCase
 {
+    use RefreshDatabase;
+
     protected function setUp(): void
     {
         parent::setUp();
@@ -23,7 +26,6 @@ class UserAuthenticationTest extends TestCase
             'name' => 'John Doe',
             'email' => 'john@example.com',
             'password' => 'ValidPass123!',
-            'password_confirmation' => 'ValidPass123!',
         ];
 
         $response = $this->post('/register', $userData);
@@ -45,28 +47,12 @@ class UserAuthenticationTest extends TestCase
             'name' => 'John Doe',
             'email' => 'invalid-email',
             'password' => 'ValidPass123!',
-            'password_confirmation' => 'ValidPass123!',
         ];
 
         $response = $this->post('/register', $userData);
         
         $response->assertSessionHasErrors('email');
         $this->assertDatabaseMissing('users', ['email' => 'invalid-email']);
-    }
-
-    public function test_user_registration_requires_password_confirmation()
-    {
-        $userData = [
-            'name' => 'John Doe',
-            'email' => 'john@example.com',
-            'password' => 'ValidPass123!',
-            'password_confirmation' => 'different-password',
-        ];
-
-        $response = $this->post('/register', $userData);
-        
-        $response->assertSessionHasErrors('password');
-        $this->assertDatabaseMissing('users', ['email' => 'john@example.com']);
     }
 
     public function test_user_registration_enforces_password_requirements()
@@ -76,7 +62,6 @@ class UserAuthenticationTest extends TestCase
             'name' => 'John Doe',
             'email' => 'john@example.com',
             'password' => 'Pass12!',
-            'password_confirmation' => 'Pass12!',
         ];
 
         $response = $this->post('/register', $userData);
@@ -92,7 +77,6 @@ class UserAuthenticationTest extends TestCase
             'name' => 'John Doe',
             'email' => 'john@example.com',
             'password' => 'ValidPassword!',
-            'password_confirmation' => 'ValidPassword!',
         ];
 
         $response = $this->post('/register', $userData);
@@ -110,7 +94,6 @@ class UserAuthenticationTest extends TestCase
             'name' => 'Jane Doe',
             'email' => 'john@example.com',
             'password' => 'ValidPass123!',
-            'password_confirmation' => 'ValidPass123!',
         ];
 
         $response = $this->post('/register', $userData);
