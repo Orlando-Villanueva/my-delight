@@ -13,7 +13,6 @@
                 style="filter: drop-shadow(0 0 15px rgba(51, 102, 204, 0.2)) drop-shadow(0 0 30px rgba(51, 102, 204, 0.08));"
             />
             <h1 class="text-2xl font-bold text-[#4A5568] dark:text-gray-200 mb-1">Bible Habit Builder</h1>
-            <p class="text-[#4A5568] dark:text-gray-300 opacity-80">Start Your Bible Journey</p>
         </div>
 
         <!-- Form Card -->
