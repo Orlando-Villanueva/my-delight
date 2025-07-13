@@ -174,6 +174,10 @@
 *Priority: Medium - Production readiness*
 * Set up caching strategy for user statistics and Bible data
 * Optimize database queries and add proper indexing
+* **Code Quality Refactoring:**
+  - Move Bible book grouping logic from views to controllers for better separation of concerns
+  - Refactor reading log form data preparation to controller layer
+  - Clean up view templates to focus purely on presentation
 * Ensure WCAG 2.1 AA compliance with ARIA labels and keyboard navigation
 * Add HTMX loading indicators and error handling
 * Implement performance monitoring and optimization

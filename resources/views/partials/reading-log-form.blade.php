@@ -7,7 +7,7 @@
 
         {{-- Modal Close Button --}}
         <button type="button" @click="modalOpen = false"
-            class="text-gray-400 hover:text-gray-600 dark:text-gray-500 dark:hover:text-gray-400 focus:outline-none focus:ring-2 focus:ring-blue-500 rounded-md p-1">
+            class="text-gray-400 hover:text-gray-600 dark:text-gray-500 dark:hover:text-gray-400 focus:outline-none focus:ring-2 focus:ring-primary-500 rounded-md p-1">
             <svg class="w-6 h-6" fill="none" stroke="currentColor" viewBox="0 0 24 24">
                 <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M6 18L18 6M6 6l12 12"></path>
             </svg>
@@ -49,7 +49,7 @@
                 <div class="flex items-center">
                     <input type="radio" id="today" name="date_read" value="{{ today()->toDateString() }}" 
                         {{ old('date_read', today()->toDateString()) == today()->toDateString() ? 'checked' : '' }}
-                        class="h-4 w-4 text-blue-600 focus:ring-blue-500 border-gray-300 dark:border-gray-600 dark:bg-gray-700">
+                        class="h-4 w-4 text-primary-600 focus:ring-primary-500 border-gray-300 dark:border-gray-600 dark:bg-gray-700">
                     <label for="today" class="ml-3 block text-sm font-medium text-gray-700 dark:text-gray-300">
                         📖 Today ({{ today()->format('M d, Y') }})
                     </label>
@@ -59,7 +59,7 @@
                     <div class="flex items-center">
                         <input type="radio" id="yesterday" name="date_read" value="{{ today()->subDay()->toDateString() }}" 
                             {{ old('date_read') == today()->subDay()->toDateString() ? 'checked' : '' }}
-                            class="h-4 w-4 text-blue-600 focus:ring-blue-500 border-gray-300 dark:border-gray-600 dark:bg-gray-700">
+                            class="h-4 w-4 text-primary-600 focus:ring-primary-500 border-gray-300 dark:border-gray-600 dark:bg-gray-700">
                         <label for="yesterday" class="ml-3 block text-sm font-medium text-gray-700 dark:text-gray-300">
                             📅 Yesterday ({{ today()->subDay()->format('M d, Y') }}) - <span class="text-gray-500 dark:text-gray-400 italic">I forgot to log it</span>
                         </label>
@@ -86,71 +86,83 @@
         </div>
 
         <!-- Bible Book Selection -->
-        <div class="space-y-2">
-            <label for="book_id" class="block text-sm font-medium text-gray-700 dark:text-gray-300">📚 Bible Book</label>
-            <select id="book_id" name="book_id" required 
-                class="w-full max-w-md px-3 py-2 border border-gray-300 dark:border-gray-600 rounded-md shadow-sm focus:outline-none focus:ring-2 focus:ring-blue-500 focus:border-blue-500 bg-white dark:bg-gray-700 text-gray-900 dark:text-gray-100 {{ $errors->has('book_id') ? 'border-red-300 dark:border-red-600' : '' }}">
-                <option value="">Select a Bible book...</option>
-                
-                {{-- Old Testament Group --}}
-                @php
-                    $oldTestament = collect($books)->where('testament', 'old')->values();
-                    $newTestament = collect($books)->where('testament', 'new')->values();
-                @endphp
-                
-                @if($oldTestament->isNotEmpty())
-                    <optgroup label="📜 Old Testament ({{ $oldTestament->count() }} books)">
-                        @foreach($oldTestament as $book)
-                            <option value="{{ $book['id'] }}" {{ old('book_id') == $book['id'] ? 'selected' : '' }}>
-                                {{ $book['name'] }} ({{ $book['chapters'] }} chapters)
-                            </option>
-                        @endforeach
-                    </optgroup>
-                @endif
-                
-                {{-- New Testament Group --}}
-                @if($newTestament->isNotEmpty())
-                    <optgroup label="✝️ New Testament ({{ $newTestament->count() }} books)">
-                        @foreach($newTestament as $book)
-                            <option value="{{ $book['id'] }}" {{ old('book_id') == $book['id'] ? 'selected' : '' }}>
-                                {{ $book['name'] }} ({{ $book['chapters'] }} chapters)
-                            </option>
-                        @endforeach
-                    </optgroup>
-                @endif
-                
-                {{-- Fallback: All books without grouping if testament data not available --}}
-                @if($oldTestament->isEmpty() && $newTestament->isEmpty())
-                    @foreach($books as $book)
+        <x-ui.select 
+            name="book_id" 
+            label="📚 Bible Book" 
+            placeholder="Select a Bible book..."
+            required
+            :error="$errors->first('book_id')"
+            class="max-w-md"
+        >
+            {{-- Old Testament Group --}}
+            @php
+                $oldTestament = collect($books)->where('testament', 'old')->values();
+                $newTestament = collect($books)->where('testament', 'new')->values();
+            @endphp
+            
+            @if($oldTestament->isNotEmpty())
+                <optgroup label="📜 Old Testament ({{ $oldTestament->count() }} books)">
+                    @foreach($oldTestament as $book)
                         <option value="{{ $book['id'] }}" {{ old('book_id') == $book['id'] ? 'selected' : '' }}>
-                            {{ $book['name'] }}
+                            {{ $book['name'] }} ({{ $book['chapters'] }} chapters)
                         </option>
                     @endforeach
-                @endif
-            </select>
-        </div>
+                </optgroup>
+            @endif
+            
+            {{-- New Testament Group --}}
+            @if($newTestament->isNotEmpty())
+                <optgroup label="✝️ New Testament ({{ $newTestament->count() }} books)">
+                    @foreach($newTestament as $book)
+                        <option value="{{ $book['id'] }}" {{ old('book_id') == $book['id'] ? 'selected' : '' }}>
+                            {{ $book['name'] }} ({{ $book['chapters'] }} chapters)
+                        </option>
+                    @endforeach
+                </optgroup>
+            @endif
+            
+            {{-- Fallback: All books without grouping if testament data not available --}}
+            @if($oldTestament->isEmpty() && $newTestament->isEmpty())
+                @foreach($books as $book)
+                    <option value="{{ $book['id'] }}" {{ old('book_id') == $book['id'] ? 'selected' : '' }}>
+                        {{ $book['name'] }} ({{ $book['chapters'] }} chapters)
+                    </option>
+                @endforeach
+            @endif
+        </x-ui.select>
 
         <!-- Chapter Input -->
-        <div class="space-y-2">
-            <label for="chapter_input" class="block text-sm font-medium text-gray-700 dark:text-gray-300">Chapter(s)</label>
-            <input type="text" id="chapter_input" name="chapter_input" required 
-                value="{{ old('chapter_input') }}"
-                placeholder="e.g., 3 or 1-5"
-                class="w-full max-w-md px-3 py-2 border border-gray-300 dark:border-gray-600 rounded-md shadow-sm focus:outline-none focus:ring-2 focus:ring-blue-500 focus:border-blue-500 bg-white dark:bg-gray-700 text-gray-900 dark:text-gray-100 {{ $errors->has('chapter_input') ? 'border-red-300 dark:border-red-600' : '' }}">
-        </div>
+        <x-ui.input 
+            name="chapter_input" 
+            label="Chapter(s)" 
+            placeholder="e.g., 3 or 1-5"
+            :value="old('chapter_input')"
+            required
+            :error="$errors->first('chapter_input')"
+            class="max-w-md"
+        />
 
         <!-- Notes Section -->
-        <div class="space-y-2">
-            <label for="notes_text" class="block text-sm font-medium text-gray-700 dark:text-gray-300">Notes (Optional)</label>
-            <textarea id="notes_text" name="notes_text" rows="4" maxlength="1000" 
-                placeholder="Share any thoughts, insights, or questions from your reading..."
-                class="w-full px-3 py-2 border border-gray-300 dark:border-gray-600 rounded-md shadow-sm focus:outline-none focus:ring-2 focus:ring-blue-500 focus:border-blue-500 resize-vertical bg-white dark:bg-gray-700 text-gray-900 dark:text-gray-100 placeholder-gray-500 dark:placeholder-gray-400 {{ $errors->has('notes_text') ? 'border-red-300 dark:border-red-600' : '' }}">{{ old('notes_text') }}</textarea>
-        </div>
+        <x-ui.textarea 
+            name="notes_text" 
+            label="Notes (Optional)" 
+            placeholder="Share any thoughts, insights, or questions from your reading..."
+            :value="old('notes_text')"
+            rows="4"
+            maxlength="1000"
+            :showCounter="true"
+            :error="$errors->first('notes_text')"
+        />
 
         <!-- Form Actions -->
         <div class="pt-6 border-t border-gray-200 dark:border-gray-600 flex items-center space-x-4">
-            <button type="submit" hx-indicator="#save-loading"
-                class="btn btn-primary px-6 py-3 text-base font-medium shadow-sm">
+            <x-ui.button 
+                type="submit" 
+                variant="primary" 
+                size="lg"
+                hx-indicator="#save-loading"
+                class="px-6 py-3 text-base font-medium shadow-sm"
+            >
                 <span id="save-loading" class="htmx-indicator hidden">
                     <svg class="animate-spin -ml-1 mr-3 h-5 w-5 text-white" xmlns="http://www.w3.org/2000/svg" fill="none" viewBox="0 0 24 24">
                         <circle class="opacity-25" cx="12" cy="12" r="10" stroke="currentColor" stroke-width="4"></circle>
@@ -159,12 +171,17 @@
                     Saving...
                 </span>
                 <span class="htmx-indicator:hidden">Log Reading</span>
-            </button>
+            </x-ui.button>
 
-            <button type="button" @click="modalOpen = false"
-                class="btn btn-outline px-6 py-3 text-base font-medium">
+            <x-ui.button 
+                type="button" 
+                variant="outline" 
+                size="lg"
+                @click="modalOpen = false"
+                class="px-6 py-3 text-base font-medium"
+            >
                 Cancel
-            </button>
+            </x-ui.button>
         </div>
     </form>
 </div>
