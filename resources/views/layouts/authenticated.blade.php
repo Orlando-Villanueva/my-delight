@@ -227,15 +227,21 @@
 
                     <!-- Primary Action Button - Desktop -->
                     <div class="flex items-center space-x-3">
-                        <button type="button" hx-get="{{ route('logs.create') }}"
-                            hx-target="#reading-log-modal-content" hx-swap="innerHTML" hx-indicator="#modal-loading"
-                            @click="modalOpen = true" 
-                                                            class="bg-primary-500 hover:bg-primary-600 text-white px-6 py-2 rounded-lg flex items-center space-x-2 text-base leading-[1.5] transition-colors">
-                            <svg class="w-4 h-4" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                        <x-ui.button 
+                            variant="primary"
+                            size="default"
+                            hx-get="{{ route('logs.create') }}"
+                            hx-target="#reading-log-modal-content" 
+                            hx-swap="innerHTML" 
+                            hx-indicator="#modal-loading"
+                            @click="modalOpen = true"
+                            class="!px-6 !py-2 !text-base"
+                        >
+                            <svg class="w-4 h-4 mr-2" fill="none" stroke="currentColor" viewBox="0 0 24 24">
                                 <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M12 6v6m0 0v6m0-6h6m-6 0H6"></path>
                             </svg>
-                            <span>Log Reading</span>
-                        </button>
+                            Log Reading
+                        </x-ui.button>
                     </div>
                 </div>
             </header>
@@ -320,7 +326,7 @@
                 <!-- Loading Indicator (shown during HTMX requests) -->
                 <div id="modal-loading" class="htmx-indicator flex items-center justify-center h-32">
                     <div class="animate-spin rounded-full h-8 w-8 border-b-2 border-primary-500"></div>
-                    <span class="ml-3 text-gray-600">Loading form...</span>
+                    <span class="ml-3 text-gray-600 dark:text-gray-400">Loading form...</span>
                 </div>
             </div>
         </aside>

@@ -2,7 +2,7 @@
 {{-- This component updates page headers via HTMX out-of-band swapping --}}
 {{-- Usage: @include('partials.header-update', ['title' => 'Page Title', 'subtitle' => 'Page subtitle']) --}}
 
-<h1 id="mobile-page-title" hx-swap-oob="innerHTML" class="text-lg font-semibold text-blue-600">
+<h1 id="mobile-page-title" hx-swap-oob="innerHTML" class="text-lg font-semibold text-primary-600">
     {{ $title }}
 </h1>
 

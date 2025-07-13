@@ -53,7 +53,7 @@
             <div x-show="form.book_id" x-cloak>
                 <div class="space-y-1">
                     <div class="flex items-center space-x-2">
-                        <svg class="w-4 h-4 text-blue-500" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                        <svg class="w-4 h-4 text-primary-500" fill="none" stroke="currentColor" viewBox="0 0 24 24">
                             <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M13 16h-1v-4h-1m1-4h.01M21 12a9 9 0 11-18 0 9 9 0 0118 0z"></path>
                         </svg>
                         <span>Enter a single chapter (e.g., <strong>3</strong>) or range (e.g., <strong>1-5</strong>)</span>
