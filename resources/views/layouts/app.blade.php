@@ -10,7 +10,7 @@
 
     <!-- Favicon -->
     <link rel="icon" href="{{ asset('favicon.ico') }}" type="image/x-icon">
-    <link rel="apple-touch-icon" sizes="192x192" href="{{ asset('images/logo-192.png') }}">
+    <link rel="apple-touch-icon" sizes="192x192" href="{{ asset('images/logo-192.png') }}?v={{ time() }}">
     <meta name="theme-color" content="#3366CC">
 
     <!-- Fonts -->
@@ -38,14 +38,7 @@
     @if(request()->routeIs('login') || request()->routeIs('register') || request()->routeIs('password.*'))
         <!-- Full-height auth layout -->
         <div class="min-h-screen">
-            <header class="absolute top-0 left-0 right-0 z-10">
-                <div class="container mx-auto px-6 py-4">
-                    <a href="{{ url('/') }}"
-                        class="flex items-center text-lg font-bold text-white hover:text-white hover:opacity-90 transition">
-                        <span>Bible Habit Builder</span>
-                    </a>
-                </div>
-            </header>
+
             
             <main>
                 @yield('content')

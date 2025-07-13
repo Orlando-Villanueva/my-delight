@@ -12,13 +12,13 @@ trait PasswordValidationRules
      * @return array<int, \Illuminate\Contracts\Validation\Rule|array<mixed>|string>
      */
     protected function passwordRules(): array
-    {        return [
+    {
+        return [
             'required',
             'string',
             Password::min(8)
                 ->numbers()
                 ->uncompromised(),
-            'confirmed'
         ];
     }
 }
