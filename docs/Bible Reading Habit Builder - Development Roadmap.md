@@ -80,6 +80,11 @@
 * ✅ Create standard Laravel authentication forms (login, registration, password reset)
 * ✅ Configure user model and authentication guards
 * ✅ Implement authentication middleware and route protection
+* ❌ **CRITICAL MVP GAP:** Email service configuration for password reset functionality
+  - Currently using MAIL_MAILER=array (no actual email delivery)
+  - Password reset forms exist but emails are not sent
+  - **Required for MVP:** Configure production email service (Postmark recommended)
+  - **Development setup:** Mailtrap for testing email flows
 
 ### **Week 3: Reading Log Core Features** - **85% Complete**
 
@@ -219,6 +224,11 @@
 
 **PR 10: Final Polish & Production Deployment (1-2 days)**
 *Priority: High - Launch readiness*
+* **Email Service Setup (CRITICAL FOR MVP):**
+  - Configure production email service (Postmark for transactional emails)
+  - Set up development email testing (Mailtrap for email verification)
+  - Test password reset email delivery end-to-end
+  - Verify email templates and branding consistency
 * **Accessibility & Testing:**
   - Ensure WCAG 2.1 AA compliance with ARIA labels and keyboard navigation
   - Add HTMX loading indicators and error handling
@@ -331,6 +341,11 @@ Cache::remember("user_calendar_{$userId}_{$year}", 1800, fn() => $this->getCalen
 
 ### **📋 REMAINING WORK (5% of MVP)**
 
+#### **Email Infrastructure (PR-10 - CRITICAL MVP REQUIREMENT)**
+- ❌ **Email Service Configuration** - Production email delivery (Postmark)
+- ❌ **Password Reset Testing** - End-to-end email flow validation
+- ❌ **Email Template Verification** - Branding and deliverability testing
+
 #### **Performance Layer (PR-9 - Critical for Production)**
 - ❌ **Caching Implementation** - UserStatisticsService optimization
 - ❌ **SQL Optimization** - Streak calculations and query performance  
@@ -341,23 +356,27 @@ Cache::remember("user_calendar_{$userId}_{$year}", 1800, fn() => $this->getCalen
 - ❌ **Language Toggle** - Seamless bilingual switching
 
 #### **Production Readiness (PR-10 - Launch Critical)**
+- ❌ **Email Service Configuration** - Critical for password reset functionality  
 - ❌ **Accessibility Audit** - WCAG 2.1 AA compliance verification
 - ❌ **Cross-browser Testing** - Compatibility validation
 - ❌ **Security Audit** - Production security review
 
 ### **🚀 MVP READINESS CONCLUSION**
 
-**Status: 95% COMPLETE - READY FOR FINAL SPRINT**
+**Status: 90% COMPLETE - EMAIL SETUP CRITICAL FOR LAUNCH**
 
 **Core Assessment:**
 - ✅ **All Must-Have Features Complete** - Core user loop fully functional
 - ✅ **All High-Priority Features Complete** - Book tracking, calendar, analytics
 - ✅ **User Experience Excellent** - Professional design with smooth interactions
 - ✅ **Technical Foundation Solid** - Clean architecture with proper service layer
+- ❌ **CRITICAL GAP: Email Infrastructure** - Password reset functionality broken without email service
 
 **Remaining Work: 2 weeks for production-ready launch**
-- **Week 7:** French localization (market expansion)
+- **Week 7:** French localization (market expansion) + Email service setup (critical)
 - **Week 8:** Performance optimization + production deployment
+
+**PRIORITY CHANGE:** Email configuration moved to Week 7 as it's essential for basic authentication functionality. Without working password reset, user recovery is impossible, making this a launch-blocking issue.
 
 The MVP delivers exceptional value with all core features working perfectly. The remaining work focuses on performance optimization and market expansion rather than core functionality.
 
