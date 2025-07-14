@@ -34,6 +34,18 @@
     --color-success-800: #166534;
     --color-success-900: #14532d;
     --color-success-950: #052e16;
+    
+    --color-destructive-50: #fef2f2;
+    --color-destructive-100: #fee2e2;
+    --color-destructive-200: #fecaca;
+    --color-destructive-300: #fca5a5;
+    --color-destructive-400: #f87171;
+    --color-destructive-500: #ef4444;
+    --color-destructive-600: #dc2626;
+    --color-destructive-700: #b91c1c;
+    --color-destructive-800: #991b1b;
+    --color-destructive-900: #7f1d1d;
+    --color-destructive-950: #450a0a;
 }
 
 /* Essential Component Classes - Only what we actually use */
@@ -53,6 +65,10 @@
     
     .btn-success {
         @apply bg-success-500 text-white hover:bg-success-400 focus:ring-success-500;
+    }
+    
+    .btn-destructive {
+        @apply bg-destructive-500 text-white hover:bg-destructive-400 focus:ring-destructive-500;
     }
     
     .btn-outline {
@@ -110,6 +126,6 @@
     }
     
     .form-error {
-        @apply text-red-600 dark:text-red-400 text-sm mt-1;
+        @apply text-destructive-600 dark:text-destructive-400 text-sm mt-1;
     }
 }

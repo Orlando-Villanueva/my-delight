@@ -10,7 +10,7 @@
 
     <!-- Favicon -->
     <link rel="icon" href="{{ asset('favicon.ico') }}" type="image/x-icon">
-    <link rel="apple-touch-icon" sizes="192x192" href="{{ asset('images/logo-192.png') }}?v={{ time() }}">
+    <link rel="apple-touch-icon" sizes="192x192" href="{{ asset('images/logo-192.png') }}">
     <meta name="theme-color" content="#3366CC">
 
     <!-- Fonts -->
@@ -77,8 +77,8 @@
                     class="flex items-center text-xl font-semibold text-[#4A5568] dark:text-gray-200 hover:text-primary-500 dark:hover:text-primary-500 leading-[1.5]">
                     <div class="w-8 h-8 rounded-lg flex items-center justify-center mr-3">
                         <img 
-                            src="{{ asset('images/logo-64.png') }}?v={{ time() }}"
-                            srcset="{{ asset('images/logo-64.png') }}?v={{ time() }} 1x, {{ asset('images/logo-64-2x.png') }}?v={{ time() }} 2x"
+                            src="{{ asset('images/logo-64.png') }}?v={{ config('app.asset_version') }}"
+                            srcset="{{ asset('images/logo-64.png') }}?v={{ config('app.asset_version') }} 1x, {{ asset('images/logo-64-2x.png') }}?v={{ config('app.asset_version') }} 2x"
                             alt="Bible Habit Builder Logo" 
                             class="w-full h-full object-contain"
                         />
@@ -168,8 +168,8 @@
                     <div class="flex items-center space-x-2">
                         <div class="w-8 h-8 rounded-lg flex items-center justify-center">
                             <img 
-                                src="{{ asset('images/logo-64.png') }}?v={{ time() }}"
-                                srcset="{{ asset('images/logo-64.png') }}?v={{ time() }} 1x, {{ asset('images/logo-64-2x.png') }}?v={{ time() }} 2x"
+                                src="{{ asset('images/logo-64.png') }}?v={{ config('app.asset_version') }}"
+                                srcset="{{ asset('images/logo-64.png') }}?v={{ config('app.asset_version') }} 1x, {{ asset('images/logo-64-2x.png') }}?v={{ config('app.asset_version') }} 2x"
                                 alt="Bible Habit Builder Logo" 
                                 class="w-full h-full object-contain"
                             />

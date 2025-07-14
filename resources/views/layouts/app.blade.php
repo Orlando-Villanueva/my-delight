@@ -10,7 +10,7 @@
 
     <!-- Favicon -->
     <link rel="icon" href="{{ asset('favicon.ico') }}" type="image/x-icon">
-    <link rel="apple-touch-icon" sizes="192x192" href="{{ asset('images/logo-192.png') }}?v={{ time() }}">
+    <link rel="apple-touch-icon" sizes="192x192" href="{{ asset('images/logo-192.png') }}">
     <meta name="theme-color" content="#3366CC">
 
     <!-- Fonts -->

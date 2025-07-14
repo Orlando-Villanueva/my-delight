@@ -6,8 +6,8 @@
         <!-- Logo Section -->
         <div class="text-center">
             <img 
-                src="{{ asset('images/logo-64.png') }}?v={{ time() }}"
-                srcset="{{ asset('images/logo-64.png') }}?v={{ time() }} 1x, {{ asset('images/logo-64-2x.png') }}?v={{ time() }} 2x"
+                src="{{ asset('images/logo-64.png') }}?v={{ config('app.asset_version') }}"
+                srcset="{{ asset('images/logo-64.png') }}?v={{ config('app.asset_version') }} 1x, {{ asset('images/logo-64-2x.png') }}?v={{ config('app.asset_version') }} 2x"
                 alt="Bible Habit Builder Logo" 
                 class="w-20 h-20 object-contain mx-auto mb-6"
                 style="filter: drop-shadow(0 0 15px rgba(51, 102, 204, 0.2)) drop-shadow(0 0 30px rgba(51, 102, 204, 0.08));"

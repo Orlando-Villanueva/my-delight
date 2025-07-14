@@ -1,18 +1,8 @@
-@use('App\Services\BookProgressService')
 @props([
     'testament' => 'Old'
 ])
 
-@php
-    $user = auth()->user();
-    $bookProgressService = app(BookProgressService::class);
-    
-    $oldData = $bookProgressService->getTestamentProgress($user, 'Old');
-    $newData = $bookProgressService->getTestamentProgress($user, 'New');
-    
-    // Use session preference, fallback to component prop, then default to 'Old'
-    $testament = session('testament_preference', $attributes->get('testament', 'Old'));
-@endphp
+{{-- Data is now provided by the component class through dependency injection --}}
 
 <x-ui.card {{ $attributes->merge(['class' => 'bg-white dark:bg-gray-800 border border-[#D1D7E0] dark:border-gray-700 transition-colors']) }}>
     <div class="p-6">

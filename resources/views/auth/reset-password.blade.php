@@ -73,22 +73,6 @@
                     <p class="mt-1 text-sm text-gray-500 dark:text-gray-400">Use 8+ characters with a mix of letters, numbers & symbols</p>
                 </div>
                 
-                <!-- Password Confirmation Field -->
-                <div>
-                    <label for="password_confirmation" class="block text-sm font-semibold text-gray-700 dark:text-gray-300 mb-2">Confirm New Password</label>
-                    <input 
-                        type="password"
-                        id="password_confirmation"
-                        name="password_confirmation"
-                        required
-                        class="w-full px-4 py-3 border border-gray-300 dark:border-gray-600 rounded-lg focus:outline-none focus:ring-2 focus:ring-primary-500 focus:border-transparent transition-all bg-white dark:bg-gray-700 text-gray-900 dark:text-gray-200 placeholder-gray-500 dark:placeholder-gray-400 {{ $errors->has('password_confirmation') ? 'border-red-300 focus:ring-red-500' : '' }}"
-                        placeholder=""
-                    />
-                    @if($errors->has('password_confirmation'))
-                        <p class="mt-1 text-sm text-red-600 dark:text-red-400">{{ $errors->first('password_confirmation') }}</p>
-                    @endif
-                </div>
-                
                 <!-- Submit Button -->
                 <button 
                     type="submit" 

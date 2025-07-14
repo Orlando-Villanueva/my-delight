@@ -239,7 +239,7 @@ GET /register
 
 POST /register
 - Content-Type: multipart/form-data
-- Params: name, email, password, password_confirmation
+- Params: name, email, password
 - Returns: Redirect with HTML response
 
 GET /login
@@ -294,7 +294,7 @@ These endpoints serve JSON responses for mobile apps and other API clients.
 ### Authentication Endpoints (Sanctum)
 POST /api/register
 - Content-Type: application/json
-- Params: name, email, password, password_confirmation
+- Params: name, email, password
 - Returns: user object with Sanctum API token
 
 POST /api/login

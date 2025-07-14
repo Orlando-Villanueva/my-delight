@@ -170,7 +170,7 @@
                     </svg>
                     Saving...
                 </span>
-                <span class="htmx-indicator:hidden">Log Reading</span>
+                <span class="htmx-indicator-hidden">Log Reading</span>
             </x-ui.button>
 
             <x-ui.button 
@@ -196,7 +196,7 @@
         display: inline-flex;
     }
     
-    .htmx-request .htmx-indicator\:hidden {
-        display: none;
+    .htmx-request .htmx-indicator-hidden {
+        display: none !important;
     }
 </style>

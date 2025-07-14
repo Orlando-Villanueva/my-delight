@@ -83,7 +83,6 @@ class AuthenticationMiddlewareTest extends TestCase
                 'name' => 'Test User',
                 'email' => 'test@example.com',
                 'password' => 'ValidPass123!',
-                'password_confirmation' => 'ValidPass123!',
                 '_token' => 'test-token',
             ]);
 
