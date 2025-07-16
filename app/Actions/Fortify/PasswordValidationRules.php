@@ -19,6 +19,7 @@ trait PasswordValidationRules
             Password::min(8)
                 ->numbers()
                 ->uncompromised(),
+            'confirmed', // Require password confirmation
         ];
     }
 }
