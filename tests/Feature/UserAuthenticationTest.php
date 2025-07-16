@@ -26,6 +26,7 @@ class UserAuthenticationTest extends TestCase
             'name' => 'John Doe',
             'email' => 'john@example.com',
             'password' => 'ValidPass123!',
+            'password_confirmation' => 'ValidPass123!',
         ];
 
         $response = $this->post('/register', $userData);
@@ -47,6 +48,7 @@ class UserAuthenticationTest extends TestCase
             'name' => 'John Doe',
             'email' => 'invalid-email',
             'password' => 'ValidPass123!',
+            'password_confirmation' => 'ValidPass123!',
         ];
 
         $response = $this->post('/register', $userData);
@@ -62,6 +64,7 @@ class UserAuthenticationTest extends TestCase
             'name' => 'John Doe',
             'email' => 'john@example.com',
             'password' => 'Pass12!',
+            'password_confirmation' => 'Pass12!',
         ];
 
         $response = $this->post('/register', $userData);
@@ -77,6 +80,7 @@ class UserAuthenticationTest extends TestCase
             'name' => 'John Doe',
             'email' => 'john@example.com',
             'password' => 'ValidPassword!',
+            'password_confirmation' => 'ValidPassword!',
         ];
 
         $response = $this->post('/register', $userData);
@@ -94,6 +98,7 @@ class UserAuthenticationTest extends TestCase
             'name' => 'Jane Doe',
             'email' => 'john@example.com',
             'password' => 'ValidPass123!',
+            'password_confirmation' => 'ValidPass123!',
         ];
 
         $response = $this->post('/register', $userData);
@@ -102,6 +107,23 @@ class UserAuthenticationTest extends TestCase
         
         // Ensure only one user exists with this email
         $this->assertEquals(1, User::where('email', 'john@example.com')->count());
+    }
+
+    /**
+     * Ensure password confirmation is required for registration.
+     */
+    public function test_user_registration_requires_password_confirmation()
+    {
+        $userData = [
+            'name' => 'John Doe',
+            'email' => 'john@example.com',
+            'password' => 'ValidPass123!',
+            'password_confirmation' => 'WrongPass123!',
+        ];
+
+        $response = $this->post('/register', $userData);
+        $response->assertSessionHasErrors('password');
+        $this->assertDatabaseMissing('users', ['email' => 'john@example.com']);
     }
 
     public function test_user_can_login_with_valid_credentials()
