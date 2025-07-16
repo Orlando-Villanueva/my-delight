@@ -73,13 +73,8 @@ public function create(Request $request)
 {
     $books = $this->bibleReferenceService->listBibleBooks();
     
-    // Return partial for HTMX requests
-    if ($request->header('HX-Request')) {
-        return view('partials.reading-log-form', compact('books'));
-    }
-    
-    // Return full page for direct access (graceful degradation)
-    return view('logs.create', compact('books'));
+    // Always return partial view for modal display
+    return view('partials.reading-log-form', compact('books'));
 }
 ```
 
@@ -87,6 +82,7 @@ public function create(Request $request)
 - ✅ **Seamless Navigation**: No page reloads, maintains app-like feel
 - ✅ **URL Accessibility**: Direct URLs still work for bookmarking
 - ✅ **Progressive Enhancement**: Graceful degradation if JavaScript disabled
+ ✅ **Modal-First**: Focused user experience with slide-over form
 - ✅ **Consistent Layout**: Form appears within authenticated layout
 
 ### URL Management with `hx-push-url`
@@ -630,6 +626,169 @@ Route::middleware(['guest'])->group(function () {
 });
 ```
 
+## Anti-Flashing Patterns for Server-Driven State
+
+### The Flash Problem
+
+When Alpine.js components use server-side state preferences, visual flashing can occur during the brief moment between initial HTML render and Alpine.js initialization. This creates jarring UX where users see:
+
+1. **Modal flash** - Modals briefly appear before `x-show` takes effect
+2. **Content flash** - Wrong content shows before Alpine sets correct state  
+3. **Button flash** - Buttons show incorrect styling before bindings activate
+
+### Comprehensive Anti-Flash Solution
+
+#### **1. Modal Flash Prevention**
+
+**Problem**: Modals with `x-show="modalOpen"` briefly appear on page load.
+
+**Solution**: Add `x-cloak` to modal elements.
+
+```html
+<!-- Modal Backdrop -->
+<div x-show="modalOpen" x-cloak x-transition.opacity 
+     class="fixed inset-0 bg-black/40 z-40"
+     @click="modalOpen = false">
+</div>
+
+<!-- Modal Panel -->
+<aside x-show="modalOpen" x-cloak 
+       x-transition:enter="transform transition ease-in-out duration-300"
+       class="fixed right-0 top-0 bottom-0 w-full max-w-lg bg-white shadow-xl z-50"
+       x-trap.inert.noscroll="modalOpen">
+    <!-- Modal content -->
+</aside>
+```
+
+#### **2. Server-Side State Flash Prevention**
+
+**Problem**: When user preference is stored server-side (session), Alpine.js initially shows default state before loading preference.
+
+**Solution**: Combine server-side preference detection with conditional `x-cloak`.
+
+```php
+@php
+    // Read server-side preference
+    $testament = session('testament_preference', 'Old');
+@endphp
+
+<div x-data="bookProgressComponent('{{ $testament }}')">
+    <!-- Default Testament Content (no x-cloak) -->
+    <div x-show="activeTestament === 'Old'" 
+         {{ $testament === 'New' ? 'x-cloak' : '' }}>
+        @include('partials.old-testament-content')
+    </div>
+
+    <!-- Non-Default Testament Content (has x-cloak when not preferred) -->
+    <div x-show="activeTestament === 'New'" 
+         {{ $testament === 'Old' ? 'x-cloak' : '' }}>
+        @include('partials.new-testament-content')
+    </div>
+</div>
+```
+
+**How it works**:
+- **When preference is "Old"**: Old Testament shows immediately, New Testament has `x-cloak`
+- **When preference is "New"**: New Testament shows immediately, Old Testament has `x-cloak`
+- **Result**: Correct content displays from initial render with no flash
+
+#### **3. Server-Side Button Styling**
+
+**Problem**: Alpine.js `:class` bindings cause button styling to flash from default to preferred state.
+
+**Solution**: Apply server-side styling that matches Alpine.js bindings.
+
+```php
+@php
+    $currentTestament = session('testament_preference', 'Old');
+@endphp
+
+<button x-on:click="activeTestament = 'Old'"
+        :class="{ 'bg-blue-600 text-white': activeTestament === 'Old', 'text-gray-600': activeTestament !== 'Old' }"
+        class="px-3 py-1.5 rounded {{ $currentTestament === 'Old' ? 'bg-blue-600 text-white' : 'text-gray-600' }}">
+    Old Testament
+</button>
+
+<button x-on:click="activeTestament = 'New'"
+        :class="{ 'bg-blue-600 text-white': activeTestament === 'New', 'text-gray-600': activeTestament !== 'New' }"
+        class="px-3 py-1.5 rounded {{ $currentTestament === 'New' ? 'bg-blue-600 text-white' : 'text-gray-600' }}">
+    New Testament  
+</button>
+```
+
+**Key principle**: Server-side classes match Alpine.js `:class` logic for seamless transition.
+
+### Implementation Architecture
+
+#### **Server-Side Preference Storage**
+
+```php
+// routes/web.php - HTMX preference endpoint
+Route::post('/preferences/testament', function (Request $request) {
+    $testament = $request->input('testament');
+    
+    if (!in_array($testament, ['Old', 'New'])) {
+        return response('Invalid testament', 400);
+    }
+    
+    session(['testament_preference' => $testament]);
+    return response('', 200);
+})->name('preferences.testament');
+```
+
+#### **HTMX Preference Updates**
+
+```html
+<button x-on:click="activeTestament = 'Old'"
+        hx-post="{{ route('preferences.testament') }}"
+        hx-vals='{"testament": "Old"}'
+        hx-headers='{"X-CSRF-TOKEN": "{{ csrf_token() }}"}'
+        hx-swap="none">
+    Old Testament
+</button>
+```
+
+**Benefits**:
+- ✅ **Pure HTMX** - No JavaScript fetch() calls
+- ✅ **CSRF Protected** - Uses Laravel's csrf_token() helper
+- ✅ **Server-driven** - State lives on server, not localStorage
+- ✅ **Immediate persistence** - Preference saved on every click
+
+#### **Simplified Alpine.js Component**
+
+```javascript
+function bookProgressComponent(serverDefault) {
+    return {
+        // State - Use server preference (from session)
+        activeTestament: serverDefault
+        // No localStorage, no $watch - server handles persistence
+    };
+}
+```
+
+### Anti-Flash Checklist
+
+For any server-driven component with user preferences:
+
+- [ ] **Identify flash sources** - Modal visibility, content selection, button states
+- [ ] **Add modal x-cloak** - For any `x-show` modals/overlays
+- [ ] **Conditional content x-cloak** - Hide non-preferred content initially
+- [ ] **Server-side styling** - Match Alpine.js `:class` logic with static classes
+- [ ] **HTMX preference storage** - Save state server-side, not localStorage
+- [ ] **Test both preferences** - Verify no flash in either state
+- [ ] **Simplify Alpine component** - Remove client-side persistence logic
+
+### Result: Zero-Flash Server-Driven UI
+
+The complete implementation eliminates all visual artifacts:
+
+1. **Page loads** → Correct content and styling appear immediately
+2. **Alpine.js initializes** → Takes over seamlessly with no visual change
+3. **User interactions** → State changes and server updates work normally
+4. **Page reloads** → Preferences persist, no flash on subsequent visits
+
+This pattern is essential for professional HTMX applications where server-driven state must feel as smooth as client-side SPAs.
+
 ## Advanced HTMX Patterns
 
 ### Event-Driven Updates
@@ -781,7 +940,7 @@ public function getDashboardStatistics(Request $request)
 ### Why a modal?
 1. **Visual continuity** – the user still "sees" where they are (dashboard, history, etc.).
 2. **Task focus** – dimmed background reduces distractions while filling the form.
-3. **Single source of truth** – the exact same Blade partial is used for both HTMX modal loading and full-page fallback (`/logs/create`).
+3. **Single source of truth** – the reading-log-form partial is used exclusively for modal display.
 4. **URL hygiene** – temporary overlays should not change `window.location`; therefore **DO NOT** use `hx-push-url` for modal loads.
 
 ### Anatomy
@@ -822,13 +981,8 @@ public function create(Request $request)
 {
     $books = $this->bibleReferenceService->listBibleBooks();
 
-    // 1️⃣ Modal / HTMX request – return the *form partial only*
-    if ($request->header('HX-Request')) {
-        return view('partials.reading-log-form', compact('books'));
-    }
-
-    // 2️⃣ Direct page access – return full layout (graceful degrade)
-    return view('logs.create', compact('books'));
+    // Always return the form partial for modal display
+    return view('partials.reading-log-form', compact('books'));
 }
 ```
 
@@ -848,7 +1002,7 @@ public function create(Request $request)
 ### Test plan
 1. Desktop – open/close modal from dashboard & history.
 2. Mobile – ensure panel slides up from bottom and covers at least 75 vh.
-3. Refresh safety – direct `/logs/create` URL still shows full-width page.
+3. Modal-first approach – simplified architecture focused on slide-over experience.
 4. Keyboard – Esc closes, focus returns to original *Log Reading* button.
 
 This implementation guide provides the foundation for building robust, server-driven interactions using HTMX while maintaining clean separation of concerns and excellent user experience. 

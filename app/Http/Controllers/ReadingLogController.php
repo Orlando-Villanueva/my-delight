@@ -4,21 +4,25 @@ namespace App\Http\Controllers;
 
 use App\Services\BibleReferenceService;
 use App\Services\ReadingLogService;
+use App\Services\ReadingFormService;
 use Illuminate\Http\Request;
+use Illuminate\Support\MessageBag;
 use Illuminate\Validation\ValidationException;
 use Illuminate\Database\QueryException;
+use Illuminate\Pagination\LengthAwarePaginator;
 use InvalidArgumentException;
 
 class ReadingLogController extends Controller
 {
     public function __construct(
         private BibleReferenceService $bibleReferenceService,
-        private ReadingLogService $readingLogService
+        private ReadingLogService $readingLogService,
+        private ReadingFormService $readingFormService
     ) {}
 
     /**
      * Show the form for creating a new reading log.
-     * Supports both HTMX content loading and direct page access.
+     * Returns the modal form partial for HTMX loading.
      */
     public function create(Request $request)
     {
@@ -27,13 +31,17 @@ class ReadingLogController extends Controller
         $locale = $request->get('lang', 'en'); // Allow testing via ?lang=fr
         $books = $this->bibleReferenceService->listBibleBooks(null, $locale);
         
-        // Return partial view for HTMX requests (seamless content loading)
-        if ($request->header('HX-Request')) {
-            return view('partials.reading-log-form', compact('books'));
-        }
+        // Pass empty error bag for consistent template behavior
+        $errors = new MessageBag();
         
-        // Return full page for direct access (graceful degradation)
-        return view('logs.create', compact('books'));
+        // Get form context data (yesterday logic, streak info)
+        $formContext = $this->readingFormService->getFormContextData($request->user());
+        
+        // Always return partial view for modal display
+        return view('partials.reading-log-form', array_merge(
+            compact('books', 'errors'),
+            $formContext
+        ));
     }
 
     /**
@@ -50,7 +58,7 @@ class ReadingLogController extends Controller
                 'book_id' => 'required|integer|min:1|max:66',
                 'chapter_input' => ['required', 'string', 'regex:/^(\d+|\d+-\d+)$/'],
                 'date_read' => "required|date|in:{$today},{$yesterday}",
-                'notes_text' => 'nullable|string|max:500'
+                'notes_text' => 'nullable|string|max:1000'
             ]);
 
             // Parse chapter input (single or range)
@@ -84,41 +92,58 @@ class ReadingLogController extends Controller
             // Create reading log using service
             $log = $this->readingLogService->logReading($request->user(), $validated);
 
-            // Return appropriate response based on request type
-            if ($request->header('HX-Request')) {
-                return view('partials.reading-log-success-message', compact('log'));
-            }
-
-            return redirect()->route('dashboard')->with('success', 'Reading logged successfully!');
+            // Always return HTMX success partial
+            return view('partials.reading-log-success-message', compact('log'));
 
         } catch (ValidationException $e) {
-            if ($request->header('HX-Request')) {
-                return view('partials.validation-errors', ['errors' => $e->errors()]);
-            }
+            // Get books data for form re-display
+            $books = $this->bibleReferenceService->listBibleBooks(null, 'en');
             
-            return back()->withErrors($e->errors())->withInput();
+            // Pass errors directly to the view
+            $errors = new MessageBag($e->errors());
+            
+            // Get form context data (yesterday logic, streak info)
+            $formContext = $this->readingFormService->getFormContextData($request->user());
+            
+            // Return form with validation errors
+            return view('partials.reading-log-form', array_merge(
+                compact('books', 'errors'),
+                $formContext
+            ));
 
         } catch (InvalidArgumentException $e) {
-            // Wrap message in array to match ValidationException structure
-            $error = ['chapter_input' => [$e->getMessage()]];
+            // Get books data for form re-display
+            $books = $this->bibleReferenceService->listBibleBooks(null, 'en');
             
-            if ($request->header('HX-Request')) {
-                return view('partials.validation-errors', ['errors' => $error]);
-            }
+            // Create error bag for form display
+            $errors = new MessageBag(['chapter_input' => [$e->getMessage()]]);
             
-            return back()->withErrors($error)->withInput();
+            // Get form context data (yesterday logic, streak info)
+            $formContext = $this->readingFormService->getFormContextData($request->user());
+            
+            // Return form with validation errors
+            return view('partials.reading-log-form', array_merge(
+                compact('books', 'errors'),
+                $formContext
+            ));
 
         } catch (QueryException $e) {
             // Handle unique constraint violation (duplicate reading log)
             if ($e->getCode() === '23000') {
-                // Duplicate entry message wrapped in array to align with view expectations
-                $error = ['chapter_input' => ['You have already logged one or more of these chapters for today.']];
+                // Get books data for form re-display
+                $books = $this->bibleReferenceService->listBibleBooks(null, 'en');
                 
-                if ($request->header('HX-Request')) {
-                    return view('partials.validation-errors', ['errors' => $error]);
-                }
+                // Create error bag for form display
+                $errors = new MessageBag(['chapter_input' => ['You have already logged one or more of these chapters for today.']]);
                 
-                return back()->withErrors($error)->withInput();
+                // Get form context data (yesterday logic, streak info)
+                $formContext = $this->readingFormService->getFormContextData($request->user());
+                
+                // Return form with validation errors
+                return view('partials.reading-log-form', array_merge(
+                    compact('books', 'errors'),
+                    $formContext
+                ));
             }
             
             // Re-throw if it's a different database error
@@ -155,25 +180,37 @@ class ReadingLogController extends Controller
             $allLogs->dateRange($startDate);
         }
         
-        // Group by passage_text + date_read + created_at (same reading session)
+        // Group by date_read to show all readings for each day
         $groupedLogs = $allLogs->get()
             ->groupBy(function ($log) {
-                return $log->passage_text . '|' . $log->date_read . '|' . $log->created_at->format('Y-m-d H:i:s');
+                return $log->date_read->format('Y-m-d'); // Group by date only
             })
-            ->map(function ($group) {
-                return $group->first(); // Take the first entry from each group
+            ->map(function ($logsForDay) {
+                // Deduplicate readings within each day by passage + date + created_at (same session)
+                $deduplicated = $logsForDay->groupBy(function ($log) {
+                    return $log->passage_text . '|' . $log->date_read . '|' . $log->created_at->format('Y-m-d H:i:s');
+                })
+                ->map(function ($group) {
+                    return $group->first(); // Take the first entry from each group
+                })
+                ->values();
+                
+                // Sort readings within each day by created_at (newest first)
+                return $deduplicated->sortByDesc('created_at')->values();
             })
-            ->values()
-            ->sortByDesc('created_at');
+            ->sortByDesc(function ($logsForDay, $date) {
+                return $date; // Sort days by date (newest first)
+            });
         
-        // Manual pagination
-        $perPage = 5;
+        // Manual pagination by days (not individual logs)
+        $perPage = 8; // Number of days to show per page
         $currentPage = $request->get('page', 1);
         $offset = ($currentPage - 1) * $perPage;
         
-        $paginatedLogs = $groupedLogs->slice($offset, $perPage);
-        $logs = new \Illuminate\Pagination\LengthAwarePaginator(
-            $paginatedLogs,
+        // Paginate the day groups
+        $paginatedDays = $groupedLogs->slice($offset, $perPage);
+        $logs = new LengthAwarePaginator(
+            $paginatedDays,
             $groupedLogs->count(),
             $perPage,
             $currentPage,
@@ -181,7 +218,7 @@ class ReadingLogController extends Controller
         );
         $logs->withQueryString();
         
-        // Return partial view for HTMX requests
+        // Return appropriate view based on request type
         if ($request->header('HX-Request')) {
             // If it's an infinite scroll request (has page parameter), return just the items
             if ($request->has('page') && $request->get('page') > 1) {
@@ -193,11 +230,11 @@ class ReadingLogController extends Controller
                 return view('partials.reading-log-list', compact('logs', 'filter'));
             }
             
-            // Otherwise, return the page container for navigation (no sidebar)
+            // Otherwise, return the page container for HTMX navigation
             return view('partials.logs-page', compact('logs', 'filter'));
         }
         
-        // Return full page for direct access (graceful degradation)
+        // Return full page for direct access (browser URL)
         return view('logs.index', compact('logs', 'filter'));
     }
 } 

@@ -4,11 +4,14 @@ namespace Tests\Feature;
 
 use App\Models\User;
 use Illuminate\Foundation\Http\Middleware\VerifyCsrfToken;
+use Illuminate\Foundation\Testing\RefreshDatabase;
 use Illuminate\Support\Facades\Hash;
 use Tests\TestCase;
 
 class UserAuthenticationTest extends TestCase
 {
+    use RefreshDatabase;
+
     protected function setUp(): void
     {
         parent::setUp();
@@ -52,21 +55,6 @@ class UserAuthenticationTest extends TestCase
         
         $response->assertSessionHasErrors('email');
         $this->assertDatabaseMissing('users', ['email' => 'invalid-email']);
-    }
-
-    public function test_user_registration_requires_password_confirmation()
-    {
-        $userData = [
-            'name' => 'John Doe',
-            'email' => 'john@example.com',
-            'password' => 'ValidPass123!',
-            'password_confirmation' => 'different-password',
-        ];
-
-        $response = $this->post('/register', $userData);
-        
-        $response->assertSessionHasErrors('password');
-        $this->assertDatabaseMissing('users', ['email' => 'john@example.com']);
     }
 
     public function test_user_registration_enforces_password_requirements()
@@ -119,6 +107,23 @@ class UserAuthenticationTest extends TestCase
         
         // Ensure only one user exists with this email
         $this->assertEquals(1, User::where('email', 'john@example.com')->count());
+    }
+
+    /**
+     * Ensure password confirmation is required for registration.
+     */
+    public function test_user_registration_requires_password_confirmation()
+    {
+        $userData = [
+            'name' => 'John Doe',
+            'email' => 'john@example.com',
+            'password' => 'ValidPass123!',
+            'password_confirmation' => 'WrongPass123!',
+        ];
+
+        $response = $this->post('/register', $userData);
+        $response->assertSessionHasErrors('password');
+        $this->assertDatabaseMissing('users', ['email' => 'john@example.com']);
     }
 
     public function test_user_can_login_with_valid_credentials()

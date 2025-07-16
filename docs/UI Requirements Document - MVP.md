@@ -79,7 +79,7 @@ This document outlines the user interface requirements for the Bible Habit Build
 #### Navigation Pattern
 - **Content Loading**: Form loads via HTMX within main dashboard layout (no page reload)
 - **Quick Access**: "Log Reading" button provides seamless access from dashboard
-- **Graceful Degradation**: Direct URL access (`/logs/create`) still works for bookmarking
+- **Modal-First**: Focused slide-over experience for logging readings
 - **Cancel Behavior**: Returns to dashboard content via HTMX, maintaining seamless experience
 
 #### Bible Reference Selection

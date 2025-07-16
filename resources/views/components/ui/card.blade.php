@@ -5,7 +5,7 @@
 @php
     $classes = 'card';
     if ($elevated) {
-        $classes .= ' shadow-md';
+        $classes .= ' card-elevated';
     }
 @endphp
 

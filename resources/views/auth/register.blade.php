@@ -1,143 +1,145 @@
 @extends('layouts.app')
 
 @section('content')
-<div class="min-h-screen flex items-center justify-center py-12 px-4 sm:px-6 lg:px-8">
-    <div class="max-w-md w-full space-y-8">
-        <!-- Logo and Header -->
-        <div class="text-center">
-            <h1 class="text-3xl font-bold text-blue-600 mb-2">
-                Bible Habit Builder
-            </h1>
-            <h2 class="text-xl font-semibold text-gray-700 mb-2">
-                Start your journey
-            </h2>
-            <p class="text-gray-500">
-                Create your account to begin tracking your Bible reading habit
-            </p>
-        </div>
+    <div
+        class="min-h-screen bg-gradient-to-br from-[#F5F7FA] to-white dark:from-gray-900 dark:to-gray-800 flex items-center justify-center px-4 sm:px-6 lg:px-8 py-8">
+        <div class="w-full max-w-md space-y-6">
+            <!-- Logo Section -->
+            <div class="text-center">
+                <img src="{{ asset('images/logo-64.png') }}?v={{ config('app.asset_version') }}"
+                    srcset="{{ asset('images/logo-64.png') }}?v={{ config('app.asset_version') }} 1x, {{ asset('images/logo-64-2x.png') }}?v={{ config('app.asset_version') }} 2x"
+                    alt="Bible Habit Builder Logo" class="w-20 h-20 object-contain mx-auto mb-4"
+                    style="filter: drop-shadow(0 0 15px rgba(51, 102, 204, 0.2)) drop-shadow(0 0 30px rgba(51, 102, 204, 0.08));" />
+                <h1 class="text-2xl font-bold text-[#4A5568] dark:text-gray-200 mb-1">Bible Habit Builder</h1>
+            </div>
 
-        <!-- Registration Form Card -->
-        <x-ui.card elevated="true" class="mt-8">
-            <form method="POST" action="{{ route('register') }}" class="space-y-6">
-                @csrf
-                
-                <!-- Display Validation Errors -->
-                @if ($errors->any())
-                    <div class="bg-red-50 border border-red-200 rounded-lg p-4">
-                        <div class="flex items-center mb-2">
-                            <svg class="w-5 h-5 text-red-600 mr-2" fill="currentColor" viewBox="0 0 20 20">
-                                <path fill-rule="evenodd" d="M10 18a8 8 0 100-16 8 8 0 000 16zM8.707 7.293a1 1 0 00-1.414 1.414L8.586 10l-1.293 1.293a1 1 0 101.414 1.414L10 11.414l1.293 1.293a1 1 0 001.414-1.414L11.414 10l1.293-1.293a1 1 0 00-1.414-1.414L10 8.586 8.707 7.293z" clip-rule="evenodd"></path>
-                            </svg>
-                            <span class="text-red-800 font-medium">Please correct the following errors:</span>
+            <!-- Form Card -->
+            <div
+                class="bg-white dark:bg-gray-800 rounded-2xl shadow-lg border border-[#D1D7E0] dark:border-gray-700 p-8 sm:p-10 mt-8">
+                <div class="space-y-6">
+                    <!-- Header -->
+                    <div class="text-center mb-8">
+                        <h2 class="text-2xl font-bold text-[#4A5568] dark:text-gray-200 mb-2">
+                            Create account
+                        </h2>
+                        <p class="text-[#4A5568] dark:text-gray-300 opacity-75">
+                            Start your Bible reading journey today
+                        </p>
+                    </div>
+
+                    <!-- Registration Form -->
+                    <form method="POST" action="{{ route('register') }}" class="space-y-6">
+                        @csrf
+
+                        <!-- Display Validation Errors -->
+                        @if ($errors->any())
+                            <div
+                                class="bg-red-50 dark:bg-red-900/20 border border-red-200 dark:border-red-800 rounded-lg p-4">
+                                <div class="flex items-center mb-2">
+                                    <svg class="w-4 h-4 text-red-600 dark:text-red-400 mr-2" fill="currentColor"
+                                        viewBox="0 0 20 20">
+                                        <path fill-rule="evenodd"
+                                            d="M10 18a8 8 0 100-16 8 8 0 000 16zM8.707 7.293a1 1 0 00-1.414 1.414L8.586 10l-1.293 1.293a1 1 0 101.414 1.414L10 11.414l1.293 1.293a1 1 0 001.414-1.414L11.414 10l1.293-1.293a1 1 0 00-1.414-1.414L10 8.586 8.707 7.293z"
+                                            clip-rule="evenodd"></path>
+                                    </svg>
+                                    <span class="text-red-800 dark:text-red-400 font-medium text-sm">Please correct the
+                                        following errors:</span>
+                                </div>
+                                <ul class="text-sm text-red-700 dark:text-red-400 space-y-1">
+                                    @foreach ($errors->all() as $error)
+                                        <li>• {{ $error }}</li>
+                                    @endforeach
+                                </ul>
+                            </div>
+                        @endif
+
+                        <!-- Name Field -->
+                        <div>
+                            <label for="name"
+                                class="block text-sm font-semibold text-gray-700 dark:text-gray-300 mb-2">Name</label>
+                            <input type="text" id="name" name="name" value="{{ old('name') }}" required
+                                class="w-full px-4 py-3 border border-gray-300 dark:border-gray-600 rounded-lg focus:outline-none focus:ring-2 focus:ring-primary-500 focus:border-transparent transition-all bg-white dark:bg-gray-700 text-gray-900 dark:text-gray-200 placeholder-gray-500 dark:placeholder-gray-400 {{ $errors->has('name') ? 'border-red-300 focus:ring-red-500' : '' }}"
+                                placeholder="" />
+                            @if ($errors->has('name'))
+                                <p class="mt-1 text-sm text-red-600 dark:text-red-400">{{ $errors->first('name') }}</p>
+                            @endif
                         </div>
-                        <ul class="text-sm text-red-700 space-y-1">
-                            @foreach ($errors->all() as $error)
-                                <li>• {{ $error }}</li>
-                            @endforeach
-                        </ul>
-                    </div>
-                @endif
-                
-                <!-- Name Field -->
-                <x-ui.input 
-                    type="text"
-                    name="name"
-                    label="Full Name"
-                    placeholder="Enter your full name"
-                    required="true"
-                    :value="old('name')"
-                    :error="$errors->first('name')"
-                />
-                
-                <!-- Email Field -->
-                <x-ui.input 
-                    type="email"
-                    name="email"
-                    label="Email Address"
-                    placeholder="Enter your email"
-                    required="true"
-                    :value="old('email')"
-                    :error="$errors->first('email')"
-                />
-                
-                <!-- Password Field -->
-                <x-ui.input 
-                    type="password"
-                    name="password"
-                    label="Password"
-                    placeholder="Create a strong password"
-                    required="true"
-                    :error="$errors->first('password')"
-                />
-                
-                <!-- Password Confirmation Field -->
-                <x-ui.input 
-                    type="password"
-                    name="password_confirmation"
-                    label="Confirm Password"
-                    placeholder="Confirm your password"
-                    required="true"
-                    :error="$errors->first('password_confirmation')"
-                />
-                
-                <!-- Terms of Service Checkbox -->
-                <div class="flex items-start">
-                    <div class="flex items-center h-5">
-                        <input 
-                            id="terms"
-                            name="terms"
-                            type="checkbox"
-                            required
-                            class="h-4 w-4 text-blue-600 border-gray-300 rounded"
-                        />
-                    </div>
-                    <div class="ml-3 text-sm">
-                        <label for="terms" class="text-gray-600">
-                            I agree to the 
-                            <a href="#" class="font-medium text-blue-600 hover:text-blue-500">
-                                Terms of Service
+
+                        <!-- Email Field -->
+                        <div>
+                            <label for="email"
+                                class="block text-sm font-semibold text-gray-700 dark:text-gray-300 mb-2">Email</label>
+                            <input type="email" id="email" name="email" value="{{ old('email') }}" required
+                                class="w-full px-4 py-3 border border-gray-300 dark:border-gray-600 rounded-lg focus:outline-none focus:ring-2 focus:ring-primary-500 focus:border-transparent transition-all bg-white dark:bg-gray-700 text-gray-900 dark:text-gray-200 placeholder-gray-500 dark:placeholder-gray-400 {{ $errors->has('email') ? 'border-red-300 focus:ring-red-500' : '' }}"
+                                placeholder="" />
+                            @if ($errors->has('email'))
+                                <p class="mt-1 text-sm text-red-600 dark:text-red-400">{{ $errors->first('email') }}</p>
+                            @endif
+                        </div>
+
+                        <!-- Password Field -->
+                        <div>
+                            <label for="register-password"
+                                class="block text-sm font-semibold text-gray-700 dark:text-gray-300 mb-2">Password</label>
+                            <div class="relative flex items-center" x-data="{ showPassword: false }">
+                                <input :type="showPassword ? 'text' : 'password'" id="register-password" name="password"
+                                    required
+                                    class="w-full px-4 py-3 pr-12 border border-gray-300 dark:border-gray-600 rounded-lg focus:outline-none focus:ring-2 focus:ring-primary-500 focus:border-transparent transition-all bg-white dark:bg-gray-700 text-gray-900 dark:text-gray-200 placeholder-gray-500 dark:placeholder-gray-400 {{ $errors->has('password') ? 'border-red-300 focus:ring-red-500' : '' }}"
+                                    placeholder="Minimum 8 characters" />
+                                <button type="button" @click="showPassword = !showPassword"
+                                    class="absolute right-4 text-gray-400 dark:text-gray-500 hover:text-gray-600 dark:hover:text-gray-300 focus:outline-none"
+                                    aria-label="Toggle password visibility">
+                                    <svg x-show="!showPassword" class="w-5 h-5" fill="none" stroke="currentColor"
+                                        viewBox="0 0 24 24">
+                                        <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2"
+                                            d="M15 12a3 3 0 11-6 0 3 3 0 016 0z" />
+                                        <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2"
+                                            d="M2.458 12C3.732 7.943 7.523 5 12 5c4.478 0 8.268 2.943 9.542 7-1.274 4.057-5.064 7-9.542 7-4.477 0-8.268-2.943-9.542-7z" />
+                                    </svg>
+                                    <svg x-show="showPassword" class="w-5 h-5" fill="none" stroke="currentColor"
+                                        viewBox="0 0 24 24">
+                                        <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2"
+                                            d="M17.94 17.94A10.05 10.05 0 0112 19c-4.478 0-8.268-2.943-9.543-7a9.97 9.97 0 011.563-3.029m2.13-2.13C7.523 5 12 5 12 5c4.478 0 8.268 2.943 9.542 7a9.97 9.97 0 01-1.67 2.882M15 12a3 3 0 11-6 0 3 3 0 016 0zM3 3l18 18" />
+                                    </svg>
+                                </button>
+                            </div>
+                            @if ($errors->has('password'))
+                                <p class="mt-1 text-sm text-red-600 dark:text-red-400">{{ $errors->first('password') }}</p>
+                            @endif
+                        </div>
+                        <!-- Password Confirmation Field -->
+                        <div>
+                            <label for="register-password-confirmation"
+                                class="block text-sm font-semibold text-gray-700 dark:text-gray-300 mb-2">Confirm
+                                Password</label>
+                            <input type="password" id="register-password-confirmation" name="password_confirmation" required
+                                class="w-full px-4 py-3 border border-gray-300 dark:border-gray-600 rounded-lg focus:outline-none focus:ring-2 focus:ring-primary-500 focus:border-transparent transition-all bg-white dark:bg-gray-700 text-gray-900 dark:text-gray-200 placeholder-gray-500 dark:placeholder-gray-400 {{ $errors->has('password_confirmation') ? 'border-red-300 focus:ring-red-500' : '' }}"
+                                placeholder="Re-enter your password" />
+                            @if ($errors->has('password_confirmation'))
+                                <p class="mt-1 text-sm text-red-600 dark:text-red-400">
+                                    {{ $errors->first('password_confirmation') }}</p>
+                            @endif
+                        </div>
+
+                        <!-- Submit Button -->
+                        <button type="submit"
+                            class="w-full bg-primary-500 text-white py-3 px-4 rounded-lg font-semibold hover:bg-primary-600 hover:scale-[1.02] focus:outline-none focus:ring-2 focus:ring-primary-500 focus:ring-offset-2 transition-all duration-200">
+                            Create Account
+                        </button>
+                    </form>
+
+                    <!-- Login Link -->
+                    <div class="text-center mt-8">
+                        <p class="text-[#4A5568] dark:text-gray-300 opacity-75">
+                            Already have an account?
+                            <a href="{{ route('login') }}"
+                                class="font-semibold text-primary-600 dark:text-blue-400 hover:text-primary-500 dark:hover:text-blue-300 transition-colors">
+                                Sign in
                             </a>
-                            and 
-                            <a href="#" class="font-medium text-blue-600 hover:text-blue-500">
-                                Privacy Policy
-                            </a>
-                        </label>
+                        </p>
                     </div>
                 </div>
-                
-                <!-- Submit Button -->
-                <x-ui.button 
-                    type="submit" 
-                    variant="primary" 
-                    class="w-full"
-                >
-                    Create account
-                </x-ui.button>
-            </form>
-        </x-ui.card>
-        
-        <!-- Login Link -->
-        <div class="text-center">
-            <p class="text-gray-500">
-                Already have an account?
-                <a href="{{ route('login') }}" 
-                   class="font-medium text-blue-600 hover:text-blue-500">
-                    Sign in here
-                </a>
-            </p>
-        </div>
-        
-        <!-- Language Toggle -->
-        <div class="text-center">
-            <div class="inline-flex rounded-lg border border-gray-300 p-1">
-                <button class="px-3 py-1 text-sm font-medium text-blue-600 bg-blue-50 rounded-md">
-                    EN
-                </button>
-                <button class="px-3 py-1 text-sm font-medium text-gray-500 hover:text-gray-700 rounded-md">
-                    FR
-                </button>
             </div>
         </div>
     </div>
-</div>
-@endsection 
+@endsection

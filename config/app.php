@@ -1,7 +1,6 @@
 <?php
 
 return [
-
     /*
     |--------------------------------------------------------------------------
     | Application Name
@@ -14,6 +13,19 @@ return [
     */
 
     'name' => env('APP_NAME', 'Laravel'),
+
+    /*
+    |--------------------------------------------------------------------------
+    | Application Asset Version
+    |--------------------------------------------------------------------------
+    |
+    | This value determines the version of your application assets. This is used
+    | for asset versioning to enable proper browser caching while ensuring
+    | updates are served when the application assets are updated.
+    |
+    */
+
+    'asset_version' => env('APP_ASSET_VERSION', '1.0.0'),
 
     /*
     |--------------------------------------------------------------------------
@@ -122,5 +134,4 @@ return [
         'driver' => env('APP_MAINTENANCE_DRIVER', 'file'),
         'store' => env('APP_MAINTENANCE_STORE', 'database'),
     ],
-
 ];

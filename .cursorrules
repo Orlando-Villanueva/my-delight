@@ -127,6 +127,15 @@ Reality Check:
 - User Impact: [Will users notice if not perfect?]
 ```
 
+## 💻 Code Quality Standards
+
+### Import Usage
+- **ALWAYS use proper imports** instead of fully qualified class names in code
+- **BAD**: `new \Illuminate\Support\MessageBag()` or `\App\Services\SomeService::class`
+- **GOOD**: Add `use Illuminate\Support\MessageBag;` at top, then use `new MessageBag()`
+- **Apply everywhere**: Controllers, services, models, routes, tests
+- **Rationale**: Cleaner code, better IDE support, follows PSR standards
+
 ## 🎖️ Success Metrics
 - Issues completed within estimated time
 - Features solve actual user problems

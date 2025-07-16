@@ -3,11 +3,11 @@
 
 <div>
     <div class="flex items-center justify-between mb-6">
-        <h2 id="modal-title" class="text-2xl font-bold text-gray-900">Log Bible Reading</h2>
+        <h2 id="modal-title" class="text-2xl font-bold text-gray-900 dark:text-gray-100">Log Bible Reading</h2>
 
         {{-- Modal Close Button --}}
         <button type="button" @click="modalOpen = false"
-            class="text-gray-400 hover:text-gray-600 focus:outline-none focus:ring-2 focus:ring-blue-500 rounded-md p-1">
+            class="text-gray-400 hover:text-gray-600 dark:text-gray-500 dark:hover:text-gray-400 focus:outline-none focus:ring-2 focus:ring-primary-500 rounded-md p-1">
             <svg class="w-6 h-6" fill="none" stroke="currentColor" viewBox="0 0 24 24">
                 <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M6 18L18 6M6 6l12 12"></path>
             </svg>
@@ -18,259 +18,185 @@
         Form to log your daily Bible reading with book, chapter, and optional notes
     </p>
 
-    <form hx-post="{{ route('logs.store') }}" hx-target="#reading-log-modal-content" hx-swap="innerHTML"
-        x-data="readingLogForm()" class="space-y-6">
+    <form hx-post="{{ route('logs.store') }}" hx-target="#reading-log-modal-content" hx-swap="innerHTML" class="space-y-6">
         @csrf
 
-        <div id="form-response">
-            <!-- HTMX responses (success or errors) will appear here -->
-        </div>
+        {{-- Display validation errors --}}
+        @if ($errors->any())
+            <div class="bg-red-50 dark:bg-red-900/20 border border-red-200 dark:border-red-800 rounded-md p-4">
+                <div class="flex">
+                    <div class="text-red-400 dark:text-red-500">
+                        <svg class="h-5 w-5" fill="currentColor" viewBox="0 0 20 20">
+                            <path fill-rule="evenodd" d="M10 18a8 8 0 100-16 8 8 0 000 16zM8.707 7.293a1 1 0 00-1.414 1.414L8.586 10l-1.293 1.293a1 1 0 101.414 1.414L10 11.414l1.293 1.293a1 1 0 001.414-1.414L11.414 10l1.293-1.293a1 1 0 00-1.414-1.414L10 8.586 8.707 7.293z" clip-rule="evenodd"/>
+                        </svg>
+                    </div>
+                    <div class="ml-3">
+                        <h3 class="text-sm font-medium text-red-800 dark:text-red-400">Please fix the following errors:</h3>
+                        <ul class="mt-2 text-sm text-red-700 dark:text-red-300 list-disc list-inside">
+                            @foreach ($errors->all() as $error)
+                                <li>{{ $error }}</li>
+                            @endforeach
+                        </ul>
+                    </div>
+                </div>
+            </div>
+        @endif
 
-        <!-- Date Selection: Today or Yesterday (Late Logging Grace) -->
+        <!-- Date Selection: Today or Yesterday -->
         <div class="space-y-2">
-            <label class="block text-sm font-medium text-gray-700">When did you read?</label>
+            <label class="block text-sm font-medium text-gray-700 dark:text-gray-300">When did you read?</label>
             <div class="space-y-3">
                 <div class="flex items-center">
-                    <input type="radio" id="today" name="date_read" value="{{ today()->toDateString() }}"
-                        x-model="form.date_read" checked
-                        class="h-4 w-4 text-blue-600 focus:ring-blue-500 border-gray-300">
-                    <label for="today" class="ml-3 block text-sm font-medium text-gray-700">
+                    <input type="radio" id="today" name="date_read" value="{{ today()->toDateString() }}" 
+                        {{ old('date_read', today()->toDateString()) == today()->toDateString() ? 'checked' : '' }}
+                        class="h-4 w-4 text-primary-600 focus:ring-primary-500 border-gray-300 dark:border-gray-600 dark:bg-gray-700">
+                    <label for="today" class="ml-3 block text-sm font-medium text-gray-700 dark:text-gray-300">
                         📖 Today ({{ today()->format('M d, Y') }})
                     </label>
                 </div>
-                <div class="flex items-center">
-                    <input type="radio" id="yesterday" name="date_read"
-                        value="{{ today()->subDay()->toDateString() }}" x-model="form.date_read"
-                        class="h-4 w-4 text-blue-600 focus:ring-blue-500 border-gray-300">
-                    <label for="yesterday" class="ml-3 block text-sm font-medium text-gray-700">
-                        📅 Yesterday ({{ today()->subDay()->format('M d, Y') }}) - <span class="text-gray-500 italic">I
-                            forgot to log it</span>
-                    </label>
-                </div>
+                
+                @if(isset($allowYesterday) && $allowYesterday)
+                    <div class="flex items-center">
+                        <input type="radio" id="yesterday" name="date_read" value="{{ today()->subDay()->toDateString() }}" 
+                            {{ old('date_read') == today()->subDay()->toDateString() ? 'checked' : '' }}
+                            class="h-4 w-4 text-primary-600 focus:ring-primary-500 border-gray-300 dark:border-gray-600 dark:bg-gray-700">
+                        <label for="yesterday" class="ml-3 block text-sm font-medium text-gray-700 dark:text-gray-300">
+                            📅 Yesterday ({{ today()->subDay()->format('M d, Y') }}) - <span class="text-gray-500 dark:text-gray-400 italic">I forgot to log it</span>
+                        </label>
+                    </div>
+                @elseif(isset($allowYesterday))
+                    {{-- Show why yesterday is not available --}}
+                    <div class="flex items-center opacity-50">
+                        <input type="radio" disabled 
+                            class="h-4 w-4 text-gray-400 border-gray-300 dark:border-gray-600 cursor-not-allowed">
+                        <label class="ml-3 block text-sm font-medium text-gray-400 dark:text-gray-500 cursor-not-allowed">
+                            📅 Yesterday ({{ today()->subDay()->format('M d, Y') }}) - 
+                            @if(isset($hasReadYesterday) && !$hasReadYesterday && isset($currentStreak) && $currentStreak > 0 && isset($hasReadToday) && !$hasReadToday)
+                                <span class="italic">Would break your {{ $currentStreak }}-day streak</span>
+                            @else
+                                <span class="italic">Already logged</span>
+                            @endif
+                        </label>
+                    </div>
+                @endif
             </div>
-            <div class="text-xs text-gray-500 mt-2">
+            <div class="text-xs text-gray-500 dark:text-gray-400 mt-2">
                 💡 <strong>Grace Period:</strong> You can log today's reading or catch up on yesterday if you forgot.
             </div>
         </div>
 
         <!-- Bible Book Selection -->
-        <div class="space-y-2">
-            <label for="book_id" class="block text-sm font-medium text-gray-700">Bible Book:</label>
-            <select id="book_id" name="book_id" x-model="form.book_id" @change="updateChapters()" required
-                class="w-full max-w-md px-3 py-2 border border-gray-300 rounded-md shadow-sm focus:outline-none focus:ring-2 focus:ring-blue-500 focus:border-blue-500 bg-white">
-                <option value="">Select a book...</option>
-                @foreach ($books as $book)
-                    <option value="{{ $book['id'] }}" data-chapters="{{ $book['chapters'] }}"
-                        {{ old('book_id') == $book['id'] ? 'selected' : '' }}>
-                        {{ $book['name'] }}
+        <x-ui.select 
+            name="book_id" 
+            label="📚 Bible Book" 
+            placeholder="Select a Bible book..."
+            required
+            :error="$errors->first('book_id')"
+            class="max-w-md"
+        >
+            {{-- Old Testament Group --}}
+            @php
+                $oldTestament = collect($books)->where('testament', 'old')->values();
+                $newTestament = collect($books)->where('testament', 'new')->values();
+            @endphp
+            
+            @if($oldTestament->isNotEmpty())
+                <optgroup label="📜 Old Testament ({{ $oldTestament->count() }} books)">
+                    @foreach($oldTestament as $book)
+                        <option value="{{ $book['id'] }}" {{ old('book_id') == $book['id'] ? 'selected' : '' }}>
+                            {{ $book['name'] }} ({{ $book['chapters'] }} chapters)
+                        </option>
+                    @endforeach
+                </optgroup>
+            @endif
+            
+            {{-- New Testament Group --}}
+            @if($newTestament->isNotEmpty())
+                <optgroup label="✝️ New Testament ({{ $newTestament->count() }} books)">
+                    @foreach($newTestament as $book)
+                        <option value="{{ $book['id'] }}" {{ old('book_id') == $book['id'] ? 'selected' : '' }}>
+                            {{ $book['name'] }} ({{ $book['chapters'] }} chapters)
+                        </option>
+                    @endforeach
+                </optgroup>
+            @endif
+            
+            {{-- Fallback: All books without grouping if testament data not available --}}
+            @if($oldTestament->isEmpty() && $newTestament->isEmpty())
+                @foreach($books as $book)
+                    <option value="{{ $book['id'] }}" {{ old('book_id') == $book['id'] ? 'selected' : '' }}>
+                        {{ $book['name'] }} ({{ $book['chapters'] }} chapters)
                     </option>
                 @endforeach
-            </select>
-        </div>
+            @endif
+        </x-ui.select>
 
-        <!-- Chapter Selection - Supports Single or Range -->
-        <div class="space-y-2">
-            <label for="chapter_input" class="block text-sm font-medium text-gray-700">Chapter(s):</label>
-            <div class="space-y-3">
-                <!-- Chapter Input Field -->
-                <input type="text" id="chapter_input" name="chapter_input" x-model="form.chapter_input"
-                    :disabled="!form.book_id" @input="validateChapterInput()" placeholder="e.g., 3 or 1-5" required
-                    class="w-full max-w-md px-3 py-2 border border-gray-300 rounded-md shadow-sm focus:outline-none focus:ring-2 focus:ring-blue-500 focus:border-blue-500 disabled:bg-gray-50 disabled:text-gray-500 disabled:cursor-not-allowed">
-
-                <!-- Helper Text -->
-                <div class="text-sm text-gray-500">
-                    <div x-show="!form.book_id" x-cloak class="italic">
-                        📚 Please select a book first
-                    </div>
-                    <div x-show="form.book_id" x-cloak>
-                        💡 Enter a single chapter (e.g., <strong>3</strong>) or range (e.g., <strong>1-5</strong>)
-                        <br>
-                        📖 <span x-text="form.book_name"></span> has <span x-text="availableChapters"></span> chapters
-                    </div>
-                </div>
-
-                <!-- Validation Feedback -->
-                <div x-show="form.chapter_validation_message" x-cloak
-                    :class="form.chapter_validation_valid ? 'text-green-600' : 'text-red-600'"
-                    class="text-sm font-medium">
-                    <span x-text="form.chapter_validation_message"></span>
-                </div>
-            </div>
-        </div>
+        <!-- Chapter Input -->
+        <x-ui.input 
+            name="chapter_input" 
+            label="Chapter(s)" 
+            placeholder="e.g., 3 or 1-5"
+            :value="old('chapter_input')"
+            required
+            :error="$errors->first('chapter_input')"
+            class="max-w-md"
+        />
 
         <!-- Notes Section -->
-        <div class="space-y-2">
-            <label for="notes_text" class="block text-sm font-medium text-gray-700">Notes (Optional):</label>
-            <textarea id="notes_text" name="notes_text" rows="4" maxlength="500" x-model="form.notes_text"
-                @input="updateCharacterCount()" placeholder="Share any thoughts, insights, or questions from your reading..."
-                class="w-full px-3 py-2 border border-gray-300 rounded-md shadow-sm focus:outline-none focus:ring-2 focus:ring-blue-500 focus:border-blue-500 resize-vertical">{{ old('notes_text') }}</textarea>
-            <div class="text-sm text-gray-500">
-                <span x-text="characterCount"></span>/500 characters
-                <span x-show="characterCount > 450" x-cloak class="text-orange-500">
-                    (approaching limit)
-                </span>
-                <span x-show="characterCount === 500" x-cloak class="text-red-500">
-                    (limit reached)
-                </span>
-            </div>
-        </div>
+        <x-ui.textarea 
+            name="notes_text" 
+            label="Notes (Optional)" 
+            placeholder="Share any thoughts, insights, or questions from your reading..."
+            :value="old('notes_text')"
+            rows="4"
+            maxlength="1000"
+            :showCounter="true"
+            :error="$errors->first('notes_text')"
+        />
 
         <!-- Form Actions -->
-        <div class="pt-6 border-t border-gray-200 flex items-center space-x-4">
-            <button type="submit" hx-indicator="#save-loading" :disabled="!isFormValid()"
-                class="inline-flex items-center px-6 py-3 border border-transparent text-base font-medium rounded-md shadow-sm text-white bg-blue-600 hover:bg-blue-700 focus:outline-none focus:ring-2 focus:ring-offset-2 focus:ring-blue-500 disabled:bg-gray-400 disabled:cursor-not-allowed">
-                <span id="save-loading" class="htmx-indicator">Saving...</span>
-                <span>Log Reading</span>
-            </button>
+        <div class="pt-6 border-t border-gray-200 dark:border-gray-600 flex items-center space-x-4">
+            <x-ui.button 
+                type="submit" 
+                variant="primary" 
+                size="lg"
+                hx-indicator="#save-loading"
+                class="px-6 py-3 text-base font-medium shadow-sm"
+            >
+                <span id="save-loading" class="htmx-indicator hidden">
+                    <svg class="animate-spin -ml-1 mr-3 h-5 w-5 text-white" xmlns="http://www.w3.org/2000/svg" fill="none" viewBox="0 0 24 24">
+                        <circle class="opacity-25" cx="12" cy="12" r="10" stroke="currentColor" stroke-width="4"></circle>
+                        <path class="opacity-75" fill="currentColor" d="M4 12a8 8 0 018-8V0C5.373 0 0 5.373 0 12h4zm2 5.291A7.962 7.962 0 014 12H0c0 3.042 1.135 5.824 3 7.938l3-2.647z"></path>
+                    </svg>
+                    Saving...
+                </span>
+                <span class="htmx-indicator-hidden">Log Reading</span>
+            </x-ui.button>
 
-            <button type="button" @click="modalOpen = false"
-                class="inline-flex items-center px-6 py-3 border border-gray-300 text-base font-medium rounded-md text-gray-700 bg-white hover:bg-gray-50 focus:outline-none focus:ring-2 focus:ring-offset-2 focus:ring-blue-500">
+            <x-ui.button 
+                type="button" 
+                variant="outline" 
+                size="lg"
+                @click="modalOpen = false"
+                class="px-6 py-3 text-base font-medium"
+            >
                 Cancel
-            </button>
+            </x-ui.button>
         </div>
     </form>
 </div>
 
-<script>
-    function readingLogForm() {
-        return {
-            form: {
-                book_id: @json(old('book_id', '')),
-                book_name: '',
-                chapter_input: @json(old('chapter_input', '')),
-                date_read: @json(old('date_read', today()->toDateString())),
-                notes_text: @json(old('notes_text', '')),
-                chapter_validation_message: '',
-                chapter_validation_valid: false
-            },
-            availableChapters: 0,
-            characterCount: @json(old('notes_text') ? strlen(old('notes_text')) : 0),
-
-            init() {
-                // Set initial book name if book is pre-selected
-                if (this.form.book_id) {
-                    const selectedOption = document.querySelector(`option[value="${this.form.book_id}"]`);
-                    if (selectedOption) {
-                        this.form.book_name = selectedOption.text;
-                        this.availableChapters = parseInt(selectedOption.dataset.chapters);
-                    }
-                }
-                this.updateCharacterCount();
-                // Validate chapter input if pre-filled
-                if (this.form.chapter_input) {
-                    this.validateChapterInput();
-                }
-            },
-
-            updateChapters() {
-                const selectedOption = document.querySelector(`option[value="${this.form.book_id}"]`);
-                if (selectedOption && selectedOption.dataset.chapters) {
-                    this.availableChapters = parseInt(selectedOption.dataset.chapters);
-                    this.form.book_name = selectedOption.text;
-                    // Re-validate chapter input when book changes
-                    this.validateChapterInput();
-                } else {
-                    this.availableChapters = 0;
-                    this.form.book_name = '';
-                    this.form.chapter_input = '';
-                    this.form.chapter_validation_message = '';
-                    this.form.chapter_validation_valid = false;
-                }
-            },
-
-            validateChapterInput() {
-                const input = this.form.chapter_input.trim();
-
-                // Clear validation if no book selected
-                if (!this.form.book_id || !this.availableChapters) {
-                    this.form.chapter_validation_message = '';
-                    this.form.chapter_validation_valid = false;
-                    return;
-                }
-
-                // Clear validation if no input
-                if (!input) {
-                    this.form.chapter_validation_message = '';
-                    this.form.chapter_validation_valid = false;
-                    return;
-                }
-
-                // Check for range (e.g., "1-3")
-                const rangeMatch = input.match(/^(\d+)-(\d+)$/);
-                if (rangeMatch) {
-                    const start = parseInt(rangeMatch[1]);
-                    const end = parseInt(rangeMatch[2]);
-
-                    if (start > end) {
-                        this.form.chapter_validation_message =
-                            '❌ Start chapter must be less than or equal to end chapter';
-                        this.form.chapter_validation_valid = false;
-                        return;
-                    }
-
-                    if (start < 1 || end > this.availableChapters) {
-                        this.form.chapter_validation_message =
-                            `❌ Chapters must be between 1 and ${this.availableChapters}`;
-                        this.form.chapter_validation_valid = false;
-                        return;
-                    }
-
-                    const chapterCount = end - start + 1;
-                    this.form.chapter_validation_message =
-                        `✅ ${chapterCount} chapters (${this.form.book_name} ${start}-${end})`;
-                    this.form.chapter_validation_valid = true;
-                    return;
-                }
-
-                // Check for single chapter
-                const singleMatch = input.match(/^\d+$/);
-                if (singleMatch) {
-                    const chapter = parseInt(input);
-
-                    if (chapter < 1 || chapter > this.availableChapters) {
-                        this.form.chapter_validation_message =
-                            `❌ Chapter must be between 1 and ${this.availableChapters}`;
-                        this.form.chapter_validation_valid = false;
-                        return;
-                    }
-
-                    this.form.chapter_validation_message = `✅ ${this.form.book_name} ${chapter}`;
-                    this.form.chapter_validation_valid = true;
-                    return;
-                }
-
-                // Invalid format
-                this.form.chapter_validation_message = '❌ Enter a single chapter (e.g., 3) or range (e.g., 1-5)';
-                this.form.chapter_validation_valid = false;
-            },
-
-            updateCharacterCount() {
-                this.characterCount = this.form.notes_text.length;
-            },
-
-            isFormValid() {
-                const MAX_NOTE_LENGTH = 500; // Define maximum note length
-                return this.form.book_id &&
-                    this.form.chapter_input &&
-                    this.form.date_read &&
-                    this.form.chapter_validation_valid &&
-                    this.characterCount <= MAX_NOTE_LENGTH;
-            }
-        }
-    }
-</script>
-
 <style>
-    /* Basic HTMX loading indicator styles */
+    /* HTMX loading indicator styles */
     .htmx-indicator {
         display: none;
     }
-
+    
     .htmx-request .htmx-indicator {
-        display: inline;
+        display: inline-flex;
     }
-
-    [x-cloak] {
+    
+    .htmx-request .htmx-indicator-hidden {
         display: none !important;
     }
 </style>

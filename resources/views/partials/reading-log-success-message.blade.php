@@ -33,7 +33,7 @@
     <!-- Auto-close Countdown -->
     <p class="text-sm text-gray-500 mb-4">
         <span x-show="!isPaused">
-            Modal will close in <span x-text="countdown" class="font-semibold text-blue-600 text-base"></span>
+            Modal will close in <span x-text="countdown" class="font-semibold text-primary-600 text-base"></span>
             second<span x-show="countdown !== 1">s</span>...
         </span>
         <span x-show="isPaused" x-cloak class="text-yellow-600 font-medium">
@@ -43,16 +43,24 @@
 
     <!-- Action Buttons -->
     <div class="flex items-center justify-center space-x-4">
-        <button type="button" @click="$dispatch('close-modal')"
-            class="inline-flex items-center px-4 py-2 bg-blue-600 border border-transparent rounded-md font-medium text-sm text-white hover:bg-blue-700 focus:outline-none focus:ring-2 focus:ring-offset-2 focus:ring-blue-500">
+        <x-ui.button 
+            variant="primary"
+            size="default"
+            @click="$dispatch('close-modal')"
+        >
             Close
-        </button>
+        </x-ui.button>
 
-        <button type="button" hx-get="{{ route('logs.create') }}" hx-target="#reading-log-modal-content"
-            hx-swap="innerHTML" hx-indicator="#modal-loading"
-            class="inline-flex items-center px-4 py-2 border border-gray-300 rounded-md font-medium text-sm text-gray-700 bg-white hover:bg-gray-50 focus:outline-none focus:ring-2 focus:ring-offset-2 focus:ring-blue-500">
+        <x-ui.button 
+            variant="outline"
+            size="default"
+            hx-get="{{ route('logs.create') }}" 
+            hx-target="#reading-log-modal-content"
+            hx-swap="innerHTML" 
+            hx-indicator="#modal-loading"
+        >
             Log Another Reading
-        </button>
+        </x-ui.button>
     </div>
 </div>
 

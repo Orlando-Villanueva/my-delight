@@ -143,11 +143,19 @@ class UserStatisticsService
         $startDate = Carbon::create($year, 1, 1);
         $endDate = Carbon::create($year, 12, 31);
 
-        $readingDates = $user->readingLogs()
+        // Get all reading logs for the year and group by date using collections
+        $readingLogs = $user->readingLogs()
             ->whereBetween('date_read', [$startDate, $endDate])
-            ->selectRaw('date_read, COUNT(*) as reading_count')
-            ->groupBy('date_read')
-            ->pluck('reading_count', 'date_read')
+            ->get(['date_read']);
+
+        // Group by date and count readings per date
+        $readingData = $readingLogs
+            ->groupBy(function($log) {
+                return Carbon::parse($log->date_read)->toDateString();
+            })
+            ->map(function($readings) {
+                return $readings->count();
+            })
             ->toArray();
 
         $calendar = [];
@@ -155,10 +163,12 @@ class UserStatisticsService
 
         while ($currentDate->lte($endDate)) {
             $dateString = $currentDate->toDateString();
+            $readingCount = $readingData[$dateString] ?? 0;
+            
             $calendar[$dateString] = [
                 'date' => $dateString,
-                'reading_count' => $readingDates[$dateString] ?? 0,
-                'has_reading' => isset($readingDates[$dateString]),
+                'reading_count' => $readingCount,
+                'has_reading' => $readingCount > 0,
             ];
             $currentDate->addDay();
         }

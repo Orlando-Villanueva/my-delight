@@ -17,11 +17,9 @@
     $textareaId = $id ?? $name ?? 'textarea_' . uniqid();
     $hasError = !empty($error);
     
-    $textareaClasses = 'block w-full px-3 py-2 border rounded-lg shadow-sm placeholder-neutral-400 focus:outline-none focus:ring-2 text-neutral-600 resize-y';
+    $textareaClasses = 'form-input resize-y';
     if ($hasError) {
-        $textareaClasses .= ' border-error focus:ring-error focus:border-error';
-    } else {
-        $textareaClasses .= ' border-neutral-300 focus:ring-primary focus:border-primary';
+        $textareaClasses .= ' border-destructive focus:ring-destructive';
     }
     
     $currentValue = old($name, $value);
@@ -30,7 +28,7 @@
 
 <div {{ $attributes->merge(['class' => 'space-y-1']) }}>
     @if($label)
-        <label for="{{ $textareaId }}" class="block text-sm font-medium text-neutral-700 mb-2 {{ $required ? 'after:content-[\'*\'] after:ml-0.5 after:text-error' : '' }}">
+        <label for="{{ $textareaId }}" class="form-label {{ $required ? 'after:content-[\'*\'] after:ml-0.5 after:text-destructive' : '' }}">
             {{ $label }}
         </label>
     @endif
@@ -53,26 +51,26 @@
         <div class="flex justify-between items-center">
             <div class="flex-1">
                 @if($hasError)
-                    <p id="{{ $textareaId }}-error" class="text-sm text-error mt-1" role="alert">
+                    <p id="{{ $textareaId }}-error" class="form-error" role="alert">
                         {{ $error }}
                     </p>
                 @elseif($help)
-                    <p id="{{ $textareaId }}-help" class="text-sm text-neutral-500 mt-1">
+                    <p id="{{ $textareaId }}-help" class="text-sm text-muted-foreground mt-1">
                         {{ $help }}
                     </p>
                 @endif
             </div>
-            <div class="text-sm text-neutral-500" x-text="`${count}/${!! $maxlength !!}`">
+            <div class="text-sm text-muted-foreground" x-text="`${count}/${!! $maxlength !!}`">
                 {{ $currentLength }}/{{ $maxlength }}
             </div>
         </div>
     @else
         @if($hasError)
-            <p id="{{ $textareaId }}-error" class="text-sm text-error mt-1" role="alert">
+            <p id="{{ $textareaId }}-error" class="form-error" role="alert">
                 {{ $error }}
             </p>
         @elseif($help)
-            <p id="{{ $textareaId }}-help" class="text-sm text-neutral-500 mt-1">
+            <p id="{{ $textareaId }}-help" class="text-sm text-muted-foreground mt-1">
                 {{ $help }}
             </p>
         @endif
