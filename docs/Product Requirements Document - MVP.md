@@ -1,8 +1,8 @@
-# Bible Reading Habit Builder - Product Requirements Document (MVP)
+# Delight - Product Requirements Document (MVP)
 
 ## Overview
 
-The Bible Reading Habit Builder is an application designed to help users establish and maintain consistent Bible reading habits. The core loop of the application is: **Read → Log → See Progress (Streak/History) → Motivation to Read Again**.
+Delight is an application designed to help users establish and maintain consistent Bible reading habits. The core loop of the application is: **Read → Log → See Progress (Streak/History) → Motivation to Read Again**.
 
 This document outlines the specific requirements for the Minimum Viable Product (MVP) phase, including user stories, user journey maps, acceptance criteria, and prioritization framework.
 

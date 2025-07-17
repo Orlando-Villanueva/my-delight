@@ -6,7 +6,7 @@
     <meta name="viewport" content="width=device-width, initial-scale=1">
     <meta name="csrf-token" content="{{ csrf_token() }}">
 
-    <title>{{ config('app.name', 'Bible Habit Builder') }}</title>
+    <title>{{ config('app.name', 'Delight') }}</title>
 
     <!-- Favicon -->
     <link rel="icon" href="{{ asset('favicon.ico') }}" type="image/x-icon">
@@ -51,7 +51,7 @@
                 <div class="flex flex-col sm:flex-row sm:items-center sm:justify-between">
                     <a href="{{ url('/') }}"
                         class="flex items-center text-xl font-bold text-primary-500 dark:text-primary-500 hover:opacity-90 transition">
-                        <span>Bible Habit Builder</span>
+                        <span>{{ config('app.name') }}</span>
                     </a>
 
                     @if (Route::has('login'))
@@ -90,7 +90,7 @@
 
             <footer
                 class="mt-4 pt-4 border-t border-gray-200 dark:border-gray-700 text-sm text-gray-600 dark:text-gray-400">
-                <p>&copy; {{ date('Y') }} Bible Habit Builder. All rights reserved.</p>
+                <p>&copy; {{ date('Y') }} {{ config('app.name') }}. All rights reserved.</p>
             </footer>
         </div>
     @endif

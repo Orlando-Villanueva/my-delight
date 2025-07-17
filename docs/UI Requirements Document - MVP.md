@@ -1,7 +1,7 @@
-# Bible Habit Builder - UI Requirements Document (MVP)
+# Delight - UI Requirements Document (MVP)
 
 ## Overview
-This document outlines the user interface requirements for the Bible Habit Builder MVP. All features described here are **free tier features** that will be included in the initial launch. The focus is on creating a clean, motivating, and mobile-first experience that encourages consistent Bible reading habits.
+This document outlines the user interface requirements for the Delight MVP. All features described here are **free tier features** that will be included in the initial launch. The focus is on creating a clean, motivating, and mobile-first experience that encourages consistent Bible reading habits.
 
 ## Design Principles
 

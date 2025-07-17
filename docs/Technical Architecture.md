@@ -1,4 +1,4 @@
-# Bible Reading Habit Builder - Technical Architecture
+# Delight - Technical Architecture
 
 ## System Architecture Diagram
 
@@ -1068,7 +1068,7 @@ The application will support both English and French languages from the MVP laun
 
 ## Testing Strategy
 
-A pragmatic testing approach focused on essential functionality for the Bible Reading Habit Builder MVP, emphasizing core user workflows and business-critical validations.
+A pragmatic testing approach focused on essential functionality for the Delight MVP, emphasizing core user workflows and business-critical validations.
 
 ### MVP Testing Philosophy
 

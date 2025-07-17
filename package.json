@@ -1,4 +1,5 @@
 {
+    "name": "delight",
     "private": true,
     "type": "module",
     "scripts": {

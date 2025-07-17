@@ -1,4 +1,4 @@
-# Bible Reading Habit Builder - Project Rules
+# Delight - Project Rules
 
 ## 🔄 PR Sub-Issue Completion Workflow
 
@@ -12,7 +12,7 @@ When any PR sub-issue is completed, the following updates are **REQUIRED** befor
 - **MUST** add implementation details and progress notes
 
 #### 2. Development Roadmap Update
-- **MUST** update `docs/Bible Reading Habit Builder - Development Roadmap.md`
+- **MUST** update `docs/Delight - Development Roadmap.md`
 - **MUST** mark completed items with ✅ 
 - **MUST** update progress indicators (IN PROGRESS, COMPLETED, etc.)
 - **MUST** maintain roadmap accuracy and current status
