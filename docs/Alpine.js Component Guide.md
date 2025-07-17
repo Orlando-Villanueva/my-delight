@@ -2,7 +2,7 @@
 
 ## Overview
 
-Alpine.js serves as the "sprinkles of interactivity" layer in the Bible Reading Habit Builder, providing lightweight client-side state management and reactive data binding. Alpine complements HTMX by handling local UI interactions while HTMX manages server communication.
+Alpine.js serves as the "sprinkles of interactivity" layer in Delight, providing lightweight client-side state management and reactive data binding. Alpine complements HTMX by handling local UI interactions while HTMX manages server communication.
 
 ## Core Alpine.js Principles
 

@@ -1,4 +1,4 @@
-# Bible Habit Builder - Monetization Strategy
+# Delight - Monetization Strategy
 
 ## 1. Guiding Philosophy: Mission-First, Supporter-Funded
 

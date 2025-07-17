@@ -15,7 +15,7 @@ alwaysApply: false
 - **ALWAYS validate requests against project documentation** before starting any implementation
 - **STOP and ask for clarification** when user requests features not mentioned in the docs
 - **Require explicit documentation updates** before implementing any out-of-scope functionality
-- **Remember the core purpose**: This is a Bible Reading Habit Builder - features must support Bible reading tracking, habit formation, or user motivation
+- **Remember the core purpose**: This is Delight - features must support Bible reading tracking, habit formation, or user motivation
 - **Flag scope creep immediately**: Alert user when requests don't align with the established product vision
 
 ### Alignment Verification  

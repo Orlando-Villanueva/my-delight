@@ -1,11 +1,18 @@
 {
     "$schema": "https://getcomposer.org/schema.json",
-    "name": "laravel/laravel",
+    "name": "delight/delight",
     "type": "project",
-    "description": "The skeleton application for the Laravel framework.",
+    "description": "Delight - A beautiful Bible reading habit tracker that helps users find delight in their daily Bible reading journey.",
     "keywords": [
         "laravel",
-        "framework"
+        "framework",
+        "bible",
+        "reading",
+        "habit",
+        "tracker",
+        "delight",
+        "spiritual",
+        "devotion"
     ],
     "license": "MIT",
     "require": {
