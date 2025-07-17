@@ -292,4 +292,13 @@ class ReadingLogService
             $bookProgress->save();
         }
     }
+    
+    /**
+     * Update book progress from an existing reading log.
+     * This is useful for syncing book progress with seeded reading logs.
+     */
+    public function updateBookProgressFromLog(ReadingLog $log): void
+    {
+        $this->updateBookProgress($log->user, $log->book_id, $log->chapter);
+    }
 } 
