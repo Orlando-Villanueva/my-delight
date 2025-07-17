@@ -87,13 +87,7 @@
                                         {{ $reading['passage_text'] }}
                                     </div>
                                     <div class="text-gray-500 dark:text-gray-400 text-xs">
-                                        @if($reading['days_ago'] === 0)
-                                            Today
-                                        @elseif($reading['days_ago'] === 1)
-                                            Yesterday
-                                        @else
-                                            {{ $reading['days_ago'] }} days ago
-                                        @endif
+                                        {{ $reading['time_ago'] }}
                                     </div>
                                 </div>
                             @endforeach
