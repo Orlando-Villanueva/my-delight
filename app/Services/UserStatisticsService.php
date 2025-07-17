@@ -48,7 +48,7 @@ class UserStatisticsService
             'total_readings' => $totalReadings,
             'first_reading_date' => $firstReading?->date_read,
             'last_reading_date' => $lastReading?->date_read,
-            'days_since_first_reading' => $firstReading 
+            'days_since_first_reading' => $firstReading
                 ? Carbon::parse($firstReading->date_read)->diffInDays(now()) + 1
                 : 0,
             'this_month_days' => $this->getThisMonthReadingDays($user),
@@ -88,11 +88,11 @@ class UserStatisticsService
     public function getBookProgressSummary(User $user): array
     {
         $bookProgress = $user->bookProgress;
-        
+
         $completed = $bookProgress->where('is_completed', true)->count();
         $inProgress = $bookProgress->where('is_completed', false)
-                                  ->where('completion_percent', '>', 0)
-                                  ->count();
+            ->where('completion_percent', '>', 0)
+            ->count();
         $notStarted = 66 - $completed - $inProgress; // Total Bible books minus started
 
         return [
@@ -122,14 +122,14 @@ class UserStatisticsService
                 return $log->passage_text . '::' . $log->date_read;
             })
             ->take($limit);
-        
+
         return $recentReadings->map(function ($reading) {
             return [
                 'id' => $reading->id,
                 'passage_text' => $reading->passage_text,
                 'date_read' => $reading->date_read,
                 'notes_text' => $reading->notes_text,
-                'days_ago' => Carbon::parse($reading->date_read)->diffInDays(now()),
+                'time_ago' => $this->formatTimeAgo($reading->date_read),
             ];
         })->values()->toArray();
     }
@@ -150,10 +150,10 @@ class UserStatisticsService
 
         // Group by date and count readings per date
         $readingData = $readingLogs
-            ->groupBy(function($log) {
+            ->groupBy(function ($log) {
                 return Carbon::parse($log->date_read)->toDateString();
             })
-            ->map(function($readings) {
+            ->map(function ($readings) {
                 return $readings->count();
             })
             ->toArray();
@@ -164,7 +164,7 @@ class UserStatisticsService
         while ($currentDate->lte($endDate)) {
             $dateString = $currentDate->toDateString();
             $readingCount = $readingData[$dateString] ?? 0;
-            
+
             $calendar[$dateString] = [
                 'date' => $dateString,
                 'reading_count' => $readingCount,
@@ -183,7 +183,43 @@ class UserStatisticsService
     {
         $totalChapters = 1189; // Total chapters in the Bible
         $chaptersRead = $user->readingLogs()->count();
-        
+
         return $totalChapters > 0 ? round(($chaptersRead / $totalChapters) * 100, 2) : 0;
     }
-} 
+
+    /**
+     * Format time difference with proper labels.
+     */
+    public function formatTimeAgo(Carbon $date): string
+    {
+        $now = now();
+        $diffInSeconds = (int) $date->diffInSeconds($now);
+        $diffInMinutes = (int) $date->diffInMinutes($now);
+        $diffInHours = (int) $date->diffInHours($now);
+        $diffInDays = (int) $date->diffInDays($now);
+
+        // Just now (less than 1 minute)
+        if ($diffInSeconds < 60) {
+            return 'just now';
+        }
+
+        // Minutes ago (1-59 minutes)
+        if ($diffInMinutes < 60) {
+            return $diffInMinutes === 1 ? '1 minute ago' : "{$diffInMinutes} minutes ago";
+        }
+
+        // Hours ago (1-23 hours)
+        if ($diffInHours < 24) {
+            return $diffInHours === 1 ? '1 hour ago' : "{$diffInHours} hours ago";
+        }
+
+        // Days ago (1+ days)
+        if ($diffInDays === 0) {
+            return 'today';
+        } elseif ($diffInDays === 1) {
+            return '1 day ago';
+        } else {
+            return "{$diffInDays} days ago";
+        }
+    }
+}

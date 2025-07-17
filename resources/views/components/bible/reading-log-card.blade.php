@@ -1,18 +1,18 @@
 @props([
-    'log',
-    'showDate' => true,
-    'showNotes' => true,
-    'compact' => false,
-    'contributedToStreak' => false
+'log',
+'showDate' => true,
+'showNotes' => true,
+'compact' => false,
+'contributedToStreak' => false
 ])
 
 @php
-    $cardClasses = 'bg-white dark:bg-gray-800 rounded-lg border border-gray-200 dark:border-gray-700 hover:shadow-md transition-all duration-200';
-    if ($compact) {
-        $cardClasses .= ' p-3';
-    } else {
-        $cardClasses .= ' p-4';
-    }
+$cardClasses = 'bg-white dark:bg-gray-800 rounded-lg border border-gray-200 dark:border-gray-700 hover:shadow-md transition-all duration-200';
+if ($compact) {
+$cardClasses .= ' p-3';
+} else {
+$cardClasses .= ' p-4';
+}
 @endphp
 
 <div {{ $attributes->merge(['class' => $cardClasses]) }}>
@@ -28,71 +28,71 @@
                         {{ $log->passage_text }}
                     </h3>
                 </div>
-                
+
                 {{-- Secondary: Date Information --}}
                 @if($showDate)
-                    <div class="flex items-center space-x-2 text-xs text-gray-500 dark:text-gray-400">
-                        <span>{{ $log->date_read->format('M j, Y') }}</span>
-                        @if(!$compact)
-                            <span>•</span>
-                            <span>{{ $log->date_read->diffForHumans() }}</span>
-                        @endif
-                    </div>
+                <div class="flex items-center space-x-2 text-xs text-gray-500 dark:text-gray-400">
+                    <span>{{ $log->date_read->format('M j, Y') }}</span>
+                    @if(!$compact)
+                    <span>•</span>
+                    <span>{{ $log->time_ago ?? $log->date_read->diffForHumans() }}</span>
+                    @endif
+                </div>
                 @endif
             </div>
-            
+
             {{-- Notes Section --}}
             @if($showNotes && $log->notes_text)
-                <div class="border-t border-gray-100 dark:border-gray-700 pt-3 mt-3">
-                    <div class="text-sm text-gray-600 dark:text-gray-400" x-data="{ expanded: false, needsExpansion: false }" x-init="needsExpansion = $el.querySelector('.notes-content').scrollHeight > 60">
-                        <div class="flex items-center space-x-2 mb-2">
-                            <svg class="w-4 h-4 text-gray-400" fill="none" stroke="currentColor" viewBox="0 0 24 24">
-                                <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M7 8h10M7 12h4m1 8l-4-4H5a2 2 0 01-2-2V6a2 2 0 012-2h14a2 2 0 012 2v8a2 2 0 01-2 2h-3l-4 4z"></path>
-                            </svg>
-                            <span class="text-xs font-medium text-gray-500 dark:text-gray-400 uppercase tracking-wide">Notes</span>
-                        </div>
-                        <div class="notes-content overflow-hidden transition-all duration-200" :class="expanded ? 'max-h-none' : 'max-h-15'">
-                            <div class="whitespace-pre-wrap leading-relaxed">{{ $log->notes_text }}</div>
-                        </div>
-                        
-                        {{-- Expand/Collapse Button --}}
-                        <button x-show="needsExpansion" @click="expanded = !expanded" 
-                                class="text-primary-600 hover:text-primary-800 text-xs mt-2 font-medium flex items-center space-x-1 focus:outline-none focus:ring-2 focus:ring-primary-500 focus:ring-opacity-20 rounded">
-                            <span x-show="!expanded">Show more</span>
-                            <span x-show="expanded">Show less</span>
-                            <svg x-show="!expanded" class="w-3 h-3" fill="none" stroke="currentColor" viewBox="0 0 24 24">
-                                <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M19 9l-7 7-7-7"></path>
-                            </svg>
-                            <svg x-show="expanded" class="w-3 h-3" fill="none" stroke="currentColor" viewBox="0 0 24 24">
-                                <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M5 15l7-7 7 7"></path>
-                            </svg>
-                        </button>
+            <div class="border-t border-gray-100 dark:border-gray-700 pt-3 mt-3">
+                <div class="text-sm text-gray-600 dark:text-gray-400" x-data="{ expanded: false, needsExpansion: false }" x-init="needsExpansion = $el.querySelector('.notes-content').scrollHeight > 60">
+                    <div class="flex items-center space-x-2 mb-2">
+                        <svg class="w-4 h-4 text-gray-400" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                            <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M7 8h10M7 12h4m1 8l-4-4H5a2 2 0 01-2-2V6a2 2 0 012-2h14a2 2 0 012 2v8a2 2 0 01-2 2h-3l-4 4z"></path>
+                        </svg>
+                        <span class="text-xs font-medium text-gray-500 dark:text-gray-400 uppercase tracking-wide">Notes</span>
                     </div>
+                    <div class="notes-content overflow-hidden transition-all duration-200" :class="expanded ? 'max-h-none' : 'max-h-15'">
+                        <div class="whitespace-pre-wrap leading-relaxed">{{ $log->notes_text }}</div>
+                    </div>
+
+                    {{-- Expand/Collapse Button --}}
+                    <button x-show="needsExpansion" @click="expanded = !expanded"
+                        class="text-primary-600 hover:text-primary-800 text-xs mt-2 font-medium flex items-center space-x-1 focus:outline-none focus:ring-2 focus:ring-primary-500 focus:ring-opacity-20 rounded">
+                        <span x-show="!expanded">Show more</span>
+                        <span x-show="expanded">Show less</span>
+                        <svg x-show="!expanded" class="w-3 h-3" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                            <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M19 9l-7 7-7-7"></path>
+                        </svg>
+                        <svg x-show="expanded" class="w-3 h-3" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                            <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M5 15l7-7 7 7"></path>
+                        </svg>
+                    </button>
                 </div>
+            </div>
             @endif
         </div>
-        
+
         {{-- Right Side Indicators --}}
         <div class="ml-4 flex flex-col items-end space-y-2">
             {{-- Streak Contribution Indicator --}}
             @if($contributedToStreak)
-                <div class="flex items-center space-x-1 text-xs text-success-600 bg-success-50 px-2 py-1 rounded-full">
-                    <svg class="w-3 h-3" fill="currentColor" viewBox="0 0 20 20">
-                        <path fill-rule="evenodd" d="M12.395 2.553a1 1 0 00-1.45-.385c-.345.23-.614.558-.822.88-.214.33-.403.713-.57 1.116-.334.804-.614 1.768-.84 2.734a31.365 31.365 0 00-.613 3.58 2.64 2.64 0 01-.945-1.067c-.328-.68-.398-1.534-.398-2.654A1 1 0 005.05 6.05 6.981 6.981 0 003 11a7 7 0 1011.95-4.95c-.592-.591-.98-.985-1.348-1.467-.363-.476-.724-1.063-1.207-2.03zM12.12 15.12A3 3 0 017 13s.879.5 2.5.5c0-1 .5-4 1.25-4.5.5 1 .786 1.293 1.371 1.879A2.99 2.99 0 0113 13a2.99 2.99 0 01-.879 2.121z" clip-rule="evenodd"></path>
-                    </svg>
-                    <span>Streak</span>
-                </div>
+            <div class="flex items-center space-x-1 text-xs text-success-600 bg-success-50 px-2 py-1 rounded-full">
+                <svg class="w-3 h-3" fill="currentColor" viewBox="0 0 20 20">
+                    <path fill-rule="evenodd" d="M12.395 2.553a1 1 0 00-1.45-.385c-.345.23-.614.558-.822.88-.214.33-.403.713-.57 1.116-.334.804-.614 1.768-.84 2.734a31.365 31.365 0 00-.613 3.58 2.64 2.64 0 01-.945-1.067c-.328-.68-.398-1.534-.398-2.654A1 1 0 005.05 6.05 6.981 6.981 0 003 11a7 7 0 1011.95-4.95c-.592-.591-.98-.985-1.348-1.467-.363-.476-.724-1.063-1.207-2.03zM12.12 15.12A3 3 0 017 13s.879.5 2.5.5c0-1 .5-4 1.25-4.5.5 1 .786 1.293 1.371 1.879A2.99 2.99 0 0113 13a2.99 2.99 0 01-.879 2.121z" clip-rule="evenodd"></path>
+                </svg>
+                <span>Streak</span>
+            </div>
             @endif
-            
+
             {{-- Has Notes Indicator --}}
             @if($log->notes_text && !$showNotes)
-                <div class="flex items-center space-x-1 text-xs text-gray-500 dark:text-gray-400">
-                    <svg class="w-3 h-3" fill="none" stroke="currentColor" viewBox="0 0 24 24">
-                        <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M7 8h10M7 12h4m1 8l-4-4H5a2 2 0 01-2-2V6a2 2 0 012-2h14a2 2 0 012 2v8a2 2 0 01-2 2h-3l-4 4z"></path>
-                    </svg>
-                    <span>Notes</span>
-                </div>
+            <div class="flex items-center space-x-1 text-xs text-gray-500 dark:text-gray-400">
+                <svg class="w-3 h-3" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                    <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M7 8h10M7 12h4m1 8l-4-4H5a2 2 0 01-2-2V6a2 2 0 012-2h14a2 2 0 012 2v8a2 2 0 01-2 2h-3l-4 4z"></path>
+                </svg>
+                <span>Notes</span>
+            </div>
             @endif
         </div>
     </div>
-</div> 
+</div>

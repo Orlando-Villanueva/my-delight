@@ -20,7 +20,13 @@
     {{-- Subtle Date Header --}}
     <div class="flex items-center justify-between mb-3">
         <div class="text-xs text-gray-500 dark:text-gray-400 font-medium">
-            {{ $date->format('M j, Y') }} • {{ $date->diffForHumans() }}
+            @php
+                // Use time_ago from the most recent log (first in the sorted collection)
+                // Since logs are sorted by created_at desc, first() gives us the most recent activity
+                $mostRecentLog = $logsForDay->first();
+                $timeAgo = $mostRecentLog->time_ago ?? $date->diffForHumans();
+            @endphp
+            {{ $date->format('M j, Y') }} • {{ $timeAgo }}
         </div>
         <div class="text-xs text-gray-400 dark:text-gray-500">
             {{ $logsForDay->count() }} {{ Str::plural('reading', $logsForDay->count()) }}
