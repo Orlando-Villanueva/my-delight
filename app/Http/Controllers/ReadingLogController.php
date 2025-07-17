@@ -196,6 +196,12 @@ class ReadingLogController extends Controller
 
                 // Add time_ago to each log and sort readings within each day by created_at (newest first)
                 return $deduplicated->map(function ($log) {
+                    // Note: We intentionally use different timestamps for different contexts:
+                    // - time_ago (date_read): Shows "when the reading was supposed to happen" 
+                    //   Used in solo cards for logical consistency (e.g., "Jul 16, 2025 • 1 day ago")
+                    //   This handles seeded data correctly where created_at != date_read
+                    // - logged_time_ago (created_at): Shows "when user was actually active"
+                    //   Used in daily card headers to show recent app activity
                     $log->time_ago = $this->userStatisticsService->formatTimeAgo($log->date_read);
                     $log->logged_time_ago = $this->userStatisticsService->formatTimeAgo($log->created_at);
                     return $log;
