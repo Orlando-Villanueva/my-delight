@@ -4,6 +4,7 @@ namespace Database\Seeders;
 
 use App\Models\User;
 use App\Models\ReadingLog;
+use App\Services\BookProgressSyncService;
 use Carbon\Carbon;
 // use Illuminate\Database\Console\Seeds\WithoutModelEvents;
 use Illuminate\Database\Seeder;
@@ -24,6 +25,12 @@ class DatabaseSeeder extends Seeder
 
         // Create varied reading logs for testing filters
         $this->createTestReadingLogs($seedUser);
+
+        // Sync book progress with the seeded reading logs
+        $this->command->info("Syncing book progress for seeded reading logs...");
+        $syncService = app(BookProgressSyncService::class);
+        $stats = $syncService->syncBookProgressForUser($seedUser);
+        $this->command->info("Synced {$stats['processed_logs']} reading logs with book progress.");
     }
 
     /**
