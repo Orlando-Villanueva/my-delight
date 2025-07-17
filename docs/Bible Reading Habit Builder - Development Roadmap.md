@@ -1,4 +1,4 @@
-# **Bible Reading Habit Builder - Development Roadmap**
+# **Delight - Development Roadmap**
 
 **Core Tech Stack:**
 

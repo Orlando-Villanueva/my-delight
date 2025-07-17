@@ -2,7 +2,7 @@
 
 ## Overview
 
-This document outlines the database schema for the Bible Reading Habit Builder MVP, including entity relationships, migration history, and design rationale.
+This document outlines the database schema for the Delight MVP, including entity relationships, migration history, and design rationale.
 
 ## Entity Relationship Diagram
 

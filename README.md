@@ -1,4 +1,4 @@
-# Bible Reading Habit Builder
+# Delight
 
 A web application designed to help users build and maintain a consistent Bible reading habit through tracking, streaks, and visual progress indicators.
 

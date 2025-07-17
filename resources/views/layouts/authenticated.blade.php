@@ -6,7 +6,7 @@
     <meta name="viewport" content="width=device-width, initial-scale=1">
     <meta name="csrf-token" content="{{ csrf_token() }}">
 
-    <title>{{ config('app.name', 'Bible Habit Builder') }}</title>
+    <title>{{ config('app.name', 'Delight') }}</title>
 
     <!-- Favicon -->
     <link rel="icon" href="{{ asset('favicon.ico') }}" type="image/x-icon">
@@ -38,7 +38,7 @@
     <!-- Dynamic Title Script -->
     <script>
         function updateTitle(currentView) {
-            const appName = '{{ config('app.name', 'Bible Habit Builder') }}';
+            const appName = '{{ config('app.name', 'Delight') }}';
             
             if (currentView === 'dashboard') {
                 document.title = `Dashboard - ${appName}`;
@@ -79,11 +79,11 @@
                         <img 
                             src="{{ asset('images/logo-64.png') }}?v={{ config('app.asset_version') }}"
                             srcset="{{ asset('images/logo-64.png') }}?v={{ config('app.asset_version') }} 1x, {{ asset('images/logo-64-2x.png') }}?v={{ config('app.asset_version') }} 2x"
-                            alt="Bible Habit Builder Logo" 
+                            alt="{{ config('app.name') }} Logo" 
                             class="w-full h-full object-contain"
                         />
                     </div>
-                    <span>Bible Habit</span>
+                    <span>{{ config('app.name') }}</span>
                 </a>
             </div>
 
@@ -170,12 +170,12 @@
                             <img 
                                 src="{{ asset('images/logo-64.png') }}?v={{ config('app.asset_version') }}"
                                 srcset="{{ asset('images/logo-64.png') }}?v={{ config('app.asset_version') }} 1x, {{ asset('images/logo-64-2x.png') }}?v={{ config('app.asset_version') }} 2x"
-                                alt="Bible Habit Builder Logo" 
+                                alt="{{ config('app.name') }} Logo" 
                                 class="w-full h-full object-contain"
                             />
                         </div>
                         <h1 id="mobile-page-title" class="text-lg sm:text-xl font-semibold text-[#4A5568] dark:text-gray-200 leading-[1.5]">
-                            Bible Habit
+                            {{ config('app.name') }}
                         </h1>
                     </div>
 

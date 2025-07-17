@@ -2,7 +2,7 @@
 
 ## Overview
 
-This guide outlines the HTMX implementation patterns for the Bible Reading Habit Builder. HTMX serves as the primary mechanism for server-driven UI updates, following the principle that **state lives on the server** and HTML fragments represent that state.
+This guide outlines the HTMX implementation patterns for Delight. HTMX serves as the primary mechanism for server-driven UI updates, following the principle that **state lives on the server** and HTML fragments represent that state.
 
 ## Core HTMX Principles
 
