@@ -208,15 +208,13 @@ class UserStatisticsService
             return $diffInMinutes === 1 ? '1 minute ago' : "{$diffInMinutes} minutes ago";
         }
 
-        // Hours ago (1-23 hours)
+        // Hours ago (1-23 hours, or same day but 24+ hours)
         if ($diffInHours < 24) {
             return $diffInHours === 1 ? '1 hour ago' : "{$diffInHours} hours ago";
         }
 
         // Days ago (1+ days)
-        if ($diffInDays === 0) {
-            return 'today';
-        } elseif ($diffInDays === 1) {
+        if ($diffInDays === 1) {
             return '1 day ago';
         } else {
             return "{$diffInDays} days ago";
