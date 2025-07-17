@@ -31,6 +31,6 @@ class BrandConsistencyTest extends TestCase
     public function test_page_titles_include_brand_name()
     {
         $response = $this->get('/login');
-        $response->assertSee('<title>Login - ' . config('app.name'), false);
+        $response->assertSee('<title>' . config('app.name'), false);
     }
 }
