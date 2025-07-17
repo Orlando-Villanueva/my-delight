@@ -23,8 +23,9 @@ $cardClasses .= ' p-4';
             @php
             // Use logged_time_ago from the most recent log for header time
             // Since logs are sorted by created_at desc, first() gives us the most recent logging activity
+            // The controller should always provide logged_time_ago, so this fallback should rarely be needed
             $mostRecentLog = $logsForDay->first();
-            $timeAgo = $mostRecentLog->logged_time_ago ?? $mostRecentLog->created_at->diffForHumans();
+            $timeAgo = $mostRecentLog->logged_time_ago ?? 'recently';
             @endphp
             {{ $date->format('M j, Y') }} • {{ $timeAgo }}
         </div>
