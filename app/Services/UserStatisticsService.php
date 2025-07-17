@@ -129,7 +129,7 @@ class UserStatisticsService
                 'passage_text' => $reading->passage_text,
                 'date_read' => $reading->date_read,
                 'notes_text' => $reading->notes_text,
-                'time_ago' => $this->formatTimeAgo($reading->date_read),
+                'time_ago' => $this->formatTimeAgo($reading->created_at),
             ];
         })->values()->toArray();
     }

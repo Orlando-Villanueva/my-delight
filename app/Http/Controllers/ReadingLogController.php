@@ -197,6 +197,7 @@ class ReadingLogController extends Controller
                 // Add time_ago to each log and sort readings within each day by created_at (newest first)
                 return $deduplicated->map(function ($log) {
                     $log->time_ago = $this->userStatisticsService->formatTimeAgo($log->date_read);
+                    $log->logged_time_ago = $this->userStatisticsService->formatTimeAgo($log->created_at);
                     return $log;
                 })->sortByDesc('created_at')->values();
             })
