@@ -30,7 +30,7 @@ class DatabaseSeeder extends Seeder
         $this->command->info("Syncing book progress for seeded reading logs...");
         $syncService = app(BookProgressSyncService::class);
         $stats = $syncService->syncBookProgressForUser($seedUser);
-        $this->command->info("Synced {$stats['processed_logs']} reading logs and updated {$stats['updated_books']} books with book progress.");
+        $this->command->info("Synced {$stats['processed_logs']} reading logs and updated {$stats['updated_books_count']} books with book progress.");
     }
 
     /**
