@@ -31,12 +31,18 @@ $cardClasses .= ' p-4';
 
                 {{-- Secondary: Date Information --}}
                 @if($showDate)
-                <div class="flex items-center space-x-2 text-xs text-gray-500 dark:text-gray-400">
-                    <span>{{ $log->date_read->format('M j, Y') }}</span>
-                    @if(!$compact)
-                    <span>•</span>
-                    <span>{{ $log->time_ago ?? $log->date_read->diffForHumans() }}</span>
-                    @endif
+                <div class="flex items-center justify-between">
+                    <div class="flex items-center space-x-2 text-xs text-gray-500 dark:text-gray-400">
+                        <span>{{ $log->date_read->format('M j, Y') }}</span>
+                        @if(!$compact)
+                        <span>•</span>
+                        <span>{{ $log->time_ago ?? $log->date_read->diffForHumans() }}</span>
+                        @endif
+                    </div>
+                    {{-- Time when reading was logged --}}
+                    <span class="text-xs text-gray-400 dark:text-gray-500 font-medium">
+                        {{ $log->created_at->format('g:i A') }}
+                    </span>
                 </div>
                 @endif
             </div>
