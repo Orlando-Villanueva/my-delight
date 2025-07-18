@@ -91,15 +91,25 @@ class DatabaseSeeder extends Seeder
         // Combine all logs
         $allLogs = array_merge($recentLogs, $mediumLogs, $olderLogs, $veryOldLogs);
 
-        // Create the reading logs
+        // Create the reading logs with realistic timestamps
         foreach ($allLogs as $logData) {
+            // Calculate realistic created_at timestamp
+            // Most people log their reading within a few hours of reading
+            // Add some randomness: 0-6 hours after the reading date
+            $readingDate = $logData['date'];
+            $loggedAt = $readingDate->copy()
+                ->addHours(rand(0, 6))
+                ->addMinutes(rand(0, 59));
+
             ReadingLog::create([
                 'user_id' => $user->id,
                 'book_id' => $logData['book_id'],
                 'chapter' => $logData['chapter'],
                 'passage_text' => $logData['passage_text'],
-                'date_read' => $logData['date']->toDateString(),
+                'date_read' => $readingDate->toDateString(),
                 'notes_text' => $logData['notes'],
+                'created_at' => $loggedAt,
+                'updated_at' => $loggedAt,
             ]);
         }
 
