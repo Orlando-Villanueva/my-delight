@@ -2,6 +2,7 @@
 
 namespace App\Services;
 
+use App\Contracts\ReadingLogInterface;
 use App\Models\User;
 use Carbon\Carbon;
 
@@ -190,28 +191,29 @@ class UserStatisticsService
     /**
      * Calculate smart time ago that considers the context of when reading was done vs when it was logged.
      */
-    public function calculateSmartTimeAgo(object $reading): string
+    public function calculateSmartTimeAgo(ReadingLogInterface $reading): string
     {
         // Handle null date_read by falling back to created_at
-        if (is_null($reading->date_read)) {
-            return $this->formatTimeAgo($reading->created_at);
+        $dateRead = $reading->getDateRead();
+        if (is_null($dateRead)) {
+            return $this->formatTimeAgo($reading->getCreatedAt());
         }
 
-        $dateRead = Carbon::parse($reading->date_read);
-        $createdAt = $reading->created_at;
+        $dateReadCarbon = Carbon::parse($dateRead);
+        $createdAt = $reading->getCreatedAt();
 
         // If the reading was done today, use created_at for more accurate "hours/minutes ago"
-        if ($dateRead->isToday()) {
+        if ($dateReadCarbon->isToday()) {
             return $this->formatTimeAgo($createdAt);
         }
 
         // If the reading was done yesterday, always show "1 day ago" regardless of when logged
-        if ($dateRead->isYesterday()) {
+        if ($dateReadCarbon->isYesterday()) {
             return '1 day ago';
         }
 
         // For older readings, use date_read to show accurate day count
-        return $this->formatTimeAgo($dateRead);
+        return $this->formatTimeAgo($dateReadCarbon);
     }
 
     /**

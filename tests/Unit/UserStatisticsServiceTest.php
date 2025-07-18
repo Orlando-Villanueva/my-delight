@@ -2,6 +2,7 @@
 
 use App\Services\UserStatisticsService;
 use App\Services\ReadingLogService;
+use App\Contracts\ReadingLogInterface;
 use Carbon\Carbon;
 use PHPUnit\Framework\TestCase;
 
@@ -18,12 +19,23 @@ class UserStatisticsServiceTest extends TestCase
     }
 
     /**
+     * Create a mock reading log object that implements ReadingLogInterface
+     */
+    private function createMockReading(?string $dateRead, Carbon $createdAt): ReadingLogInterface
+    {
+        $mock = $this->createMock(ReadingLogInterface::class);
+        $mock->method('getDateRead')->willReturn($dateRead);
+        $mock->method('getCreatedAt')->willReturn($createdAt);
+        return $mock;
+    }
+
+    /**
      * Test that formatTimeAgo formats time consistently for different time ranges
      */
     public function testFormatTimeAgoConsistency()
     {
         $now = Carbon::now();
-        
+
         // Test various time differences
         $testCases = [
             [$now->copy()->subSeconds(30), 'just now'],
@@ -50,7 +62,7 @@ class UserStatisticsServiceTest extends TestCase
     public function testFormatTimeAgoEdgeCases()
     {
         $now = Carbon::now();
-        
+
         // Test boundary conditions
         $this->assertEquals('just now', $this->service->formatTimeAgo($now->copy()->subSeconds(59)));
         $this->assertEquals('1 minute ago', $this->service->formatTimeAgo($now->copy()->subSeconds(60)));
@@ -67,11 +79,8 @@ class UserStatisticsServiceTest extends TestCase
     {
         $today = Carbon::now()->startOfDay();
         $createdAt = Carbon::now()->subHours(3);
-        
-        $reading = (object) [
-            'date_read' => $today->toDateString(),
-            'created_at' => $createdAt,
-        ];
+
+        $reading = $this->createMockReading($today->toDateString(), $createdAt);
 
         $result = $this->service->calculateSmartTimeAgo($reading);
         $this->assertEquals('3 hours ago', $result);
@@ -84,11 +93,8 @@ class UserStatisticsServiceTest extends TestCase
     {
         $yesterday = Carbon::now()->subDay()->startOfDay();
         $createdAt = Carbon::now()->subMinutes(30); // Recently logged
-        
-        $reading = (object) [
-            'date_read' => $yesterday->toDateString(),
-            'created_at' => $createdAt,
-        ];
+
+        $reading = $this->createMockReading($yesterday->toDateString(), $createdAt);
 
         $result = $this->service->calculateSmartTimeAgo($reading);
         $this->assertEquals('1 day ago', $result);
@@ -101,11 +107,8 @@ class UserStatisticsServiceTest extends TestCase
     {
         $threeDaysAgo = Carbon::now()->subDays(3);
         $createdAt = Carbon::now()->subHours(1); // Recently logged
-        
-        $reading = (object) [
-            'date_read' => $threeDaysAgo->toDateString(),
-            'created_at' => $createdAt,
-        ];
+
+        $reading = $this->createMockReading($threeDaysAgo->toDateString(), $createdAt);
 
         $result = $this->service->calculateSmartTimeAgo($reading);
         $this->assertEquals('3 days ago', $result);
@@ -117,11 +120,8 @@ class UserStatisticsServiceTest extends TestCase
     public function testCalculateSmartTimeAgoFallbackWhenDateReadIsNull()
     {
         $createdAt = Carbon::now()->subHours(5);
-        
-        $reading = (object) [
-            'date_read' => null,
-            'created_at' => $createdAt,
-        ];
+
+        $reading = $this->createMockReading(null, $createdAt);
 
         $result = $this->service->calculateSmartTimeAgo($reading);
         $this->assertEquals('5 hours ago', $result);
