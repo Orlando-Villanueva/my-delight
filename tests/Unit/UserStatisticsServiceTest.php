@@ -7,8 +7,8 @@ use PHPUnit\Framework\TestCase;
 
 class UserStatisticsServiceTest extends TestCase
 {
-    protected $readingLogService;
-    protected $service;
+    protected ReadingLogService $readingLogService;
+    protected UserStatisticsService $service;
 
     protected function setUp(): void
     {
