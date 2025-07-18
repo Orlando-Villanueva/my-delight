@@ -190,7 +190,7 @@ class UserStatisticsService
     /**
      * Calculate smart time ago that considers the context of when reading was done vs when it was logged.
      */
-    public function calculateSmartTimeAgo($reading): string
+    public function calculateSmartTimeAgo(object $reading): string
     {
         // Handle null date_read by falling back to created_at
         if (is_null($reading->date_read)) {
