@@ -14,7 +14,7 @@ class TestEmailConfiguration extends Command
      *
      * @var string
      */
-    protected $signature = 'email:test {--send : Actually send a test email}';
+    protected $signature = 'email:test {--send : Actually send a test email} {--to= : Email address to send test email to}';
 
     /**
      * The console command description.
@@ -57,11 +57,13 @@ class TestEmailConfiguration extends Command
             
             $testUrl = url('/test-reset-url');
             
+            $recipient = $this->option('to') ?: config('mail.from.address');
+            
             try {
-                Mail::to(config('mail.from.address'))
+                Mail::to($recipient)
                     ->send(new PasswordResetMail($testUrl));
                 
-                $this->info('✅ Test email sent successfully!');
+                $this->info("✅ Test email sent successfully to: {$recipient}");
                 
                 if (config('mail.default') === 'smtp' && config('mail.mailers.smtp.host') === 'localhost') {
                     $this->info('📧 Check Mailpit at http://localhost:8025 to view the email');
