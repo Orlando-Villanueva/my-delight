@@ -2,11 +2,13 @@
 
 namespace App\Models;
 
+use App\Contracts\ReadingLogInterface;
+use Carbon\Carbon;
 use Illuminate\Database\Eloquent\Factories\HasFactory;
 use Illuminate\Database\Eloquent\Model;
 use Illuminate\Database\Eloquent\Relations\BelongsTo;
 
-class ReadingLog extends Model
+class ReadingLog extends Model implements ReadingLogInterface
 {
     use HasFactory;
 
@@ -82,5 +84,21 @@ class ReadingLog extends Model
     public function scopeRecentFirst($query)
     {
         return $query->orderBy('date_read', 'desc');
+    }
+
+    /**
+     * Get the date when the reading was performed.
+     */
+    public function getDateRead(): ?string
+    {
+        return $this->date_read?->toDateString();
+    }
+
+    /**
+     * Get the timestamp when the reading log was created.
+     */
+    public function getCreatedAt(): Carbon
+    {
+        return $this->created_at;
     }
 } 

@@ -2,6 +2,7 @@
 
 namespace App\Services;
 
+use App\Contracts\ReadingLogInterface;
 use App\Models\User;
 use Carbon\Carbon;
 
@@ -129,7 +130,7 @@ class UserStatisticsService
                 'passage_text' => $reading->passage_text,
                 'date_read' => $reading->date_read,
                 'notes_text' => $reading->notes_text,
-                'time_ago' => $this->formatTimeAgo($reading->created_at),
+                'time_ago' => $this->calculateSmartTimeAgo($reading),
             ];
         })->values()->toArray();
     }
@@ -185,6 +186,34 @@ class UserStatisticsService
         $chaptersRead = $user->readingLogs()->count();
 
         return $totalChapters > 0 ? round(($chaptersRead / $totalChapters) * 100, 2) : 0;
+    }
+
+    /**
+     * Calculate smart time ago that considers the context of when reading was done vs when it was logged.
+     */
+    public function calculateSmartTimeAgo(ReadingLogInterface $reading): string
+    {
+        // Handle null date_read by falling back to created_at
+        $dateRead = $reading->getDateRead();
+        if (is_null($dateRead)) {
+            return $this->formatTimeAgo($reading->getCreatedAt());
+        }
+
+        $dateReadCarbon = Carbon::parse($dateRead);
+        $createdAt = $reading->getCreatedAt();
+
+        // If the reading was done today, use created_at for more accurate "hours/minutes ago"
+        if ($dateReadCarbon->isToday()) {
+            return $this->formatTimeAgo($createdAt);
+        }
+
+        // If the reading was done yesterday, always show "1 day ago" regardless of when logged
+        if ($dateReadCarbon->isYesterday()) {
+            return '1 day ago';
+        }
+
+        // For older readings, use date_read to show accurate day count
+        return $this->formatTimeAgo($dateReadCarbon);
     }
 
     /**
