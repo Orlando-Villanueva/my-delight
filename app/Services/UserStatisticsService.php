@@ -195,8 +195,9 @@ class UserStatisticsService
     {
         // Handle null date_read by falling back to created_at
         $dateRead = $reading->getDateRead();
-        if ($reading->date_read === null) {
+        if (is_null($dateRead)) {
             return $this->formatTimeAgo($reading->getCreatedAt());
+        }
 
         $dateReadCarbon = Carbon::parse($dateRead);
         $createdAt = $reading->getCreatedAt();
