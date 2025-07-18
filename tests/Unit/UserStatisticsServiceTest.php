@@ -1,5 +1,6 @@
 <?php
 
+namespace Tests\Unit;
 use App\Services\UserStatisticsService;
 use App\Services\ReadingLogService;
 use Carbon\Carbon;
