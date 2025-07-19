@@ -108,8 +108,8 @@ class EmailService
             'from_name' => config('mail.from.name'),
             'smtp_host' => config('mail.mailers.smtp.host'),
             'smtp_port' => config('mail.mailers.smtp.port'),
-            'mailgun_domain' => config('mail.mailers.mailgun.domain') ? 'configured' : 'not configured',
-            'mailgun_secret' => config('mail.mailers.mailgun.secret') ? 'configured' : 'not configured',
+            'mailgun_domain' => !empty(config('mail.mailers.mailgun.domain')),
+            'mailgun_secret' => !empty(config('mail.mailers.mailgun.secret')),
         ];
     }
 }

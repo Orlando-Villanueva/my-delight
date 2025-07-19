@@ -49,9 +49,13 @@ class CustomResetPasswordNotification extends Notification
      */
     public function toMail(object $notifiable): PasswordResetMail
     {
+        if (static::$toMailCallback) {
+            return call_user_func(static::$toMailCallback, $notifiable, $this->token);
+        }
+
         $url = $this->resetUrl($notifiable);
 
-        return (new PasswordResetMail($url))->to($notifiable->email);
+        return new PasswordResetMail($url);
     }
 
     /**

@@ -187,7 +187,7 @@
             </div>
 
             <p class="message">
-                This password reset link will expire in {{ config('auth.passwords.users.expire') }} minutes for your security.
+                This password reset link will expire in {{ config('auth.passwords.users.expire', 60) }} minutes for your security.
             </p>
 
             <div class="security-notice">
