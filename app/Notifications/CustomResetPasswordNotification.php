@@ -4,6 +4,7 @@ namespace App\Notifications;
 
 use App\Mail\PasswordResetMail;
 use Illuminate\Bus\Queueable;
+use Illuminate\Notifications\Messages\MailMessage;
 use Illuminate\Notifications\Notification;
 use Illuminate\Support\Facades\Lang;
 
@@ -47,7 +48,7 @@ class CustomResetPasswordNotification extends Notification
     /**
      * Get the mail representation of the notification.
      */
-    public function toMail(object $notifiable): PasswordResetMail
+    public function toMail(object $notifiable): MailMessage
     {
         if (static::$toMailCallback) {
             return call_user_func(static::$toMailCallback, $notifiable, $this->token);
@@ -55,7 +56,12 @@ class CustomResetPasswordNotification extends Notification
 
         $url = $this->resetUrl($notifiable);
 
-        return new PasswordResetMail($url);
+        // Use MailMessage for notifications - this is the standard Laravel approach
+        return (new MailMessage)
+            ->subject('Reset Your Password - Delight')
+            ->view('emails.password-reset', [
+                'resetUrl' => $url,
+            ]);
     }
 
     /**
