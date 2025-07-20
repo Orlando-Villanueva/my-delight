@@ -8,6 +8,7 @@ use App\Models\BookProgress;
 use Illuminate\Support\Collection;
 use Carbon\Carbon;
 use InvalidArgumentException;
+use Illuminate\Support\Facades\Cache;
 
 class ReadingLogService
 {
@@ -54,6 +55,9 @@ class ReadingLogService
         // Update book progress
         $this->updateBookProgress($user, $data['book_id'], $data['chapter']);
 
+        // Invalidate user statistics cache
+        $this->invalidateUserStatisticsCache($user);
+
         // Server-side state updated - HTMX will handle UI updates
 
         return $readingLog;
@@ -84,6 +88,9 @@ class ReadingLogService
                 $firstLog = $readingLog;
             }
         }
+
+        // Invalidate user statistics cache after logging multiple chapters
+        $this->invalidateUserStatisticsCache($user);
 
         return $firstLog;
     }
@@ -300,5 +307,51 @@ class ReadingLogService
     public function updateBookProgressFromLog(ReadingLog $log): void
     {
         $this->updateBookProgress($log->user, $log->book_id, $log->chapter);
+    }
+
+    /**
+     * Invalidate user statistics cache when reading logs change.
+     */
+    private function invalidateUserStatisticsCache(User $user): void
+    {
+        $currentYear = now()->year;
+        $previousYear = $currentYear - 1;
+        
+        // Clear all user-specific caches that depend on reading logs
+        Cache::forget("user_dashboard_stats_{$user->id}");
+        Cache::forget("user_current_streak_{$user->id}");
+        Cache::forget("user_longest_streak_{$user->id}");
+        Cache::forget("user_calendar_{$user->id}_{$currentYear}");
+        Cache::forget("user_calendar_{$user->id}_{$previousYear}");
+    }
+
+    /**
+     * Delete a reading log and invalidate related caches.
+     */
+    public function deleteReadingLog(ReadingLog $readingLog): bool
+    {
+        $user = $readingLog->user;
+        $deleted = $readingLog->delete();
+        
+        if ($deleted) {
+            // Invalidate user statistics cache
+            $this->invalidateUserStatisticsCache($user);
+        }
+        
+        return $deleted;
+    }
+
+    /**
+     * Update a reading log and invalidate related caches.
+     */
+    public function updateReadingLog(ReadingLog $readingLog, array $data): ReadingLog
+    {
+        $user = $readingLog->user;
+        $readingLog->update($data);
+        
+        // Invalidate user statistics cache
+        $this->invalidateUserStatisticsCache($user);
+        
+        return $readingLog;
     }
 } 
