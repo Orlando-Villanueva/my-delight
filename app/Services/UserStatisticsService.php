@@ -5,6 +5,7 @@ namespace App\Services;
 use App\Contracts\ReadingLogInterface;
 use App\Models\User;
 use Carbon\Carbon;
+use Illuminate\Support\Facades\Cache;
 
 class UserStatisticsService
 {
@@ -17,12 +18,16 @@ class UserStatisticsService
      */
     public function getDashboardStatistics(User $user): array
     {
-        return [
-            'streaks' => $this->getStreakStatistics($user),
-            'reading_summary' => $this->getReadingSummary($user),
-            'book_progress' => $this->getBookProgressSummary($user),
-            'recent_activity' => $this->getRecentActivity($user),
-        ];
+        return Cache::remember(
+            "user_dashboard_stats_{$user->id}",
+            300, // 5 minutes TTL
+            fn() => [
+                'streaks' => $this->getStreakStatistics($user),
+                'reading_summary' => $this->getReadingSummary($user),
+                'book_progress' => $this->getBookProgressSummary($user),
+                'recent_activity' => $this->getRecentActivity($user),
+            ]
+        );
     }
 
     /**
@@ -30,9 +35,21 @@ class UserStatisticsService
      */
     public function getStreakStatistics(User $user): array
     {
+        $currentStreak = Cache::remember(
+            "user_current_streak_{$user->id}",
+            900, // 15 minutes TTL
+            fn() => $this->readingLogService->calculateCurrentStreak($user)
+        );
+
+        $longestStreak = Cache::remember(
+            "user_longest_streak_{$user->id}",
+            1800, // 30 minutes TTL (changes less frequently)
+            fn() => $this->readingLogService->calculateLongestStreak($user)
+        );
+
         return [
-            'current_streak' => $this->readingLogService->calculateCurrentStreak($user),
-            'longest_streak' => $this->readingLogService->calculateLongestStreak($user),
+            'current_streak' => $currentStreak,
+            'longest_streak' => $longestStreak,
         ];
     }
 
@@ -88,7 +105,8 @@ class UserStatisticsService
      */
     public function getBookProgressSummary(User $user): array
     {
-        $bookProgress = $user->bookProgress;
+        // Eager load book progress data with a single query instead of lazy loading
+        $bookProgress = $user->bookProgress()->get();
 
         $completed = $bookProgress->where('is_completed', true)->count();
         $inProgress = $bookProgress->where('is_completed', false)
@@ -96,12 +114,19 @@ class UserStatisticsService
             ->count();
         $notStarted = 66 - $completed - $inProgress; // Total Bible books minus started
 
+        // Calculate overall progress using the already loaded collection
+        $totalChapters = 1189; // Total chapters in the Bible
+        $chaptersRead = $bookProgress->sum(function ($progress) {
+            return count($progress->chapters_read ?? []);
+        });
+        $overallProgressPercent = $totalChapters > 0 ? round(($chaptersRead / $totalChapters) * 100, 2) : 0;
+
         return [
             'books_completed' => $completed,
             'books_in_progress' => $inProgress,
             'books_not_started' => max(0, $notStarted),
             'total_bible_books' => 66,
-            'overall_progress_percent' => $this->calculateOverallBibleProgress($user),
+            'overall_progress_percent' => $overallProgressPercent,
         ];
     }
 
@@ -111,7 +136,7 @@ class UserStatisticsService
     public function getRecentActivity(User $user, int $limit = 5): array
     {
         // Apply limit at database level to avoid loading all records into memory
-        // Then handle deduplication on the smaller result set
+        // Use a more efficient query with specific index
         $recentReadings = $user->readingLogs()
             ->select('id', 'passage_text', 'date_read', 'notes_text', 'created_at')
             ->orderBy('date_read', 'desc')
@@ -141,52 +166,50 @@ class UserStatisticsService
     public function getCalendarData(User $user, ?string $year = null): array
     {
         $year = $year ?? now()->year;
-        $startDate = Carbon::create($year, 1, 1);
-        $endDate = Carbon::create($year, 12, 31);
+        
+        return Cache::remember(
+            "user_calendar_{$user->id}_{$year}",
+            600, // 10 minutes TTL
+            function () use ($user, $year) {
+                $startDate = Carbon::create($year, 1, 1);
+                $endDate = Carbon::create($year, 12, 31);
 
-        // Get all reading logs for the year and group by date using collections
-        $readingLogs = $user->readingLogs()
-            ->whereBetween('date_read', [$startDate, $endDate])
-            ->get(['date_read']);
+                // Get all reading logs for the year and group by date using collections
+                $readingLogs = $user->readingLogs()
+                    ->whereBetween('date_read', [$startDate, $endDate])
+                    ->get(['date_read']);
 
-        // Group by date and count readings per date
-        $readingData = $readingLogs
-            ->groupBy(function ($log) {
-                return Carbon::parse($log->date_read)->toDateString();
-            })
-            ->map(function ($readings) {
-                return $readings->count();
-            })
-            ->toArray();
+                // Group by date and count readings per date
+                $readingData = $readingLogs
+                    ->groupBy(function ($log) {
+                        return Carbon::parse($log->date_read)->toDateString();
+                    })
+                    ->map(function ($readings) {
+                        return $readings->count();
+                    })
+                    ->toArray();
 
-        $calendar = [];
-        $currentDate = $startDate->copy();
+                $calendar = [];
+                $currentDate = $startDate->copy();
 
-        while ($currentDate->lte($endDate)) {
-            $dateString = $currentDate->toDateString();
-            $readingCount = $readingData[$dateString] ?? 0;
+                while ($currentDate->lte($endDate)) {
+                    $dateString = $currentDate->toDateString();
+                    $readingCount = $readingData[$dateString] ?? 0;
 
-            $calendar[$dateString] = [
-                'date' => $dateString,
-                'reading_count' => $readingCount,
-                'has_reading' => $readingCount > 0,
-            ];
-            $currentDate->addDay();
-        }
+                    $calendar[$dateString] = [
+                        'date' => $dateString,
+                        'reading_count' => $readingCount,
+                        'has_reading' => $readingCount > 0,
+                    ];
+                    $currentDate->addDay();
+                }
 
-        return $calendar;
+                return $calendar;
+            }
+        );
     }
 
-    /**
-     * Calculate overall Bible reading progress percentage.
-     */
-    private function calculateOverallBibleProgress(User $user): float
-    {
-        $totalChapters = 1189; // Total chapters in the Bible
-        $chaptersRead = $user->readingLogs()->count();
 
-        return $totalChapters > 0 ? round(($chaptersRead / $totalChapters) * 100, 2) : 0;
-    }
 
     /**
      * Calculate smart time ago that considers the context of when reading was done vs when it was logged.
@@ -247,6 +270,32 @@ class UserStatisticsService
             return '1 day ago';
         } else {
             return "{$diffInDays} days ago";
+        }
+    }
+
+    /**
+     * Invalidate all cached statistics for a user.
+     */
+    public function invalidateUserCache(User $user): void
+    {
+        $currentYear = now()->year;
+        $previousYear = $currentYear - 1;
+        
+        // Clear all user-specific caches
+        Cache::forget("user_dashboard_stats_{$user->id}");
+        Cache::forget("user_current_streak_{$user->id}");
+        Cache::forget("user_longest_streak_{$user->id}");
+        Cache::forget("user_calendar_{$user->id}_{$currentYear}");
+        Cache::forget("user_calendar_{$user->id}_{$previousYear}");
+    }
+
+    /**
+     * Invalidate specific cache keys for a user.
+     */
+    public function invalidateSpecificCache(User $user, array $cacheKeys): void
+    {
+        foreach ($cacheKeys as $key) {
+            Cache::forget($key);
         }
     }
 }
