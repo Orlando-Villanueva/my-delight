@@ -56,17 +56,15 @@ class PerformanceServiceProvider extends ServiceProvider
      */
     private function setupCacheMonitoring(): void
     {
-        // Track cache hits and misses
-        $hits = 0;
-        $misses = 0;
-        
-        Event::listen('cache:hit', function ($key, $value) use (&$hits) {
-            $hits++;
+        Event::listen('cache:hit', function ($key, $value) {
+            $hits = Cache::get('cache_hits', 0) + 1;
+            Cache::put('cache_hits', $hits, now()->addDay());
             $this->updateCacheMetrics($hits, $this->getCacheMisses());
         });
         
-        Event::listen('cache:missed', function ($key) use (&$misses) {
-            $misses++;
+        Event::listen('cache:missed', function ($key) {
+            $misses = Cache::get('cache_misses', 0) + 1;
+            Cache::put('cache_misses', $misses, now()->addDay());
             $this->updateCacheMetrics($this->getCacheHits(), $misses);
         });
     }

@@ -209,25 +209,7 @@ class UserStatisticsService
         );
     }
 
-    /**
-     * Calculate overall Bible reading progress percentage.
-     * 
-     * Note: This method is kept for backward compatibility but is no longer used directly
-     * by getBookProgressSummary() which now calculates this value from the eager loaded data.
-     */
-    private function calculateOverallBibleProgress(User $user): float
-    {
-        $totalChapters = 1189; // Total chapters in the Bible
-        
-        // Use a more efficient query that counts distinct book/chapter combinations
-        // rather than counting all reading logs (which might include duplicates)
-        $chaptersRead = $user->bookProgress()
-            ->sum(function ($progress) {
-                return count($progress->chapters_read ?? []);
-            });
 
-        return $totalChapters > 0 ? round(($chaptersRead / $totalChapters) * 100, 2) : 0;
-    }
 
     /**
      * Calculate smart time ago that considers the context of when reading was done vs when it was logged.
