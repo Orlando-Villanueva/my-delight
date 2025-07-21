@@ -60,6 +60,19 @@ return [
 
     /*
     |--------------------------------------------------------------------------
+    | Telescope Admin Emails
+    |--------------------------------------------------------------------------
+    |
+    | These email addresses will have access to Telescope in non-local
+    | environments. Configure via TELESCOPE_ADMIN_EMAILS environment
+    | variable as a comma-separated list.
+    |
+    */
+
+    'admin_emails' => array_filter(explode(',', env('TELESCOPE_ADMIN_EMAILS', ''))),
+
+    /*
+    |--------------------------------------------------------------------------
     | Telescope Storage Driver
     |--------------------------------------------------------------------------
     |
