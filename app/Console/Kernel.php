@@ -12,11 +12,6 @@ class Kernel extends ConsoleKernel
      */
     protected function schedule(Schedule $schedule): void
     {
-        // Monitor cache hit rate every hour
-        $schedule->command('monitor:cache-hit-rate --alert-threshold=50')
-                 ->hourly()
-                 ->appendOutputTo(storage_path('logs/cache-monitor.log'));
-        
         // Prune Telescope entries daily
         $schedule->command('telescope:prune --hours=24')
                  ->daily();
