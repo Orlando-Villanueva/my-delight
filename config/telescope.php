@@ -25,6 +25,7 @@ return [
     |
     | Configure how long Telescope should keep data in the database.
     | This helps prevent the database from growing too large.
+    | Production should have shorter retention periods.
     |
     */
     
