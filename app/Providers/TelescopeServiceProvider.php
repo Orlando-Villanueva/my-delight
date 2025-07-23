@@ -14,19 +14,17 @@ class TelescopeServiceProvider extends TelescopeApplicationServiceProvider
      */
     public function register(): void
     {
+        // Only register Telescope in local environment
+        if (!$this->app->environment('local')) {
+            return;
+        }
+
         // Telescope::night();
 
         $this->hideSensitiveRequestDetails();
 
-        $isLocal = $this->app->environment('local');
-
-        Telescope::filter(function (IncomingEntry $entry) use ($isLocal) {
-            return $isLocal ||
-                $entry->isReportableException() ||
-                $entry->isFailedRequest() ||
-                $entry->isFailedJob() ||
-                $entry->isScheduledTask() ||
-                $entry->hasMonitoredTag();
+        Telescope::filter(function (IncomingEntry $entry) {
+            return true; // Record all entries in local environment
         });
     }
 
@@ -35,6 +33,7 @@ class TelescopeServiceProvider extends TelescopeApplicationServiceProvider
      */
     protected function hideSensitiveRequestDetails(): void
     {
+        // We're only in local environment at this point, but let's keep this for clarity
         if ($this->app->environment('local')) {
             return;
         }
