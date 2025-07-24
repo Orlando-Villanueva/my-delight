@@ -263,7 +263,7 @@ class CoreFunctionalityValidationTest extends TestCase
         // Check for responsive grid classes
         $response->assertSee('grid-cols-1', false);
         $response->assertSee('lg:grid-cols-4', false);
-        $response->assertSee('md:col-span-2', false);
+        $response->assertSee('sm:col-span-2', false);
         
         // Check for mobile-specific elements
         $response->assertSee('lg:hidden', false); // Mobile navigation and FAB
