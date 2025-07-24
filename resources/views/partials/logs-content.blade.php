@@ -14,7 +14,7 @@
                 hx-swap="innerHTML"
                 hx-indicator="#loading"
                 data-filter="7"
-                x-bind:class="currentFilter === '7' ? 'bg-primary-500 text-white border-primary-500' : 'bg-white dark:bg-gray-800 text-gray-700 dark:text-gray-300 border-gray-300 dark:border-gray-600 hover:bg-gray-50 dark:hover:bg-gray-700'">
+                x-bind:class="currentFilter === '7' ? '!bg-primary-500 !text-white !border-primary-500' : '!bg-white dark:!bg-gray-800 !text-gray-700 dark:!text-gray-300 !border-gray-300 dark:!border-gray-600 hover:!bg-gray-50 dark:hover:!bg-gray-700'">
                 Last 7 days
             </x-ui.button>
 
@@ -26,7 +26,7 @@
                 hx-swap="innerHTML"
                 hx-indicator="#loading"
                 data-filter="30"
-                x-bind:class="currentFilter === '30' ? 'bg-primary-500 text-white border-primary-500' : 'bg-white dark:bg-gray-800 text-gray-700 dark:text-gray-300 border-gray-300 dark:border-gray-600 hover:bg-gray-50 dark:hover:bg-gray-700'">
+                x-bind:class="currentFilter === '30' ? '!bg-primary-500 !text-white !border-primary-500' : '!bg-white dark:!bg-gray-800 !text-gray-700 dark:!text-gray-300 !border-gray-300 dark:!border-gray-600 hover:!bg-gray-50 dark:hover:!bg-gray-700'">
                 Last 30 days
             </x-ui.button>
 
@@ -38,7 +38,7 @@
                 hx-swap="innerHTML"
                 hx-indicator="#loading"
                 data-filter="90"
-                x-bind:class="currentFilter === '90' ? 'bg-primary-500 text-white border-primary-500' : 'bg-white dark:bg-gray-800 text-gray-700 dark:text-gray-300 border-gray-300 dark:border-gray-600 hover:bg-gray-50 dark:hover:bg-gray-700'">
+                x-bind:class="currentFilter === '90' ? '!bg-primary-500 !text-white !border-primary-500' : '!bg-white dark:!bg-gray-800 !text-gray-700 dark:!text-gray-300 !border-gray-300 dark:!border-gray-600 hover:!bg-gray-50 dark:hover:!bg-gray-700'">
                 Last 90 days
             </x-ui.button>
 
@@ -50,7 +50,7 @@
                 hx-swap="innerHTML"
                 hx-indicator="#loading"
                 data-filter="all"
-                x-bind:class="currentFilter === 'all' ? 'bg-primary-500 text-white border-primary-500' : 'bg-white dark:bg-gray-800 text-gray-700 dark:text-gray-300 border-gray-300 dark:border-gray-600 hover:bg-gray-50 dark:hover:bg-gray-700'">
+                x-bind:class="currentFilter === 'all' ? '!bg-primary-500 !text-white !border-primary-500' : '!bg-white dark:!bg-gray-800 !text-gray-700 dark:!text-gray-300 !border-gray-300 dark:!border-gray-600 hover:!bg-gray-50 dark:hover:!bg-gray-700'">
                 All time
             </x-ui.button>
         </div>
