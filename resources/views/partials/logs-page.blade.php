@@ -7,7 +7,7 @@
 ])
 
 <!-- Full-width Content when no sidebar is defined -->
-<div class="flex-1 p-4 lg:p-6">
+<div class="flex-1 p-4 lg:p-6 container">
     <div id="main-content" class="h-full">
         @include('partials.logs-content', compact('logs', 'filter'))
     </div>
