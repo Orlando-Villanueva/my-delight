@@ -38,8 +38,10 @@
     <!-- Dynamic Title Script -->
     <script>
         function updateTitle(currentView) {
-            const appName = '{{ config('app.name', 'Delight') }}';
-            
+            const appName = '{{ config('
+            app.name ', '
+            Delight ') }}';
+
             if (currentView === 'dashboard') {
                 document.title = `Dashboard - ${appName}`;
             } else if (currentView === 'logs') {
@@ -51,7 +53,10 @@
 
         // Set initial title on page load
         document.addEventListener('DOMContentLoaded', () => {
-            const initialView = '{{ request()->routeIs('logs.*') ? 'logs' : 'dashboard' }}';
+            const initialView = '{{ request()->routeIs('
+            logs.*') ? '
+            logs ' : '
+            dashboard ' }}';
             updateTitle(initialView);
         });
     </script>
@@ -76,12 +81,11 @@
                 <a href="{{ route('dashboard') }}"
                     class="flex items-center text-xl lg:text-lg xl:text-xl font-semibold text-[#4A5568] dark:text-gray-200 hover:text-primary-500 dark:hover:text-primary-500 leading-[1.5]">
                     <div class="w-8 h-8 rounded-lg flex items-center justify-center mr-3">
-                        <img 
+                        <img
                             src="{{ asset('images/logo-64.png') }}?v={{ config('app.asset_version') }}"
                             srcset="{{ asset('images/logo-64.png') }}?v={{ config('app.asset_version') }} 1x, {{ asset('images/logo-64-2x.png') }}?v={{ config('app.asset_version') }} 2x"
-                            alt="{{ config('app.name') }} Logo" 
-                            class="w-full h-full object-contain"
-                        />
+                            alt="{{ config('app.name') }} Logo"
+                            class="w-full h-full object-contain" />
                     </div>
                     <span>{{ config('app.name') }}</span>
                 </a>
@@ -137,7 +141,7 @@
 
                 <!-- Action Buttons - Subtle with Blue Accents on Hover -->
                 <div class="space-y-1">
-                    <x-ui.button variant="ghost" 
+                    <x-ui.button variant="ghost"
                         class="w-full justify-start text-base text-gray-600 dark:text-gray-300 hover:bg-gray-100 dark:hover:bg-gray-700 hover:text-primary-500 dark:hover:text-primary-500 leading-[1.5]">
                         <svg class="w-4 h-4 mr-3" fill="none" stroke="currentColor" viewBox="0 0 24 24">
                             <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M10.325 4.317c.426-1.756 2.924-1.756 3.35 0a1.724 1.724 0 002.573 1.066c1.543-.94 3.31.826 2.37 2.37a1.724 1.724 0 001.065 2.572c1.756.426 1.756 2.924 0 3.35a1.724 1.724 0 00-1.066 2.573c.94 1.543-.826 3.31-2.37 2.37a1.724 1.724 0 00-2.572 1.065c-.426 1.756-2.924 1.756-3.35 0a1.724 1.724 0 00-2.573-1.066c-1.543.94-3.31-.826-2.37-2.37a1.724 1.724 0 00-1.065-2.572c-1.756-.426-1.756-2.924 0-3.35a1.724 1.724 0 001.066-2.573c-.94-1.543.826-3.31 2.37-2.37.996.608 2.296.07 2.572-1.065z"></path>
@@ -145,10 +149,10 @@
                         </svg>
                         Settings
                     </x-ui.button>
-                    
+
                     <form method="POST" action="{{ route('logout') }}" class="w-full">
                         @csrf
-                        <x-ui.button type="submit" variant="ghost" 
+                        <x-ui.button type="submit" variant="ghost"
                             class="w-full justify-start text-base text-gray-600 dark:text-gray-300 hover:bg-gray-100 dark:hover:bg-gray-700 hover:text-gray-700 dark:hover:text-gray-200 leading-[1.5]">
                             <svg class="w-4 h-4 mr-3" fill="none" stroke="currentColor" viewBox="0 0 24 24">
                                 <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M17 16l4-4m0 0l-4-4m4 4H7m6 4v1a3 3 0 01-3 3H6a3 3 0 01-3-3V7a3 3 0 013-3h4a3 3 0 013 3v1"></path>
@@ -167,12 +171,11 @@
                 <div class="flex items-center justify-between">
                     <div class="flex items-center space-x-2">
                         <div class="w-8 h-8 rounded-lg flex items-center justify-center">
-                            <img 
+                            <img
                                 src="{{ asset('images/logo-64.png') }}?v={{ config('app.asset_version') }}"
                                 srcset="{{ asset('images/logo-64.png') }}?v={{ config('app.asset_version') }} 1x, {{ asset('images/logo-64-2x.png') }}?v={{ config('app.asset_version') }} 2x"
-                                alt="{{ config('app.name') }} Logo" 
-                                class="w-full h-full object-contain"
-                            />
+                                alt="{{ config('app.name') }} Logo"
+                                class="w-full h-full object-contain" />
                         </div>
                         <h1 id="mobile-page-title" class="text-lg sm:text-xl font-semibold text-[#4A5568] dark:text-gray-200 leading-[1.5]">
                             {{ config('app.name') }}
@@ -190,9 +193,11 @@
                             class="absolute right-0 mt-2 w-48 bg-white dark:bg-gray-800 rounded-lg border border-[#D1D7E0] dark:border-gray-700 py-1 z-50 transition-colors">
                             <div class="px-4 py-2 border-b border-[#D1D7E0] dark:border-gray-700">
                                 <p class="text-sm font-medium text-gray-900 dark:text-gray-100">
-                                    {{ auth()->check() ? auth()->user()->name : 'John Doe' }}</p>
+                                    {{ auth()->check() ? auth()->user()->name : 'John Doe' }}
+                                </p>
                                 <p class="text-xs text-gray-500 dark:text-gray-400">
-                                    {{ auth()->check() ? auth()->user()->email : 'john@example.com' }}</p>
+                                    {{ auth()->check() ? auth()->user()->email : 'john@example.com' }}
+                                </p>
                             </div>
                             <form method="POST" action="{{ route('logout') }}">
                                 @csrf
@@ -207,56 +212,57 @@
             </header>
 
             <!-- Desktop Header with Log Reading Button -->
-            <header class="hidden lg:block bg-white dark:bg-gray-800 border-b border-[#D1D7E0] dark:border-gray-700 px-6 py-4 transition-colors">
-                <div class="flex items-center justify-between">
-                    <div class="flex items-center space-x-4 xl:block xl:space-x-0">
-                        <h1 id="desktop-page-title" class="text-2xl lg:text-[32px] font-semibold text-[#4A5568] dark:text-gray-200 leading-[1.5]">
-                            @yield('page-title', 'Dashboard')
-                        </h1>
-                        <p id="desktop-page-subtitle" class="text-base text-gray-600 dark:text-gray-400 mt-1 leading-[1.5]">
-                            @yield('page-subtitle', 'Track your Bible reading progress')
-                        </p>
-                    </div>
+            <header class="hidden lg:block bg-white dark:bg-gray-800 border-b border-[#D1D7E0] dark:border-gray-700 transition-colors lg:pr-4">
+                <div class="container mx-auto p-4 xl:p-6">
+                    <div class="flex items-center justify-between">
+                        <div class="flex items-center space-x-4 xl:block xl:space-x-0">
+                            <h1 id="desktop-page-title" class="text-2xl lg:text-[32px] font-semibold text-[#4A5568] dark:text-gray-200 leading-[1.5]">
+                                @yield('page-title', 'Dashboard')
+                            </h1>
+                            <p id="desktop-page-subtitle" class="text-base text-gray-600 dark:text-gray-400 mt-1 leading-[1.5]">
+                                @yield('page-subtitle', 'Track your Bible reading progress')
+                            </p>
+                        </div>
 
-                    <!-- Primary Action Button - Desktop -->
-                    <div class="flex items-center space-x-3">
-                        <x-ui.button 
-                            variant="primary"
-                            size="default"
-                            hx-get="{{ route('logs.create') }}"
-                            hx-target="#reading-log-modal-content" 
-                            hx-swap="innerHTML" 
-                            hx-indicator="#modal-loading"
-                            @click="modalOpen = true"
-                            class="!px-6 !py-2 !text-base"
-                        >
-                            <svg class="w-4 h-4 mr-2" fill="none" stroke="currentColor" viewBox="0 0 24 24">
-                                <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M12 6v6m0 0v6m0-6h6m-6 0H6"></path>
-                            </svg>
-                            Log Reading
-                        </x-ui.button>
+                        <!-- Primary Action Button - Desktop -->
+                        <div class="flex items-center space-x-3">
+                            <x-ui.button
+                                variant="primary"
+                                size="default"
+                                hx-get="{{ route('logs.create') }}"
+                                hx-target="#reading-log-modal-content"
+                                hx-swap="innerHTML"
+                                hx-indicator="#modal-loading"
+                                @click="modalOpen = true"
+                                class="!px-6 !py-2 !text-base">
+                                <svg class="w-4 h-4 mr-2" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                                    <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M12 6v6m0 0v6m0-6h6m-6 0H6"></path>
+                                </svg>
+                                Log Reading
+                            </x-ui.button>
+                        </div>
                     </div>
                 </div>
             </header>
 
             <!-- Page Content -->
             <main class="flex-1 overflow-y-auto">
-                <div id="page-container" class="lg:flex lg:h-full">
+                <div id="page-container" class="lg:flex lg:h-full  container mx-auto">
                     @hasSection('sidebar')
-                        <!-- Main Content (70% on desktop when sidebar present) -->
-                        <div class="lg:flex-1 lg:max-w-[70%] p-4 lg:p-4 xl:p-6">
-                            @yield('content')
-                        </div>
+                    <!-- Main Content (70% on desktop when sidebar present) -->
+                    <div class="lg:flex-1 lg:max-w-[70%] p-4 lg:p-4 xl:p-6">
+                        @yield('content')
+                    </div>
 
-                        <!-- Sidebar Content (30% on desktop) -->
-                        <div class="hidden lg:block lg:w-[30%] lg:min-w-[300px] bg-white border-l border-gray-200 p-6">
-                            @yield('sidebar')
-                        </div>
+                    <!-- Sidebar Content (30% on desktop) -->
+                    <div class="hidden lg:block lg:w-[30%] lg:min-w-[300px] bg-white border-l border-gray-200 p-6">
+                        @yield('sidebar')
+                    </div>
                     @else
-                        <!-- Full-width Content when no sidebar is defined -->
-                        <div class="flex-1 p-4 lg:p-4 xl:p-6">
-                            @yield('content')
-                        </div>
+                    <!-- Full-width Content when no sidebar is defined -->
+                    <div class="flex-1 p-4 xl:p-6">
+                        @yield('content')
+                    </div>
                     @endif
                 </div>
             </main>
@@ -267,7 +273,7 @@
                 <button type="button" hx-get="{{ route('dashboard') }}" hx-target="#page-container"
                     hx-swap="innerHTML" hx-push-url="true"
                     @click="previousView = currentView; currentView = 'dashboard'"
-                                                :class="currentView === 'dashboard' ? 'text-primary-500' : 'text-gray-500 dark:text-gray-400 hover:text-primary-500'"
+                    :class="currentView === 'dashboard' ? 'text-primary-500' : 'text-gray-500 dark:text-gray-400 hover:text-primary-500'"
                     class="flex flex-col items-center py-2 px-3 min-w-[44px] min-h-[44px] justify-center transition-colors leading-[1.5]">
                     <svg class="w-6 h-6" fill="none" stroke="currentColor" viewBox="0 0 24 24">
                         <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2"
@@ -278,7 +284,7 @@
 
                 <button type="button" hx-get="{{ route('logs.index') }}" hx-target="#page-container"
                     hx-swap="innerHTML" hx-push-url="true" @click="previousView = currentView; currentView = 'logs'"
-                                                :class="currentView === 'logs' ? 'text-primary-500' : 'text-gray-500 dark:text-gray-400 hover:text-primary-500'"
+                    :class="currentView === 'logs' ? 'text-primary-500' : 'text-gray-500 dark:text-gray-400 hover:text-primary-500'"
                     class="flex flex-col items-center py-2 px-3 min-w-[44px] min-h-[44px] justify-center transition-colors leading-[1.5]">
                     <svg class="w-6 h-6" fill="none" stroke="currentColor" viewBox="0 0 24 24">
                         <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2"
