@@ -1,20 +1,20 @@
 <div class="text-center py-8" x-data="successMessageComponent()" x-init="init()" x-destroy="destroy()"
     @mouseenter="pauseTimer()" @mouseleave="resumeTimer()">
     <!-- Success Icon -->
-    <div class="w-16 h-16 bg-green-100 rounded-full flex items-center justify-center mx-auto mb-4">
-        <svg class="w-8 h-8 text-green-600" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+    <div class="w-16 h-16 bg-green-100 dark:bg-green-900/30 rounded-full flex items-center justify-center mx-auto mb-4">
+        <svg class="w-8 h-8 text-green-600 dark:text-green-400" fill="none" stroke="currentColor" viewBox="0 0 24 24">
             <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M5 13l4 4L19 7"></path>
         </svg>
     </div>
 
     <!-- Success Message -->
-    <h3 class="text-xl font-semibold text-gray-900 mb-2">Reading Logged Successfully! 🎉</h3>
-    <p class="text-gray-600 mb-2">
+    <h3 class="text-xl font-semibold text-gray-900 dark:text-gray-100 mb-2">Reading Logged Successfully! 🎉</h3>
+    <p class="text-gray-600 dark:text-gray-300 mb-2">
         <strong>{{ $log->passage_text }}</strong> recorded for {{ $log->date_read->format('M d, Y') }}
     </p>
 
     @if ($log->notes_text)
-        <p class="text-sm text-gray-500 italic mb-4">
+        <p class="text-sm text-gray-500 dark:text-gray-400 italic mb-4">
             Notes: {{ Str::limit($log->notes_text, 60) }}
         </p>
     @endif
@@ -25,18 +25,18 @@
     @endphp
 
     @if ($isRange)
-        <p class="text-sm text-gray-500 mb-4">
+        <p class="text-sm text-gray-500 dark:text-gray-400 mb-4">
             💡 <em>Multiple chapters logged as separate entries for detailed progress tracking</em>
         </p>
     @endif
 
     <!-- Auto-close Countdown -->
-    <p class="text-sm text-gray-500 mb-4">
+    <p class="text-sm text-gray-500 dark:text-gray-400 mb-4">
         <span x-show="!isPaused">
-            Modal will close in <span x-text="countdown" class="font-semibold text-primary-600 text-base"></span>
+            Modal will close in <span x-text="countdown" class="font-semibold text-primary-600 dark:text-primary-400 text-base"></span>
             second<span x-show="countdown !== 1">s</span>...
         </span>
-        <span x-show="isPaused" x-cloak class="text-yellow-600 font-medium">
+        <span x-show="isPaused" x-cloak class="text-yellow-600 dark:text-yellow-400 font-medium">
             ⏸️ Auto-close paused (hover away to resume)
         </span>
     </p>

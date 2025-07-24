@@ -83,10 +83,10 @@
                 </div>
                 
                 <!-- Calendar days -->
-                <div class="grid grid-cols-7 gap-1 sm:gap-2 lg:gap-1">
+                <div class="grid grid-cols-7 gap-1 sm:gap-1.5 lg:gap-1">
                     @foreach($calendar as $day)
                         @if($day === null)
-                            <div class="aspect-square"></div>
+                            <div class="aspect-square sm:aspect-[4/3] lg:aspect-square"></div>
                         @else
                             @php
                                 // Intensity based on reading count (chapters read)
@@ -115,7 +115,7 @@
                                 }
                             @endphp
                             
-                            <div class="aspect-square flex items-center justify-center text-sm sm:text-base lg:text-xs xl:text-sm rounded-full transition-all duration-200 cursor-pointer leading-[1.5] {{ $intensityClass }}"
+                            <div class="aspect-square sm:aspect-[4/3] lg:aspect-square flex items-center justify-center text-sm sm:text-sm lg:text-xs xl:text-sm rounded-full transition-all duration-200 cursor-pointer leading-[1.5] {{ $intensityClass }}"
                                  title="{{ $day['date']->format('F j, Y') }}{{ $day['hasReading'] ? ' - ' . $day['readingCount'] . ' chapter' . ($day['readingCount'] !== 1 ? 's' : '') . ' read' : ' - No reading' }}">
                                 {{ $day['day'] }}
                             </div>

@@ -70,7 +70,7 @@
     }" @keydown.escape.window="modalOpen = false"
         @close-modal.window="modalOpen = false">
         <!-- Desktop Sidebar Navigation -->
-        <aside class="hidden lg:flex lg:flex-col w-64 lg:w-48 bg-white dark:bg-gray-800 border-r border-[#D1D7E0] dark:border-gray-700">
+        <aside class="hidden lg:flex lg:flex-col w-48 xl:w-64 bg-white dark:bg-gray-800 border-r border-[#D1D7E0] dark:border-gray-700">
             <!-- Logo Section -->
             <div class="px-6 lg:px-4 xl:px-6 py-4 border-b border-[#D1D7E0] dark:border-gray-700">
                 <a href="{{ route('dashboard') }}"

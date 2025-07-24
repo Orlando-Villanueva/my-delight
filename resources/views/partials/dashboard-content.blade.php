@@ -21,9 +21,9 @@ $stats = $statisticsService->getDashboardStatistics(auth()->user());
         <div class="lg:col-span-2 xl:col-span-3 space-y-4 xl:space-y-6">
 
             <!-- Top Stats Row -->
-            <div class="grid grid-cols-1 md:grid-cols-5 gap-4 lg:gap-6">
+            <div class="grid grid-cols-1 sm:grid-cols-5 gap-4 lg:gap-6">
                 <!-- Streak Card - More Prominent (2/5 width) -->
-                <div class="md:col-span-2">
+                <div class="sm:col-span-2">
                     <x-ui.streak-counter
                         :currentStreak="$stats['streaks']['current_streak']"
                         :longestStreak="$stats['streaks']['longest_streak']"
@@ -31,7 +31,7 @@ $stats = $statisticsService->getDashboardStatistics(auth()->user());
                 </div>
 
                 <!-- Stats Panel - Compact (3/5 width) -->
-                <div class="md:col-span-3">
+                <div class="sm:col-span-3">
                     <x-ui.summary-stats
                         :thisWeekDays="$stats['reading_summary']['this_week_days']"
                         :thisMonthDays="$stats['reading_summary']['this_month_days']"
@@ -44,12 +44,13 @@ $stats = $statisticsService->getDashboardStatistics(auth()->user());
 
             <!-- Mobile/Tablet Calendar - Shows only on mobile and portrait tablets -->
             <div class="lg:hidden">
-                <!-- Tablet Portrait: Constrain width, Mobile: Full width -->
-                <div class="md:max-w-md md:mx-auto">
+                <!-- Tablet Portrait: More compact, Mobile: Full width -->
+                <div class="sm:max-w-md sm:mx-auto md:max-w-lg">
                     <x-bible.calendar-heatmap
                         :user="auth()->user()"
                         :months="1"
-                        :showLegend="false" />
+                        :showLegend="false"
+                        class="sm:text-sm" />
                 </div>
             </div>
 

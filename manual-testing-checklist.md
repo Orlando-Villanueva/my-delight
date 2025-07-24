@@ -116,6 +116,7 @@
 - [ ] Android Phone (360px - 412px width)
 - [ ] iPad Mini Portrait (768px - 1024px width)
 - [ ] iPad Mini Landscape (1024px - 768px width)
+- [ ] Galaxy Tab S4 Portrait (768px - 1024px width)
 
 ### Key Mobile Features
 - [ ] Touch-friendly buttons (minimum 44px)
@@ -126,6 +127,7 @@
 - [ ] Minimal bottom spacing above navigation (no excessive white space)
 
 ### Tablet-Specific Testing
+- [ ] **Portrait Mode (768x1024)**: Top widgets side-by-side (streak + stats)
 - [ ] **Portrait Mode (768x1024)**: Calendar widget constrained width, not full-width
 - [ ] **Portrait Mode**: Bottom navigation visible and functional
 - [ ] **Landscape Mode (1024x768)**: Desktop layout with optimized proportions
