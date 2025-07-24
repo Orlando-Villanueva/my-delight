@@ -148,7 +148,7 @@ class CoreFunctionalityValidationTest extends TestCase
         ]);
         
         // Verify the date separately (since it might include time)
-        $readingLog = \App\Models\ReadingLog::where('user_id', $user->id)
+        $readingLog = ReadingLog::where('user_id', $user->id)
             ->where('book_id', 1)
             ->where('chapter', 1)
             ->first();
