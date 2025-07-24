@@ -21,7 +21,7 @@ $stats = $statisticsService->getDashboardStatistics(auth()->user());
         <div class="lg:col-span-2 xl:col-span-3 space-y-4 xl:space-y-6">
 
             <!-- Top Stats Row -->
-            <div class="grid grid-cols-1 md:grid-cols-5 gap-4 lg:gap-6 lg:gap-4 xl:gap-6">
+            <div class="grid grid-cols-1 md:grid-cols-5 gap-4 lg:gap-6">
                 <!-- Streak Card - More Prominent (2/5 width) -->
                 <div class="md:col-span-2">
                     <x-ui.streak-counter

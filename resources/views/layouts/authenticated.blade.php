@@ -209,7 +209,7 @@
             <!-- Desktop Header with Log Reading Button -->
             <header class="hidden lg:block bg-white dark:bg-gray-800 border-b border-[#D1D7E0] dark:border-gray-700 px-6 py-4 transition-colors">
                 <div class="flex items-center justify-between">
-                    <div class="xl:block flex items-center space-x-4">
+                    <div class="flex items-center space-x-4 xl:block xl:space-x-0">
                         <h1 id="desktop-page-title" class="text-2xl lg:text-[32px] font-semibold text-[#4A5568] dark:text-gray-200 leading-[1.5]">
                             @yield('page-title', 'Dashboard')
                         </h1>
