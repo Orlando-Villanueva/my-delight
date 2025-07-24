@@ -14,8 +14,8 @@
     </div>
     
     <!-- Progress Bar -->
-    <div class="w-full bg-gray-200 dark:bg-gray-600 rounded-full h-3">
-        <div class="bg-[#3366CC] h-3 rounded-full transition-all duration-300" 
+    <div class="w-full bg-gray-200 dark:bg-gray-600 rounded-full h-3 overflow-hidden">
+        <div class="bg-[#3366CC] h-3 transition-all duration-300" 
              style="width: {{ $testamentProgress }}%"></div>
     </div>
     
@@ -68,8 +68,8 @@
             
             <!-- Mini Progress Bar for In-Progress Books -->
             @if($book['status'] === 'in-progress')
-                <div class="w-full bg-white/30 rounded-full h-1">
-                    <div class="bg-white h-1 rounded-full transition-all duration-300" 
+                <div class="w-full bg-white/30 rounded-full h-1 overflow-hidden">
+                    <div class="bg-white h-1 transition-all duration-300" 
                          style="width: {{ $book['percentage'] }}%"></div>
                 </div>
             @endif
