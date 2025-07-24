@@ -6,9 +6,9 @@
 
 @php
     $sizeClasses = [
-        'small' => 'p-4',
-        'default' => 'p-6',
-        'large' => 'p-8'
+        'small' => 'p-4 lg:p-3 xl:p-4',
+        'default' => 'p-6 lg:p-4 xl:p-6',
+        'large' => 'p-8 lg:p-6 xl:p-8'
     ];
     
     $numberSizes = [
