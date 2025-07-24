@@ -65,28 +65,28 @@
 @endphp
 
 <x-ui.card {{ $attributes->merge(['class' => 'bg-white dark:bg-gray-800 border border-[#D1D7E0] dark:border-gray-700 h-fit transition-colors']) }}>
-    <div class="p-4">
+    <div class="p-4 lg:p-3 xl:p-4">
         <!-- Header -->
-        <div class="pb-3 border-b border-[#D1D7E0] dark:border-gray-600 mb-4">
-            <h4 class="text-lg font-semibold text-[#4A5568] dark:text-gray-200 leading-[1.5]">Reading Calendar</h4>
-            <p class="text-sm text-gray-600 dark:text-gray-400 leading-[1.5]">{{ $monthName }}</p>
+        <div class="pb-3 border-b border-[#D1D7E0] dark:border-gray-600 mb-4 lg:mb-3">
+            <h4 class="text-lg lg:text-base xl:text-lg font-semibold text-[#4A5568] dark:text-gray-200 leading-[1.5]">Reading Calendar</h4>
+            <p class="text-sm lg:text-xs xl:text-sm text-gray-600 dark:text-gray-400 leading-[1.5]">{{ $monthName }}</p>
         </div>
         
         <!-- Calendar Grid -->
-        <div class="space-y-4">
+        <div class="space-y-4 lg:space-y-3">
             <div>
                 <!-- Day headers -->
-                <div class="grid grid-cols-7 gap-1 mb-2">
+                <div class="grid grid-cols-7 gap-1 sm:gap-2 lg:gap-1 mb-2">
                     @foreach(['S', 'M', 'T', 'W', 'T', 'F', 'S'] as $dayLabel)
-                        <div class="text-center text-sm font-medium text-gray-500 dark:text-gray-400 py-1 leading-[1.5]">{{ $dayLabel }}</div>
+                        <div class="text-center text-sm lg:text-xs xl:text-sm font-medium text-gray-500 dark:text-gray-400 py-1 leading-[1.5]">{{ $dayLabel }}</div>
                     @endforeach
                 </div>
                 
                 <!-- Calendar days -->
-                <div class="grid grid-cols-7 gap-1">
+                <div class="grid grid-cols-7 gap-1 sm:gap-1.5 lg:gap-1">
                     @foreach($calendar as $day)
                         @if($day === null)
-                            <div class="aspect-square"></div>
+                            <div class="aspect-square sm:aspect-[4/3] lg:aspect-square"></div>
                         @else
                             @php
                                 // Intensity based on reading count (chapters read)
@@ -115,7 +115,7 @@
                                 }
                             @endphp
                             
-                            <div class="aspect-square flex items-center justify-center text-sm rounded-full transition-all duration-200 cursor-pointer leading-[1.5] {{ $intensityClass }}"
+                            <div class="aspect-square sm:aspect-[4/3] lg:aspect-square flex items-center justify-center text-sm sm:text-sm lg:text-xs xl:text-sm rounded-full transition-all duration-200 cursor-pointer leading-[1.5] {{ $intensityClass }}"
                                  title="{{ $day['date']->format('F j, Y') }}{{ $day['hasReading'] ? ' - ' . $day['readingCount'] . ' chapter' . ($day['readingCount'] !== 1 ? 's' : '') . ' read' : ' - No reading' }}">
                                 {{ $day['day'] }}
                             </div>
@@ -125,15 +125,15 @@
             </div>
             
             <!-- Monthly Stats -->
-            <div class="pt-3 border-t border-[#D1D7E0] dark:border-gray-600">
-                <div class="grid grid-cols-2 gap-4 text-center">
+            <div class="pt-3 lg:pt-2 border-t border-[#D1D7E0] dark:border-gray-600">
+                <div class="grid grid-cols-2 gap-4 lg:gap-2 text-center">
                     <div>
-                        <div class="text-lg font-bold text-[#66CC99] dark:text-[#66CC99] leading-[1.5]">{{ $thisMonthReadings }}</div>
-                        <div class="text-sm text-gray-600 dark:text-gray-400 leading-[1.5]">This Month</div>
+                        <div class="text-lg lg:text-base xl:text-lg font-bold text-[#66CC99] dark:text-[#66CC99] leading-[1.5]">{{ $thisMonthReadings }}</div>
+                        <div class="text-sm lg:text-xs xl:text-sm text-gray-600 dark:text-gray-400 leading-[1.5]">This Month</div>
                     </div>
                     <div>
-                        <div class="text-lg font-bold text-[#3366CC] dark:text-blue-400 leading-[1.5]">{{ $successRate }}%</div>
-                        <div class="text-sm text-gray-600 dark:text-gray-400 leading-[1.5]">Success Rate</div>
+                        <div class="text-lg lg:text-base xl:text-lg font-bold text-[#3366CC] dark:text-blue-400 leading-[1.5]">{{ $successRate }}%</div>
+                        <div class="text-sm lg:text-xs xl:text-sm text-gray-600 dark:text-gray-400 leading-[1.5]">Success Rate</div>
                     </div>
                 </div>
             </div>

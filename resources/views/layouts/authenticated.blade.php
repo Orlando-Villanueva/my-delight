@@ -70,11 +70,11 @@
     }" @keydown.escape.window="modalOpen = false"
         @close-modal.window="modalOpen = false">
         <!-- Desktop Sidebar Navigation -->
-        <aside class="hidden lg:flex lg:flex-col w-64 bg-white dark:bg-gray-800 border-r border-[#D1D7E0] dark:border-gray-700">
+        <aside class="hidden lg:flex lg:flex-col w-48 xl:w-64 bg-white dark:bg-gray-800 border-r border-[#D1D7E0] dark:border-gray-700">
             <!-- Logo Section -->
-            <div class="px-6 py-4 border-b border-[#D1D7E0] dark:border-gray-700">
+            <div class="px-6 lg:px-4 xl:px-6 py-4 border-b border-[#D1D7E0] dark:border-gray-700">
                 <a href="{{ route('dashboard') }}"
-                    class="flex items-center text-xl font-semibold text-[#4A5568] dark:text-gray-200 hover:text-primary-500 dark:hover:text-primary-500 leading-[1.5]">
+                    class="flex items-center text-xl lg:text-lg xl:text-xl font-semibold text-[#4A5568] dark:text-gray-200 hover:text-primary-500 dark:hover:text-primary-500 leading-[1.5]">
                     <div class="w-8 h-8 rounded-lg flex items-center justify-center mr-3">
                         <img 
                             src="{{ asset('images/logo-64.png') }}?v={{ config('app.asset_version') }}"
@@ -88,13 +88,13 @@
             </div>
 
             <!-- Navigation Links -->
-            <nav class="flex-1 px-2 pt-6 space-y-1">
+            <nav class="flex-1 px-2 lg:px-1 xl:px-2 pt-6 space-y-1">
                 <button type="button" hx-get="{{ route('dashboard') }}" hx-target="#page-container"
                     hx-swap="innerHTML" hx-push-url="true"
                     @click="previousView = currentView; currentView = 'dashboard'"
                     :class="currentView === 'dashboard' ? 'bg-primary-500 text-white' : 'text-[#4A5568] dark:text-gray-300 hover:bg-[#F5F7FA] dark:hover:bg-gray-700 hover:text-primary-500 dark:hover:text-primary-500'"
-                    class="group flex items-center px-2 py-2 text-base font-medium rounded-md transition-colors leading-[1.5] w-full text-left">
-                    <svg class="w-5 h-5 mr-3" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                    class="group flex items-center px-2 py-2 text-base lg:text-sm xl:text-base font-medium rounded-md transition-colors leading-[1.5] w-full text-left">
+                    <svg class="w-5 h-5 lg:w-4 lg:h-4 xl:w-5 xl:h-5 mr-3 lg:mr-2 xl:mr-3" fill="none" stroke="currentColor" viewBox="0 0 24 24">
                         <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2"
                             d="M3 7v10a2 2 0 002 2h14a2 2 0 002-2V9a2 2 0 00-2-2H5a2 2 0 00-2-2z"></path>
                     </svg>
@@ -104,8 +104,8 @@
                 <button type="button" hx-get="{{ route('logs.index') }}" hx-target="#page-container"
                     hx-swap="innerHTML" hx-push-url="true" @click="previousView = currentView; currentView = 'logs'"
                     :class="currentView === 'logs' ? 'bg-primary-500 text-white' : 'text-[#4A5568] dark:text-gray-300 hover:bg-[#F5F7FA] dark:hover:bg-gray-700 hover:text-primary-500 dark:hover:text-primary-500'"
-                    class="group flex items-center px-2 py-2 text-base font-medium rounded-md transition-colors leading-[1.5] w-full text-left">
-                    <svg class="w-5 h-5 mr-3" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                    class="group flex items-center px-2 py-2 text-base lg:text-sm xl:text-base font-medium rounded-md transition-colors leading-[1.5] w-full text-left">
+                    <svg class="w-5 h-5 lg:w-4 lg:h-4 xl:w-5 xl:h-5 mr-3 lg:mr-2 xl:mr-3" fill="none" stroke="currentColor" viewBox="0 0 24 24">
                         <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2"
                             d="M8 7V3m8 4V3m-9 8h10M5 21h14a2 2 0 002-2V7a2 2 0 00-2-2H5a2 2 0 00-2-2v16a2 2 0 002 2z">
                         </path>
@@ -209,7 +209,7 @@
             <!-- Desktop Header with Log Reading Button -->
             <header class="hidden lg:block bg-white dark:bg-gray-800 border-b border-[#D1D7E0] dark:border-gray-700 px-6 py-4 transition-colors">
                 <div class="flex items-center justify-between">
-                    <div>
+                    <div class="flex items-center space-x-4 xl:block xl:space-x-0">
                         <h1 id="desktop-page-title" class="text-2xl lg:text-[32px] font-semibold text-[#4A5568] dark:text-gray-200 leading-[1.5]">
                             @yield('page-title', 'Dashboard')
                         </h1>
@@ -244,7 +244,7 @@
                 <div id="page-container" class="lg:flex lg:h-full">
                     @hasSection('sidebar')
                         <!-- Main Content (70% on desktop when sidebar present) -->
-                        <div class="lg:flex-1 lg:max-w-[70%] p-4 lg:p-6">
+                        <div class="lg:flex-1 lg:max-w-[70%] p-4 lg:p-4 xl:p-6">
                             @yield('content')
                         </div>
 
@@ -254,7 +254,7 @@
                         </div>
                     @else
                         <!-- Full-width Content when no sidebar is defined -->
-                        <div class="flex-1 p-4 lg:p-6">
+                        <div class="flex-1 p-4 lg:p-4 xl:p-6">
                             @yield('content')
                         </div>
                     @endif
@@ -262,7 +262,7 @@
             </main>
         </div>
         <!-- Mobile Bottom Navigation -->
-        <nav class="md:hidden fixed bottom-0 left-0 right-0 bg-white dark:bg-gray-800 border-t border-[#D1D7E0] dark:border-gray-700 px-4 py-2 z-40 h-20 transition-colors">
+        <nav class="lg:hidden fixed bottom-0 left-0 right-0 bg-white dark:bg-gray-800 border-t border-[#D1D7E0] dark:border-gray-700 px-4 py-2 z-40 h-20 transition-colors">
             <div class="flex justify-around">
                 <button type="button" hx-get="{{ route('dashboard') }}" hx-target="#page-container"
                     hx-swap="innerHTML" hx-push-url="true"
@@ -293,7 +293,7 @@
         <!-- Floating Action Button - Mobile Only -->
         <button type="button" hx-get="{{ route('logs.create') }}" hx-target="#reading-log-modal-content"
             hx-swap="innerHTML" hx-indicator="#modal-loading" @click="modalOpen = true"
-                            class="lg:hidden fixed bottom-24 right-4 w-14 h-14 bg-primary-500 hover:bg-primary-600 text-white rounded-full flex items-center justify-center z-50 shadow-lg transition-colors">
+            class="lg:hidden fixed bottom-24 right-4 w-14 h-14 bg-primary-500 hover:bg-primary-600 text-white rounded-full flex items-center justify-center z-50 shadow-lg transition-colors">
             <svg class="w-6 h-6" fill="none" stroke="currentColor" viewBox="0 0 24 24">
                 <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M12 6v6m0 0v6m0-6h6m-6 0H6"></path>
             </svg>
