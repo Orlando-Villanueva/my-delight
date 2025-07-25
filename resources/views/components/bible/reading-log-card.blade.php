@@ -50,29 +50,14 @@ $cardClasses .= ' p-4';
             {{-- Notes Section --}}
             @if($showNotes && $log->notes_text)
             <div class="border-t border-gray-100 dark:border-gray-700 pt-3 mt-3">
-                <div class="text-sm text-gray-600 dark:text-gray-400" x-data="{ expanded: false, needsExpansion: false }" x-init="needsExpansion = $el.querySelector('.notes-content').scrollHeight > 60">
+                <div class="text-sm text-gray-600 dark:text-gray-400">
                     <div class="flex items-center space-x-2 mb-2">
                         <svg class="w-4 h-4 text-gray-400" fill="none" stroke="currentColor" viewBox="0 0 24 24">
                             <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M7 8h10M7 12h4m1 8l-4-4H5a2 2 0 01-2-2V6a2 2 0 012-2h14a2 2 0 012 2v8a2 2 0 01-2 2h-3l-4 4z"></path>
                         </svg>
                         <span class="text-xs font-medium text-gray-500 dark:text-gray-400 uppercase tracking-wide">Notes</span>
                     </div>
-                    <div class="notes-content overflow-hidden transition-all duration-200" :class="expanded ? 'max-h-none' : 'max-h-15'">
-                        <div class="whitespace-pre-wrap leading-relaxed">{{ $log->notes_text }}</div>
-                    </div>
-
-                    {{-- Expand/Collapse Button --}}
-                    <button x-show="needsExpansion" @click="expanded = !expanded"
-                        class="text-primary-600 hover:text-primary-800 text-xs mt-2 font-medium flex items-center space-x-1 focus:outline-none focus:ring-2 focus:ring-primary-500 focus:ring-opacity-20 rounded">
-                        <span x-show="!expanded">Show more</span>
-                        <span x-show="expanded">Show less</span>
-                        <svg x-show="!expanded" class="w-3 h-3" fill="none" stroke="currentColor" viewBox="0 0 24 24">
-                            <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M19 9l-7 7-7-7"></path>
-                        </svg>
-                        <svg x-show="expanded" class="w-3 h-3" fill="none" stroke="currentColor" viewBox="0 0 24 24">
-                            <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M5 15l7-7 7 7"></path>
-                        </svg>
-                    </button>
+                    <div class="whitespace-pre-wrap leading-relaxed">{{ $log->notes_text }}</div>
                 </div>
             </div>
             @endif
