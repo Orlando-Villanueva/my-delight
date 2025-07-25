@@ -63,23 +63,8 @@ $cardClasses .= ' p-4';
 
             {{-- Notes Section --}}
             @if($showNotes && $log->notes_text)
-            <div class="mt-3 text-sm text-gray-600 dark:text-gray-400" x-data="{ expanded: false, needsExpansion: false }" x-init="needsExpansion = $el.querySelector('.notes-content').scrollHeight > 60">
-                <div class="notes-content overflow-hidden transition-all duration-200" :class="expanded ? 'max-h-none' : 'max-h-15'">
-                    <div class="whitespace-pre-wrap leading-relaxed">{{ $log->notes_text }}</div>
-                </div>
-
-                {{-- Expand/Collapse Button --}}
-                <button x-show="needsExpansion" @click="expanded = !expanded"
-                    class="text-primary-600 hover:text-primary-800 text-xs mt-2 font-medium flex items-center space-x-1 focus:outline-none focus:ring-2 focus:ring-primary-500 focus:ring-opacity-20 rounded">
-                    <span x-show="!expanded">Show more</span>
-                    <span x-show="expanded">Show less</span>
-                    <svg x-show="!expanded" class="w-3 h-3" fill="none" stroke="currentColor" viewBox="0 0 24 24">
-                        <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M19 9l-7 7-7-7"></path>
-                    </svg>
-                    <svg x-show="expanded" class="w-3 h-3" fill="none" stroke="currentColor" viewBox="0 0 24 24">
-                        <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M5 15l7-7 7 7"></path>
-                    </svg>
-                </button>
+            <div class="mt-3 text-sm text-gray-600 dark:text-gray-400">
+                <div class="whitespace-pre-wrap leading-relaxed">{{ $log->notes_text }}</div>
             </div>
             @endif
         </div>
