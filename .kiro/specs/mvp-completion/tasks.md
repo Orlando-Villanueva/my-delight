@@ -24,7 +24,7 @@
 
 ## Quick Polish (15-30 min each)
 
-- [ ] 3. Basic security headers
+- [x] 3. Basic security headers
   - Implement SecurityHeadersMiddleware with essential headers
   - _Requirements: 3.1, 3.2_
 
