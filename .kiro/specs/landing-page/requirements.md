@@ -37,7 +37,7 @@ The landing page serves as the primary entry point for new visitors to Delight, 
 1. WHEN a visitor views the landing page THEN the system SHALL display a primary call-to-action button in the hero section
 2. WHEN a visitor scrolls through the page THEN the system SHALL provide additional sign-up opportunities at strategic points
 3. WHEN a visitor clicks a sign-up button THEN the system SHALL redirect them to the registration page
-4. IF a visitor is already logged in THEN the system SHALL redirect them to the dashboard instead of showing the landing page
+4. IF a visitor is already logged in THEN the system SHALL show appropriate navigation options to access their dashboard while still allowing them to view the landing page
 
 ### Requirement 4
 
