@@ -12,7 +12,7 @@
 @php
     // Color variations
     $colorClasses = match($color) {
-        'orange' => 'bg-orange-50 border-orange-200 text-orange-600',
+        'orange' => 'bg-accent-50 border-accent-200 text-accent-600',
         'success' => 'bg-success-50 border-success-200 text-success-600',
         'purple' => 'bg-purple-50 border-purple-200 text-purple-600',
         'gray' => 'bg-gray-50 border-gray-200 text-gray-600',

@@ -78,7 +78,7 @@
                     <a href="{{ route('login') }}" class="text-gray-700 hover:text-blue-600 font-medium transition-colors">
                         Sign In
                     </a>
-                    <a href="{{ route('register') }}" class="bg-orange-500 hover:bg-orange-600 text-white px-4 py-2 rounded-lg font-medium transition-colors">
+                    <a href="{{ route('register') }}" class="bg-accent-500 hover:bg-accent-600 text-white px-4 py-2 rounded-lg font-medium transition-colors">
                         Get Started
                     </a>
                     @endauth
@@ -104,7 +104,7 @@
 
                         <!-- Primary CTA -->
                         <div class="space-y-4">
-                            <a href="{{ route('register') }}" class="inline-block bg-orange-500 hover:bg-orange-600 text-white px-8 py-4 rounded-lg text-lg font-semibold transition-all transform hover:scale-105 shadow-lg hover:shadow-xl">
+                            <a href="{{ route('register') }}" class="inline-block bg-accent-500 hover:bg-accent-600 text-white px-8 py-4 rounded-lg text-lg font-semibold transition-all transform hover:scale-105 shadow-lg hover:shadow-xl">
                                 Start Reading Today
                             </a>
                             <p class="text-sm text-gray-500">
@@ -115,13 +115,24 @@
 
                     <!-- Hero Visual -->
                     <div class="relative">
-                        <div class="bg-white rounded-2xl shadow-2xl p-8 transform rotate-1 hover:rotate-0 transition-transform duration-300">
-                            <div class="aspect-video bg-gradient-to-br from-blue-100 to-orange-100 rounded-lg flex items-center justify-center">
-                                <div class="text-center">
-                                    <div class="text-4xl mb-2">📖</div>
-                                    <p class="text-gray-600 font-medium">App Screenshot Placeholder</p>
-                                    <p class="text-sm text-gray-500">Dashboard with reading progress</p>
-                                </div>
+                        <div class="bg-white rounded-2xl shadow-2xl p-0 transform rotate-1 hover:rotate-0 transition-transform duration-300">
+                            <div class="rounded-lg overflow-hidden">
+                                <img
+                                    src="{{ asset('images/screenshots/desktop.png') }}"
+                                    alt="Delight Dashboard - Bible Reading Progress Tracker"
+                                    class="w-full h-auto max-w-full"
+                                    loading="lazy" />
+                            </div>
+                        </div>
+
+                        <!-- Mobile Screenshot - Floating -->
+                        <div class="absolute -bottom-6 -right-6 w-32 sm:w-40 lg:w-48 bg-white rounded-xl shadow-xl p-0 transform rotate-6 hover:rotate-3 transition-transform duration-300">
+                            <div class="rounded-lg overflow-hidden">
+                                <img
+                                    src="{{ asset('images/screenshots/mobile.png') }}"
+                                    alt="Delight Mobile App - Reading Log Interface"
+                                    class="w-full h-auto max-w-full"
+                                    loading="lazy" />
                             </div>
                         </div>
                     </div>
@@ -198,8 +209,8 @@
                 <div class="grid md:grid-cols-3 gap-8">
                     <!-- Step 1 -->
                     <div class="text-center">
-                        <div class="bg-orange-100 rounded-full w-16 h-16 flex items-center justify-center mx-auto mb-6">
-                            <span class="text-2xl font-bold text-orange-600">1</span>
+                        <div class="bg-accent-100 rounded-full w-16 h-16 flex items-center justify-center mx-auto mb-6">
+                            <span class="text-2xl font-bold text-accent-600">1</span>
                         </div>
                         <h3 class="text-xl font-semibold text-gray-900 mb-3">Create Your Account</h3>
                         <p class="text-gray-600 leading-relaxed">
@@ -241,7 +252,7 @@
                 <p class="text-xl text-blue-100 mb-8">
                     Join thousands of readers who are making consistent progress through Scripture.
                 </p>
-                <a href="{{ route('register') }}" class="inline-block bg-orange-500 hover:bg-orange-600 text-white px-8 py-4 rounded-lg text-lg font-semibold transition-all transform hover:scale-105 shadow-lg hover:shadow-xl">
+                <a href="{{ route('register') }}" class="inline-block bg-accent-500 hover:bg-accent-600 text-white px-8 py-4 rounded-lg text-lg font-semibold transition-all transform hover:scale-105 shadow-lg hover:shadow-xl">
                     Start Your Journey Today
                 </a>
             </div>

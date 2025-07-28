@@ -58,7 +58,7 @@
                     View All Readings
                 </x-ui.button>
                 <x-ui.button 
-                    variant="primary"
+                    variant="accent"
                     size="default"
                     hx-get="{{ route('logs.create') }}" 
                     hx-target="#reading-log-modal-content"

@@ -28,7 +28,7 @@
     <div class="flex flex-col justify-center h-full">
         <div class="flex items-center justify-between mb-4">
             <h3 class="text-lg lg:text-xl font-semibold leading-[1.5]">Current Streak</h3>
-            <svg class="{{ $iconSizes[$size] ?? $iconSizes['default'] }} text-[#FF9933]" fill="currentColor" viewBox="0 0 384 512">
+            <svg class="{{ $iconSizes[$size] ?? $iconSizes['default'] }} text-accent-500" fill="currentColor" viewBox="0 0 384 512">
                 <path d="M216 23.86c0-23.8-30.65-32.77-44.15-13.04C48 191.85 224 200 224 288c0 35.63-29.11 64.46-64.85 63.99-35.17-.45-63.15-29.77-63.15-64.94v-85.51c0-21.7-26.47-32.4-41.6-16.9C21.22 216.4 0 268.2 0 320c0 105.87 86.13 192 192 192s192-86.13 192-192c0-170.29-168-193.17-168-296.14z"/>
             </svg>
         </div>
