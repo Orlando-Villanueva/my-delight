@@ -1,0 +1,292 @@
+<!DOCTYPE html>
+<html lang="{{ str_replace('_', '-', app()->getLocale()) }}">
+
+<head>
+    <meta charset="utf-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1">
+    <meta name="csrf-token" content="{{ csrf_token() }}">
+
+    <!-- SEO Meta Tags -->
+    <title>{{ config('app.name', 'Delight') }} - Build Your Bible Reading Habit | Free Bible Tracker</title>
+    <meta name="description" content="Track your daily Bible reading, maintain streaks, and visualize your progress through Scripture. Free Bible reading habit tracker with beautiful progress visualization.">
+    <meta name="keywords" content="bible reading, habit tracker, scripture reading, bible study, reading streaks, christian app">
+    <meta name="author" content="Delight">
+    <link rel="canonical" href="{{ config('app.url') }}">
+
+    <!-- Open Graph Meta Tags -->
+    <meta property="og:title" content="Delight - Build Your Bible Reading Habit">
+    <meta property="og:description" content="Track your daily Bible reading, maintain streaks, and visualize your progress through Scripture. Free Bible reading habit tracker with beautiful progress visualization.">
+    <meta property="og:type" content="website">
+    <meta property="og:url" content="{{ config('app.url') }}">
+    <meta property="og:image" content="{{ asset('images/logo-192.png') }}">
+    <meta property="og:site_name" content="Delight">
+
+    <!-- Twitter Card Meta Tags -->
+    <meta name="twitter:card" content="summary_large_image">
+    <meta name="twitter:title" content="Delight - Build Your Bible Reading Habit">
+    <meta name="twitter:description" content="Track your daily Bible reading, maintain streaks, and visualize your progress through Scripture.">
+    <meta name="twitter:image" content="{{ asset('images/logo-192.png') }}">
+
+    <!-- Favicon -->
+    <link rel="icon" type="image/x-icon" href="{{ asset('favicon.ico') }}">
+
+    <!-- Fonts -->
+    <link rel="preconnect" href="https://fonts.bunny.net">
+    <link href="https://fonts.bunny.net/css?family=instrument-sans:400,500,600,700" rel="stylesheet" />
+
+    <!-- Styles -->
+    @vite(['resources/css/app.css', 'resources/js/app.js'])
+
+    <!-- Structured Data -->
+    <script type="application/ld+json">
+        {
+            "@context": "https://schema.org",
+            "@type": "WebApplication",
+            "name": "Delight",
+            "description": "Track your daily Bible reading, maintain streaks, and visualize your progress through Scripture.",
+            "url": "{{ config('app.url') }}",
+            "applicationCategory": "LifestyleApplication",
+            "operatingSystem": "Web Browser",
+            "offers": {
+                "@type": "Offer",
+                "price": "0",
+                "priceCurrency": "USD"
+            }
+        }
+    </script>
+</head>
+
+<body class="font-sans antialiased bg-white">
+    <!-- Navigation -->
+    <nav class="fixed top-0 left-0 right-0 z-50 bg-white/95 backdrop-blur-sm border-b border-gray-100">
+        <div class="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8">
+            <div class="flex justify-between items-center h-16">
+                <!-- Brand Logo -->
+                <div class="flex-shrink-0">
+                    <a href="{{ route('landing') }}" class="text-2xl font-bold text-gray-900 hover:text-blue-600 transition-colors">
+                        Delight
+                    </a>
+                </div>
+
+                <!-- Navigation Actions -->
+                <div class="flex items-center space-x-4">
+                    @auth
+                    <a href="{{ route('dashboard') }}" class="text-gray-700 hover:text-blue-600 font-medium transition-colors">
+                        Dashboard
+                    </a>
+                    @else
+                    <a href="{{ route('login') }}" class="text-gray-700 hover:text-blue-600 font-medium transition-colors">
+                        Sign In
+                    </a>
+                    <a href="{{ route('register') }}" class="bg-orange-500 hover:bg-orange-600 text-white px-4 py-2 rounded-lg font-medium transition-colors">
+                        Get Started
+                    </a>
+                    @endauth
+                </div>
+            </div>
+        </div>
+    </nav>
+
+    <!-- Main Content -->
+    <main class="pt-16">
+        <!-- Hero Section -->
+        <section class="relative bg-gradient-to-br from-blue-50 to-white py-20 lg:py-32">
+            <div class="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8">
+                <div class="grid lg:grid-cols-2 gap-12 items-center">
+                    <!-- Hero Content -->
+                    <div class="text-center lg:text-left">
+                        <h1 class="text-4xl md:text-5xl lg:text-6xl font-bold text-gray-900 leading-tight mb-6">
+                            Build Your Bible Reading Habit
+                        </h1>
+                        <p class="text-xl text-gray-600 mb-8 leading-relaxed">
+                            Track your daily reading, maintain streaks, and visualize your progress through Scripture with our simple, motivating habit tracker.
+                        </p>
+
+                        <!-- Primary CTA -->
+                        <div class="space-y-4">
+                            <a href="{{ route('register') }}" class="inline-block bg-orange-500 hover:bg-orange-600 text-white px-8 py-4 rounded-lg text-lg font-semibold transition-all transform hover:scale-105 shadow-lg hover:shadow-xl">
+                                Start Reading Today
+                            </a>
+                            <p class="text-sm text-gray-500">
+                                Free to use • No credit card required
+                            </p>
+                        </div>
+                    </div>
+
+                    <!-- Hero Visual -->
+                    <div class="relative">
+                        <div class="bg-white rounded-2xl shadow-2xl p-8 transform rotate-1 hover:rotate-0 transition-transform duration-300">
+                            <div class="aspect-video bg-gradient-to-br from-blue-100 to-orange-100 rounded-lg flex items-center justify-center">
+                                <div class="text-center">
+                                    <div class="text-4xl mb-2">📖</div>
+                                    <p class="text-gray-600 font-medium">App Screenshot Placeholder</p>
+                                    <p class="text-sm text-gray-500">Dashboard with reading progress</p>
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </section>
+
+        <!-- Features Section -->
+        <section class="py-20 bg-white">
+            <div class="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8">
+                <div class="text-center mb-16">
+                    <h2 class="text-3xl md:text-4xl font-bold text-gray-900 mb-4">
+                        Everything You Need to Stay Consistent
+                    </h2>
+                    <p class="text-xl text-gray-600 max-w-3xl mx-auto">
+                        Simple tools designed to help you build and maintain a meaningful Bible reading habit.
+                    </p>
+                </div>
+
+                <!-- Features Grid -->
+                <div class="grid md:grid-cols-2 lg:grid-cols-2 gap-8">
+                    <!-- Feature 1: Daily Reading Log -->
+                    <div class="bg-white rounded-xl p-8 shadow-lg border border-gray-100 hover:shadow-xl transition-shadow">
+                        <div class="text-4xl mb-4">📖</div>
+                        <h3 class="text-xl font-semibold text-gray-900 mb-3">Daily Reading Log</h3>
+                        <p class="text-gray-600 leading-relaxed">
+                            Easily track which chapters you've read with our intuitive book and chapter selector. Simple logging keeps you focused on reading, not recording.
+                        </p>
+                    </div>
+
+                    <!-- Feature 2: Streak Tracking -->
+                    <div class="bg-white rounded-xl p-8 shadow-lg border border-gray-100 hover:shadow-xl transition-shadow">
+                        <div class="text-4xl mb-4">🔥</div>
+                        <h3 class="text-xl font-semibold text-gray-900 mb-3">Streak Tracking</h3>
+                        <p class="text-gray-600 leading-relaxed">
+                            Build momentum with reading streaks and get motivated by your consistency. See your current streak and longest streak to stay encouraged.
+                        </p>
+                    </div>
+
+                    <!-- Feature 3: Visual Progress -->
+                    <div class="bg-white rounded-xl p-8 shadow-lg border border-gray-100 hover:shadow-xl transition-shadow">
+                        <div class="text-4xl mb-4">📊</div>
+                        <h3 class="text-xl font-semibold text-gray-900 mb-3">Visual Progress</h3>
+                        <p class="text-gray-600 leading-relaxed">
+                            See your journey through Scripture with our beautiful book completion grid. Watch as you fill in each book of the Bible.
+                        </p>
+                    </div>
+
+                    <!-- Feature 4: Reading Statistics -->
+                    <div class="bg-white rounded-xl p-8 shadow-lg border border-gray-100 hover:shadow-xl transition-shadow">
+                        <div class="text-4xl mb-4">📈</div>
+                        <h3 class="text-xl font-semibold text-gray-900 mb-3">Reading Statistics</h3>
+                        <p class="text-gray-600 leading-relaxed">
+                            Track your total chapters read, books completed, and longest streaks. Celebrate your progress with meaningful statistics.
+                        </p>
+                    </div>
+                </div>
+            </div>
+        </section>
+
+        <!-- How It Works Section -->
+        <section class="py-20 bg-gray-50">
+            <div class="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8">
+                <div class="text-center mb-16">
+                    <h2 class="text-3xl md:text-4xl font-bold text-gray-900 mb-4">
+                        Simple Steps to Build Your Habit
+                    </h2>
+                    <p class="text-xl text-gray-600">
+                        Get started with your Bible reading journey in just a few easy steps.
+                    </p>
+                </div>
+
+                <!-- Steps Grid -->
+                <div class="grid md:grid-cols-3 gap-8">
+                    <!-- Step 1 -->
+                    <div class="text-center">
+                        <div class="bg-orange-100 rounded-full w-16 h-16 flex items-center justify-center mx-auto mb-6">
+                            <span class="text-2xl font-bold text-orange-600">1</span>
+                        </div>
+                        <h3 class="text-xl font-semibold text-gray-900 mb-3">Create Your Account</h3>
+                        <p class="text-gray-600 leading-relaxed">
+                            Sign up for free in seconds. No credit card required, no complicated setup process.
+                        </p>
+                    </div>
+
+                    <!-- Step 2 -->
+                    <div class="text-center">
+                        <div class="bg-blue-100 rounded-full w-16 h-16 flex items-center justify-center mx-auto mb-6">
+                            <span class="text-2xl font-bold text-blue-600">2</span>
+                        </div>
+                        <h3 class="text-xl font-semibold text-gray-900 mb-3">Log Your Reading</h3>
+                        <p class="text-gray-600 leading-relaxed">
+                            After reading, simply select the book and chapters you've completed. Takes less than 30 seconds.
+                        </p>
+                    </div>
+
+                    <!-- Step 3 -->
+                    <div class="text-center">
+                        <div class="bg-green-100 rounded-full w-16 h-16 flex items-center justify-center mx-auto mb-6">
+                            <span class="text-2xl font-bold text-green-600">3</span>
+                        </div>
+                        <h3 class="text-xl font-semibold text-gray-900 mb-3">Watch Your Progress</h3>
+                        <p class="text-gray-600 leading-relaxed">
+                            See your streaks grow, books fill up, and statistics improve. Stay motivated by your progress.
+                        </p>
+                    </div>
+                </div>
+            </div>
+        </section>
+
+        <!-- Final CTA Section -->
+        <section class="py-20 bg-blue-600">
+            <div class="max-w-4xl mx-auto text-center px-4 sm:px-6 lg:px-8">
+                <h2 class="text-3xl md:text-4xl font-bold text-white mb-6">
+                    Ready to Build Your Reading Habit?
+                </h2>
+                <p class="text-xl text-blue-100 mb-8">
+                    Join thousands of readers who are making consistent progress through Scripture.
+                </p>
+                <a href="{{ route('register') }}" class="inline-block bg-orange-500 hover:bg-orange-600 text-white px-8 py-4 rounded-lg text-lg font-semibold transition-all transform hover:scale-105 shadow-lg hover:shadow-xl">
+                    Start Your Journey Today
+                </a>
+            </div>
+        </section>
+    </main>
+
+    <!-- Footer -->
+    <footer class="bg-gray-900 text-white py-12">
+        <div class="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8">
+            <div class="grid md:grid-cols-4 gap-8">
+                <!-- Brand -->
+                <div class="md:col-span-2">
+                    <h3 class="text-2xl font-bold mb-4">Delight</h3>
+                    <p class="text-gray-400 leading-relaxed">
+                        Building consistent Bible reading habits through simple tracking and motivating progress visualization.
+                    </p>
+                </div>
+
+                <!-- Quick Links -->
+                <div>
+                    <h4 class="font-semibold mb-4">Quick Links</h4>
+                    <ul class="space-y-2">
+                        <li><a href="{{ route('register') }}" class="text-gray-400 hover:text-white transition-colors">Get Started</a></li>
+                        <li><a href="{{ route('login') }}" class="text-gray-400 hover:text-white transition-colors">Sign In</a></li>
+                    </ul>
+                </div>
+
+                <!-- Legal -->
+                <div>
+                    <h4 class="font-semibold mb-4">Legal</h4>
+                    <ul class="space-y-2">
+                        <li><a href="#" class="text-gray-400 hover:text-white transition-colors">Privacy Policy</a></li>
+                        <li><a href="#" class="text-gray-400 hover:text-white transition-colors">Terms of Service</a></li>
+                    </ul>
+                </div>
+            </div>
+
+            <!-- Copyright -->
+            <div class="border-t border-gray-800 mt-8 pt-8 text-center">
+                <p class="text-gray-400">
+                    © {{ date('Y') }} Delight. All rights reserved.
+                </p>
+            </div>
+        </div>
+    </footer>
+</body>
+
+</html>

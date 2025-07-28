@@ -6,8 +6,8 @@ use App\Http\Controllers\ReadingLogController;
 use App\Services\BookProgressService;
 
 Route::get('/', function () {
-    return view('welcome');
-})->name('welcome');
+    return view('landing');
+})->name('landing');
 
 
 
