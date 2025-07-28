@@ -63,7 +63,7 @@
                                 </a>
                             @else
                                 <a href="{{ url('/') }}"
-                                    class="px-3 py-1.5 transition text-sm font-medium rounded-lg shadow-sm {{ request()->routeIs('welcome') ? 'bg-primary-500 text-white' : 'text-gray-700 dark:text-gray-200 hover:text-primary-500 dark:hover:text-primary-400 hover:bg-gray-50 dark:hover:bg-gray-700 border border-gray-300 dark:border-gray-600 hover:border-primary-500 dark:hover:border-primary-400' }}">
+                                    class="px-3 py-1.5 transition text-sm font-medium rounded-lg shadow-sm {{ request()->routeIs('landing') ? 'bg-primary-500 text-white' : 'text-gray-700 dark:text-gray-200 hover:text-primary-500 dark:hover:text-primary-400 hover:bg-gray-50 dark:hover:bg-gray-700 border border-gray-300 dark:border-gray-600 hover:border-primary-500 dark:hover:border-primary-400' }}">
                                     Welcome
                                 </a>
                                 <a href="{{ route('login') }}"
