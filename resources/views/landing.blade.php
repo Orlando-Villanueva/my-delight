@@ -80,12 +80,12 @@
                         Dashboard
                     </a>
                     @else
-                    <a href="{{ route('login') }}" class="text-gray-700 hover:text-blue-600 font-medium transition-colors">
+                    <x-ui.button variant="ghost" href="{{ route('login') }}">
                         Sign In
-                    </a>
-                    <a href="{{ route('register') }}" class="bg-accent-500 hover:bg-accent-600 text-white px-4 py-2 rounded-lg font-medium transition-colors">
+                    </x-ui.button>
+                    <x-ui.button variant="accent" href="{{ route('register') }}">
                         Get Started
-                    </a>
+                    </x-ui.button>
                     @endauth
                 </div>
             </div>
@@ -112,9 +112,9 @@
 
                         <!-- Primary CTA -->
                         <div class="space-y-4">
-                            <a href="{{ route('register') }}" class="inline-block bg-accent-500 hover:bg-accent-600 text-white px-8 py-4 rounded-lg text-lg font-semibold transition-all transform hover:scale-105 shadow-lg hover:shadow-xl">
+                            <x-ui.button variant="accent" size="lg" href="{{ route('register') }}">
                                 Start Reading Today
-                            </a>
+                            </x-ui.button>
                             <p class="text-sm text-gray-500">
                                 Free to use • No signup fees
                             </p>
@@ -175,40 +175,48 @@
                 <!-- Features Grid -->
                 <div class="grid md:grid-cols-2 lg:grid-cols-2 gap-8">
                     <!-- Feature 1: Daily Reading Log -->
-                    <div class="bg-white rounded-xl p-8 shadow-lg border border-gray-100 hover:shadow-xl transition-shadow">
-                        <div class="text-4xl mb-4">📖</div>
-                        <h3 class="text-xl font-semibold text-gray-900 mb-3">Daily Reading Log</h3>
-                        <p class="text-gray-600 leading-relaxed">
-                            Easily track which chapters you've read with our intuitive book and chapter selector. Simple logging keeps you focused on reading, not recording.
-                        </p>
-                    </div>
+                    <x-ui.card elevated class="hover:shadow-xl transition-shadow">
+                        <x-ui.card-content>
+                            <div class="text-4xl mb-4">📖</div>
+                            <x-ui.card-title>Daily Reading Log</x-ui.card-title>
+                            <p class="text-gray-600 leading-relaxed mt-3">
+                                Easily track which chapters you've read with our intuitive book and chapter selector. Simple logging keeps you focused on reading, not recording.
+                            </p>
+                        </x-ui.card-content>
+                    </x-ui.card>
 
                     <!-- Feature 2: Streak Tracking -->
-                    <div class="bg-gradient-to-br from-[#3366CC] to-[#2952A3] text-white rounded-xl p-8 shadow-lg hover:shadow-xl transition-shadow">
-                        <div class="text-4xl mb-4">🔥</div>
-                        <h3 class="text-xl font-semibold text-white mb-3">Streak Tracking</h3>
-                        <p class="text-blue-100 leading-relaxed">
-                            Build momentum with reading streaks and get motivated by your consistency. See your current streak and longest streak to stay encouraged.
-                        </p>
-                    </div>
+                    <x-ui.card class="bg-gradient-to-br from-[#3366CC] to-[#2952A3] text-white shadow-lg hover:shadow-xl transition-shadow">
+                        <x-ui.card-content>
+                            <div class="text-4xl mb-4">🔥</div>
+                            <x-ui.card-title class="text-white">Streak Tracking</x-ui.card-title>
+                            <p class="text-blue-100 leading-relaxed mt-3">
+                                Build momentum with reading streaks and get motivated by your consistency. See your current streak and longest streak to stay encouraged.
+                            </p>
+                        </x-ui.card-content>
+                    </x-ui.card>
 
                     <!-- Feature 3: Visual Progress -->
-                    <div class="bg-white rounded-xl p-8 shadow-lg border border-gray-100 hover:shadow-xl transition-shadow">
-                        <div class="text-4xl mb-4">📊</div>
-                        <h3 class="text-xl font-semibold text-gray-900 mb-3">Visual Progress</h3>
-                        <p class="text-gray-600 leading-relaxed">
-                            See your journey through Scripture with our beautiful book completion grid. Watch as you fill in each book of the Bible.
-                        </p>
-                    </div>
+                    <x-ui.card elevated class="hover:shadow-xl transition-shadow">
+                        <x-ui.card-content>
+                            <div class="text-4xl mb-4">📊</div>
+                            <x-ui.card-title>Visual Progress</x-ui.card-title>
+                            <p class="text-gray-600 leading-relaxed mt-3">
+                                See your journey through Scripture with our beautiful book completion grid. Watch as you fill in each book of the Bible.
+                            </p>
+                        </x-ui.card-content>
+                    </x-ui.card>
 
                     <!-- Feature 4: Reading Statistics -->
-                    <div class="bg-white rounded-xl p-8 shadow-lg border border-gray-100 hover:shadow-xl transition-shadow">
-                        <div class="text-4xl mb-4">📈</div>
-                        <h3 class="text-xl font-semibold text-gray-900 mb-3">Reading Statistics</h3>
-                        <p class="text-gray-600 leading-relaxed">
-                            Track your total chapters read, books completed, and longest streaks. Celebrate your progress with meaningful statistics.
-                        </p>
-                    </div>
+                    <x-ui.card elevated class="hover:shadow-xl transition-shadow">
+                        <x-ui.card-content>
+                            <div class="text-4xl mb-4">📈</div>
+                            <x-ui.card-title>Reading Statistics</x-ui.card-title>
+                            <p class="text-gray-600 leading-relaxed mt-3">
+                                Track your total chapters read, books completed, and longest streaks. Celebrate your progress with meaningful statistics.
+                            </p>
+                        </x-ui.card-content>
+                    </x-ui.card>
                 </div>
             </div>
         </section>
@@ -272,9 +280,9 @@
                 <p class="text-xl text-white mb-8">
                     Join thousands of readers who are making consistent progress through Scripture.
                 </p>
-                <a href="{{ route('register') }}" class="inline-block bg-accent-500 hover:bg-accent-600 text-white px-8 py-4 rounded-lg text-lg font-semibold transition-all transform hover:scale-105 shadow-lg hover:shadow-xl">
+                <x-ui.button variant="accent" size="lg" href="{{ route('register') }}">
                     Start Your Journey Today
-                </a>
+                </x-ui.button>
             </div>
         </section>
     </main>
