@@ -60,6 +60,11 @@
     --color-destructive-950: #450a0a;
 }
 
+/* Performance optimizations */
+html {
+    scroll-behavior: smooth;
+}
+
 /* Essential Component Classes - Only what we actually use */
 @layer components {
 

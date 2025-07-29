@@ -31,7 +31,7 @@
     <link rel="icon" type="image/x-icon" href="{{ asset('favicon.ico') }}">
 
     <!-- Fonts -->
-    <link rel="preconnect" href="https://fonts.bunny.net">
+    <link rel="preconnect" href="https://fonts.bunny.net" crossorigin>
     <link href="https://fonts.bunny.net/css?family=instrument-sans:400,500,600,700" rel="stylesheet" />
 
     <!-- Styles -->
@@ -68,7 +68,10 @@
                             src="{{ asset('images/logo-64.png') }}"
                             srcset="{{ asset('images/logo-64.png') }} 1x, {{ asset('images/logo-64-2x.png') }} 2x"
                             alt="Delight Logo"
-                            class="w-8 h-8" />
+                            class="w-8 h-8"
+                            width="32"
+                            height="32"
+                            loading="eager" />
                         <span>Delight</span>
                     </a>
                 </div>
@@ -130,6 +133,8 @@
                                     src="{{ asset('images/screenshots/desktop.png') }}"
                                     alt="Delight Dashboard - Bible Reading Progress Tracker"
                                     class="w-full h-auto max-w-full"
+                                    width="800"
+                                    height="600"
                                     loading="lazy" />
                             </div>
                         </div>
@@ -141,6 +146,8 @@
                                     src="{{ asset('images/screenshots/mobile.png') }}"
                                     alt="Delight Mobile App - Reading Log Interface"
                                     class="w-full h-auto"
+                                    width="256"
+                                    height="512"
                                     loading="lazy" />
                             </div>
                         </div>
@@ -152,6 +159,8 @@
                                     src="{{ asset('images/screenshots/mobile.png') }}"
                                     alt="Delight Mobile App - Reading Log Interface"
                                     class="w-full h-auto max-w-full"
+                                    width="192"
+                                    height="384"
                                     loading="lazy" />
                             </div>
                         </div>
