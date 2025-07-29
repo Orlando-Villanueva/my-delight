@@ -53,11 +53,6 @@
     @if($disabled && $tag === 'button')
         aria-disabled="true"
     @endif
-    @if($href && $attributes->has('aria-label') === false && $attributes->has('aria-labelledby') === false)
-        @if($tag === 'a')
-            role="button"
-        @endif
-    @endif
 >
     {{ $slot }}
 </{{ $tag }}> 
