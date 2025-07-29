@@ -63,8 +63,13 @@
             <div class="flex justify-between items-center h-16">
                 <!-- Brand Logo -->
                 <div class="flex-shrink-0">
-                    <a href="{{ route('landing') }}" class="text-2xl font-bold text-gray-900 hover:text-blue-600 transition-colors">
-                        Delight
+                    <a href="{{ route('landing') }}" class="flex items-center space-x-2 text-2xl font-bold text-gray-900 hover:text-blue-600 transition-colors">
+                        <img
+                            src="{{ asset('images/logo-64.png') }}"
+                            srcset="{{ asset('images/logo-64.png') }} 1x, {{ asset('images/logo-64-2x.png') }} 2x"
+                            alt="Delight Logo"
+                            class="w-8 h-8" />
+                        <span>Delight</span>
                     </a>
                 </div>
 
@@ -90,16 +95,19 @@
     <!-- Main Content -->
     <main class="pt-16">
         <!-- Hero Section -->
-        <section class="relative bg-gradient-to-br from-blue-50 to-white py-20 lg:py-32">
+        <section class="relative bg-gradient-to-bl from-blue-50 to-white py-20 lg:py-32">
             <div class="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8">
-                <div class="grid lg:grid-cols-2 gap-12 items-center">
+                <div class="grid lg:grid-cols-2 gap-2 items-center">
                     <!-- Hero Content -->
                     <div class="text-center lg:text-left">
                         <h1 class="text-4xl md:text-5xl lg:text-6xl font-bold text-gray-900 leading-tight mb-6">
                             Build Your Bible Reading Habit
                         </h1>
-                        <p class="text-xl text-gray-600 mb-8 leading-relaxed">
+                        <p class="text-xl text-gray-600 mb-6 leading-relaxed">
                             Track your daily reading, maintain streaks, and visualize your progress through Scripture with our simple, motivating habit tracker.
+                        </p>
+                        <p class="text-sm text-gray-500 italic mb-8">
+                            "His delight is in the law of the LORD, and on his law he meditates day and night." - Psalm 1:2
                         </p>
 
                         <!-- Primary CTA -->
@@ -108,14 +116,15 @@
                                 Start Reading Today
                             </a>
                             <p class="text-sm text-gray-500">
-                                Free to use • No credit card required
+                                Free to use • No signup fees
                             </p>
                         </div>
                     </div>
 
                     <!-- Hero Visual -->
                     <div class="relative">
-                        <div class="bg-white rounded-2xl shadow-2xl p-0 transform rotate-1 hover:rotate-0 transition-transform duration-300">
+                        <!-- Desktop Screenshot - Hidden on mobile -->
+                        <div class="hidden lg:block bg-white rounded-2xl shadow-2xl p-0 transform rotate-1 hover:rotate-0 transition-transform duration-300">
                             <div class="rounded-lg overflow-hidden">
                                 <img
                                     src="{{ asset('images/screenshots/desktop.png') }}"
@@ -125,8 +134,19 @@
                             </div>
                         </div>
 
-                        <!-- Mobile Screenshot - Floating -->
-                        <div class="absolute -bottom-6 -right-6 w-32 sm:w-40 lg:w-48 bg-white rounded-xl shadow-xl p-0 transform rotate-6 hover:rotate-3 transition-transform duration-300">
+                        <!-- Mobile Screenshot - Shown on mobile, floating on desktop -->
+                        <div class="lg:hidden bg-white rounded-2xl shadow-2xl p-0 w-64 mx-auto mt-8">
+                            <div class="rounded-lg overflow-hidden">
+                                <img
+                                    src="{{ asset('images/screenshots/mobile.png') }}"
+                                    alt="Delight Mobile App - Reading Log Interface"
+                                    class="w-full h-auto"
+                                    loading="lazy" />
+                            </div>
+                        </div>
+
+                        <!-- Mobile Screenshot - Floating (Desktop only) -->
+                        <div class="hidden lg:block absolute -bottom-6 -right-6 w-36 sm:w-40 lg:w-48 bg-white rounded-xl shadow-xl p-0 transform rotate-6 hover:rotate-3 transition-transform duration-300">
                             <div class="rounded-lg overflow-hidden">
                                 <img
                                     src="{{ asset('images/screenshots/mobile.png') }}"
@@ -141,7 +161,7 @@
         </section>
 
         <!-- Features Section -->
-        <section class="py-20 bg-white">
+        <section class="py-20 bg-primary-50">
             <div class="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8">
                 <div class="text-center mb-16">
                     <h2 class="text-3xl md:text-4xl font-bold text-gray-900 mb-4">
@@ -164,10 +184,10 @@
                     </div>
 
                     <!-- Feature 2: Streak Tracking -->
-                    <div class="bg-white rounded-xl p-8 shadow-lg border border-gray-100 hover:shadow-xl transition-shadow">
+                    <div class="bg-gradient-to-br from-[#3366CC] to-[#2952A3] text-white rounded-xl p-8 shadow-lg hover:shadow-xl transition-shadow">
                         <div class="text-4xl mb-4">🔥</div>
-                        <h3 class="text-xl font-semibold text-gray-900 mb-3">Streak Tracking</h3>
-                        <p class="text-gray-600 leading-relaxed">
+                        <h3 class="text-xl font-semibold text-white mb-3">Streak Tracking</h3>
+                        <p class="text-blue-100 leading-relaxed">
                             Build momentum with reading streaks and get motivated by your consistency. See your current streak and longest streak to stay encouraged.
                         </p>
                     </div>
@@ -194,7 +214,7 @@
         </section>
 
         <!-- How It Works Section -->
-        <section class="py-20 bg-gray-50">
+        <section class="py-20 bg-white">
             <div class="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8">
                 <div class="text-center mb-16">
                     <h2 class="text-3xl md:text-4xl font-bold text-gray-900 mb-4">
@@ -214,7 +234,7 @@
                         </div>
                         <h3 class="text-xl font-semibold text-gray-900 mb-3">Create Your Account</h3>
                         <p class="text-gray-600 leading-relaxed">
-                            Sign up for free in seconds. No credit card required, no complicated setup process.
+                            Sign up for free in seconds. No complicated setup process required.
                         </p>
                     </div>
 
@@ -244,12 +264,12 @@
         </section>
 
         <!-- Final CTA Section -->
-        <section class="py-20 bg-blue-600">
+        <section class="py-20 bg-gradient-to-br from-[#3366CC] to-[#2952A3]">
             <div class="max-w-4xl mx-auto text-center px-4 sm:px-6 lg:px-8">
                 <h2 class="text-3xl md:text-4xl font-bold text-white mb-6">
                     Ready to Build Your Reading Habit?
                 </h2>
-                <p class="text-xl text-blue-100 mb-8">
+                <p class="text-xl text-white mb-8">
                     Join thousands of readers who are making consistent progress through Scripture.
                 </p>
                 <a href="{{ route('register') }}" class="inline-block bg-accent-500 hover:bg-accent-600 text-white px-8 py-4 rounded-lg text-lg font-semibold transition-all transform hover:scale-105 shadow-lg hover:shadow-xl">
