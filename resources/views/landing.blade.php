@@ -57,17 +57,22 @@
 </head>
 
 <body class="font-sans antialiased bg-white">
+    <!-- Skip to main content link for screen readers -->
+    <a href="#main-content" class="sr-only focus:not-sr-only focus:absolute focus:top-4 focus:left-4 bg-blue-600 text-white px-4 py-2 rounded-md z-50 focus:outline-none focus:ring-2 focus:ring-blue-500 focus:ring-offset-2">
+        Skip to main content
+    </a>
+
     <!-- Navigation -->
-    <nav class="fixed top-0 left-0 right-0 z-50 bg-white/95 backdrop-blur-sm border-b border-gray-100">
+    <nav class="fixed top-0 left-0 right-0 z-50 bg-white/95 backdrop-blur-sm border-b border-gray-100" role="navigation" aria-label="Main navigation">
         <div class="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8">
             <div class="flex justify-between items-center h-16">
                 <!-- Brand Logo -->
                 <div class="flex-shrink-0">
-                    <a href="{{ route('landing') }}" class="flex items-center space-x-2 text-2xl font-bold text-gray-900 hover:text-blue-600 transition-colors">
+                    <a href="{{ route('landing') }}" class="flex items-center space-x-2 text-2xl font-bold text-gray-900 hover:text-blue-600 transition-colors focus:outline-none focus:ring-2 focus:ring-blue-500 focus:ring-offset-2 rounded-md" aria-label="Delight - Go to homepage">
                         <img
                             src="{{ asset('images/logo-64.png') }}"
                             srcset="{{ asset('images/logo-64.png') }} 1x, {{ asset('images/logo-64-2x.png') }} 2x"
-                            alt="Delight Logo"
+                            alt="Delight logo - Bible reading habit tracker"
                             class="w-8 h-8"
                             width="32"
                             height="32"
@@ -77,16 +82,16 @@
                 </div>
 
                 <!-- Navigation Actions -->
-                <div class="flex items-center space-x-4">
+                <div class="flex items-center space-x-4" role="group" aria-label="Account actions">
                     @auth
-                    <a href="{{ route('dashboard') }}" class="text-gray-700 hover:text-blue-600 font-medium transition-colors">
+                    <a href="{{ route('dashboard') }}" class="text-gray-700 hover:text-blue-600 font-medium transition-colors focus:outline-none focus:ring-2 focus:ring-blue-500 focus:ring-offset-2 rounded-md px-2 py-1" aria-label="Go to your dashboard">
                         Dashboard
                     </a>
                     @else
-                    <x-ui.button variant="ghost" href="{{ route('login') }}">
+                    <x-ui.button variant="ghost" href="{{ route('login') }}" aria-label="Sign in to your account">
                         Sign In
                     </x-ui.button>
-                    <x-ui.button variant="accent" href="{{ route('register') }}">
+                    <x-ui.button variant="accent" href="{{ route('register') }}" aria-label="Create a new account">
                         Get Started
                     </x-ui.button>
                     @endauth
@@ -96,42 +101,42 @@
     </nav>
 
     <!-- Main Content -->
-    <main class="pt-16">
+    <main class="pt-16" id="main-content" role="main">
         <!-- Hero Section -->
-        <section class="relative bg-gradient-to-bl from-blue-50 to-white py-20 lg:py-32">
+        <section class="relative bg-gradient-to-bl from-blue-50 to-white py-20 lg:py-32" aria-labelledby="hero-heading">
             <div class="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8">
                 <div class="grid lg:grid-cols-2 gap-2 items-center">
                     <!-- Hero Content -->
                     <div class="text-center lg:text-left">
-                        <h1 class="text-4xl md:text-5xl lg:text-6xl font-bold text-gray-900 leading-tight mb-6">
+                        <h1 id="hero-heading" class="text-4xl md:text-5xl lg:text-6xl font-bold text-gray-900 leading-tight mb-6">
                             Build Your Bible Reading Habit
                         </h1>
                         <p class="text-xl text-gray-600 mb-6 leading-relaxed">
                             Track your daily reading, maintain streaks, and visualize your progress through Scripture with our simple, motivating habit tracker.
                         </p>
-                        <p class="text-sm text-gray-500 italic mb-8">
-                            "His delight is in the law of the LORD, and on his law he meditates day and night." - Psalm 1:2
-                        </p>
+                        <blockquote class="text-sm text-gray-700 italic mb-8" cite="https://www.biblegateway.com/passage/?search=Psalm%201%3A2&version=ESV">
+                            <p>"His delight is in the law of the LORD, and on his law he meditates day and night." - Psalm 1:2</p>
+                        </blockquote>
 
                         <!-- Primary CTA -->
                         <div class="space-y-4">
-                            <x-ui.button variant="accent" size="lg" href="{{ route('register') }}">
+                            <x-ui.button variant="accent" size="lg" href="{{ route('register') }}" aria-describedby="cta-description">
                                 Start Reading Today
                             </x-ui.button>
-                            <p class="text-sm text-gray-500">
+                            <p id="cta-description" class="text-sm text-gray-700">
                                 Free to use • No signup fees
                             </p>
                         </div>
                     </div>
 
                     <!-- Hero Visual -->
-                    <div class="relative">
+                    <div class="relative" role="img" aria-label="Screenshots of Delight Bible reading tracker application">
                         <!-- Desktop Screenshot - Hidden on mobile -->
                         <div class="hidden lg:block bg-white rounded-2xl shadow-2xl p-0 transform rotate-1 hover:rotate-0 transition-transform duration-300">
                             <div class="rounded-lg overflow-hidden">
                                 <img
                                     src="{{ asset('images/screenshots/desktop.png') }}"
-                                    alt="Delight Dashboard - Bible Reading Progress Tracker"
+                                    alt="Delight dashboard showing Bible reading progress with streak counter, book completion grid, and daily reading log interface"
                                     class="w-full h-auto max-w-full"
                                     width="800"
                                     height="600"
@@ -144,7 +149,7 @@
                             <div class="rounded-lg overflow-hidden">
                                 <img
                                     src="{{ asset('images/screenshots/mobile.png') }}"
-                                    alt="Delight Mobile App - Reading Log Interface"
+                                    alt="Delight mobile interface showing book and chapter selection for logging daily Bible reading"
                                     class="w-full h-auto"
                                     width="256"
                                     height="512"
@@ -157,7 +162,7 @@
                             <div class="rounded-lg overflow-hidden">
                                 <img
                                     src="{{ asset('images/screenshots/mobile.png') }}"
-                                    alt="Delight Mobile App - Reading Log Interface"
+                                    alt="Delight mobile interface showing book and chapter selection for logging daily Bible reading"
                                     class="w-full h-auto max-w-full"
                                     width="192"
                                     height="384"
@@ -170,10 +175,10 @@
         </section>
 
         <!-- Features Section -->
-        <section class="py-20 bg-primary-50">
+        <section class="py-20 bg-primary-50" aria-labelledby="features-heading">
             <div class="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8">
                 <div class="text-center mb-16">
-                    <h2 class="text-3xl md:text-4xl font-bold text-gray-900 mb-4">
+                    <h2 id="features-heading" class="text-3xl md:text-4xl font-bold text-gray-900 mb-4">
                         Everything You Need to Stay Consistent
                     </h2>
                     <p class="text-xl text-gray-600 max-w-3xl mx-auto">
@@ -182,59 +187,67 @@
                 </div>
 
                 <!-- Features Grid -->
-                <div class="grid md:grid-cols-2 lg:grid-cols-2 gap-8">
+                <div class="grid md:grid-cols-2 lg:grid-cols-2 gap-8" role="list" aria-label="Key features of Delight">
                     <!-- Feature 1: Daily Reading Log -->
-                    <x-ui.card elevated class="hover:shadow-xl transition-shadow">
-                        <x-ui.card-content>
-                            <div class="text-4xl mb-4">📖</div>
-                            <x-ui.card-title>Daily Reading Log</x-ui.card-title>
-                            <p class="text-gray-600 leading-relaxed mt-3">
-                                Easily track which chapters you've read with our intuitive book and chapter selector. Simple logging keeps you focused on reading, not recording.
-                            </p>
-                        </x-ui.card-content>
-                    </x-ui.card>
+                    <div role="listitem">
+                        <x-ui.card elevated class="hover:shadow-xl transition-shadow h-full">
+                            <x-ui.card-content>
+                                <div class="text-4xl mb-4" role="img" aria-label="Book icon">📖</div>
+                                <x-ui.card-title>Daily Reading Log</x-ui.card-title>
+                                <p class="text-gray-600 leading-relaxed mt-3">
+                                    Easily track which chapters you've read with our intuitive book and chapter selector. Simple logging keeps you focused on reading, not recording.
+                                </p>
+                            </x-ui.card-content>
+                        </x-ui.card>
+                    </div>
 
                     <!-- Feature 2: Streak Tracking -->
-                    <x-ui.card class="bg-gradient-to-br from-[#3366CC] to-[#2952A3] text-white shadow-lg hover:shadow-xl transition-shadow">
-                        <x-ui.card-content>
-                            <div class="text-4xl mb-4">🔥</div>
-                            <x-ui.card-title class="text-white">Streak Tracking</x-ui.card-title>
-                            <p class="text-blue-100 leading-relaxed mt-3">
-                                Build momentum with reading streaks and get motivated by your consistency. See your current streak and longest streak to stay encouraged.
-                            </p>
-                        </x-ui.card-content>
-                    </x-ui.card>
+                    <div role="listitem">
+                        <x-ui.card class="bg-gradient-to-br from-[#3366CC] to-[#2952A3] text-white shadow-lg hover:shadow-xl transition-shadow h-full">
+                            <x-ui.card-content>
+                                <div class="text-4xl mb-4" role="img" aria-label="Fire icon representing streaks">🔥</div>
+                                <x-ui.card-title class="text-white">Streak Tracking</x-ui.card-title>
+                                <p class="text-blue-100 leading-relaxed mt-3">
+                                    Build momentum with reading streaks and get motivated by your consistency. See your current streak and longest streak to stay encouraged.
+                                </p>
+                            </x-ui.card-content>
+                        </x-ui.card>
+                    </div>
 
                     <!-- Feature 3: Visual Progress -->
-                    <x-ui.card elevated class="hover:shadow-xl transition-shadow">
-                        <x-ui.card-content>
-                            <div class="text-4xl mb-4">📊</div>
-                            <x-ui.card-title>Visual Progress</x-ui.card-title>
-                            <p class="text-gray-600 leading-relaxed mt-3">
-                                See your journey through Scripture with our beautiful book completion grid. Watch as you fill in each book of the Bible.
-                            </p>
-                        </x-ui.card-content>
-                    </x-ui.card>
+                    <div role="listitem">
+                        <x-ui.card elevated class="hover:shadow-xl transition-shadow h-full">
+                            <x-ui.card-content>
+                                <div class="text-4xl mb-4" role="img" aria-label="Chart icon representing progress">📊</div>
+                                <x-ui.card-title>Visual Progress</x-ui.card-title>
+                                <p class="text-gray-600 leading-relaxed mt-3">
+                                    See your journey through Scripture with our beautiful book completion grid. Watch as you fill in each book of the Bible.
+                                </p>
+                            </x-ui.card-content>
+                        </x-ui.card>
+                    </div>
 
                     <!-- Feature 4: Reading Statistics -->
-                    <x-ui.card elevated class="hover:shadow-xl transition-shadow">
-                        <x-ui.card-content>
-                            <div class="text-4xl mb-4">📈</div>
-                            <x-ui.card-title>Reading Statistics</x-ui.card-title>
-                            <p class="text-gray-600 leading-relaxed mt-3">
-                                Track your total chapters read, books completed, and longest streaks. Celebrate your progress with meaningful statistics.
-                            </p>
-                        </x-ui.card-content>
-                    </x-ui.card>
+                    <div role="listitem">
+                        <x-ui.card elevated class="hover:shadow-xl transition-shadow h-full">
+                            <x-ui.card-content>
+                                <div class="text-4xl mb-4" role="img" aria-label="Graph icon representing statistics">📈</div>
+                                <x-ui.card-title>Reading Statistics</x-ui.card-title>
+                                <p class="text-gray-600 leading-relaxed mt-3">
+                                    Track your total chapters read, books completed, and longest streaks. Celebrate your progress with meaningful statistics.
+                                </p>
+                            </x-ui.card-content>
+                        </x-ui.card>
+                    </div>
                 </div>
             </div>
         </section>
 
         <!-- How It Works Section -->
-        <section class="py-20 bg-white">
+        <section class="py-20 bg-white" aria-labelledby="how-it-works-heading">
             <div class="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8">
                 <div class="text-center mb-16">
-                    <h2 class="text-3xl md:text-4xl font-bold text-gray-900 mb-4">
+                    <h2 id="how-it-works-heading" class="text-3xl md:text-4xl font-bold text-gray-900 mb-4">
                         Simple Steps to Build Your Habit
                     </h2>
                     <p class="text-xl text-gray-600">
@@ -243,53 +256,53 @@
                 </div>
 
                 <!-- Steps Grid -->
-                <div class="grid md:grid-cols-3 gap-8">
+                <ol class="grid md:grid-cols-3 gap-8" role="list" aria-label="Steps to get started with Delight">
                     <!-- Step 1 -->
-                    <div class="text-center">
-                        <div class="bg-accent-100 rounded-full w-16 h-16 flex items-center justify-center mx-auto mb-6">
+                    <li class="text-center">
+                        <div class="bg-accent-100 rounded-full w-16 h-16 flex items-center justify-center mx-auto mb-6" aria-hidden="true">
                             <span class="text-2xl font-bold text-accent-600">1</span>
                         </div>
                         <h3 class="text-xl font-semibold text-gray-900 mb-3">Create Your Account</h3>
                         <p class="text-gray-600 leading-relaxed">
                             Sign up for free in seconds. No complicated setup process required.
                         </p>
-                    </div>
+                    </li>
 
                     <!-- Step 2 -->
-                    <div class="text-center">
-                        <div class="bg-blue-100 rounded-full w-16 h-16 flex items-center justify-center mx-auto mb-6">
+                    <li class="text-center">
+                        <div class="bg-blue-100 rounded-full w-16 h-16 flex items-center justify-center mx-auto mb-6" aria-hidden="true">
                             <span class="text-2xl font-bold text-blue-600">2</span>
                         </div>
                         <h3 class="text-xl font-semibold text-gray-900 mb-3">Log Your Reading</h3>
                         <p class="text-gray-600 leading-relaxed">
                             After reading, simply select the book and chapters you've completed. Takes less than 30 seconds.
                         </p>
-                    </div>
+                    </li>
 
                     <!-- Step 3 -->
-                    <div class="text-center">
-                        <div class="bg-green-100 rounded-full w-16 h-16 flex items-center justify-center mx-auto mb-6">
+                    <li class="text-center">
+                        <div class="bg-green-100 rounded-full w-16 h-16 flex items-center justify-center mx-auto mb-6" aria-hidden="true">
                             <span class="text-2xl font-bold text-green-600">3</span>
                         </div>
                         <h3 class="text-xl font-semibold text-gray-900 mb-3">Watch Your Progress</h3>
                         <p class="text-gray-600 leading-relaxed">
                             See your streaks grow, books fill up, and statistics improve. Stay motivated by your progress.
                         </p>
-                    </div>
-                </div>
+                    </li>
+                </ol>
             </div>
         </section>
 
         <!-- Final CTA Section -->
-        <section class="py-20 bg-gradient-to-br from-[#3366CC] to-[#2952A3]">
+        <section class="py-20 bg-gradient-to-br from-[#3366CC] to-[#2952A3]" aria-labelledby="final-cta-heading">
             <div class="max-w-4xl mx-auto text-center px-4 sm:px-6 lg:px-8">
-                <h2 class="text-3xl md:text-4xl font-bold text-white mb-6">
+                <h2 id="final-cta-heading" class="text-3xl md:text-4xl font-bold text-white mb-6">
                     Ready to Build Your Reading Habit?
                 </h2>
                 <p class="text-xl text-white mb-8">
                     Join thousands of readers who are making consistent progress through Scripture.
                 </p>
-                <x-ui.button variant="accent" size="lg" href="{{ route('register') }}">
+                <x-ui.button variant="accent" size="lg" href="{{ route('register') }}" aria-label="Sign up to start your Bible reading journey">
                     Start Your Journey Today
                 </x-ui.button>
             </div>
@@ -297,39 +310,39 @@
     </main>
 
     <!-- Footer -->
-    <footer class="bg-gray-900 text-white py-12">
+    <footer class="bg-gray-900 text-white py-12" role="contentinfo" aria-label="Site footer">
         <div class="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8">
             <div class="grid md:grid-cols-4 gap-8">
                 <!-- Brand -->
                 <div class="md:col-span-2">
                     <h3 class="text-2xl font-bold mb-4">Delight</h3>
-                    <p class="text-gray-400 leading-relaxed">
+                    <p class="text-gray-300 leading-relaxed">
                         Building consistent Bible reading habits through simple tracking and motivating progress visualization.
                     </p>
                 </div>
 
                 <!-- Quick Links -->
-                <div>
-                    <h4 class="font-semibold mb-4">Quick Links</h4>
+                <nav class="md:col-span-1" aria-labelledby="quick-links-heading">
+                    <h4 id="quick-links-heading" class="font-semibold mb-4">Quick Links</h4>
                     <ul class="space-y-2">
-                        <li><a href="{{ route('register') }}" class="text-gray-400 hover:text-white transition-colors">Get Started</a></li>
-                        <li><a href="{{ route('login') }}" class="text-gray-400 hover:text-white transition-colors">Sign In</a></li>
+                        <li><a href="{{ route('register') }}" class="text-gray-300 hover:text-white transition-colors focus:outline-none focus:ring-2 focus:ring-white focus:ring-offset-2 focus:ring-offset-gray-900 rounded-sm">Get Started</a></li>
+                        <li><a href="{{ route('login') }}" class="text-gray-300 hover:text-white transition-colors focus:outline-none focus:ring-2 focus:ring-white focus:ring-offset-2 focus:ring-offset-gray-900 rounded-sm">Sign In</a></li>
                     </ul>
-                </div>
+                </nav>
 
                 <!-- Legal -->
-                <div>
-                    <h4 class="font-semibold mb-4">Legal</h4>
+                <nav class="md:col-span-1" aria-labelledby="legal-links-heading">
+                    <h4 id="legal-links-heading" class="font-semibold mb-4">Legal</h4>
                     <ul class="space-y-2">
-                        <li><a href="#" class="text-gray-400 hover:text-white transition-colors">Privacy Policy</a></li>
-                        <li><a href="#" class="text-gray-400 hover:text-white transition-colors">Terms of Service</a></li>
+                        <li><a href="#" class="text-gray-300 hover:text-white transition-colors focus:outline-none focus:ring-2 focus:ring-white focus:ring-offset-2 focus:ring-offset-gray-900 rounded-sm">Privacy Policy</a></li>
+                        <li><a href="#" class="text-gray-300 hover:text-white transition-colors focus:outline-none focus:ring-2 focus:ring-white focus:ring-offset-2 focus:ring-offset-gray-900 rounded-sm">Terms of Service</a></li>
                     </ul>
-                </div>
+                </nav>
             </div>
 
             <!-- Copyright -->
             <div class="border-t border-gray-800 mt-8 pt-8 text-center">
-                <p class="text-gray-400">
+                <p class="text-gray-300">
                     © {{ date('Y') }} Delight. All rights reserved.
                 </p>
             </div>

@@ -44,7 +44,7 @@
   - Optimize page for relevant Bible reading habit tracker keywords
   - _Requirements: 5.1, 5.2, 5.3_
 
-- [ ] 7. Implement accessibility features
+- [x] 7. Implement accessibility features
   - Add proper semantic HTML structure with ARIA labels where needed
   - Ensure all interactive elements are keyboard accessible
   - Implement proper color contrast ratios throughout the design
@@ -72,28 +72,14 @@
   - Implement smooth scrolling and interaction performance
   - _Requirements: 7.1, 7.2, 7.3, 7.4_
 
-- [ ] 10. Add interactive enhancements with Alpine.js
-  - Implement smooth scroll behavior for navigation links
-  - Add subtle animations for feature cards and testimonials
-  - Create interactive hover effects for buttons and links
-  - Ensure all interactions provide immediate visual feedback
-  - _Requirements: 7.2, 7.3_
-
-- [ ] 11. Test cross-browser compatibility and responsiveness
-  - Write feature tests to verify landing page renders correctly
-  - Test responsive behavior across different device sizes
-  - Verify all interactive elements work properly
-  - Test SEO metadata and social media previews
-  - _Requirements: 1.4, 6.1, 6.2, 7.1_
-
-- [ ] 12. Create Privacy Policy and Terms of Service pages
+- [ ] 10. Create Privacy Policy and Terms of Service pages
   - Create `resources/views/legal/privacy-policy.blade.php` with structured content appropriate for Bible reading app
   - Create `resources/views/legal/terms-of-service.blade.php` with simple terms for free service
   - Implement proper routing for `/privacy-policy` and `/terms-of-service` URLs
   - Style legal pages with consistent design using Tailwind CSS and proper typography
   - _Requirements: 7.1, 7.2, 7.3, 7.4_
 
-- [ ] 13. Integrate with existing authentication system
+- [ ] 11. Integrate with existing authentication system
   - Ensure sign-up and login CTAs properly redirect to existing auth pages
   - Test integration with Laravel Fortify authentication
   - Verify proper handling of already authenticated users
