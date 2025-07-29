@@ -74,6 +74,17 @@ The landing page serves as the primary entry point for new visitors to Delight, 
 
 ### Requirement 7
 
+**User Story:** As a visitor considering signing up, I want access to clear legal information about the service, so that I can understand the terms and privacy practices before creating an account.
+
+#### Acceptance Criteria
+
+1. WHEN a visitor views the footer THEN the system SHALL provide links to Privacy Policy and Terms of Service
+2. WHEN a visitor clicks legal links THEN the system SHALL display clear, readable legal documents
+3. WHEN a visitor reviews legal information THEN the system SHALL find content appropriate for a simple Bible reading tracker (minimal data collection, no complex terms)
+4. IF legal documents don't exist yet THEN the system SHALL create basic, appropriate policies for the app's simple functionality
+
+### Requirement 8
+
 **User Story:** As a visitor on any device, I want the landing page to load quickly and perform smoothly, so that I have a positive first impression of the app's quality.
 
 #### Acceptance Criteria

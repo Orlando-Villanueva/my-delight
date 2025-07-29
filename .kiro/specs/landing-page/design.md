@@ -119,6 +119,53 @@ The landing page follows a single-page application approach with distinct sectio
 - **Brand**: Simple text logo with custom typography
 - **Actions**: Login link and prominent signup button
 
+### Legal Pages Design
+The Privacy Policy and Terms of Service pages will be simple, readable documents appropriate for a Bible reading habit tracker:
+
+```html
+<div class="legal-page">
+  <div class="container max-w-4xl mx-auto px-4 py-8">
+    <header class="legal-header mb-8">
+      <h1 class="text-3xl font-bold text-gray-900 mb-2">Privacy Policy</h1>
+      <p class="text-sm text-gray-600">Last updated: [Date]</p>
+      <nav class="mt-4">
+        <a href="/" class="text-blue-600 hover:text-blue-800">← Back to Home</a>
+      </nav>
+    </header>
+    <div class="legal-content prose prose-lg max-w-none">
+      <section class="mb-8">
+        <h2 class="text-xl font-semibold mb-4">Information We Collect</h2>
+        <p>We collect minimal information necessary to provide our service...</p>
+      </section>
+      <!-- Additional sections -->
+    </div>
+  </div>
+</div>
+```
+
+**Privacy Policy Content Structure:**
+- **Information We Collect**: Email address, reading logs, basic account data
+- **How We Use Information**: Service provision, progress tracking, account management
+- **Data Storage**: Secure storage practices, retention policies
+- **User Rights**: Access, deletion, data portability rights
+- **Contact Information**: How users can reach out with privacy concerns
+
+**Terms of Service Content Structure:**
+- **Service Description**: Bible reading habit tracking service
+- **User Responsibilities**: Appropriate use of the service
+- **Account Terms**: Registration, account security
+- **Service Availability**: No guarantees of uptime (free service)
+- **Limitation of Liability**: Standard protections for free service
+- **Changes to Terms**: How updates will be communicated
+
+**Design Specifications:**
+- **Layout**: Single column, max-width container for readability
+- **Typography**: Clean, readable fonts with proper hierarchy
+- **Styling**: Consistent with main app design using Tailwind CSS
+- **Navigation**: Clear back-to-home link and consistent header/footer
+- **Accessibility**: Proper heading structure, good contrast ratios
+- **Mobile**: Responsive design for all device sizes
+
 ## Data Models
 
 ### Page Content Model

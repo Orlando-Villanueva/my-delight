@@ -86,7 +86,14 @@
   - Test SEO metadata and social media previews
   - _Requirements: 1.4, 6.1, 6.2, 7.1_
 
-- [ ] 12. Integrate with existing authentication system
+- [ ] 12. Create Privacy Policy and Terms of Service pages
+  - Create `resources/views/legal/privacy-policy.blade.php` with structured content appropriate for Bible reading app
+  - Create `resources/views/legal/terms-of-service.blade.php` with simple terms for free service
+  - Implement proper routing for `/privacy-policy` and `/terms-of-service` URLs
+  - Style legal pages with consistent design using Tailwind CSS and proper typography
+  - _Requirements: 7.1, 7.2, 7.3, 7.4_
+
+- [ ] 13. Integrate with existing authentication system
   - Ensure sign-up and login CTAs properly redirect to existing auth pages
   - Test integration with Laravel Fortify authentication
   - Verify proper handling of already authenticated users
