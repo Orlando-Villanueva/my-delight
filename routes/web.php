@@ -9,6 +9,15 @@ Route::get('/', function () {
     return view('landing');
 })->name('landing');
 
+// Legal Pages
+Route::get('/privacy-policy', function () {
+    return view('legal.privacy-policy');
+})->name('privacy-policy');
+
+Route::get('/terms-of-service', function () {
+    return view('legal.terms-of-service');
+})->name('terms-of-service');
+
 
 
 // Authentication Routes (GET routes for views - POST routes handled by Fortify)

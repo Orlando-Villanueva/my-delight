@@ -72,7 +72,7 @@
   - Implement smooth scrolling and interaction performance
   - _Requirements: 7.1, 7.2, 7.3, 7.4_
 
-- [ ] 10. Create Privacy Policy and Terms of Service pages
+- [x] 10. Create Privacy Policy and Terms of Service pages
   - Create `resources/views/legal/privacy-policy.blade.php` with structured content appropriate for Bible reading app
   - Create `resources/views/legal/terms-of-service.blade.php` with simple terms for free service
   - Implement proper routing for `/privacy-policy` and `/terms-of-service` URLs
