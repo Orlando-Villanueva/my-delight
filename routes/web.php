@@ -6,8 +6,17 @@ use App\Http\Controllers\ReadingLogController;
 use App\Services\BookProgressService;
 
 Route::get('/', function () {
-    return view('welcome');
-})->name('welcome');
+    return view('landing');
+})->name('landing');
+
+// Legal Pages
+Route::get('/privacy-policy', function () {
+    return view('legal.privacy-policy');
+})->name('privacy-policy');
+
+Route::get('/terms-of-service', function () {
+    return view('legal.terms-of-service');
+})->name('terms-of-service');
 
 
 

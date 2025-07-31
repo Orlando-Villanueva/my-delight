@@ -227,15 +227,15 @@
                         <!-- Primary Action Button - Desktop -->
                         <div class="flex items-center space-x-3">
                             <x-ui.button
-                                variant="primary"
-                                size="default"
+                                variant="accent"
+                                size="lg"
                                 hx-get="{{ route('logs.create') }}"
                                 hx-target="#reading-log-modal-content"
                                 hx-swap="innerHTML"
                                 hx-indicator="#modal-loading"
                                 @click="modalOpen = true"
-                                class="!px-6 !py-2 !text-base">
-                                <svg class="w-4 h-4 mr-2" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                                class="!px-6 !py-3 !text-base">
+                                <svg class="w-4 h-4 mr-1" fill="none" stroke="currentColor" viewBox="0 0 24 24">
                                     <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M12 6v6m0 0v6m0-6h6m-6 0H6"></path>
                                 </svg>
                                 Log Reading
@@ -254,7 +254,7 @@
                         @yield('content')
                     </div>
 
-                    <!-- Sidebar Content (30% on desktop) -->
+                    <!-- Sidebar ntent (30% on desktop) -->
                     <div class="hidden lg:block lg:w-[30%] lg:min-w-[300px] bg-white border-l border-gray-200 p-6">
                         @yield('sidebar')
                     </div>
@@ -299,7 +299,7 @@
         <!-- Floating Action Button - Mobile Only -->
         <button type="button" hx-get="{{ route('logs.create') }}" hx-target="#reading-log-modal-content"
             hx-swap="innerHTML" hx-indicator="#modal-loading" @click="modalOpen = true"
-            class="lg:hidden fixed bottom-24 right-4 w-14 h-14 bg-primary-500 hover:bg-primary-600 text-white rounded-full flex items-center justify-center z-50 shadow-lg transition-colors">
+            class="lg:hidden fixed bottom-24 right-4 w-14 h-14 bg-accent-500 hover:bg-accent-600 text-white rounded-full flex items-center justify-center z-50 shadow-lg transition-colors">
             <svg class="w-6 h-6" fill="none" stroke="currentColor" viewBox="0 0 24 24">
                 <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M12 6v6m0 0v6m0-6h6m-6 0H6"></path>
             </svg>

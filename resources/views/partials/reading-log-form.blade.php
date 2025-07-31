@@ -158,7 +158,7 @@
         <div class="pt-6 border-t border-gray-200 dark:border-gray-600 flex items-center space-x-4">
             <x-ui.button 
                 type="submit" 
-                variant="primary" 
+                variant="accent" 
                 size="lg"
                 hx-indicator="#save-loading"
                 class="px-6 py-3 text-base font-medium shadow-sm"
