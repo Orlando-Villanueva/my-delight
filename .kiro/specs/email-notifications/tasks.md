@@ -6,20 +6,20 @@
   - Update existing password-reset template to use the new base template
   - _Requirements: 4.2_
 
-- [ ] 2. Implement welcome notification system
-- [ ] 2.1 Create WelcomeNotification class
+- [x] 2. Implement welcome notification system
+- [x] 2.1 Create WelcomeNotification class
   - Write notification class extending Laravel's Notification with Queueable trait
   - Implement toMail method returning MailMessage with welcome template
   - Add error handling with failed() method for logging notification failures
   - _Requirements: 1.1, 1.5, 3.1, 4.1_
 
-- [ ] 2.2 Create welcome email template
+- [x] 2.2 Create welcome email template
   - Build `resources/views/emails/welcome.blade.php` using base template
   - Include personalized greeting with user's name and getting started content
   - Ensure consistent branding with existing password reset email design
   - _Requirements: 1.2, 1.3, 1.4, 4.2_
 
-- [ ] 2.3 Create registration event listener
+- [x] 2.3 Create registration event listener
   - Write `SendWelcomeNotification` listener class to handle Registered events
   - Implement handle method to send WelcomeNotification to new users
   - Register listener in EventServiceProvider for Registered event
