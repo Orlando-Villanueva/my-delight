@@ -19,7 +19,7 @@ test('welcome notification is sent when registered event is fired', function () 
 });
 
 test('welcome notification has correct subject and template', function () {
-    $user = User::factory()->create(['name' => 'John Doe']);
+    $user = User::factory()->create();
     
     $notification = new WelcomeNotification();
     $mailMessage = $notification->toMail($user);
