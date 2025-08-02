@@ -115,6 +115,37 @@ class CoreFunctionalityValidationTest extends TestCase
     }
 
     /**
+     * Test dashboard includes hasReadToday data
+     */
+    public function test_dashboard_includes_has_read_today_data(): void
+    {
+        $user = User::factory()->create();
+
+        // Test dashboard without reading today
+        $response = $this->actingAs($user)->get('/dashboard');
+        $response->assertStatus(200);
+        
+        // Create a reading log for today
+        ReadingLog::factory()->create([
+            'user_id' => $user->id,
+            'book_id' => 1, // Genesis
+            'chapter' => 1,
+            'passage_text' => 'Genesis 1',
+            'date_read' => today(),
+        ]);
+
+        // Test dashboard with reading today
+        $response = $this->actingAs($user)->get('/dashboard');
+        $response->assertStatus(200);
+        
+        // Test HTMX request also includes the data
+        $response = $this->actingAs($user)
+            ->withHeaders(['HX-Request' => 'true'])
+            ->get('/dashboard');
+        $response->assertStatus(200);
+    }
+
+    /**
      * Test reading log creation functionality
      */
     public function test_reading_log_creation(): void

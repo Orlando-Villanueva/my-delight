@@ -1,6 +1,7 @@
 @props([
     'currentStreak' => 0,
     'longestStreak' => 0,
+    'hasReadToday' => false,
     'size' => 'default'
 ])
 

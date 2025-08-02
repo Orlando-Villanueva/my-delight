@@ -6,6 +6,6 @@
 @section('content')
 <!-- Main Dashboard Content Area (Full Width) -->
 <div id="main-content" class="h-full">
-    @include('partials.dashboard-content')
+    @include('partials.dashboard-content', compact('hasReadToday'))
 </div>
 @endsection
