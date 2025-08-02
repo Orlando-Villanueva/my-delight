@@ -3,11 +3,15 @@
 use Illuminate\Support\Facades\Route;
 use Illuminate\Http\Request;
 use App\Http\Controllers\ReadingLogController;
+use App\Http\Controllers\SitemapController;
 use App\Services\BookProgressService;
 
 Route::get('/', function () {
     return view('landing');
 })->name('landing');
+
+// XML Sitemap
+Route::get('/sitemap.xml', [SitemapController::class, 'index'])->name('sitemap');
 
 // Legal Pages
 Route::get('/privacy-policy', function () {

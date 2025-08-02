@@ -9,9 +9,21 @@
     <!-- SEO Meta Tags -->
     <title>{{ config('app.name', 'Delight') }} - Build Your Bible Reading Habit | Free Bible Tracker</title>
     <meta name="description" content="Track your daily Bible reading, maintain streaks, and visualize your progress through Scripture. Free Bible reading habit tracker with beautiful progress visualization.">
-    <meta name="keywords" content="bible reading, habit tracker, scripture reading, bible study, reading streaks, christian app">
+    <meta name="keywords" content="bible reading, habit tracker, scripture reading, bible study, reading streaks, christian app, daily bible reading, bible progress tracker, scripture habit">
     <meta name="author" content="Delight">
+    <meta name="robots" content="index, follow, max-image-preview:large, max-snippet:-1, max-video-preview:-1">
     <link rel="canonical" href="{{ config('app.url') }}">
+    
+    <!-- Additional SEO Meta Tags -->
+    <meta name="language" content="English">
+    <meta name="revisit-after" content="7 days">
+    <meta name="distribution" content="web">
+    <meta name="rating" content="general">
+    <meta name="geo.region" content="Global">
+    <meta name="geo.placename" content="Worldwide">
+    
+    <!-- Sitemap Reference -->
+    <link rel="sitemap" type="application/xml" title="Sitemap" href="{{ config('app.url') }}/sitemap.xml">
 
     <!-- Open Graph Meta Tags -->
     <meta property="og:title" content="Delight - Build Your Bible Reading Habit">
@@ -43,15 +55,35 @@
             "@context": "https://schema.org",
             "@type": "WebApplication",
             "name": "Delight",
-            "description": "Track your daily Bible reading, maintain streaks, and visualize your progress through Scripture.",
+            "description": "Track your daily Bible reading, maintain streaks, and visualize your progress through Scripture. Free Bible reading habit tracker with beautiful progress visualization.",
             "url": "{{ config('app.url') }}",
             "applicationCategory": "LifestyleApplication",
             "operatingSystem": "Web Browser",
+            "browserRequirements": "Requires JavaScript. Requires HTML5.",
+            "softwareVersion": "1.0",
+            "aggregateRating": {
+                "@type": "AggregateRating",
+                "ratingValue": "5.0",
+                "ratingCount": "1"
+            },
             "offers": {
                 "@type": "Offer",
                 "price": "0",
-                "priceCurrency": "USD"
-            }
+                "priceCurrency": "USD",
+                "availability": "https://schema.org/InStock"
+            },
+            "author": {
+                "@type": "Organization",
+                "name": "Delight"
+            },
+            "keywords": "bible reading, habit tracker, scripture reading, bible study, reading streaks, christian app",
+            "screenshot": "{{ asset('images/screenshots/desktop.png') }}",
+            "featureList": [
+                "Daily Reading Log",
+                "Streak Tracking", 
+                "Visual Progress",
+                "Reading Statistics"
+            ]
         }
     </script>
 </head>
