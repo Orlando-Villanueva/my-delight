@@ -4,6 +4,7 @@ use Illuminate\Support\Facades\Route;
 use Illuminate\Http\Request;
 use App\Http\Controllers\ReadingLogController;
 use App\Services\BookProgressService;
+use App\Services\ReadingFormService;
 
 Route::get('/', function () {
     return view('landing');
@@ -43,13 +44,16 @@ Route::middleware('guest')->group(function () {
 Route::middleware('auth')->group(function () {
     // Main Dashboard
     Route::get('/dashboard', function (Request $request) {
+        $readingFormService = app(ReadingFormService::class);
+        $hasReadToday = $readingFormService->hasReadToday(auth()->user());
+        
         // Return partial for HTMX navigation, full page for direct access
         if ($request->header('HX-Request')) {
-            return view('partials.dashboard-page');
+            return view('partials.dashboard-page', compact('hasReadToday'));
         }
 
         // Return full page for direct access (browser URL)
-        return view('dashboard');
+        return view('dashboard', compact('hasReadToday'));
     })->name('dashboard');
 
     // Coming Soon Routes (MVP placeholders)

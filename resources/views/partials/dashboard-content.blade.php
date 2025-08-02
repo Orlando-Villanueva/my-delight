@@ -27,6 +27,7 @@ $stats = $statisticsService->getDashboardStatistics(auth()->user());
                     <x-ui.streak-counter
                         :currentStreak="$stats['streaks']['current_streak']"
                         :longestStreak="$stats['streaks']['longest_streak']"
+                        :hasReadToday="$hasReadToday"
                         class="h-full" />
                 </div>
 

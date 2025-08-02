@@ -9,6 +9,6 @@
 <!-- Main Dashboard Content Area (Full Width) -->
 <div class="w-full p-4 lg:p-6">
     <div id="main-content" class="h-full">
-        @include('partials.dashboard-content')
+        @include('partials.dashboard-content', compact('hasReadToday'))
     </div>
 </div> 
