@@ -77,7 +77,7 @@
                 "name": "Delight"
             },
             "keywords": "bible reading, habit tracker, scripture reading, bible study, reading streaks, christian app",
-            "screenshot": "{{ asset('images/screenshots/desktop.png') }}",
+            "screenshot": "{{ asset('images/screenshots/desktop_100.png') }}",
             "featureList": [
                 "Daily Reading Log",
                 "Streak Tracking", 
@@ -167,7 +167,7 @@
                         <div class="hidden lg:block bg-white rounded-2xl shadow-2xl p-0 transform rotate-1 hover:rotate-0 transition-transform duration-300">
                             <div class="rounded-lg overflow-hidden">
                                 <img
-                                    src="{{ asset('images/screenshots/desktop.png') }}"
+                                    src="{{ asset('images/screenshots/desktop_100.png') }}"
                                     alt="Delight dashboard showing Bible reading progress with streak counter, book completion grid, and daily reading log interface"
                                     class="w-full h-auto max-w-full"
                                     width="800"
@@ -180,7 +180,7 @@
                         <div class="lg:hidden bg-white rounded-2xl shadow-2xl p-0 w-64 mx-auto mt-8">
                             <div class="rounded-lg overflow-hidden">
                                 <img
-                                    src="{{ asset('images/screenshots/mobile.png') }}"
+                                    src="{{ asset('images/screenshots/mobile_100.png') }}"
                                     alt="Delight mobile interface showing book and chapter selection for logging daily Bible reading"
                                     class="w-full h-auto"
                                     width="256"
@@ -193,7 +193,7 @@
                         <div class="hidden lg:block absolute -bottom-6 -right-6 w-36 sm:w-40 lg:w-48 bg-white rounded-xl shadow-xl p-0 transform rotate-6 hover:rotate-3 transition-transform duration-300">
                             <div class="rounded-lg overflow-hidden">
                                 <img
-                                    src="{{ asset('images/screenshots/mobile.png') }}"
+                                    src="{{ asset('images/screenshots/mobile_100.png') }}"
                                     alt="Delight mobile interface showing book and chapter selection for logging daily Bible reading"
                                     class="w-full h-auto max-w-full"
                                     width="192"
