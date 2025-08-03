@@ -2,6 +2,7 @@
     'currentStreak' => 0,
     'longestStreak' => 0,
     'stateClasses' => [],
+    'message' => '',
     'size' => 'default'
 ])
 
@@ -52,9 +53,9 @@
             </div>
         @endif
         
-        @if($currentStreak === 0)
+        @if($message)
             <div class="text-center mt-2">
-                <p class="text-sm {{ $stateClasses['opacity'] }}">Start your reading journey today!</p>
+                <p class="text-sm {{ $stateClasses['opacity'] }}">{{ $message }}</p>
             </div>
         @endif
     </div>

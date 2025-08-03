@@ -35,12 +35,20 @@ class DashboardController extends Controller
         );
         $streakStateClasses = $this->streakStateService->getStateClasses($streakState);
         
+        // Get contextual message for the streak counter
+        $streakMessage = $this->streakStateService->selectMessage(
+            $stats['streaks']['current_streak'],
+            $streakState,
+            $stats['streaks']['longest_streak'],
+            $hasReadToday
+        );
+        
         // Return partial for HTMX navigation, full page for direct access
         if ($request->header('HX-Request')) {
-            return view('partials.dashboard-page', compact('hasReadToday', 'streakState', 'streakStateClasses', 'stats'));
+            return view('partials.dashboard-page', compact('hasReadToday', 'streakState', 'streakStateClasses', 'streakMessage', 'stats'));
         }
 
         // Return full page for direct access (browser URL)
-        return view('dashboard', compact('hasReadToday', 'streakState', 'streakStateClasses', 'stats'));
+        return view('dashboard', compact('hasReadToday', 'streakState', 'streakStateClasses', 'streakMessage', 'stats'));
     }
 }

@@ -30,6 +30,7 @@
   - _Requirements: 5.1, 5.2, 6.1, 6.2_
 
 - [ ] 4. Create message selection system
+  - fetch issue ORL-85 with comments for current implementation context
   - Implement message arrays for different streak ranges and states
   - Create method to select appropriate message based on current streak and state
   - Add logic to rotate between multiple messages for same range

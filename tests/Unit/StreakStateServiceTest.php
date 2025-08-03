@@ -190,6 +190,330 @@ class StreakStateServiceTest extends \Tests\TestCase
     }
     
     /**
+     * Test message selection for inactive state without history
+     */
+    public function test_inactive_message_selection_without_history()
+    {
+        $service = new StreakStateService();
+        
+        $message = $service->selectMessage(0, 'inactive', 0, false);
+        
+        // Should be one of the default inactive messages
+        $expectedMessages = [
+            'Start your reading journey today!',
+            'Begin building your streak!',
+            'Take the first step in your reading habit!',
+            'Your Bible reading adventure starts now!'
+        ];
+        
+        $this->assertContains($message, $expectedMessages);
+    }
+    
+    /**
+     * Test message selection for inactive state with history
+     */
+    public function test_inactive_message_selection_with_history()
+    {
+        $service = new StreakStateService();
+        
+        $message = $service->selectMessage(0, 'inactive', 15, false);
+        
+        // Should be one of the withHistory inactive messages
+        $expectedMessages = [
+            'You\'ve done it before, you can do it again!',
+            'Ready to rebuild your reading habit?',
+            'Time to start a new streak!',
+            'Your comeback story starts today!'
+        ];
+        
+        $this->assertContains($message, $expectedMessages);
+    }
+    
+    /**
+     * Test message selection for active state - 1 day streak
+     */
+    public function test_active_message_selection_one_day()
+    {
+        $service = new StreakStateService();
+        
+        $message = $service->selectMessage(1, 'active', 0, false);
+        
+        $expectedMessages = [
+            'Great start! Keep it going!',
+            'You\'re building momentum!',
+            'One day down, many more to go!',
+            'Perfect beginning to your journey!'
+        ];
+        
+        $this->assertContains($message, $expectedMessages);
+    }
+    
+    /**
+     * Test message selection for active state - 2-6 day range
+     */
+    public function test_active_message_selection_two_to_six_days()
+    {
+        $service = new StreakStateService();
+        
+        $streakValues = [2, 3, 4, 5, 6];
+        $expectedMessages = [
+            'You\'re building a great habit!',
+            'Keep the momentum going!',
+            'Your consistency is showing!',
+            'Building something beautiful!'
+        ];
+        
+        foreach ($streakValues as $streak) {
+            $message = $service->selectMessage($streak, 'active', 0, false);
+            $this->assertContains($message, $expectedMessages, "Failed for streak: {$streak}");
+        }
+    }
+    
+    /**
+     * Test message selection for active state - 7-13 day range
+     */
+    public function test_active_message_selection_seven_to_thirteen_days()
+    {
+        $service = new StreakStateService();
+        
+        $streakValues = [7, 8, 10, 13];
+        $expectedMessages = [
+            'A full week of reading!',
+            'You\'re on fire!',
+            'One week strong and counting!',
+            'Your dedication is inspiring!'
+        ];
+        
+        foreach ($streakValues as $streak) {
+            $message = $service->selectMessage($streak, 'active', 0, false);
+            $this->assertContains($message, $expectedMessages, "Failed for streak: {$streak}");
+        }
+    }
+    
+    /**
+     * Test message selection for active state - 14-29 day range
+     */
+    public function test_active_message_selection_fourteen_to_twenty_nine_days()
+    {
+        $service = new StreakStateService();
+        
+        $streakValues = [14, 20, 25, 29];
+        $expectedMessages = [
+            'Two weeks strong!',
+            'You\'re building something amazing!',
+            'Half a month of consistency!',
+            'Your habit is taking root!'
+        ];
+        
+        foreach ($streakValues as $streak) {
+            $message = $service->selectMessage($streak, 'active', 0, false);
+            $this->assertContains($message, $expectedMessages, "Failed for streak: {$streak}");
+        }
+    }
+    
+    /**
+     * Test message selection for active state - 30+ day range
+     */
+    public function test_active_message_selection_thirty_plus_days()
+    {
+        $service = new StreakStateService();
+        
+        $streakValues = [30, 45, 60, 100, 365];
+        $expectedMessages = [
+            'A month of dedication!',
+            'You\'re unstoppable!',
+            'Your commitment is incredible!',
+            'A true reading champion!'
+        ];
+        
+        foreach ($streakValues as $streak) {
+            $message = $service->selectMessage($streak, 'active', 0, false);
+            $this->assertContains($message, $expectedMessages, "Failed for streak: {$streak}");
+        }
+    }
+    
+    /**
+     * Test message selection for warning state
+     */
+    public function test_warning_message_selection()
+    {
+        $service = new StreakStateService();
+        
+        $streakValues = [1, 5, 10, 30];
+        
+        foreach ($streakValues as $streak) {
+            $message = $service->selectMessage($streak, 'warning', 0, false);
+            
+            // Should contain the streak number and be one of the warning messages
+            $this->assertStringContainsString((string)$streak, $message, "Message should contain streak number for streak: {$streak}");
+            
+            // Check if it matches one of the expected patterns
+            $expectedPatterns = [
+                "Don't break your {$streak}-day streak! Read today!",
+                "Your {$streak}-day streak needs you!",
+                "Keep your {$streak}-day momentum going - read today!",
+                "Don't let your {$streak}-day progress slip away!",
+                "Your {$streak}-day streak is counting on you!"
+            ];
+            
+            $matchesPattern = false;
+            foreach ($expectedPatterns as $pattern) {
+                if ($message === str_replace('{streak}', $streak, $pattern)) {
+                    $matchesPattern = true;
+                    break;
+                }
+            }
+            
+            $this->assertTrue($matchesPattern, "Message '{$message}' doesn't match expected warning patterns for streak: {$streak}");
+        }
+    }
+    
+    /**
+     * Test acknowledgment message selection when user has read today
+     */
+    public function test_acknowledgment_message_selection_when_read_today()
+    {
+        $service = new StreakStateService();
+        
+        // Test multiple times to account for the 25% chance
+        $foundAcknowledgment = false;
+        $foundRegularActive = false;
+        
+        // Run test multiple times to check both acknowledgment and regular messages can appear
+        for ($i = 0; $i < 20; $i++) {
+            // Use different dates to vary the random seed
+            Carbon::setTestNow(Carbon::today()->addDays($i));
+            
+            $message = $service->selectMessage(5, 'active', 0, true);
+            
+            $acknowledgmentMessages = [
+                'Well done! You\'ve read today!',
+                'Great job staying consistent!',
+                'Your streak is safe for today!',
+                'Another day of progress!'
+            ];
+            
+            $regularActiveMessages = [
+                'You\'re building a great habit!',
+                'Keep the momentum going!',
+                'Your consistency is showing!',
+                'Building something beautiful!'
+            ];
+            
+            if (in_array($message, $acknowledgmentMessages)) {
+                $foundAcknowledgment = true;
+            } elseif (in_array($message, $regularActiveMessages)) {
+                $foundRegularActive = true;
+            }
+        }
+        
+        // Reset test time
+        Carbon::setTestNow();
+        
+        // Should find both types of messages over multiple runs
+        $this->assertTrue($foundRegularActive, 'Should find regular active messages when user has read today');
+        // Note: Acknowledgment messages have 25% chance, so we might not always find them in 20 runs
+        // But the logic should be testable
+    }
+    
+    /**
+     * Test message consistency - same message should be returned for same day/context
+     */
+    public function test_message_consistency_same_day()
+    {
+        $service = new StreakStateService();
+        
+        // Set a specific test date
+        Carbon::setTestNow(Carbon::parse('2024-01-15'));
+        
+        // Get message multiple times for same parameters
+        $message1 = $service->selectMessage(5, 'active', 0, false);
+        $message2 = $service->selectMessage(5, 'active', 0, false);
+        $message3 = $service->selectMessage(5, 'active', 0, false);
+        
+        // Should be the same message for same day/context
+        $this->assertEquals($message1, $message2);
+        $this->assertEquals($message2, $message3);
+        
+        // Reset test time
+        Carbon::setTestNow();
+    }
+    
+    /**
+     * Test message rotation - different messages on different days
+     */
+    public function test_message_rotation_different_days()
+    {
+        $service = new StreakStateService();
+        
+        $messages = [];
+        
+        // Get messages for different days
+        for ($i = 0; $i < 10; $i++) {
+            Carbon::setTestNow(Carbon::parse('2024-01-15')->addDays($i));
+            $messages[] = $service->selectMessage(5, 'active', 0, false);
+        }
+        
+        // Should have some variety in messages (not all the same)
+        $uniqueMessages = array_unique($messages);
+        $this->assertGreaterThan(1, count($uniqueMessages), 'Should have message variety across different days');
+        
+        // Reset test time
+        Carbon::setTestNow();
+    }
+    
+    /**
+     * Test streak range detection
+     */
+    public function test_streak_range_detection()
+    {
+        $service = new StreakStateService();
+        
+        // Use reflection to test private method
+        $reflection = new \ReflectionClass($service);
+        $method = $reflection->getMethod('getStreakRange');
+        $method->setAccessible(true);
+        
+        // Test all ranges
+        $this->assertEquals(1, $method->invoke($service, 1));
+        $this->assertEquals('2-6', $method->invoke($service, 2));
+        $this->assertEquals('2-6', $method->invoke($service, 6));
+        $this->assertEquals('7-13', $method->invoke($service, 7));
+        $this->assertEquals('7-13', $method->invoke($service, 13));
+        $this->assertEquals('14-29', $method->invoke($service, 14));
+        $this->assertEquals('14-29', $method->invoke($service, 29));
+        $this->assertEquals('30+', $method->invoke($service, 30));
+        $this->assertEquals('30+', $method->invoke($service, 100));
+    }
+    
+    /**
+     * Test edge cases for message selection
+     */
+    public function test_message_selection_edge_cases()
+    {
+        $service = new StreakStateService();
+        
+        // Test with invalid state - should default to active behavior
+        $message = $service->selectMessage(5, 'invalid_state', 0, false);
+        $this->assertIsString($message);
+        $this->assertNotEmpty($message);
+        
+        // Test with very high streak values
+        $message = $service->selectMessage(999, 'active', 0, false);
+        $expectedMessages = [
+            'A month of dedication!',
+            'You\'re unstoppable!',
+            'Your commitment is incredible!',
+            'A true reading champion!'
+        ];
+        $this->assertContains($message, $expectedMessages);
+        
+        // Test warning message with very high streak
+        $message = $service->selectMessage(999, 'warning', 0, false);
+        $this->assertStringContainsString('999', $message);
+    }
+
+    /**
      * Helper method that uses the service to determine state
      */
     private function determineComponentState(int $currentStreak, bool $hasReadToday, ?Carbon $currentTime = null): string

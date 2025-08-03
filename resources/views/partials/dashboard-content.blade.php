@@ -24,6 +24,7 @@
                         :currentStreak="$stats['streaks']['current_streak']"
                         :longestStreak="$stats['streaks']['longest_streak']"
                         :stateClasses="$streakStateClasses"
+                        :message="$streakMessage"
                         class="h-full" />
                 </div>
 
