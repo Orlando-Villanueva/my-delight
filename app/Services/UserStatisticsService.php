@@ -87,12 +87,12 @@ class UserStatisticsService
     }
 
     /**
-     * Get reading days count for current week.
+     * Get reading days count for current week (Sunday to Saturday).
      */
     private function getThisWeekReadingDays(User $user): int
     {
-        $startOfWeek = now()->startOfWeek();
-        $endOfWeek = now()->endOfWeek();
+        $startOfWeek = now()->startOfWeek(Carbon::SUNDAY);
+        $endOfWeek = now()->endOfWeek(Carbon::SATURDAY);
 
         return $user->readingLogs()
             ->whereBetween('date_read', [$startOfWeek, $endOfWeek])
