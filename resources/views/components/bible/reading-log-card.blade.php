@@ -7,7 +7,7 @@
 ])
 
 @php
-$cardClasses = 'bg-white dark:bg-gray-800 rounded-lg border border-gray-200 dark:border-gray-700 hover:shadow-md transition-all duration-200';
+$cardClasses = 'bg-white dark:bg-gray-800 rounded-lg border border-gray-200 dark:border-gray-700 shadow-md';
 if ($compact) {
 $cardClasses .= ' p-3';
 } else {

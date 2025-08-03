@@ -2,10 +2,16 @@
 
 use Illuminate\Support\Facades\Route;
 use Illuminate\Http\Request;
+use App\Http\Controllers\DashboardController;
 use App\Http\Controllers\ReadingLogController;
 use App\Http\Controllers\SitemapController;
-use App\Services\BookProgressService;
-use App\Services\ReadingFormService;
+
+// Telescope Routes (Local Development Only)
+if (app()->environment('local')) {
+    Route::get('/telescope', function () {
+        return redirect('/telescope/requests');
+    });
+}
 
 Route::get('/', function () {
     return view('landing');
@@ -47,18 +53,7 @@ Route::middleware('guest')->group(function () {
 // Authenticated Routes
 Route::middleware('auth')->group(function () {
     // Main Dashboard
-    Route::get('/dashboard', function (Request $request) {
-        $readingFormService = app(ReadingFormService::class);
-        $hasReadToday = $readingFormService->hasReadToday(auth()->user());
-        
-        // Return partial for HTMX navigation, full page for direct access
-        if ($request->header('HX-Request')) {
-            return view('partials.dashboard-page', compact('hasReadToday'));
-        }
-
-        // Return full page for direct access (browser URL)
-        return view('dashboard', compact('hasReadToday'));
-    })->name('dashboard');
+    Route::get('/dashboard', [DashboardController::class, 'index'])->name('dashboard');
 
     // Reading Log Routes
     Route::get('/logs', [ReadingLogController::class, 'index'])->name('logs.index');

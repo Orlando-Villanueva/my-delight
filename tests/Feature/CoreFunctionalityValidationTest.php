@@ -249,10 +249,12 @@ class CoreFunctionalityValidationTest extends TestCase
             'date_read' => today()->subDays(2),
         ]);
 
+        // Test the main logs page loads
         $response = $this->actingAs($user)->get('/logs');
-        
         $response->assertStatus(200);
         $response->assertSee('Reading History');
+        
+        // Test the logs page contains the reading logs
         $response->assertSee('Genesis 1');
         $response->assertSee('Exodus 1');
     }
