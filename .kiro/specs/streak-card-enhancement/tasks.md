@@ -29,7 +29,7 @@
   - Write unit tests for state detection logic covering all scenarios
   - _Requirements: 5.1, 5.2, 6.1, 6.2_
 
-- [ ] 4. Create message selection system
+- [x] 4. Create message selection system
   - fetch issue ORL-85 with comments for current implementation context
   - Implement message arrays for different streak ranges and states
   - Create method to select appropriate message based on current streak and state
@@ -37,11 +37,12 @@
   - Include special messaging for users with previous longest streaks
   - _Requirements: 1.4, 2.3, 3.1, 3.2, 3.3, 3.4, 4.1, 4.2, 6.3, 7.1, 7.2, 7.3_
 
-- [ ] 5. Implement inactive state visual design
-  - Change background color to neutral gray when current streak is 0
-  - Remove fire icon display when streak is 0
+- [x] 5. Implement inactive state visual design
+  - Fetch issue ORL-85 with comments for current implementation context
+  - Change background color to neutral gray when current streak is 0 (double-check, but current background color is fine at 0)
+  - Remove fire icon display when streak is 0 (double-check, but seems done)
   - Update text to use singular "day" instead of "days" for 0 and 1 day streaks
-  - Apply inactive state styling with proper dark mode support
+  - Apply inactive state styling with proper dark mode support (double-check, seems done)
   - _Requirements: 1.1, 1.2, 1.3, 5.1, 5.3_
 
 - [ ] 6. Implement warning state visual design
