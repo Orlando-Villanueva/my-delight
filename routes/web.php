@@ -13,6 +13,9 @@ Route::get('/', function () {
 // XML Sitemap
 Route::get('/sitemap.xml', [SitemapController::class, 'index'])->name('sitemap');
 
+// Dynamic Robots.txt
+Route::get('/robots.txt', [SitemapController::class, 'robots'])->name('robots');
+
 // Legal Pages
 Route::get('/privacy-policy', function () {
     return view('legal.privacy-policy');
