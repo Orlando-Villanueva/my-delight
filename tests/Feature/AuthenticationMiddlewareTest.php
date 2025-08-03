@@ -17,7 +17,7 @@ class AuthenticationMiddlewareTest extends TestCase
         $response->assertRedirect('/login');
 
         // Test other protected routes
-        $protectedRoutes = ['/logs', '/profile', '/logs/create'];
+        $protectedRoutes = ['/logs', '/logs/create'];
         
         foreach ($protectedRoutes as $route) {
             $response = $this->get($route);
@@ -33,9 +33,6 @@ class AuthenticationMiddlewareTest extends TestCase
         $response->assertOk();
 
         $response = $this->actingAs($user)->get('/logs');
-        $response->assertOk();
-
-        $response = $this->actingAs($user)->get('/profile');
         $response->assertOk();
 
         $response = $this->actingAs($user)->get('/logs/create');

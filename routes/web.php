@@ -60,13 +60,6 @@ Route::middleware('auth')->group(function () {
         return view('dashboard', compact('hasReadToday'));
     })->name('dashboard');
 
-    // Coming Soon Routes (MVP placeholders)
-    Route::get('/profile', function () {
-        return response()->view('dashboard', [
-            'message' => 'Profile management coming soon in post-MVP!'
-        ]);
-    })->name('profile');
-
     // Reading Log Routes
     Route::get('/logs', [ReadingLogController::class, 'index'])->name('logs.index');
     Route::get('/logs/create', [ReadingLogController::class, 'create'])->name('logs.create');
