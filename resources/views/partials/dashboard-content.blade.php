@@ -77,7 +77,7 @@
 
             <!-- Recent Readings -->
             @if(!empty($stats['recent_activity']))
-            <x-ui.card class="bg-white dark:bg-gray-800 border border-[#D1D7E0] dark:border-gray-700 transition-colors shadow-md">
+            <x-ui.card class="bg-white dark:bg-gray-800 border border-[#D1D7E0] dark:border-gray-700 transition-colors shadow-lg">
                 <div class="p-4 lg:p-3 xl:p-4">
                     <h3 class="font-semibold text-[#4A5568] dark:text-gray-200 mb-3">Recent Readings</h3>
                     <div class="space-y-2">

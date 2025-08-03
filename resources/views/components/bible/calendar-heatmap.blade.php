@@ -64,7 +64,7 @@
     $successRate = $daysPassedInMonth > 0 ? round(($thisMonthReadings / $daysPassedInMonth) * 100) : 0;
 @endphp
 
-<x-ui.card {{ $attributes->merge(['class' => 'bg-white dark:bg-gray-800 border border-[#D1D7E0] dark:border-gray-700 h-fit transition-colors shadow-md']) }}>
+<x-ui.card {{ $attributes->merge(['class' => 'bg-white dark:bg-gray-800 border border-[#D1D7E0] dark:border-gray-700 h-fit transition-colors shadow-lg']) }}>
     <div class="p-4 lg:p-3 xl:p-4">
         <!-- Header -->
         <div class="pb-3 border-b border-[#D1D7E0] dark:border-gray-600 mb-4 lg:mb-3">
