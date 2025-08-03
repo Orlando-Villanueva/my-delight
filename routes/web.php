@@ -3,11 +3,18 @@
 use Illuminate\Support\Facades\Route;
 use Illuminate\Http\Request;
 use App\Http\Controllers\ReadingLogController;
+use App\Http\Controllers\SitemapController;
 use App\Services\BookProgressService;
 
 Route::get('/', function () {
     return view('landing');
 })->name('landing');
+
+// XML Sitemap
+Route::get('/sitemap.xml', [SitemapController::class, 'index'])->name('sitemap');
+
+// Dynamic Robots.txt
+Route::get('/robots.txt', [SitemapController::class, 'robots'])->name('robots');
 
 // Legal Pages
 Route::get('/privacy-policy', function () {

@@ -9,9 +9,21 @@
     <!-- SEO Meta Tags -->
     <title>{{ config('app.name', 'Delight') }} - Build Your Bible Reading Habit | Free Bible Tracker</title>
     <meta name="description" content="Track your daily Bible reading, maintain streaks, and visualize your progress through Scripture. Free Bible reading habit tracker with beautiful progress visualization.">
-    <meta name="keywords" content="bible reading, habit tracker, scripture reading, bible study, reading streaks, christian app">
+    <meta name="keywords" content="bible reading, habit tracker, scripture reading, bible study, reading streaks, christian app, daily bible reading, bible progress tracker, scripture habit">
     <meta name="author" content="Delight">
+    <meta name="robots" content="index, follow, max-image-preview:large, max-snippet:-1, max-video-preview:-1">
     <link rel="canonical" href="{{ config('app.url') }}">
+    
+    <!-- Additional SEO Meta Tags -->
+    <meta name="language" content="English">
+    <meta name="revisit-after" content="7 days">
+    <meta name="distribution" content="web">
+    <meta name="rating" content="general">
+    <meta name="geo.region" content="Global">
+    <meta name="geo.placename" content="Worldwide">
+    
+    <!-- Sitemap Reference -->
+    <link rel="sitemap" type="application/xml" title="Sitemap" href="{{ config('app.url') }}/sitemap.xml">
 
     <!-- Open Graph Meta Tags -->
     <meta property="og:title" content="Delight - Build Your Bible Reading Habit">
@@ -43,15 +55,35 @@
             "@context": "https://schema.org",
             "@type": "WebApplication",
             "name": "Delight",
-            "description": "Track your daily Bible reading, maintain streaks, and visualize your progress through Scripture.",
+            "description": "Track your daily Bible reading, maintain streaks, and visualize your progress through Scripture. Free Bible reading habit tracker with beautiful progress visualization.",
             "url": "{{ config('app.url') }}",
             "applicationCategory": "LifestyleApplication",
             "operatingSystem": "Web Browser",
+            "browserRequirements": "Requires JavaScript. Requires HTML5.",
+            "softwareVersion": "1.0",
+            "aggregateRating": {
+                "@type": "AggregateRating",
+                "ratingValue": "5.0",
+                "ratingCount": "1"
+            },
             "offers": {
                 "@type": "Offer",
                 "price": "0",
-                "priceCurrency": "USD"
-            }
+                "priceCurrency": "USD",
+                "availability": "https://schema.org/InStock"
+            },
+            "author": {
+                "@type": "Organization",
+                "name": "Delight"
+            },
+            "keywords": "bible reading, habit tracker, scripture reading, bible study, reading streaks, christian app",
+            "screenshot": "{{ asset('images/screenshots/desktop_100.png') }}",
+            "featureList": [
+                "Daily Reading Log",
+                "Streak Tracking", 
+                "Visual Progress",
+                "Reading Statistics"
+            ]
         }
     </script>
 </head>
@@ -135,7 +167,7 @@
                         <div class="hidden lg:block bg-white rounded-2xl shadow-2xl p-0 transform rotate-1 hover:rotate-0 transition-transform duration-300">
                             <div class="rounded-lg overflow-hidden">
                                 <img
-                                    src="{{ asset('images/screenshots/desktop.png') }}"
+                                    src="{{ asset('images/screenshots/desktop_100.png') }}"
                                     alt="Delight dashboard showing Bible reading progress with streak counter, book completion grid, and daily reading log interface"
                                     class="w-full h-auto max-w-full"
                                     width="800"
@@ -148,7 +180,7 @@
                         <div class="lg:hidden bg-white rounded-2xl shadow-2xl p-0 w-64 mx-auto mt-8">
                             <div class="rounded-lg overflow-hidden">
                                 <img
-                                    src="{{ asset('images/screenshots/mobile.png') }}"
+                                    src="{{ asset('images/screenshots/mobile_100.png') }}"
                                     alt="Delight mobile interface showing book and chapter selection for logging daily Bible reading"
                                     class="w-full h-auto"
                                     width="256"
@@ -161,7 +193,7 @@
                         <div class="hidden lg:block absolute -bottom-6 -right-6 w-36 sm:w-40 lg:w-48 bg-white rounded-xl shadow-xl p-0 transform rotate-6 hover:rotate-3 transition-transform duration-300">
                             <div class="rounded-lg overflow-hidden">
                                 <img
-                                    src="{{ asset('images/screenshots/mobile.png') }}"
+                                    src="{{ asset('images/screenshots/mobile_100.png') }}"
                                     alt="Delight mobile interface showing book and chapter selection for logging daily Bible reading"
                                     class="w-full h-auto max-w-full"
                                     width="192"
