@@ -38,9 +38,7 @@
     <!-- Dynamic Title Script -->
     <script>
         function updateTitle(currentView) {
-            const appName = '{{ config('
-            app.name ', '
-            Delight ') }}';
+            const appName = '{{ config('app.name', 'Delight') }}';
 
             if (currentView === 'dashboard') {
                 document.title = `Dashboard - ${appName}`;
