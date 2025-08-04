@@ -8,7 +8,7 @@ use App\Http\Controllers\SitemapController;
 use App\Http\Controllers\StreakDemoController;
 
 // Development Routes (Local Development Only)
-if (app()->environment('local')) {
+if (app()->environment('local') || app()->environment('staging')) {
     Route::get('/telescope', function () {
         return redirect('/telescope/requests');
     });
