@@ -117,7 +117,7 @@
                     History
                 </button>
 
-                @if(app()->environment('local'))
+                @if(app()->environment('local') || app()->environment('staging'))
                     <!-- Development Demo Link -->
                     <div class="pt-4 mt-4 border-t border-gray-200 dark:border-gray-600">
                         <p class="px-2 text-xs font-semibold text-gray-400 dark:text-gray-500 uppercase tracking-wider mb-2">
