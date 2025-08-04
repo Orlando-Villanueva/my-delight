@@ -5,12 +5,16 @@ use Illuminate\Http\Request;
 use App\Http\Controllers\DashboardController;
 use App\Http\Controllers\ReadingLogController;
 use App\Http\Controllers\SitemapController;
+use App\Http\Controllers\StreakDemoController;
 
-// Telescope Routes (Local Development Only)
+// Development Routes (Local Development Only)
 if (app()->environment('local')) {
     Route::get('/telescope', function () {
         return redirect('/telescope/requests');
     });
+    
+    // Streak Card Demo Page
+    Route::get('/streak-demo', [StreakDemoController::class, 'index'])->name('streak-demo');
 }
 
 Route::get('/', function () {

@@ -24,6 +24,63 @@ class StreakStateService
         ]
     ];
 
+    private array $milestoneMessages = [
+        7 => [
+            'One full week of reading!',
+            'You\'ve completed your first week!',
+            'Seven days of dedication achieved!',
+            'Your first weekly milestone reached!'
+        ],
+        14 => [
+            'Two full weeks of reading!',
+            'You\'ve reached the two-week milestone!',
+            'Fourteen days of consistent reading!',
+            'Your two-week achievement unlocked!'
+        ],
+        30 => [
+            'One full month of reading!',
+            'You\'ve reached your first month!',
+            'Thirty days of dedication achieved!',
+            'Your monthly milestone reached!'
+        ],
+        60 => [
+            'Two full months of reading!',
+            'You\'ve reached the two-month milestone!',
+            'Sixty days of incredible commitment!',
+            'Your second month achievement unlocked!'
+        ],
+        90 => [
+            'Three full months of reading!',
+            'You\'ve reached the three-month milestone!',
+            'Ninety days of unwavering dedication!',
+            'Your quarterly achievement unlocked!'
+        ],
+        120 => [
+            'Four full months of reading!',
+            'You\'ve reached the four-month milestone!',
+            'Your fourth month achievement unlocked!',
+            'One hundred twenty days of commitment!'
+        ],
+        150 => [
+            'Five full months of reading!',
+            'You\'ve reached the five-month milestone!',
+            'Your fifth month achievement unlocked!',
+            'One hundred fifty days of dedication!'
+        ],
+        180 => [
+            'Six full months of reading!',
+            'You\'ve reached the half-year milestone!',
+            'Your six-month achievement unlocked!',
+            'Half a year of incredible dedication!'
+        ],
+        365 => [
+            'One full year of reading achieved!',
+            'You\'ve reached the legendary one-year milestone!',
+            'Your yearly achievement unlocked!',
+            'Three hundred sixty-five days of commitment!'
+        ]
+    ];
+
     private array $activeMessages = [
         1 => [
             'Great start! Keep it going!',
@@ -38,22 +95,58 @@ class StreakStateService
             'Building something beautiful!'
         ],
         '7-13' => [
-            'A full week of reading!',
-            'You\'re on fire!',
+            'One full week of reading!',
             'One week strong and counting!',
-            'Your dedication is inspiring!'
+            'You\'ve completed your first week!',
+            'One week of dedication achieved!'
         ],
         '14-29' => [
+            'Two weeks of consistent reading!',
             'Two weeks strong!',
-            'You\'re building something amazing!',
-            'Half a month of consistency!',
-            'Your habit is taking root!'
+            'You\'ve reached the two-week milestone!',
+            'Half a month of commitment achieved!'
         ],
-        '30+' => [
-            'A month of dedication!',
-            'You\'re unstoppable!',
-            'Your commitment is incredible!',
-            'A true reading champion!'
+        '30-59' => [
+            'Building on your month of reading!',
+            'Your monthly habit is growing strong!',
+            'Keep your month-long streak going!',
+            'Over a month of consistent reading!'
+        ],
+        '60-89' => [
+            'Building on two months of reading!',
+            'Your two-month habit is solid!',
+            'Keep your multi-month streak alive!',
+            'Over two months of dedication!'
+        ],
+        '90-119' => [
+            'Building on three months of reading!',
+            'Your quarterly habit is unbreakable!',
+            'Keep your three-month streak strong!',
+            'Over three months of commitment!'
+        ],
+        '120-149' => [
+            'Building on four months of reading!',
+            'Your four-month habit is incredible!',
+            'Keep your long streak alive!',
+            'Over four months of dedication!'
+        ],
+        '150-179' => [
+            'Building on five months of reading!',
+            'Your five-month habit is amazing!',
+            'Keep your extended streak going!',
+            'Over five months of commitment!'
+        ],
+        '180-364' => [
+            'Building on six months of reading!',
+            'Your half-year habit is legendary!',
+            'Keep your incredible streak alive!',
+            'Over six months of dedication!'
+        ],
+        '365+' => [
+            'Building on a full year of reading!',
+            'Your year-long habit is extraordinary!',
+            'Keep your legendary streak alive!',
+            'Over a year of incredible dedication!'
         ]
     ];
 
@@ -107,9 +200,9 @@ class StreakStateService
     public function getStateClasses(string $state): array
     {
         $stateClasses = [
-            'inactive' => 'bg-white dark:bg-gray-800 text-gray-700 dark:text-gray-300 border border-[#D1D7E0] dark:border-gray-700 shadow-md',
-            'active' => 'bg-gradient-to-br from-[#3366CC] to-[#2952A3] text-white shadow-md',
-            'warning' => 'bg-gradient-to-br from-orange-500 to-orange-600 text-white shadow-md'
+            'inactive' => 'bg-white dark:bg-gray-800 text-gray-700 dark:text-gray-300 border border-[#D1D7E0] dark:border-gray-700 shadow-lg',
+            'active' => 'bg-gradient-to-br from-[#3366CC] to-[#2952A3] text-white shadow-lg',
+            'warning' => 'bg-gradient-to-br from-orange-500 to-orange-600 text-white shadow-lg'
         ];
 
         $iconColors = [
@@ -179,6 +272,13 @@ class StreakStateService
      */
     private function selectActiveMessage(int $currentStreak): string
     {
+        // Check if this is a milestone day first
+        if (isset($this->milestoneMessages[$currentStreak])) {
+            $messages = $this->milestoneMessages[$currentStreak];
+            return $this->rotateMessage($messages, 'milestone_' . $currentStreak);
+        }
+        
+        // Otherwise use regular range-based messages
         $range = $this->getStreakRange($currentStreak);
         $messages = $this->activeMessages[$range];
         
@@ -225,8 +325,20 @@ class StreakStateService
             return '7-13';
         } elseif ($streak >= 14 && $streak <= 29) {
             return '14-29';
+        } elseif ($streak >= 30 && $streak <= 59) {
+            return '30-59';
+        } elseif ($streak >= 60 && $streak <= 89) {
+            return '60-89';
+        } elseif ($streak >= 90 && $streak <= 119) {
+            return '90-119';
+        } elseif ($streak >= 120 && $streak <= 149) {
+            return '120-149';
+        } elseif ($streak >= 150 && $streak <= 179) {
+            return '150-179';
+        } elseif ($streak >= 180 && $streak <= 364) {
+            return '180-364';
         } else {
-            return '30+';
+            return '365+';
         }
     }
 

@@ -166,7 +166,7 @@ class StreakStateServiceTest extends \Tests\TestCase
         
         // Test inactive state classes
         $inactiveClasses = $service->getStateClasses('inactive');
-        $this->assertEquals('bg-white dark:bg-gray-800 text-gray-700 dark:text-gray-300 border border-[#D1D7E0] dark:border-gray-700 shadow-md', $inactiveClasses['background']);
+        $this->assertEquals('bg-white dark:bg-gray-800 text-gray-700 dark:text-gray-300 border border-[#D1D7E0] dark:border-gray-700 shadow-lg', $inactiveClasses['background']);
         $this->assertEquals('text-gray-400 dark:text-gray-500', $inactiveClasses['icon']);
         $this->assertFalse($inactiveClasses['showIcon']);
         $this->assertEquals('opacity-70', $inactiveClasses['opacity']);
@@ -174,7 +174,7 @@ class StreakStateServiceTest extends \Tests\TestCase
         
         // Test active state classes
         $activeClasses = $service->getStateClasses('active');
-        $this->assertEquals('bg-gradient-to-br from-[#3366CC] to-[#2952A3] text-white shadow-md', $activeClasses['background']);
+        $this->assertEquals('bg-gradient-to-br from-[#3366CC] to-[#2952A3] text-white shadow-lg', $activeClasses['background']);
         $this->assertEquals('text-accent-500', $activeClasses['icon']);
         $this->assertTrue($activeClasses['showIcon']);
         $this->assertEquals('opacity-90', $activeClasses['opacity']);
@@ -182,7 +182,7 @@ class StreakStateServiceTest extends \Tests\TestCase
         
         // Test warning state classes
         $warningClasses = $service->getStateClasses('warning');
-        $this->assertEquals('bg-gradient-to-br from-orange-500 to-orange-600 text-white shadow-md', $warningClasses['background']);
+        $this->assertEquals('bg-gradient-to-br from-orange-500 to-orange-600 text-white shadow-lg', $warningClasses['background']);
         $this->assertEquals('text-orange-200', $warningClasses['icon']);
         $this->assertTrue($warningClasses['showIcon']);
         $this->assertEquals('opacity-90', $warningClasses['opacity']);
@@ -278,10 +278,10 @@ class StreakStateServiceTest extends \Tests\TestCase
         
         $streakValues = [7, 8, 10, 13];
         $expectedMessages = [
-            'A full week of reading!',
-            'You\'re on fire!',
+            'One full week of reading!',
             'One week strong and counting!',
-            'Your dedication is inspiring!'
+            'You\'ve completed your first week!',
+            'One week of dedication achieved!'
         ];
         
         foreach ($streakValues as $streak) {
@@ -299,10 +299,10 @@ class StreakStateServiceTest extends \Tests\TestCase
         
         $streakValues = [14, 20, 25, 29];
         $expectedMessages = [
+            'Two weeks of consistent reading!',
             'Two weeks strong!',
-            'You\'re building something amazing!',
-            'Half a month of consistency!',
-            'Your habit is taking root!'
+            'You\'ve reached the two-week milestone!',
+            'Half a month of commitment achieved!'
         ];
         
         foreach ($streakValues as $streak) {
@@ -312,18 +312,58 @@ class StreakStateServiceTest extends \Tests\TestCase
     }
     
     /**
-     * Test message selection for active state - 30+ day range
+     * Test message selection for milestone day (30 days)
      */
-    public function test_active_message_selection_thirty_plus_days()
+    public function test_active_message_selection_thirty_day_milestone()
     {
         $service = new StreakStateService();
         
-        $streakValues = [30, 45, 60, 100, 365];
+        $message = $service->selectMessage(30, 'active', 0, false);
+        
+        $expectedMilestoneMessages = [
+            'One full month of reading!',
+            'You\'ve reached your first month!',
+            'Thirty days of dedication achieved!',
+            'Your monthly milestone reached!'
+        ];
+        
+        $this->assertContains($message, $expectedMilestoneMessages, "Day 30 should show milestone message");
+    }
+
+    /**
+     * Test message selection for non-milestone days in 30-59 range
+     */
+    public function test_active_message_selection_thirty_to_fifty_nine_range()
+    {
+        $service = new StreakStateService();
+        
+        $nonMilestoneDays = [31, 45, 59];
+        $expectedRangeMessages = [
+            'Building on your month of reading!',
+            'Your monthly habit is growing strong!',
+            'Keep your month-long streak going!',
+            'Over a month of consistent reading!'
+        ];
+        
+        foreach ($nonMilestoneDays as $streak) {
+            $message = $service->selectMessage($streak, 'active', 0, false);
+            $this->assertContains($message, $expectedRangeMessages, "Failed for streak: {$streak}");
+        }
+    }
+
+    /**
+     * Test message selection for active state - 365+ day range
+     */
+    public function test_active_message_selection_year_plus_days()
+    {
+        $service = new StreakStateService();
+        
+        $streakValues = [365, 400, 1000];
         $expectedMessages = [
-            'A month of dedication!',
-            'You\'re unstoppable!',
-            'Your commitment is incredible!',
-            'A true reading champion!'
+            'One full year of reading achieved!',
+            'One year of incredible dedication!',
+            'A complete year of commitment!',
+            'Your one-year milestone reached!'
         ];
         
         foreach ($streakValues as $streak) {
@@ -482,8 +522,20 @@ class StreakStateServiceTest extends \Tests\TestCase
         $this->assertEquals('7-13', $method->invoke($service, 13));
         $this->assertEquals('14-29', $method->invoke($service, 14));
         $this->assertEquals('14-29', $method->invoke($service, 29));
-        $this->assertEquals('30+', $method->invoke($service, 30));
-        $this->assertEquals('30+', $method->invoke($service, 100));
+        $this->assertEquals('30-59', $method->invoke($service, 30));
+        $this->assertEquals('30-59', $method->invoke($service, 59));
+        $this->assertEquals('60-89', $method->invoke($service, 60));
+        $this->assertEquals('60-89', $method->invoke($service, 89));
+        $this->assertEquals('90-119', $method->invoke($service, 90));
+        $this->assertEquals('90-119', $method->invoke($service, 119));
+        $this->assertEquals('120-149', $method->invoke($service, 120));
+        $this->assertEquals('120-149', $method->invoke($service, 149));
+        $this->assertEquals('150-179', $method->invoke($service, 150));
+        $this->assertEquals('150-179', $method->invoke($service, 179));
+        $this->assertEquals('180-364', $method->invoke($service, 180));
+        $this->assertEquals('180-364', $method->invoke($service, 364));
+        $this->assertEquals('365+', $method->invoke($service, 365));
+        $this->assertEquals('365+', $method->invoke($service, 1000));
     }
     
     /**
