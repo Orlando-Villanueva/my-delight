@@ -278,9 +278,13 @@ class StreakStateServiceTest extends \Tests\TestCase
         
         $streakValues = [7, 8, 10, 13];
         $expectedMessages = [
+            // Milestone messages for day 7
             'One full week of reading!',
-            'One week strong and counting!',
             'You\'ve completed your first week!',
+            'Seven days of dedication achieved!',
+            'Your first weekly milestone reached!',
+            // Range messages for 7-13 range
+            'One week strong and counting!',
             'One week of dedication achieved!'
         ];
         
@@ -299,9 +303,14 @@ class StreakStateServiceTest extends \Tests\TestCase
         
         $streakValues = [14, 20, 25, 29];
         $expectedMessages = [
+            // Milestone messages for day 14
+            'Two full weeks of reading!',
+            'You\'ve reached the two-week milestone!',
+            'Fourteen days of consistent reading!',
+            'Your two-week achievement unlocked!',
+            // Range messages for 14-29 range
             'Two weeks of consistent reading!',
             'Two weeks strong!',
-            'You\'ve reached the two-week milestone!',
             'Half a month of commitment achieved!'
         ];
         
@@ -360,10 +369,16 @@ class StreakStateServiceTest extends \Tests\TestCase
         
         $streakValues = [365, 400, 1000];
         $expectedMessages = [
+            // Milestone messages for day 365
             'One full year of reading achieved!',
-            'One year of incredible dedication!',
-            'A complete year of commitment!',
-            'Your one-year milestone reached!'
+            'You\'ve reached the legendary one-year milestone!',
+            'Your yearly achievement unlocked!',
+            'Three hundred sixty-five days of commitment!',
+            // Range messages for 365+ range
+            'Building on a full year of reading!',
+            'Your year-long habit is extraordinary!',
+            'Keep your legendary streak alive!',
+            'Over a year of incredible dedication!'
         ];
         
         foreach ($streakValues as $streak) {
@@ -553,10 +568,10 @@ class StreakStateServiceTest extends \Tests\TestCase
         // Test with very high streak values
         $message = $service->selectMessage(999, 'active', 0, false);
         $expectedMessages = [
-            'A month of dedication!',
-            'You\'re unstoppable!',
-            'Your commitment is incredible!',
-            'A true reading champion!'
+            'Building on a full year of reading!',
+            'Your year-long habit is extraordinary!',
+            'Keep your legendary streak alive!',
+            'Over a year of incredible dedication!'
         ];
         $this->assertContains($message, $expectedMessages);
         
