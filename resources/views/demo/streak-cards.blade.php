@@ -104,6 +104,171 @@
             @endforeach
         </div>
 
+        <!-- Marketing Poster Section -->
+        <div class="mt-16 mb-12">
+            <div class="text-center mb-8">
+                <h2 class="text-2xl lg:text-3xl font-bold text-gray-900 dark:text-white mb-4">
+                    Marketing Showcase
+                </h2>
+                <p class="text-lg text-gray-600 dark:text-gray-300 max-w-2xl mx-auto">
+                    The most distinctive and visually compelling streak states for marketing materials and feature demonstrations.
+                </p>
+            </div>
+
+            <div class="bg-gradient-to-br from-blue-600 to-indigo-800 shadow-2xl p-8 lg:p-12">
+                <div class="grid grid-cols-1 lg:grid-cols-3 gap-6">
+                    
+                    <!-- Inactive State - New User -->
+                    <div class="bg-white/95 backdrop-blur-sm rounded-xl p-5 shadow-lg">
+                        <div class="text-center mb-3">
+                            <span class="inline-block px-2 py-1 bg-gray-100 text-gray-700 text-xs font-semibold rounded-full">
+                                New User Journey
+                            </span>
+                        </div>
+                        @php
+                            $newUserCard = collect($streakCards)->first(fn($card) => $card['currentStreak'] === 0 && str_contains($card['description'], 'New user'));
+                        @endphp
+                        @if($newUserCard)
+                            <x-ui.streak-counter
+                                :currentStreak="$newUserCard['currentStreak']"
+                                :longestStreak="$newUserCard['longestStreak']"
+                                :stateClasses="$newUserCard['stateClasses']"
+                                :message="$newUserCard['message']"
+                                size="small"
+                                class="!h-auto" />
+                        @endif
+                    </div>
+
+                    <!-- Active State - Building Habit -->
+                    <div class="bg-white/95 backdrop-blur-sm rounded-xl p-5 shadow-lg">
+                        <div class="text-center mb-3">
+                            <span class="inline-block px-2 py-1 bg-green-100 text-green-700 text-xs font-semibold rounded-full">
+                                🎯 First Day
+                            </span>
+                        </div>
+                        @php
+                            $buildingCard = collect($streakCards)->first(fn($card) => $card['currentStreak'] === 1 && $card['state'] === 'active');
+                        @endphp
+                        @if($buildingCard)
+                            <x-ui.streak-counter
+                                :currentStreak="$buildingCard['currentStreak']"
+                                :longestStreak="$buildingCard['longestStreak']"
+                                :stateClasses="$buildingCard['stateClasses']"
+message="Great start! Keep it going!"
+                                size="small"
+                                class="!h-auto" />
+                        @endif
+                    </div>
+
+                    <!-- Active State - 7 Day Milestone -->
+                    <div class="bg-white/95 backdrop-blur-sm rounded-xl p-5 shadow-lg">
+                        <div class="text-center mb-3">
+                            <span class="inline-block px-2 py-1 bg-yellow-100 text-yellow-700 text-xs font-semibold rounded-full">
+                                🎉 First Milestone
+                            </span>
+                        </div>
+                        @php
+                            $milestoneCard = collect($streakCards)->first(fn($card) => $card['currentStreak'] === 7);
+                        @endphp
+                        @if($milestoneCard)
+                            <x-ui.streak-counter
+                                :currentStreak="$milestoneCard['currentStreak']"
+                                :longestStreak="$milestoneCard['longestStreak']"
+                                :stateClasses="$milestoneCard['stateClasses']"
+message="One full week of reading!"
+                                size="small"
+                                class="!h-auto" />
+                        @endif
+                    </div>
+
+                    <!-- Warning State - Risk of Losing Streak -->
+                    <div class="bg-white/95 backdrop-blur-sm rounded-xl p-5 shadow-lg">
+                        <div class="text-center mb-3">
+                            <span class="inline-block px-2 py-1 bg-orange-100 text-orange-700 text-xs font-semibold rounded-full">
+                                ⚠️ Streak at Risk
+                            </span>
+                        </div>
+                        @php
+                            $warningCard = collect($streakCards)->first(fn($card) => $card['state'] === 'warning' && $card['currentStreak'] > 10);
+                        @endphp
+                        @if($warningCard)
+                            <x-ui.streak-counter
+                                :currentStreak="$warningCard['currentStreak']"
+                                :longestStreak="$warningCard['longestStreak']"
+                                :stateClasses="$warningCard['stateClasses']"
+message="Don't break your streak! Read today!"
+                                size="small"
+                                class="!h-auto" />
+                        @endif
+                    </div>
+
+                    <!-- Active State - Month Milestone -->
+                    <div class="bg-white/95 backdrop-blur-sm rounded-xl p-5 shadow-lg">
+                        <div class="text-center mb-3">
+                            <span class="inline-block px-2 py-1 bg-purple-100 text-purple-700 text-xs font-semibold rounded-full">
+                                📅 Month Strong
+                            </span>
+                        </div>
+                        @php
+                            $monthCard = collect($streakCards)->first(fn($card) => $card['currentStreak'] === 30);
+                        @endphp
+                        @if($monthCard)
+                            <x-ui.streak-counter
+                                :currentStreak="$monthCard['currentStreak']"
+                                :longestStreak="$monthCard['longestStreak']"
+                                :stateClasses="$monthCard['stateClasses']"
+message="One full month of reading!"
+                                size="small"
+                                class="!h-auto" />
+                        @endif
+                    </div>
+
+                    <!-- Active State - Long Streak -->
+                    <div class="bg-white/95 backdrop-blur-sm rounded-xl p-5 shadow-lg">
+                        <div class="text-center mb-3">
+                            <span class="inline-block px-2 py-1 bg-blue-100 text-blue-700 text-xs font-semibold rounded-full">
+                                🔥 Power User
+                            </span>
+                        </div>
+                        @php
+                            $powerUserCard = collect($streakCards)->first(fn($card) => $card['currentStreak'] === 90 && $card['state'] === 'active');
+                        @endphp
+                        @if($powerUserCard)
+                            <x-ui.streak-counter
+                                :currentStreak="$powerUserCard['currentStreak']"
+                                :longestStreak="$powerUserCard['longestStreak']"
+                                :stateClasses="$powerUserCard['stateClasses']"
+message="Building on three months of reading!"
+                                size="small"
+                                class="!h-auto" />
+                        @endif
+                    </div>
+                </div>
+
+                <!-- Feature Highlights -->
+                <div class="mt-8 text-center">
+                    <div class="flex flex-wrap justify-center gap-6 text-white/90">
+                        <div class="flex items-center space-x-2">
+                            <div class="w-2 h-2 bg-white/60 rounded-full"></div>
+                            <span class="text-sm">Visual State Changes</span>
+                        </div>
+                        <div class="flex items-center space-x-2">
+                            <div class="w-2 h-2 bg-white/60 rounded-full"></div>
+                            <span class="text-sm">Motivational Messaging</span>
+                        </div>
+                        <div class="flex items-center space-x-2">
+                            <div class="w-2 h-2 bg-white/60 rounded-full"></div>
+                            <span class="text-sm">Milestone Celebrations</span>
+                        </div>
+                        <div class="flex items-center space-x-2">
+                            <div class="w-2 h-2 bg-white/60 rounded-full"></div>
+                            <span class="text-sm">Smart Reminders</span>
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </div>
+
         <!-- Legend -->
         <div class="mt-12 bg-white dark:bg-gray-800 rounded-lg shadow-lg p-6 border border-gray-200 dark:border-gray-700">
             <h2 class="text-xl font-bold text-gray-900 dark:text-white mb-4">State Legend</h2>
