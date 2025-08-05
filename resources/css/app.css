@@ -152,11 +152,11 @@ html {
 
     /* Card components */
     .card {
-        @apply bg-white border border-gray-200 rounded-lg shadow-sm;
+        @apply bg-white border border-gray-200 rounded-lg shadow-md;
     }
 
     .card-elevated {
-        @apply shadow-md;
+        @apply shadow-lg;
     }
 
     .card-header {

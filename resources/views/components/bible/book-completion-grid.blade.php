@@ -4,7 +4,7 @@
 
 {{-- Data is now provided by the component class through dependency injection --}}
 
-<x-ui.card {{ $attributes->merge(['class' => 'bg-white dark:bg-gray-800 border border-[#D1D7E0] dark:border-gray-700 transition-colors']) }}>
+<x-ui.card {{ $attributes->merge(['class' => 'bg-white dark:bg-gray-800 border border-[#D1D7E0] dark:border-gray-700 transition-colors shadow-lg']) }}>
     <div class="p-6 lg:p-4 xl:p-6">
         <div x-data="bookProgressComponent('{{ $testament }}')">
             <!-- Header with Title and Testament Toggle -->

@@ -2,9 +2,20 @@
 
 use Illuminate\Support\Facades\Route;
 use Illuminate\Http\Request;
+use App\Http\Controllers\DashboardController;
 use App\Http\Controllers\ReadingLogController;
 use App\Http\Controllers\SitemapController;
-use App\Services\BookProgressService;
+use App\Http\Controllers\StreakDemoController;
+
+// Development Routes (Local Development Only)
+if (app()->environment('local') || app()->environment('staging')) {
+    Route::get('/telescope', function () {
+        return redirect('/telescope/requests');
+    });
+    
+    // Streak Card Demo Page
+    Route::get('/streak-demo', [StreakDemoController::class, 'index'])->name('streak-demo');
+}
 
 Route::get('/', function () {
     return view('landing');
@@ -46,22 +57,7 @@ Route::middleware('guest')->group(function () {
 // Authenticated Routes
 Route::middleware('auth')->group(function () {
     // Main Dashboard
-    Route::get('/dashboard', function (Request $request) {
-        // Return partial for HTMX navigation, full page for direct access
-        if ($request->header('HX-Request')) {
-            return view('partials.dashboard-page');
-        }
-
-        // Return full page for direct access (browser URL)
-        return view('dashboard');
-    })->name('dashboard');
-
-    // Coming Soon Routes (MVP placeholders)
-    Route::get('/profile', function () {
-        return response()->view('dashboard', [
-            'message' => 'Profile management coming soon in post-MVP!'
-        ]);
-    })->name('profile');
+    Route::get('/dashboard', [DashboardController::class, 'index'])->name('dashboard');
 
     // Reading Log Routes
     Route::get('/logs', [ReadingLogController::class, 'index'])->name('logs.index');

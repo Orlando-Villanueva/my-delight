@@ -12,17 +12,25 @@ class ReadingFormService
     ) {}
 
     /**
+     * Check if the user has read today.
+     */
+    public function hasReadToday(User $user): bool
+    {
+        return $user->readingLogs()
+            ->whereDate('date_read', today())
+            ->exists();
+    }
+
+    /**
      * Get yesterday availability logic and user reading status for the form.
      * This determines if the "yesterday" option should be available based on streak preservation.
      */
     public function getFormContextData(User $user): array
     {
-        $hasReadToday = $user->readingLogs()
-            ->where('date_read', today()->toDateString())
-            ->exists();
+        $hasReadToday = $this->hasReadToday($user);
         
         $hasReadYesterday = $user->readingLogs()
-            ->where('date_read', today()->subDay()->toDateString())
+            ->whereDate('date_read', today()->subDay())
             ->exists();
             
         $currentStreak = $this->readingLogService->calculateCurrentStreak($user);

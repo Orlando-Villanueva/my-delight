@@ -37,7 +37,7 @@
         : 'w-5 h-5';
 @endphp
 
-<div {{ $attributes->merge(['class' => "bg-white rounded-lg border hover:shadow-sm transition-all duration-200 $cardClasses"]) }}>
+<div {{ $attributes->merge(['class' => "bg-white rounded-lg border shadow-md hover:shadow-lg transition-all duration-200 $cardClasses"]) }}>
     <div class="flex items-start justify-between">
         <div class="flex-1 min-w-0">
             {{-- Title --}}
