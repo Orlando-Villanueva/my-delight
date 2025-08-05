@@ -239,8 +239,9 @@ class StreakStateService
                 return $this->selectWarningMessage($currentStreak);
             
             case 'active':
-                // If user has read today, show acknowledgment message occasionally
-                if ($hasReadToday && $this->shouldShowAcknowledgment()) {
+                // If user has read today and has a streak > 2, show acknowledgment message occasionally
+                // Avoid acknowledgment for streaks 1-2 since they're building from 0, not maintaining an existing streak
+                if ($hasReadToday && $currentStreak > 2 && $this->shouldShowAcknowledgment()) {
                     return $this->selectAcknowledgmentMessage();
                 }
                 return $this->selectActiveMessage($currentStreak);

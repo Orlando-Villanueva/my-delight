@@ -198,12 +198,15 @@ class StreakDemoController extends Controller
             // Get state classes
             $stateClasses = $this->streakStateService->getStateClasses($streakState);
 
-            // Get contextual message
+            // Get contextual message - force hasReadToday=false for demo to avoid random acknowledgments
+            // except for the explicit acknowledgment scenario
+            $demoHasReadToday = isset($scenario['forceAcknowledgment']) ? $scenario['hasReadToday'] : false;
+            
             $streakMessage = $this->streakStateService->selectMessage(
                 $scenario['currentStreak'],
                 $streakState,
                 $scenario['longestStreak'],
-                $scenario['hasReadToday']
+                $demoHasReadToday
             );
 
             // Override for acknowledgment demo if needed
