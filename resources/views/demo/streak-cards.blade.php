@@ -105,8 +105,8 @@
         </div>
 
         <!-- Marketing Poster Section -->
-        <div class="mt-16 mb-12">
-            <div class="text-center mb-8">
+        <div class="mt-16 mb-12 -mx-4 sm:mx-0">
+            <div class="text-center mb-6 px-4 sm:px-0">
                 <h2 class="text-2xl lg:text-3xl font-bold text-gray-900 dark:text-white mb-4">
                     Marketing Showcase
                 </h2>
@@ -115,11 +115,11 @@
                 </p>
             </div>
 
-            <div class="bg-gradient-to-br from-blue-600 to-indigo-800 shadow-2xl p-8 lg:p-12">
-                <div class="grid grid-cols-1 lg:grid-cols-3 gap-6">
+            <div class="bg-gradient-to-br from-blue-600 to-indigo-800 shadow-2xl p-4 sm:p-8 lg:p-12">
+                <div class="grid grid-cols-1 lg:grid-cols-3 gap-3 sm:gap-6">
                     
                     <!-- Inactive State - New User -->
-                    <div class="bg-white/95 backdrop-blur-sm rounded-xl p-5 shadow-lg">
+                    <div class="bg-white/95 backdrop-blur-sm rounded-xl p-3 sm:p-5 shadow-lg">
                         <div class="text-center mb-3">
                             <span class="inline-block px-2 py-1 bg-gray-100 text-gray-700 text-xs font-semibold rounded-full">
                                 New User Journey
@@ -140,7 +140,7 @@
                     </div>
 
                     <!-- Active State - Building Habit -->
-                    <div class="bg-white/95 backdrop-blur-sm rounded-xl p-5 shadow-lg">
+                    <div class="bg-white/95 backdrop-blur-sm rounded-xl p-3 sm:p-5 shadow-lg">
                         <div class="text-center mb-3">
                             <span class="inline-block px-2 py-1 bg-green-100 text-green-700 text-xs font-semibold rounded-full">
                                 🎯 First Day
@@ -161,7 +161,7 @@ message="Great start! Keep it going!"
                     </div>
 
                     <!-- Active State - 7 Day Milestone -->
-                    <div class="bg-white/95 backdrop-blur-sm rounded-xl p-5 shadow-lg">
+                    <div class="bg-white/95 backdrop-blur-sm rounded-xl p-3 sm:p-5 shadow-lg">
                         <div class="text-center mb-3">
                             <span class="inline-block px-2 py-1 bg-yellow-100 text-yellow-700 text-xs font-semibold rounded-full">
                                 🎉 First Milestone
@@ -182,7 +182,7 @@ message="One full week of reading!"
                     </div>
 
                     <!-- Warning State - Risk of Losing Streak -->
-                    <div class="bg-white/95 backdrop-blur-sm rounded-xl p-5 shadow-lg">
+                    <div class="bg-white/95 backdrop-blur-sm rounded-xl p-3 sm:p-5 shadow-lg">
                         <div class="text-center mb-3">
                             <span class="inline-block px-2 py-1 bg-orange-100 text-orange-700 text-xs font-semibold rounded-full">
                                 ⚠️ Streak at Risk
@@ -203,7 +203,7 @@ message="Don't break your streak! Read today!"
                     </div>
 
                     <!-- Active State - Month Milestone -->
-                    <div class="bg-white/95 backdrop-blur-sm rounded-xl p-5 shadow-lg">
+                    <div class="bg-white/95 backdrop-blur-sm rounded-xl p-3 sm:p-5 shadow-lg">
                         <div class="text-center mb-3">
                             <span class="inline-block px-2 py-1 bg-purple-100 text-purple-700 text-xs font-semibold rounded-full">
                                 📅 Month Strong
@@ -224,7 +224,7 @@ message="One full month of reading!"
                     </div>
 
                     <!-- Active State - Long Streak -->
-                    <div class="bg-white/95 backdrop-blur-sm rounded-xl p-5 shadow-lg">
+                    <div class="bg-white/95 backdrop-blur-sm rounded-xl p-3 sm:p-5 shadow-lg">
                         <div class="text-center mb-3">
                             <span class="inline-block px-2 py-1 bg-blue-100 text-blue-700 text-xs font-semibold rounded-full">
                                 🔥 Power User
