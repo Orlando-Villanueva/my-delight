@@ -35,11 +35,15 @@ class ReadingFormService
             
         $currentStreak = $this->readingLogService->calculateCurrentStreak($user);
         
+        // Check if user is new (created today) to prevent logging for yesterday before they existed
+        $isNewUser = $user->created_at->isToday();
+        
         // Yesterday option logic:
         // 1. If already read yesterday, don't show the option
-        // 2. If current streak > 0 AND haven't read today, yesterday could break the streak pattern
-        // 3. Allow yesterday if: no streak OR has read today OR hasn't read yesterday
-        $allowYesterday = !$hasReadYesterday && ($currentStreak === 0 || $hasReadToday);
+        // 2. If user is new (created today), don't allow yesterday (they didn't exist)
+        // 3. If current streak > 0 AND haven't read today, yesterday could break the streak pattern
+        // 4. Allow yesterday if: no streak OR has read today OR hasn't read yesterday
+        $allowYesterday = !$hasReadYesterday && !$isNewUser && ($currentStreak === 0 || $hasReadToday);
         
         return [
             'allowYesterday' => $allowYesterday,
