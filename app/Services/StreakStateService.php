@@ -95,10 +95,10 @@ class StreakStateService
             'Building something beautiful!'
         ],
         '7-13' => [
-            'One full week of reading!',
-            'One week strong and counting!',
-            'You\'ve completed your first week!',
-            'One week of dedication achieved!'
+            'One week down, heading for two!',
+            'Past one week, approaching two!',
+            'Building toward your two-week milestone!',
+            'One week achieved, keep the momentum!'
         ],
         '14-29' => [
             'Two weeks of consistent reading!',

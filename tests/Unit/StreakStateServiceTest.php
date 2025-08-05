@@ -284,8 +284,10 @@ class StreakStateServiceTest extends \Tests\TestCase
             'Seven days of dedication achieved!',
             'Your first weekly milestone reached!',
             // Range messages for 7-13 range
-            'One week strong and counting!',
-            'One week of dedication achieved!'
+            'One week down, heading for two!',
+            'Past one week, approaching two!',
+            'Building toward your two-week milestone!',
+            'One week achieved, keep the momentum!'
         ];
         
         foreach ($streakValues as $streak) {
