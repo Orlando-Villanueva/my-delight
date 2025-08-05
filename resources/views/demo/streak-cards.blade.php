@@ -4,7 +4,7 @@
 
 @section('content')
 <div class="min-h-screen bg-gradient-to-br from-blue-50 to-indigo-100 dark:from-gray-900 dark:to-gray-800 py-8">
-    <div class="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8">
+    <div class="max-w-7xl mx-auto">
         
         <!-- Header -->
         <div class="text-center mb-8">
@@ -116,7 +116,7 @@
             </div>
 
             <div class="bg-gradient-to-br from-blue-600 to-indigo-800 shadow-2xl p-4 sm:p-8 lg:p-12">
-                <div class="grid grid-cols-1 lg:grid-cols-3 gap-3 sm:gap-6">
+                <div class="grid grid-cols-1 lg:grid-cols-3 gap-4 sm:gap-6">
                     
                     <!-- Inactive State - New User -->
                     <div class="bg-white/95 backdrop-blur-sm rounded-xl p-3 sm:p-5 shadow-lg">
