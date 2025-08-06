@@ -37,6 +37,12 @@ class StreakStateService
             'Fourteen days of consistent reading!',
             'Your two-week achievement unlocked!'
         ],
+        21 => [
+            'Three full weeks of reading!',
+            'You\'ve reached the three-week milestone!',
+            'Twenty-one days of dedication achieved!',
+            'Your third weekly milestone reached!'
+        ],
         30 => [
             'One full month of reading!',
             'You\'ve reached your first month!',
@@ -73,6 +79,36 @@ class StreakStateService
             'Your six-month achievement unlocked!',
             'Half a year of incredible dedication!'
         ],
+        210 => [
+            'Seven full months of reading!',
+            'You\'ve reached the seven-month milestone!',
+            'Your seventh month achievement unlocked!',
+            'Seven months of incredible dedication!'
+        ],
+        240 => [
+            'Eight full months of reading!',
+            'You\'ve reached the eight-month milestone!',
+            'Your eighth month achievement unlocked!',
+            'Eight months of incredible dedication!'
+        ],
+        270 => [
+            'Nine full months of reading!',
+            'You\'ve reached the nine-month milestone!',
+            'Your three-quarter year achievement unlocked!',
+            'Nine months of incredible dedication!'
+        ],
+        300 => [
+            'Ten full months of reading!',
+            'You\'ve reached the ten-month milestone!',
+            'Your tenth month achievement unlocked!',
+            'Ten months of incredible dedication!'
+        ],
+        330 => [
+            'Eleven full months of reading!',
+            'You\'ve reached the eleven-month milestone!',
+            'Your eleventh month achievement unlocked!',
+            'Eleven months of incredible dedication!'
+        ],
         365 => [
             'One full year of reading achieved!',
             'You\'ve reached the legendary one-year milestone!',
@@ -100,47 +136,83 @@ class StreakStateService
             'Building toward your two-week milestone!',
             'One week achieved, keep the momentum!'
         ],
-        '14-29' => [
-            'Two weeks of consistent reading!',
-            'Two weeks strong!',
-            'You\'ve reached the two-week milestone!',
-            'Half a month of commitment achieved!'
+        '15-20' => [
+            'Two weeks down, approaching three weeks!',
+            'Past two weeks, heading for twenty-one days!',
+            'Building toward your three-week milestone!',
+            'Two weeks achieved, three weeks within reach!'
         ],
-        '30-59' => [
-            'Building on your month of reading!',
-            'Your monthly habit is growing strong!',
-            'Keep your month-long streak going!',
-            'Over a month of consistent reading!'
+        '22-29' => [
+            'Three weeks down, approaching your first month!',
+            'Past three weeks, heading for thirty days!',
+            'Building toward your monthly milestone!',
+            'Three weeks achieved, one month within reach!'
         ],
-        '60-89' => [
-            'Building on two months of reading!',
-            'Your two-month habit is solid!',
-            'Keep your multi-month streak alive!',
-            'Over two months of dedication!'
+        '31-59' => [
+            'One month down, approaching two months!',
+            'Past your first month, heading for sixty days!',
+            'Building toward your two-month milestone!',
+            'One month achieved, two months within reach!'
         ],
-        '90-119' => [
-            'Building on three months of reading!',
-            'Your quarterly habit is unbreakable!',
-            'Keep your three-month streak strong!',
-            'Over three months of commitment!'
+        '61-89' => [
+            'Two months down, approaching three months!',
+            'Past two months, heading for ninety days!',
+            'Building toward your quarterly milestone!',
+            'Two months achieved, three months within reach!'
         ],
-        '120-149' => [
-            'Building on four months of reading!',
-            'Your four-month habit is incredible!',
-            'Keep your long streak alive!',
-            'Over four months of dedication!'
+        '91-119' => [
+            'Three months down, approaching four months!',
+            'Past your quarter year, heading for four months!',
+            'Building toward your four-month milestone!',
+            'Three months achieved, four months within reach!'
         ],
-        '150-179' => [
-            'Building on five months of reading!',
-            'Your five-month habit is amazing!',
-            'Keep your extended streak going!',
-            'Over five months of commitment!'
+        '121-149' => [
+            'Four months down, approaching five months!',
+            'Past four months, heading for five months!',
+            'Building toward your five-month milestone!',
+            'Four months achieved, five months within reach!'
         ],
-        '180-364' => [
-            'Building on six months of reading!',
-            'Your half-year habit is legendary!',
-            'Keep your incredible streak alive!',
-            'Over six months of dedication!'
+        '151-179' => [
+            'Five months down, approaching six months!',
+            'Past five months, heading for half a year!',
+            'Building toward your six-month milestone!',
+            'Five months achieved, six months within reach!'
+        ],
+        '181-209' => [
+            'Six months down, approaching seven months!',
+            'Past half a year, heading for seven months!',
+            'Building toward your seven-month milestone!',
+            'Six months achieved, seven months within reach!'
+        ],
+        '211-239' => [
+            'Seven months down, approaching eight months!',
+            'Past seven months, heading for eight months!',
+            'Building toward your eight-month milestone!',
+            'Seven months achieved, eight months within reach!'
+        ],
+        '241-269' => [
+            'Eight months down, approaching nine months!',
+            'Past eight months, heading for nine months!',
+            'Building toward your nine-month milestone!',
+            'Eight months achieved, nine months within reach!'
+        ],
+        '271-299' => [
+            'Nine months down, approaching ten months!',
+            'Past nine months, heading for ten months!',
+            'Building toward your ten-month milestone!',
+            'Nine months achieved, ten months within reach!'
+        ],
+        '301-329' => [
+            'Ten months down, approaching eleven months!',
+            'Past ten months, heading for eleven months!',
+            'Building toward your eleven-month milestone!',
+            'Ten months achieved, eleven months within reach!'
+        ],
+        '331-364' => [
+            'Eleven months down, approaching one year!',
+            'Past eleven months, heading for your first year!',
+            'Building toward your legendary yearly milestone!',
+            'Eleven months achieved, one year within reach!'
         ],
         '365+' => [
             'Building on a full year of reading!',
@@ -324,20 +396,32 @@ class StreakStateService
             return '2-6';
         } elseif ($streak >= 7 && $streak <= 13) {
             return '7-13';
-        } elseif ($streak >= 14 && $streak <= 29) {
-            return '14-29';
-        } elseif ($streak >= 30 && $streak <= 59) {
-            return '30-59';
-        } elseif ($streak >= 60 && $streak <= 89) {
-            return '60-89';
-        } elseif ($streak >= 90 && $streak <= 119) {
-            return '90-119';
-        } elseif ($streak >= 120 && $streak <= 149) {
-            return '120-149';
-        } elseif ($streak >= 150 && $streak <= 179) {
-            return '150-179';
-        } elseif ($streak >= 180 && $streak <= 364) {
-            return '180-364';
+        } elseif ($streak >= 15 && $streak <= 20) {
+            return '15-20';
+        } elseif ($streak >= 22 && $streak <= 29) {
+            return '22-29';
+        } elseif ($streak >= 31 && $streak <= 59) {
+            return '31-59';
+        } elseif ($streak >= 61 && $streak <= 89) {
+            return '61-89';
+        } elseif ($streak >= 91 && $streak <= 119) {
+            return '91-119';
+        } elseif ($streak >= 121 && $streak <= 149) {
+            return '121-149';
+        } elseif ($streak >= 151 && $streak <= 179) {
+            return '151-179';
+        } elseif ($streak >= 181 && $streak <= 209) {
+            return '181-209';
+        } elseif ($streak >= 211 && $streak <= 239) {
+            return '211-239';
+        } elseif ($streak >= 241 && $streak <= 269) {
+            return '241-269';
+        } elseif ($streak >= 271 && $streak <= 299) {
+            return '271-299';
+        } elseif ($streak >= 301 && $streak <= 329) {
+            return '301-329';
+        } elseif ($streak >= 331 && $streak <= 364) {
+            return '331-364';
         } else {
             return '365+';
         }

@@ -297,28 +297,49 @@ class StreakStateServiceTest extends \Tests\TestCase
     }
     
     /**
-     * Test message selection for active state - 14-29 day range
+     * Test message selection for active state - 15-20 and 22-29 day ranges
      */
-    public function test_active_message_selection_fourteen_to_twenty_nine_days()
+    public function test_active_message_selection_fifteen_to_twenty_nine_days()
     {
         $service = new StreakStateService();
         
-        $streakValues = [14, 20, 25, 29];
-        $expectedMessages = [
-            // Milestone messages for day 14
-            'Two full weeks of reading!',
-            'You\'ve reached the two-week milestone!',
-            'Fourteen days of consistent reading!',
-            'Your two-week achievement unlocked!',
-            // Range messages for 14-29 range
-            'Two weeks of consistent reading!',
-            'Two weeks strong!',
-            'Half a month of commitment achieved!'
+        // Test 15-20 range (approaching 3-week milestone)
+        $streakValues15to20 = [15, 16, 18, 20];
+        $expectedMessages15to20 = [
+            'Two weeks down, approaching three weeks!',
+            'Past two weeks, heading for twenty-one days!',
+            'Building toward your three-week milestone!',
+            'Two weeks achieved, three weeks within reach!'
         ];
         
-        foreach ($streakValues as $streak) {
+        foreach ($streakValues15to20 as $streak) {
             $message = $service->selectMessage($streak, 'active', 0, false);
-            $this->assertContains($message, $expectedMessages, "Failed for streak: {$streak}");
+            $this->assertContains($message, $expectedMessages15to20, "Failed for streak: {$streak} in 15-20 range");
+        }
+        
+        // Test 22-29 range (approaching 1-month milestone)
+        $streakValues22to29 = [22, 25, 28, 29];
+        $expectedMessages22to29 = [
+            'Three weeks down, approaching your first month!',
+            'Past three weeks, heading for thirty days!',
+            'Building toward your monthly milestone!',
+            'Three weeks achieved, one month within reach!'
+        ];
+        
+        foreach ($streakValues22to29 as $streak) {
+            $message = $service->selectMessage($streak, 'active', 0, false);
+            $this->assertContains($message, $expectedMessages22to29, "Failed for streak: {$streak} in 22-29 range");
+        }
+        
+        // Test milestone days still work
+        $milestoneTests = [
+            14 => ['Two full weeks of reading!', 'You\'ve reached the two-week milestone!', 'Fourteen days of consistent reading!', 'Your two-week achievement unlocked!'],
+            21 => ['Three full weeks of reading!', 'You\'ve reached the three-week milestone!', 'Twenty-one days of dedication achieved!', 'Your third weekly milestone reached!']
+        ];
+        
+        foreach ($milestoneTests as $day => $expectedMessages) {
+            $message = $service->selectMessage($day, 'active', 0, false);
+            $this->assertContains($message, $expectedMessages, "Failed for milestone day: {$day}");
         }
     }
     
@@ -342,23 +363,63 @@ class StreakStateServiceTest extends \Tests\TestCase
     }
 
     /**
-     * Test message selection for non-milestone days in 30-59 range
+     * Test message selection for non-milestone days in 31-59 range
      */
-    public function test_active_message_selection_thirty_to_fifty_nine_range()
+    public function test_active_message_selection_thirty_one_to_fifty_nine_range()
     {
         $service = new StreakStateService();
         
         $nonMilestoneDays = [31, 45, 59];
         $expectedRangeMessages = [
-            'Building on your month of reading!',
-            'Your monthly habit is growing strong!',
-            'Keep your month-long streak going!',
-            'Over a month of consistent reading!'
+            'One month down, approaching two months!',
+            'Past your first month, heading for sixty days!',
+            'Building toward your two-month milestone!',
+            'One month achieved, two months within reach!'
         ];
         
         foreach ($nonMilestoneDays as $streak) {
             $message = $service->selectMessage($streak, 'active', 0, false);
             $this->assertContains($message, $expectedRangeMessages, "Failed for streak: {$streak}");
+        }
+    }
+
+    /**
+     * Test message selection for milestone day (21 days - 3 weeks)
+     */
+    public function test_active_message_selection_twenty_one_day_milestone()
+    {
+        $service = new StreakStateService();
+        
+        $message = $service->selectMessage(21, 'active', 0, false);
+        
+        $expectedMilestoneMessages = [
+            'Three full weeks of reading!',
+            'You\'ve reached the three-week milestone!',
+            'Twenty-one days of dedication achieved!',
+            'Your third weekly milestone reached!'
+        ];
+        
+        $this->assertContains($message, $expectedMilestoneMessages, "Day 21 should show milestone message");
+    }
+
+    /**
+     * Test message selection for monthly milestones (210, 240, 270, 300, 330 days)
+     */
+    public function test_active_message_selection_monthly_milestones()
+    {
+        $service = new StreakStateService();
+        
+        $milestones = [
+            210 => ['Seven full months of reading!', 'You\'ve reached the seven-month milestone!', 'Your seventh month achievement unlocked!', 'Seven months of incredible dedication!'],
+            240 => ['Eight full months of reading!', 'You\'ve reached the eight-month milestone!', 'Your eighth month achievement unlocked!', 'Eight months of incredible dedication!'],
+            270 => ['Nine full months of reading!', 'You\'ve reached the nine-month milestone!', 'Your three-quarter year achievement unlocked!', 'Nine months of incredible dedication!'],
+            300 => ['Ten full months of reading!', 'You\'ve reached the ten-month milestone!', 'Your tenth month achievement unlocked!', 'Ten months of incredible dedication!'],
+            330 => ['Eleven full months of reading!', 'You\'ve reached the eleven-month milestone!', 'Your eleventh month achievement unlocked!', 'Eleven months of incredible dedication!']
+        ];
+        
+        foreach ($milestones as $day => $expectedMessages) {
+            $message = $service->selectMessage($day, 'active', 0, false);
+            $this->assertContains($message, $expectedMessages, "Day {$day} should show milestone message");
         }
     }
 
@@ -537,20 +598,32 @@ class StreakStateServiceTest extends \Tests\TestCase
         $this->assertEquals('2-6', $method->invoke($service, 6));
         $this->assertEquals('7-13', $method->invoke($service, 7));
         $this->assertEquals('7-13', $method->invoke($service, 13));
-        $this->assertEquals('14-29', $method->invoke($service, 14));
-        $this->assertEquals('14-29', $method->invoke($service, 29));
-        $this->assertEquals('30-59', $method->invoke($service, 30));
-        $this->assertEquals('30-59', $method->invoke($service, 59));
-        $this->assertEquals('60-89', $method->invoke($service, 60));
-        $this->assertEquals('60-89', $method->invoke($service, 89));
-        $this->assertEquals('90-119', $method->invoke($service, 90));
-        $this->assertEquals('90-119', $method->invoke($service, 119));
-        $this->assertEquals('120-149', $method->invoke($service, 120));
-        $this->assertEquals('120-149', $method->invoke($service, 149));
-        $this->assertEquals('150-179', $method->invoke($service, 150));
-        $this->assertEquals('150-179', $method->invoke($service, 179));
-        $this->assertEquals('180-364', $method->invoke($service, 180));
-        $this->assertEquals('180-364', $method->invoke($service, 364));
+        $this->assertEquals('15-20', $method->invoke($service, 15));
+        $this->assertEquals('15-20', $method->invoke($service, 20));
+        $this->assertEquals('22-29', $method->invoke($service, 22));
+        $this->assertEquals('22-29', $method->invoke($service, 29));
+        $this->assertEquals('31-59', $method->invoke($service, 31));
+        $this->assertEquals('31-59', $method->invoke($service, 59));
+        $this->assertEquals('61-89', $method->invoke($service, 61));
+        $this->assertEquals('61-89', $method->invoke($service, 89));
+        $this->assertEquals('91-119', $method->invoke($service, 91));
+        $this->assertEquals('91-119', $method->invoke($service, 119));
+        $this->assertEquals('121-149', $method->invoke($service, 121));
+        $this->assertEquals('121-149', $method->invoke($service, 149));
+        $this->assertEquals('151-179', $method->invoke($service, 151));
+        $this->assertEquals('151-179', $method->invoke($service, 179));
+        $this->assertEquals('181-209', $method->invoke($service, 181));
+        $this->assertEquals('181-209', $method->invoke($service, 209));
+        $this->assertEquals('211-239', $method->invoke($service, 211));
+        $this->assertEquals('211-239', $method->invoke($service, 239));
+        $this->assertEquals('241-269', $method->invoke($service, 241));
+        $this->assertEquals('241-269', $method->invoke($service, 269));
+        $this->assertEquals('271-299', $method->invoke($service, 271));
+        $this->assertEquals('271-299', $method->invoke($service, 299));
+        $this->assertEquals('301-329', $method->invoke($service, 301));
+        $this->assertEquals('301-329', $method->invoke($service, 329));
+        $this->assertEquals('331-364', $method->invoke($service, 331));
+        $this->assertEquals('331-364', $method->invoke($service, 364));
         $this->assertEquals('365+', $method->invoke($service, 365));
         $this->assertEquals('365+', $method->invoke($service, 1000));
     }
