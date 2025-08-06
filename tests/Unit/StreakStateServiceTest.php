@@ -598,10 +598,13 @@ class StreakStateServiceTest extends \Tests\TestCase
         $this->assertEquals('2-6', $method->invoke($service, 6));
         $this->assertEquals('7-13', $method->invoke($service, 7));
         $this->assertEquals('7-13', $method->invoke($service, 13));
+        $this->assertEquals('7-13', $method->invoke($service, 14)); // Fixed gap
         $this->assertEquals('15-20', $method->invoke($service, 15));
         $this->assertEquals('15-20', $method->invoke($service, 20));
+        $this->assertEquals('15-20', $method->invoke($service, 21)); // Fixed gap
         $this->assertEquals('22-29', $method->invoke($service, 22));
         $this->assertEquals('22-29', $method->invoke($service, 29));
+        $this->assertEquals('22-29', $method->invoke($service, 30)); // Fixed gap
         $this->assertEquals('31-59', $method->invoke($service, 31));
         $this->assertEquals('31-59', $method->invoke($service, 59));
         $this->assertEquals('61-89', $method->invoke($service, 61));
