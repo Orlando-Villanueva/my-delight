@@ -659,6 +659,123 @@ class StreakStateServiceTest extends \Tests\TestCase
     }
 
     /**
+     * Test that milestone messages have priority over acknowledgment messages
+     * This tests the fix for the bug where users on milestone days (like 14)
+     * would get generic acknowledgment messages instead of milestone celebrations
+     * when recovering from warning state.
+     */
+    public function test_milestone_messages_priority_over_acknowledgment()
+    {
+        $service = new StreakStateService();
+        
+        // Test multiple milestone days
+        $milestoneTests = [
+            7 => ['One full week of reading!', 'You\'ve completed your first week!', 'Seven days of dedication achieved!', 'Your first weekly milestone reached!'],
+            14 => ['Two full weeks of reading!', 'You\'ve reached the two-week milestone!', 'Fourteen days of consistent reading!', 'Your two-week achievement unlocked!'],
+            21 => ['Three full weeks of reading!', 'You\'ve reached the three-week milestone!', 'Twenty-one days of dedication achieved!', 'Your third weekly milestone reached!'],
+            30 => ['One full month of reading!', 'You\'ve reached your first month!', 'Thirty days of dedication achieved!', 'Your monthly milestone reached!']
+        ];
+        
+        foreach ($milestoneTests as $streak => $expectedMilestoneMessages) {
+            // Test multiple times with different dates to account for acknowledgment randomization
+            for ($i = 0; $i < 10; $i++) {
+                Carbon::setTestNow(Carbon::parse('2024-01-15')->addDays($i));
+                
+                // Test the scenario where user has read today (recovering from warning)
+                // On milestone days, this should ALWAYS return milestone message, never acknowledgment
+                $message = $service->selectMessage($streak, 'active', 0, true);
+                
+                $this->assertContains(
+                    $message, 
+                    $expectedMilestoneMessages, 
+                    "Day {$streak} milestone should always show celebration message, got: '{$message}' on test day {$i}"
+                );
+                
+                // Also verify acknowledgment messages don't appear on milestone days
+                $acknowledgmentMessages = [
+                    'Well done! You\'ve read today!',
+                    'Great job staying consistent!',
+                    'Your streak is safe for today!',
+                    'Another day of progress!'
+                ];
+                
+                $this->assertNotContains(
+                    $message,
+                    $acknowledgmentMessages,
+                    "Day {$streak} should never show acknowledgment message, got: '{$message}' on test day {$i}"
+                );
+            }
+        }
+        
+        // Reset test time
+        Carbon::setTestNow();
+    }
+
+    /**
+     * Test that non-milestone days can still show acknowledgment messages
+     * This ensures our fix doesn't break the acknowledgment system entirely
+     */
+    public function test_acknowledgment_messages_work_on_non_milestone_days()
+    {
+        $service = new StreakStateService();
+        
+        // Test non-milestone days that should be able to show acknowledgment
+        $nonMilestoneDays = [5, 8, 10, 13, 16, 19]; // Days without specific milestone messages
+        
+        $foundAcknowledgment = false;
+        $foundRegularActive = false;
+        
+        foreach ($nonMilestoneDays as $streak) {
+            // Test multiple times with different dates
+            for ($i = 0; $i < 10; $i++) {
+                Carbon::setTestNow(Carbon::parse('2024-01-15')->addDays($i));
+                
+                $message = $service->selectMessage($streak, 'active', 0, true);
+                
+                $acknowledgmentMessages = [
+                    'Well done! You\'ve read today!',
+                    'Great job staying consistent!',
+                    'Your streak is safe for today!',
+                    'Another day of progress!'
+                ];
+                
+                if (in_array($message, $acknowledgmentMessages)) {
+                    $foundAcknowledgment = true;
+                }
+                
+                // Also check for regular active messages (range-based)
+                $rangeMessages = [
+                    'You\'re building a great habit!',
+                    'Keep the momentum going!',
+                    'Your consistency is showing!',
+                    'Building something beautiful!',
+                    'One week down, heading for two!',
+                    'Past one week, approaching two!',
+                    'Building toward your two-week milestone!',
+                    'One week achieved, keep the momentum!',
+                    'Two weeks down, approaching three weeks!',
+                    'Past two weeks, heading for twenty-one days!',
+                    'Building toward your three-week milestone!',
+                    'Two weeks achieved, three weeks within reach!'
+                ];
+                
+                if (in_array($message, $rangeMessages)) {
+                    $foundRegularActive = true;
+                }
+            }
+        }
+        
+        // Reset test time
+        Carbon::setTestNow();
+        
+        // Should find regular active messages (they appear more frequently)
+        $this->assertTrue($foundRegularActive, 'Should find regular active messages on non-milestone days');
+        
+        // Acknowledgment messages might appear (25% chance), but we can't guarantee in limited tests
+        // The important thing is that the logic allows both types for non-milestone days
+    }
+
+    /**
      * Helper method that uses the service to determine state
      */
     private function determineComponentState(int $currentStreak, bool $hasReadToday, ?Carbon $currentTime = null): string

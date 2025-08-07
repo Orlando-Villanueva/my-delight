@@ -81,6 +81,12 @@ class StreakStateService
                 return $this->selectWarningMessage($currentStreak);
             
             case 'active':
+                // Check for milestones first - they always take priority
+                $milestoneMessages = config('streak_messages.milestone.' . $currentStreak);
+                if ($milestoneMessages) {
+                    return $this->selectActiveMessage($currentStreak);
+                }
+                
                 // If user has read today and has a streak > 2, show acknowledgment message occasionally
                 // Avoid acknowledgment for streaks 1-2 since they're building from 0, not maintaining an existing streak
                 if ($hasReadToday && $currentStreak > 2 && $this->shouldShowAcknowledgment()) {
