@@ -332,7 +332,7 @@
                     Ready to Build Your Reading Habit?
                 </h2>
                 <p class="text-xl text-white mb-8">
-                    Join thousands of readers who are making consistent progress through Scripture.
+                    Join other readers discovering delight in daily Bible reading.
                 </p>
                 <x-ui.button variant="accent" size="lg" href="{{ route('register') }}" aria-label="Sign up to start your Bible reading journey">
                     Start Your Journey Today
