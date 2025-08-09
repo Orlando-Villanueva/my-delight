@@ -26,7 +26,7 @@
   - Add simple static text: "Research-backed weekly target"
   - _Requirements: 1.1, 1.2, 1.3, 1.4, 4.3_
 
-- [ ] 4. Update DashboardController to pass weekly goal data
+- [x] 4. Update DashboardController to pass weekly goal data
   - Modify `index()` method to include weekly goal data in view variables
   - Ensure weekly goal data is passed to both full page and HTMX partial responses
   - Update compact() call to include weekly goal variables
