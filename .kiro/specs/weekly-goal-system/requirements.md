@@ -1,8 +1,10 @@
-# Requirements Document
+# Requirements Document - MVP Scope
 
 ## Introduction
 
-This document outlines the requirements for implementing a weekly goal system in Delight, focusing on Phase 1 development. The system will help users track their Bible reading progress on a weekly basis with a default goal of reading 4 times per week. This phase establishes the backend foundation and adds current week progress display to the dashboard, creating a daily engagement driver that answers "What should I do today?"
+This document outlines the **MVP requirements** for implementing a weekly goal system in Delight, focusing on essential functionality for an app with zero users. The system will help users track their Bible reading progress on a weekly basis with a default goal of reading 4 times per week. This phase establishes the core backend foundation and adds current week progress display to the dashboard.
+
+**Scope Reduction**: Complex caching, extensive testing, and advanced features have been deferred until real usage patterns emerge. Focus is on shipping fast and learning from actual user feedback.
 
 ## Requirements
 
@@ -30,19 +32,18 @@ This document outlines the requirements for implementing a weekly goal system in
 4. WHEN determining the current week THEN the system SHALL use Sunday as the start of the week
 5. WHEN reading entries are modified THEN the system SHALL maintain accurate weekly progress calculations
 
-### Requirement 3
+### Requirement 3 - Simplified
 
-**User Story:** As a system administrator, I want the weekly goal data to be properly stored and managed in the database, so that the system can efficiently calculate and display weekly progress.
+**User Story:** As a system administrator, I want the weekly goal data to be properly calculated from existing data, so that the system can display weekly progress without complex infrastructure.
 
 #### Acceptance Criteria
 
 1. WHEN the system needs to calculate weekly progress THEN it SHALL query reading logs grouped by week efficiently
 2. WHEN storing weekly goal configuration THEN the system SHALL use a default goal of 4 readings per week
 3. WHEN calculating weekly statistics THEN the system SHALL handle timezone considerations properly
-4. WHEN the database is queried for weekly data THEN the system SHALL use appropriate indexes for performance
-5. WHEN weekly calculations are performed THEN the system SHALL cache results to improve dashboard performance
-6. WHEN a user logs a new reading entry THEN the system SHALL refresh the cached weekly goal statistics
-7. WHEN a new week begins THEN the system SHALL invalidate and refresh the cached weekly goal statistics
+4. WHEN the database is queried for weekly data THEN the system SHALL use existing indexes on reading_logs table
+
+**Deferred**: Caching system - not needed for zero users, direct calculation is instant
 
 ### Requirement 4
 
@@ -68,26 +69,25 @@ This document outlines the requirements for implementing a weekly goal system in
 4. WHEN errors occur in weekly calculations THEN the service SHALL handle them gracefully and provide fallback values
 5. WHEN the service is tested THEN it SHALL have comprehensive unit tests covering all calculation scenarios
 
-### Requirement 6
+### Requirement 6 - Simplified
 
-**User Story:** As a Bible reader, I want the weekly progress to provide motivational messaging, so that I feel encouraged to continue reading and achieve my weekly goal.
-
-#### Acceptance Criteria
-
-1. WHEN a user has 0 readings this week THEN the system SHALL display encouraging messaging like "Fresh start this week!"
-2. WHEN a user is halfway to their goal THEN the system SHALL display progress-focused messaging like "Halfway there!"
-3. WHEN a user needs 1 more reading to reach their goal THEN the system SHALL display urgent but positive messaging like "One more to win the week!"
-4. WHEN a user achieves their weekly goal THEN the system SHALL display celebratory messaging with appropriate visual feedback
-5. WHEN displaying motivational messages THEN the system SHALL maintain a positive, encouraging tone throughout
-
-### Requirement 7
-
-**User Story:** As a Bible reader, I want to understand why the 4-times-per-week goal is recommended, so that I feel confident in the target and motivated by its research foundation.
+**User Story:** As a Bible reader, I want the weekly progress to provide basic motivational context, so that I understand my progress toward the weekly goal.
 
 #### Acceptance Criteria
 
-1. WHEN viewing the weekly progress section THEN the system SHALL include an unobtrusive info icon (ℹ️) next to the weekly goal
-2. WHEN a user hovers over or clicks the info icon THEN the system SHALL display a tooltip or popover with the message "Research shows reading 4+ times per week creates meaningful spiritual impact compared to less frequent reading."
-3. WHEN the contextual help is displayed THEN it SHALL not interfere with the main dashboard functionality
-4. WHEN implementing the info icon THEN it SHALL be optional for users to view and easily dismissible
-5. IF tooltip functionality is too complex THEN the system SHALL display subtle gray text under the weekly progress stating "Research-backed weekly target"
+1. WHEN a user views their weekly progress THEN the system SHALL display the current count in "X/4 days this week" format
+2. WHEN displaying the weekly goal THEN the system SHALL include simple static text explaining it's "Research-backed weekly target"
+3. WHEN a user achieves their weekly goal THEN the system SHALL provide positive visual indication
+
+**Deferred**: Complex motivational messaging system with 5+ different messages - simple progress display provides same value
+
+### Requirement 7 - Simplified
+
+**User Story:** As a Bible reader, I want to understand why the 4-times-per-week goal is recommended, so that I feel confident in the target.
+
+#### Acceptance Criteria
+
+1. WHEN viewing the weekly progress section THEN the system SHALL include subtle static text stating "Research-backed weekly target"
+2. WHEN the contextual help is displayed THEN it SHALL not interfere with the main dashboard functionality
+
+**Deferred**: Interactive tooltip system with Alpine.js - static text achieves same goal without complexity

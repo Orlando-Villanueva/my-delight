@@ -1,8 +1,10 @@
-# Design Document
+# Design Document - MVP Scope
 
 ## Overview
 
-This design document outlines the technical implementation for Phase 1 of the weekly goal system in Delight. The system will track users' weekly Bible reading progress with a default goal of 4 readings per week, display current week progress on the dashboard, and provide research-backed contextual messaging. The implementation follows Laravel's service layer pattern and integrates seamlessly with the existing HTMX-driven dashboard architecture.
+This design document outlines the **MVP technical implementation** for Phase 1 of the weekly goal system in Delight. The system will track users' weekly Bible reading progress with a default goal of 4 readings per week and display current week progress on the dashboard. The implementation focuses on essential functionality for an app with zero users, deferring complex features until real usage patterns emerge.
+
+**Scope Reduction**: Complex caching, extensive testing, and advanced UI features have been deferred to focus on core functionality that can be enhanced iteratively.
 
 ## Architecture
 
@@ -10,17 +12,14 @@ This design document outlines the technical implementation for Phase 1 of the we
 The implementation follows the established service layer pattern used throughout the application:
 - **WeeklyGoalService**: New service to handle all weekly goal calculations and business logic
 - **UserStatisticsService**: Extended to include weekly statistics in dashboard data
-- **ReadingLogService**: Updated to invalidate weekly goal cache when readings are logged
 - **DashboardController**: Updated to pass weekly goal data to views
 
-### Caching Strategy
-Weekly goal statistics will be cached using Redis (production) or file cache (development) with the following approach:
-- Cache key pattern: `user_weekly_goal_{user_id}_{week_identifier}`
-- TTL: 300 seconds (5 minutes) for current week data
-- Cache invalidation triggers:
-  - When a new reading is logged
-  - At the start of a new week (handled by TTL and week identifier)
-  - Manual cache clearing when needed
+### Direct Calculation Strategy (No Caching)
+For MVP with zero users, weekly goal statistics will be calculated directly:
+- Direct database queries using existing `reading_logs` table
+- `COUNT(DISTINCT DATE(date_read))` for efficiency
+- No caching complexity - calculations are instant for small datasets
+- **Deferred**: Caching system until user load justifies the complexity
 
 ### Week Definition
 - Week starts on Sunday (as specified in requirements)
@@ -34,10 +33,6 @@ Weekly goal statistics will be cached using Redis (production) or file cache (de
 ```php
 class WeeklyGoalService
 {
-    public function __construct(
-        private BibleReferenceService $bibleService
-    ) {}
-
     // Core calculation methods
     public function getCurrentWeekProgress(User $user): array
     public function getWeeklyGoalData(User $user): array
@@ -45,12 +40,7 @@ class WeeklyGoalService
     
     // Helper methods
     public function getCurrentWeekStart(): Carbon
-    public function getWeekIdentifier(Carbon $date): string
     public function getDefaultWeeklyGoal(): int
-    
-    // Cache management
-    public function invalidateWeeklyGoalCache(User $user): void
-    private function getCacheKey(User $user, string $weekIdentifier): string
 }
 ```
 
@@ -76,17 +66,11 @@ The weekly goal progress will be integrated into the existing dashboard layout:
 
 ### Research Information Display
 
-Two implementation approaches based on complexity:
-
-**Primary Approach (Tooltip)**:
-- Info icon (ℹ️) next to weekly goal header
-- Tooltip/popover with research message
-- Uses Alpine.js for interactivity
-
-**Fallback Approach (Static Text)**:
+**MVP Approach (Static Text Only)**:
 - Subtle gray text under progress: "Research-backed weekly target"
 - No JavaScript dependencies
 - Always visible but unobtrusive
+- **Deferred**: Interactive tooltip system until usage justifies complexity
 
 ## Data Models
 
@@ -113,19 +97,7 @@ WHERE user_id = ?
     'week_start' => '2025-02-09',      // Sunday of current week
     'week_end' => '2025-02-15',        // Saturday of current week
     'is_goal_achieved' => false,       // Whether 4+ days reached
-    'message' => 'One more to win!',   // Motivational message
     'progress_percentage' => 75,       // For progress bars (3/4 = 75%)
-]
-```
-
-**Cache Data Structure**:
-```php
-// Cached under key: user_weekly_goal_{user_id}_{week_identifier}
-[
-    'days_read' => 3,
-    'week_identifier' => '2025-W06',
-    'calculated_at' => '2025-02-12 14:30:00',
-    'reading_dates' => ['2025-02-09', '2025-02-10', '2025-02-12'], // For debugging
 ]
 ```
 
@@ -147,79 +119,59 @@ WHERE user_id = ?
 - Weekly goal card shows default state without breaking layout
 - Research info falls back to static text if tooltip fails
 
-## Testing Strategy
+## Testing Strategy - MVP
 
-### Unit Tests
+### Basic Unit Tests
 - **WeeklyGoalService Tests**:
   - Test week boundary calculations (Sunday start)
-  - Test progress calculations with various reading patterns
-  - Test cache key generation and invalidation
-  - Test motivational message selection logic
-  - Test edge cases (no readings, goal exceeded, etc.)
+  - Test progress calculations with basic reading patterns
+  - Test edge cases (no readings, multiple readings same day)
 
-### Integration Tests
-- **Dashboard Integration**:
-  - Test weekly goal data appears in dashboard statistics
-  - Test cache invalidation when readings are logged
-  - Test HTMX updates include weekly goal data
-
-### Feature Tests
-- **End-to-End Scenarios**:
+### Basic Feature Tests
+- **Core Scenarios**:
   - User logs reading, weekly progress updates
-  - Week transitions reset progress correctly
   - Multiple readings same day count as one day
-  - Dashboard displays correct motivational messages
+  - Dashboard displays weekly progress
 
 ### Test Data Scenarios
 ```php
-// Test cases to cover:
+// Essential test cases:
 - Empty week (0/4 days)
-- Partial progress (1/4, 2/4, 3/4 days)
+- Partial progress (2/4 days)
 - Goal achieved (4/4 days)
-- Goal exceeded (5+/4 days)
-- Week boundary transitions
 - Multiple readings same day
-- Readings on different days
-- Cache hit/miss scenarios
 ```
 
-## Performance Considerations
+**Deferred**: Comprehensive test suite with 12+ scenarios, cache testing, and integration tests - basic tests sufficient for MVP
+
+## Performance Considerations - MVP
 
 ### Database Optimization
 - **Efficient Queries**: Use `COUNT(DISTINCT DATE(date_read))` to avoid loading full records
 - **Index Usage**: Leverage existing indexes on `user_id` and `date_read`
 - **Query Scope**: Limit queries to current week date range only
-
-### Caching Strategy
-- **Cache Duration**: 5-minute TTL balances freshness with performance
-- **Cache Keys**: Include week identifier to auto-invalidate on week transitions
-- **Cache Size**: Minimal data cached (just counts and dates)
-- **Cache Warming**: No pre-warming needed, calculated on-demand
+- **Direct Calculation**: No caching overhead - calculations are instant for small datasets
 
 ### Frontend Performance
 - **Component Reuse**: Leverage existing card components and styling
 - **HTMX Integration**: Minimal JavaScript, server-driven updates
 - **Responsive Design**: Uses existing grid system, no additional CSS
 
-## Implementation Phases
+**Deferred**: Complex caching strategy until user load justifies the performance optimization
+
+## Implementation Phases - MVP
 
 ### Phase 1A: Backend Foundation
 1. Create `WeeklyGoalService` with core calculation methods
 2. Add weekly goal data to `UserStatisticsService::getDashboardStatistics()`
-3. Update `ReadingLogService` to invalidate weekly goal cache
-4. Add unit tests for service layer
+3. Add basic unit tests for service layer
 
 ### Phase 1B: Dashboard Integration
-1. Create `weekly-goal-card` Blade component
+1. Create `weekly-goal-card` Blade component with static research text
 2. Update dashboard layout to include weekly goal card
-3. Implement motivational messaging logic
-4. Add integration tests
+3. Add basic feature tests for user flow
 
-### Phase 1C: Research Information
-1. Implement info icon with tooltip (primary approach)
-2. Add fallback static text option
-3. Test both approaches across devices
-4. Add feature tests for complete user flow
+**Total**: 6 essential tasks focusing on core functionality that delivers immediate value to users.
 
 ## Security Considerations
 
@@ -233,7 +185,4 @@ WHERE user_id = ?
 - User ID validation through existing authentication middleware
 - No user input directly affects weekly goal calculations
 
-### Cache Security
-- Cache keys are predictable but user-scoped
-- No sensitive information stored in cache (just counts)
-- Cache invalidation prevents stale data issues
+**Deferred**: Cache security considerations until caching system is implemented
