@@ -18,7 +18,7 @@
   - Add basic unit tests for dashboard statistics integration
   - _Requirements: 1.1, 4.1, 4.4, 5.3_
 
-- [ ] 3. Create weekly goal card Blade component
+- [x] 3. Create weekly goal card Blade component
   - Create `resources/views/components/ui/weekly-goal-card.blade.php` component
   - Implement responsive design matching existing dashboard card styling
   - Add progress display in "X/4 days this week" format with appropriate styling
