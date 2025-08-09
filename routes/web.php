@@ -5,7 +5,6 @@ use Illuminate\Http\Request;
 use App\Http\Controllers\DashboardController;
 use App\Http\Controllers\ReadingLogController;
 use App\Http\Controllers\SitemapController;
-use App\Http\Controllers\StreakDemoController;
 
 // Development Routes (Local Development Only)
 if (app()->environment('local') || app()->environment('staging')) {
@@ -13,8 +12,6 @@ if (app()->environment('local') || app()->environment('staging')) {
         return redirect('/telescope/requests');
     });
     
-    // Streak Card Demo Page
-    Route::get('/streak-demo', [StreakDemoController::class, 'index'])->name('streak-demo');
 }
 
 Route::get('/', function () {
