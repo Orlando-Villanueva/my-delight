@@ -10,7 +10,8 @@ use Illuminate\Support\Facades\Cache;
 class UserStatisticsService
 {
     public function __construct(
-        private ReadingLogService $readingLogService
+        private ReadingLogService $readingLogService,
+        private WeeklyGoalService $weeklyGoalService
     ) {}
 
     /**
@@ -26,6 +27,7 @@ class UserStatisticsService
                 'reading_summary' => $this->getReadingSummary($user),
                 'book_progress' => $this->getBookProgressSummary($user),
                 'recent_activity' => $this->getRecentActivity($user),
+                'weekly_goal' => $this->getWeeklyGoalStatistics($user),
             ]
         );
     }
@@ -51,6 +53,18 @@ class UserStatisticsService
             'current_streak' => $currentStreak,
             'longest_streak' => $longestStreak,
         ];
+    }
+
+    /**
+     * Get weekly goal statistics.
+     */
+    public function getWeeklyGoalStatistics(User $user): array
+    {
+        return Cache::remember(
+            "user_weekly_goal_{$user->id}",
+            300, // 5 minutes TTL (same as dashboard stats)
+            fn() => $this->weeklyGoalService->getWeeklyGoalData($user)
+        );
     }
 
     /**
@@ -285,6 +299,7 @@ class UserStatisticsService
         Cache::forget("user_dashboard_stats_{$user->id}");
         Cache::forget("user_current_streak_{$user->id}");
         Cache::forget("user_longest_streak_{$user->id}");
+        Cache::forget("user_weekly_goal_{$user->id}");
         Cache::forget("user_calendar_{$user->id}_{$currentYear}");
         Cache::forget("user_calendar_{$user->id}_{$previousYear}");
     }

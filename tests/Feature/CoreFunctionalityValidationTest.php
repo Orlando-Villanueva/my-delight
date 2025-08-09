@@ -4,6 +4,7 @@ namespace Tests\Feature;
 
 use App\Models\User;
 use App\Models\ReadingLog;
+use Carbon\Carbon;
 use Illuminate\Foundation\Testing\RefreshDatabase;
 use Illuminate\Foundation\Testing\WithFaker;
 use Tests\TestCase;
@@ -414,5 +415,84 @@ class CoreFunctionalityValidationTest extends TestCase
         $response->assertSee('Bible Progress');
         // Genesis should show some progress (5/50 chapters = 10%)
         $response->assertSee('Genesis', false);
+    }
+
+    /**
+     * Test weekly goal statistics integration in dashboard
+     */
+    public function test_weekly_goal_statistics_integration(): void
+    {
+        $user = User::factory()->create();
+
+        // Create reading logs for current week (3 different days)
+        $weekStart = now()->startOfWeek(Carbon::SUNDAY);
+        
+        ReadingLog::factory()->create([
+            'user_id' => $user->id,
+            'book_id' => 1,
+            'chapter' => 1,
+            'date_read' => $weekStart, // Sunday
+        ]);
+
+        ReadingLog::factory()->create([
+            'user_id' => $user->id,
+            'book_id' => 1,
+            'chapter' => 2,
+            'date_read' => $weekStart->copy()->addDays(2), // Tuesday
+        ]);
+
+        ReadingLog::factory()->create([
+            'user_id' => $user->id,
+            'book_id' => 1,
+            'chapter' => 3,
+            'date_read' => $weekStart->copy()->addDays(4), // Thursday
+        ]);
+
+        $response = $this->actingAs($user)->get('/dashboard');
+        $response->assertStatus(200);
+
+        // Test that dashboard statistics include weekly goal data
+        $response->assertViewHas('stats');
+        $stats = $response->viewData('stats');
+        
+        $this->assertArrayHasKey('weekly_goal', $stats);
+        $this->assertArrayHasKey('current_progress', $stats['weekly_goal']);
+        $this->assertArrayHasKey('weekly_target', $stats['weekly_goal']);
+        $this->assertArrayHasKey('is_goal_achieved', $stats['weekly_goal']);
+        
+        // Should show 3 days of progress this week
+        $this->assertEquals(3, $stats['weekly_goal']['current_progress']);
+        $this->assertEquals(4, $stats['weekly_goal']['weekly_target']);
+        $this->assertFalse($stats['weekly_goal']['is_goal_achieved']);
+    }
+
+    /**
+     * Test weekly goal achieved state
+     */
+    public function test_weekly_goal_achieved_state(): void
+    {
+        $user = User::factory()->create();
+
+        // Create reading logs for 4 different days this week (goal achieved)
+        $weekStart = now()->startOfWeek(Carbon::SUNDAY);
+        
+        for ($day = 0; $day < 4; $day++) {
+            ReadingLog::factory()->create([
+                'user_id' => $user->id,
+                'book_id' => 1,
+                'chapter' => $day + 1,
+                'date_read' => $weekStart->copy()->addDays($day),
+            ]);
+        }
+
+        $response = $this->actingAs($user)->get('/dashboard');
+        $response->assertStatus(200);
+
+        $stats = $response->viewData('stats');
+        
+        // Should show goal achieved
+        $this->assertEquals(4, $stats['weekly_goal']['current_progress']);
+        $this->assertTrue($stats['weekly_goal']['is_goal_achieved']);
+        $this->assertEquals(100.0, $stats['weekly_goal']['progress_percentage']);
     }
 }
