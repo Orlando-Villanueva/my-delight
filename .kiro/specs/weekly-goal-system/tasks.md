@@ -12,7 +12,13 @@
   - Add basic error handling and fallback values for all methods
   - _Requirements: 2.1, 2.2, 2.4, 5.1, 5.2_
 
-- [ ] 2. Extend UserStatisticsService to include weekly goal data
+- [x] 2. Extend UserStatisticsService to include weekly goal data
+
+
+
+
+
+
   - Add weekly goal data to `getDashboardStatistics()` method return array
   - Integrate WeeklyGoalService into UserStatisticsService constructor
   - Add basic unit tests for dashboard statistics integration
