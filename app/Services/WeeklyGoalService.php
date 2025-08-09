@@ -18,7 +18,7 @@ class WeeklyGoalService
 
     public function __construct()
     {
-        // Constructor ready for future dependencies if needed
+        // Self-contained service with no dependencies
     }
 
 
@@ -61,14 +61,11 @@ class WeeklyGoalService
             $weekStart = $referenceDate->copy()->startOfWeek(self::FIRST_DAY_OF_WEEK);
             $weekEnd = $referenceDate->copy()->endOfWeek(self::LAST_DAY_OF_WEEK);
             
-            // Get distinct days with readings in the specified week using Eloquent
+            // Use efficient database-level distinct count instead of collection manipulation
             return $user->readingLogs()
                 ->whereBetween('date_read', [$weekStart->toDateString(), $weekEnd->toDateString()])
-                ->get()
-                ->pluck('date_read')
-                ->map(fn($date) => Carbon::parse($date)->toDateString())
-                ->unique()
-                ->count();
+                ->distinct('date_read')
+                ->count('date_read');
         } catch (Exception $e) {
             Log::error('Error calculating week progress', [
                 'user_id' => $user->id,
@@ -80,7 +77,14 @@ class WeeklyGoalService
         }
     }
 
-
+    /**
+     * Get reading days count for current week (Sunday to Saturday).
+     * Convenience method that uses calculateWeekProgress with current date.
+     */
+    public function getThisWeekReadingDays(User $user): int
+    {
+        return $this->calculateWeekProgress($user, now());
+    }
 
     /**
      * Get a motivational message based on progress.
@@ -116,4 +120,5 @@ class WeeklyGoalService
             'message' => 'Start your week strong with your first reading!',
         ];
     }
+
 }

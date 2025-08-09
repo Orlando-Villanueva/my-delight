@@ -84,7 +84,7 @@ class UserStatisticsService
                 ? Carbon::parse($firstReading->date_read)->diffInDays(now()) + 1
                 : 0,
             'this_month_days' => $this->getThisMonthReadingDays($user),
-            'this_week_days' => $this->getThisWeekReadingDays($user),
+            'this_week_days' => $this->weeklyGoalService->getThisWeekReadingDays($user),
         ];
     }
 
@@ -100,19 +100,6 @@ class UserStatisticsService
             ->count('date_read');
     }
 
-    /**
-     * Get reading days count for current week (Sunday to Saturday).
-     */
-    private function getThisWeekReadingDays(User $user): int
-    {
-        $startOfWeek = now()->startOfWeek(Carbon::SUNDAY);
-        $endOfWeek = now()->endOfWeek(Carbon::SATURDAY);
-
-        return $user->readingLogs()
-            ->whereBetween('date_read', [$startOfWeek, $endOfWeek])
-            ->distinct('date_read')
-            ->count('date_read');
-    }
 
     /**
      * Get book progress summary.
