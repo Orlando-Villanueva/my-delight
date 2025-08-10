@@ -39,13 +39,13 @@ class UserStatisticsService
     {
         $currentStreak = Cache::remember(
             "user_current_streak_{$user->id}",
-            900, // 15 minutes TTL
+            3600, // 60 minutes TTL - expensive walking calculation
             fn() => $this->readingLogService->calculateCurrentStreak($user)
         );
 
         $longestStreak = Cache::remember(
             "user_longest_streak_{$user->id}",
-            1800, // 30 minutes TTL (changes less frequently)
+            3600, // 60 minutes TTL - most expensive full history analysis
             fn() => $this->readingLogService->calculateLongestStreak($user)
         );
 
@@ -60,9 +60,11 @@ class UserStatisticsService
      */
     public function getWeeklyGoalStatistics(User $user): array
     {
+        $weekStart = now()->startOfWeek(Carbon::SUNDAY)->toDateString();
+        
         return Cache::remember(
-            "user_weekly_goal_{$user->id}",
-            300, // 5 minutes TTL (same as dashboard stats)
+            "user_weekly_goal_{$user->id}_{$weekStart}",
+            900, // 15 minutes TTL - light query with date range filter
             fn() => $this->weeklyGoalService->getWeeklyGoalData($user)
         );
     }
@@ -170,7 +172,7 @@ class UserStatisticsService
         
         return Cache::remember(
             "user_calendar_{$user->id}_{$year}",
-            600, // 10 minutes TTL
+            3600, // 60 minutes TTL - processes full year of data
             function () use ($user, $year) {
                 $startDate = Carbon::create($year, 1, 1);
                 $endDate = Carbon::create($year, 12, 31);
@@ -281,12 +283,13 @@ class UserStatisticsService
     {
         $currentYear = now()->year;
         $previousYear = $currentYear - 1;
+        $weekStart = now()->startOfWeek(Carbon::SUNDAY)->toDateString();
         
         // Clear all user-specific caches
         Cache::forget("user_dashboard_stats_{$user->id}");
         Cache::forget("user_current_streak_{$user->id}");
         Cache::forget("user_longest_streak_{$user->id}");
-        Cache::forget("user_weekly_goal_{$user->id}");
+        Cache::forget("user_weekly_goal_{$user->id}_{$weekStart}");
         Cache::forget("user_calendar_{$user->id}_{$currentYear}");
         Cache::forget("user_calendar_{$user->id}_{$previousYear}");
     }

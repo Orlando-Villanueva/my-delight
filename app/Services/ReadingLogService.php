@@ -311,18 +311,45 @@ class ReadingLogService
 
     /**
      * Invalidate user statistics cache when reading logs change.
+     * Uses smart invalidation to minimize expensive recalculations.
      */
     private function invalidateUserStatisticsCache(User $user): void
     {
         $currentYear = now()->year;
         $previousYear = $currentYear - 1;
         
-        // Clear all user-specific caches that depend on reading logs
+        // Always invalidate - these change on every reading
         Cache::forget("user_dashboard_stats_{$user->id}");
-        Cache::forget("user_current_streak_{$user->id}");
-        Cache::forget("user_longest_streak_{$user->id}");
         Cache::forget("user_calendar_{$user->id}_{$currentYear}");
         Cache::forget("user_calendar_{$user->id}_{$previousYear}");
+        
+        // Smart invalidation - only invalidate on first reading of the day
+        // Check if user had already read today BEFORE this new reading
+        $hasReadToday = $user->readingLogs()
+            ->whereDate('date_read', today())
+            ->exists();
+        
+        if (!$hasReadToday) {
+            // First reading of the day - streak and weekly goal will change
+            $weekStart = now()->startOfWeek(Carbon::SUNDAY)->toDateString();
+            Cache::forget("user_weekly_goal_{$user->id}_{$weekStart}");
+            Cache::forget("user_current_streak_{$user->id}");
+            
+            // Longest streak - only invalidate if current streak might exceed it
+            $cachedLongest = Cache::get("user_longest_streak_{$user->id}");
+            if ($cachedLongest === null) {
+                // No cached longest streak, need to calculate
+                Cache::forget("user_longest_streak_{$user->id}");
+            } else {
+                // Check if current streak + 1 (after today's reading) might exceed longest
+                $cachedCurrent = Cache::get("user_current_streak_{$user->id}");
+                if ($cachedCurrent === null || ($cachedCurrent + 1) > $cachedLongest) {
+                    Cache::forget("user_longest_streak_{$user->id}");
+                }
+            }
+        }
+        // If hasReadToday is true, this is 2nd+ reading of the day
+        // Streak and weekly goal won't change, so skip expensive invalidations
     }
 
     /**
