@@ -104,10 +104,10 @@ class CoreFunctionalityValidationTest extends TestCase
 
         // Check for key dashboard components
         $response->assertSee('Daily Streak');
-        $response->assertSee('This Week');
-        $response->assertSee('This Month');
+        $response->assertSee('Days Read');
         $response->assertSee('Total Chapters');
         $response->assertSee('Bible Progress');
+        $response->assertSee('Avg/Day');
 
         // Check for recent readings
         $response->assertSee('Recent Readings');

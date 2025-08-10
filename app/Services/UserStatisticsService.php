@@ -77,17 +77,50 @@ class UserStatisticsService
         $totalReadings = $user->readingLogs()->count();
         $firstReading = $user->readingLogs()->oldest()->first();
         $lastReading = $user->readingLogs()->latest()->first();
+        
+        $daysSinceFirst = $firstReading
+            ? Carbon::parse($firstReading->date_read)->diffInDays(now()) + 1
+            : 0;
 
         return [
             'total_readings' => $totalReadings,
             'first_reading_date' => $firstReading?->date_read,
             'last_reading_date' => $lastReading?->date_read,
-            'days_since_first_reading' => $firstReading
-                ? Carbon::parse($firstReading->date_read)->diffInDays(now()) + 1
-                : 0,
+            'days_since_first_reading' => $daysSinceFirst,
+            'total_reading_days' => $this->getTotalReadingDays($user),
+            'average_chapters_per_day' => $this->getAverageChaptersPerDay($user, $totalReadings, $daysSinceFirst),
             'this_month_days' => $this->getThisMonthReadingDays($user),
             'this_week_days' => $this->weeklyGoalService->getThisWeekReadingDays($user),
         ];
+    }
+
+    /**
+     * Get total unique reading days (cached).
+     */
+    private function getTotalReadingDays(User $user): int
+    {
+        return Cache::remember(
+            "user_total_reading_days_{$user->id}",
+            3600, // 60 minutes TTL - expensive distinct count query
+            fn() => $user->readingLogs()->distinct('date_read')->count('date_read')
+        );
+    }
+
+    /**
+     * Get average chapters per day since first reading (cached).
+     */
+    private function getAverageChaptersPerDay(User $user, int $totalReadings, int $daysSinceFirst): float
+    {
+        return Cache::remember(
+            "user_avg_chapters_per_day_{$user->id}",
+            3600, // 60 minutes TTL - calculation based on cached values
+            function() use ($totalReadings, $daysSinceFirst) {
+                if ($totalReadings === 0 || $daysSinceFirst === 0) {
+                    return 0.0;
+                }
+                return round($totalReadings / $daysSinceFirst, 2);
+            }
+        );
     }
 
     /**
@@ -292,6 +325,8 @@ class UserStatisticsService
         Cache::forget("user_weekly_goal_{$user->id}_{$weekStart}");
         Cache::forget("user_calendar_{$user->id}_{$currentYear}");
         Cache::forget("user_calendar_{$user->id}_{$previousYear}");
+        Cache::forget("user_total_reading_days_{$user->id}");
+        Cache::forget("user_avg_chapters_per_day_{$user->id}");
     }
 
     /**

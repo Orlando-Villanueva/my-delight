@@ -41,11 +41,10 @@
                 <!-- Summary Stats - Supporting Metrics (2x2 grid) -->
                 <div class="lg:col-span-1">
                     <x-ui.summary-stats
-                        :thisWeekDays="$stats['reading_summary']['this_week_days']"
-                        :thisMonthDays="$stats['reading_summary']['this_month_days']"
-                        :daysInMonth="now()->daysInMonth"
+                        :daysRead="$stats['reading_summary']['total_reading_days']"
                         :totalChapters="$stats['reading_summary']['total_readings']"
                         :bibleProgress="$stats['book_progress']['overall_progress_percent']"
+                        :averageChaptersPerDay="$stats['reading_summary']['average_chapters_per_day']"
                         class="h-full" />
                 </div>
             </div>
