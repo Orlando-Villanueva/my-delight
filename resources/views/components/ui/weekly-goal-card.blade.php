@@ -13,83 +13,83 @@
         'large' => 'p-8 lg:p-6 xl:p-8'
     ];
     
-    $numberSizes = [
-        'small' => 'text-2xl lg:text-3xl',
-        'default' => 'text-4xl lg:text-5xl',
-        'large' => 'text-5xl lg:text-6xl'
-    ];
-    
-    $iconSizes = [
-        'small' => 'w-5 h-5',
-        'default' => 'w-6 h-6',
-        'large' => 'w-8 h-8'
-    ];
-    
     // Determine progress state and styling
     $isGoalAchieved = $currentProgress >= $weeklyTarget;
     $progressPercentage = min(($currentProgress / $weeklyTarget) * 100, 100);
     
-    // Dynamic styling based on progress
+    // Clean, consistent styling that matches dashboard theme
+    $baseBackgroundClass = 'bg-white dark:bg-gray-800 border border-[#D1D7E0] dark:border-gray-700';
+    
+    // Determine accent styling based on progress (no left border)
     if ($isGoalAchieved) {
-        $backgroundClass = 'bg-green-50 dark:bg-green-900/20 border border-green-200 dark:border-green-800';
-        $textClass = 'text-green-800 dark:text-green-200';
-        $iconClass = 'text-green-600 dark:text-green-400';
+        $headerBgClass = 'bg-green-500/5 dark:bg-green-400/10';
+        $headerBorderClass = 'border-b border-green-500/10 dark:border-green-400/10';
         $progressBarClass = 'bg-green-500';
-        $defaultMessage = 'Great job! Goal achieved this week! 🎉';
+        $iconClass = 'text-green-600 dark:text-green-400';
+        $defaultMessage = 'Goal achieved! Research-backed target met.';
+        $statusText = 'This Week\'s Goal';
     } elseif ($currentProgress > 0) {
-        $backgroundClass = 'bg-blue-50 dark:bg-blue-900/20 border border-blue-200 dark:border-blue-800';
-        $textClass = 'text-blue-800 dark:text-blue-200';
-        $iconClass = 'text-blue-600 dark:text-blue-400';
-        $progressBarClass = 'bg-blue-500';
-        $defaultMessage = 'Keep it up! You\'re making progress.';
+        $headerBgClass = 'bg-primary-500/5 dark:bg-primary-400/10';
+        $headerBorderClass = 'border-b border-primary-500/10 dark:border-primary-400/10';
+        $progressBarClass = 'bg-primary-500';
+        $iconClass = 'text-primary-600 dark:text-primary-400';
+        $defaultMessage = 'Keep going! You\'re making progress.';
+        $statusText = 'This Week\'s Goal';
     } else {
-        $backgroundClass = 'bg-gray-50 dark:bg-gray-800 border border-gray-200 dark:border-gray-700';
-        $textClass = 'text-gray-800 dark:text-gray-200';
-        $iconClass = 'text-gray-600 dark:text-gray-400';
+        $headerBgClass = 'bg-gray-500/5 dark:bg-gray-400/10';
+        $headerBorderClass = 'border-b border-gray-500/10 dark:border-gray-400/10';
         $progressBarClass = 'bg-gray-400';
+        $iconClass = 'text-gray-600 dark:text-gray-400';
         $defaultMessage = 'Start your week strong!';
+        $statusText = 'This Week\'s Goal';
     }
     
     $displayMessage = $motivationalMessage ?: $defaultMessage;
 @endphp
 
-<div {{ $attributes->merge(['class' => $backgroundClass . ' h-full rounded-lg shadow-lg transition-colors ' . ($sizeClasses[$size] ?? $sizeClasses['default'])]) }}>
-    <div class="flex flex-col justify-center h-full">
-        <div class="flex items-center justify-between mb-4">
-            <h3 class="text-lg lg:text-xl font-semibold leading-[1.5] {{ $textClass }}">Weekly Goal</h3>
-            <div class="p-2 rounded-lg bg-white/50 dark:bg-gray-700/50">
-                <svg class="{{ $iconSizes[$size] ?? $iconSizes['default'] }} {{ $iconClass }}" fill="none" stroke="currentColor" viewBox="0 0 24 24">
-                    <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M9 12l2 2 4-4m6 2a9 9 0 11-18 0 9 9 0 0118 0z"></path>
+<div {{ $attributes->merge(['class' => $baseBackgroundClass . ' h-full rounded-lg shadow-lg transition-colors']) }}>
+    <!-- Header with subtle accent -->
+    <div class="{{ $headerBgClass }} {{ $headerBorderClass }} px-6 py-4 rounded-t-lg">
+        <div class="flex items-center justify-between">
+            <h3 class="text-lg font-semibold text-[#4A5568] dark:text-gray-200 leading-[1.5]">
+                {{ $statusText }}
+            </h3>
+            @if($isGoalAchieved)
+                <svg class="w-6 h-6 {{ $iconClass }}" fill="currentColor" viewBox="0 0 20 20">
+                    <path fill-rule="evenodd" d="M10 18a8 8 0 100-16 8 8 0 000 16zm3.707-9.293a1 1 0 00-1.414-1.414L9 10.586 7.707 9.293a1 1 0 00-1.414 1.414l2 2a1 1 0 001.414 0l4-4z" clip-rule="evenodd"/>
                 </svg>
+            @endif
+        </div>
+    </div>
+    
+    <!-- Main content -->
+    <div class="{{ $sizeClasses[$size] ?? $sizeClasses['default'] }}">
+        <div class="flex items-center justify-between mb-4">
+            <div class="text-3xl lg:text-4xl font-bold text-[#4A5568] dark:text-gray-200 leading-[1.5]">
+                {{ $currentProgress }}/{{ $weeklyTarget }}
+            </div>
+            <div class="text-sm text-gray-600 dark:text-gray-400 text-right leading-[1.5]">
+                {{ Str::plural('day', $currentProgress) }} this week
             </div>
         </div>
         
-        <div class="text-center flex-1 flex flex-col justify-center">
-            <div class="{{ $numberSizes[$size] ?? $numberSizes['default'] }} font-bold mb-2 leading-[1.5] {{ $textClass }}">
-                {{ $currentProgress }}/{{ $weeklyTarget }}
-            </div>
-            <div class="text-sm {{ $textClass }} opacity-80 leading-[1.5] mb-3">
-                {{ Str::plural('day', $currentProgress) }} this week
-            </div>
-            
-            <!-- Progress Bar -->
-            <div class="w-full bg-white/30 dark:bg-gray-700/30 rounded-full h-2 mb-3">
-                <div class="{{ $progressBarClass }} h-2 rounded-full transition-all duration-300" 
-                     style="width: {{ $progressPercentage }}%"></div>
-            </div>
+        <!-- Progress bar -->
+        <div class="w-full bg-gray-200 dark:bg-gray-700 rounded-full h-3 mb-4">
+            <div class="{{ $progressBarClass }} h-3 rounded-full transition-all duration-500" 
+                 style="width: {{ $progressPercentage }}%"></div>
         </div>
         
         @if($displayMessage)
-            <div class="text-center mt-2">
-                <p class="text-sm {{ $textClass }} opacity-80 leading-[1.5]">{{ $displayMessage }}</p>
-            </div>
+            <p class="text-sm text-gray-600 dark:text-gray-400 leading-[1.5] mb-3">
+                {{ $displayMessage }}
+            </p>
         @endif
         
         @if($showResearchInfo)
-            <div class="mt-4 pt-4 border-t border-current/20">
-                <div class="text-center">
-                    <p class="text-xs {{ $textClass }} opacity-60 leading-[1.5]">Research-backed weekly target</p>
-                </div>
+            <div class="pt-3 border-t border-gray-200 dark:border-gray-600">
+                <p class="text-xs text-gray-500 dark:text-gray-400 leading-[1.5]">
+                    Research-backed weekly target for spiritual growth
+                </p>
             </div>
         @endif
     </div>

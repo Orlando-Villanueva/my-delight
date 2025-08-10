@@ -16,20 +16,10 @@
         <!-- Left Column - Main Content (responsive width) -->
         <div class="lg:col-span-2 xl:col-span-3 space-y-4 xl:space-y-6">
 
-            <!-- Top Stats Row -->
-            <div class="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-7 gap-4 lg:gap-6">
-                <!-- Streak Card - Prominent (2/7 width on desktop, 1/2 on tablet) -->
-                <div class="sm:col-span-1 lg:col-span-2">
-                    <x-ui.streak-counter
-                        :currentStreak="$stats['streaks']['current_streak']"
-                        :longestStreak="$stats['streaks']['longest_streak']"
-                        :stateClasses="$streakStateClasses"
-                        :message="$streakMessage"
-                        class="h-full" />
-                </div>
-
-                <!-- Weekly Goal Card - Prominent (2/7 width on desktop, 1/2 on tablet) -->
-                <div class="sm:col-span-1 lg:col-span-2">
+            <!-- Top Row - Goal-Oriented Widgets -->
+            <div class="grid grid-cols-1 lg:grid-cols-3 gap-4 lg:gap-6 mb-6">
+                <!-- Weekly Goal - Primary Focus -->
+                <div class="lg:col-span-1">
                     <x-ui.weekly-goal-card
                         :currentProgress="$weeklyGoal['current_progress']"
                         :weeklyTarget="$weeklyGoal['weekly_target']"
@@ -38,8 +28,18 @@
                         class="h-full" />
                 </div>
 
-                <!-- Stats Panel - Compact (3/7 width on desktop, full width on mobile) -->
-                <div class="sm:col-span-2 lg:col-span-3">
+                <!-- Daily Streak - Secondary Achievement -->
+                <div class="lg:col-span-1">
+                    <x-ui.streak-counter
+                        :currentStreak="$stats['streaks']['current_streak']"
+                        :longestStreak="$stats['streaks']['longest_streak']"
+                        :stateClasses="$streakStateClasses"
+                        :message="$streakMessage"
+                        class="h-full" />
+                </div>
+
+                <!-- Summary Stats - Supporting Metrics (2x2 grid) -->
+                <div class="lg:col-span-1">
                     <x-ui.summary-stats
                         :thisWeekDays="$stats['reading_summary']['this_week_days']"
                         :thisMonthDays="$stats['reading_summary']['this_month_days']"

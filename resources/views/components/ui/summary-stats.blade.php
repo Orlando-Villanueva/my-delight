@@ -8,7 +8,8 @@
 
 <div {{ $attributes->merge(['class' => 'bg-white dark:bg-gray-800 border border-[#D1D7E0] dark:border-gray-700 h-full transition-colors rounded-lg shadow-lg']) }}>
     <div class="p-6 lg:p-4 xl:p-6 h-full flex items-center">
-        <div class="grid grid-cols-2 lg:grid-cols-4 gap-4 lg:gap-6 w-full">
+        <!-- 2x2 Grid -->
+        <div class="grid grid-cols-2 gap-4 w-full">
             <!-- This Week Progress -->
             <div class="flex flex-col items-center text-center">
                 <div class="p-3 rounded-lg bg-green-100 dark:bg-green-900/30 mb-3">
