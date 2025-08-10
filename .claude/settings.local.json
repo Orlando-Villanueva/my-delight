@@ -7,7 +7,8 @@
       "Bash(php artisan test:*)",
       "mcp__linear-server__create_issue",
       "mcp__linear-server__list_teams",
-      "mcp__linear-server__list_issue_labels"
+      "mcp__linear-server__list_issue_labels",
+      "mcp__linear-server__list_issues"
     ],
     "deny": []
   }
