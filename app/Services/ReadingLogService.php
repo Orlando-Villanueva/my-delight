@@ -325,9 +325,10 @@ class ReadingLogService
         
         // Smart invalidation - only invalidate on first reading of the day
         // Check if user had already read today BEFORE this new reading
+        // We need to check if there were OTHER readings today (excluding the current one)
         $hasReadToday = $user->readingLogs()
             ->whereDate('date_read', today())
-            ->exists();
+            ->count() > 1; // More than 1 means there were previous readings today
         
         if (!$hasReadToday) {
             // First reading of the day - streak and weekly goal will change

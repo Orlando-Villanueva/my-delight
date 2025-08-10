@@ -34,11 +34,6 @@
   - _Requirements: 4.1, 4.2_
 
 - [x] 5. Integrate weekly goal card into dashboard layout
-
-
-
-
-
   - Update `resources/views/partials/dashboard-content.blade.php` to include weekly goal card
   - Position weekly goal card in top stats row alongside streak counter
   - Ensure responsive grid layout accommodates new card (adjust column spans if needed)

@@ -7,6 +7,8 @@
 ])
 
 @php
+    $statusText = 'Weekly Target';
+    
     $sizeClasses = [
         'small' => 'p-4 lg:p-3 xl:p-4',
         'default' => 'p-6 lg:p-4 xl:p-6',
@@ -17,31 +19,31 @@
     $isGoalAchieved = $currentProgress >= $weeklyTarget;
     $progressPercentage = min(($currentProgress / $weeklyTarget) * 100, 100);
     
-    // Clean, consistent styling that matches dashboard theme
+    // Weekly goal card - MOST vibrant styling to match app's bold aesthetic (primary hierarchy)
     $baseBackgroundClass = 'bg-white dark:bg-gray-800 border border-[#D1D7E0] dark:border-gray-700';
     
-    // Determine accent styling based on progress (no left border)
+    // Weekly goal now uses green (success) colors - still most vibrant as primary
     if ($isGoalAchieved) {
-        $headerBgClass = 'bg-green-500/5 dark:bg-green-400/10';
-        $headerBorderClass = 'border-b border-green-500/10 dark:border-green-400/10';
-        $progressBarClass = 'bg-green-500';
-        $iconClass = 'text-green-600 dark:text-green-400';
+        $headerBgClass = 'bg-gradient-to-r from-[#4DA67A] to-[#66CC99] dark:from-[#4DA67A] dark:to-[#66CC99]';
+        $headerBorderClass = 'border-b-0';
+        $progressBarClass = 'bg-gradient-to-r from-[#4DA67A] to-[#66CC99]';
+        $iconClass = 'text-white';
+        $headerTextClass = 'text-white font-semibold';
         $defaultMessage = 'Goal achieved! Research-backed target met.';
-        $statusText = 'This Week\'s Goal';
     } elseif ($currentProgress > 0) {
-        $headerBgClass = 'bg-primary-500/5 dark:bg-primary-400/10';
-        $headerBorderClass = 'border-b border-primary-500/10 dark:border-primary-400/10';
-        $progressBarClass = 'bg-primary-500';
-        $iconClass = 'text-primary-600 dark:text-primary-400';
+        $headerBgClass = 'bg-gradient-to-r from-[#4DA67A] to-[#66CC99] dark:from-[#4DA67A] dark:to-[#66CC99]';
+        $headerBorderClass = 'border-b-0';
+        $progressBarClass = 'bg-gradient-to-r from-[#4DA67A] to-[#66CC99]';
+        $iconClass = 'text-white';
+        $headerTextClass = 'text-white font-semibold';
         $defaultMessage = 'Keep going! You\'re making progress.';
-        $statusText = 'This Week\'s Goal';
     } else {
-        $headerBgClass = 'bg-gray-500/5 dark:bg-gray-400/10';
-        $headerBorderClass = 'border-b border-gray-500/10 dark:border-gray-400/10';
-        $progressBarClass = 'bg-gray-400';
-        $iconClass = 'text-gray-600 dark:text-gray-400';
+        $headerBgClass = 'bg-gradient-to-r from-[#4DA67A] to-[#66CC99] dark:from-[#4DA67A] dark:to-[#66CC99]';
+        $headerBorderClass = 'border-b-0';
+        $progressBarClass = 'bg-gradient-to-r from-[#4DA67A] to-[#66CC99]';
+        $iconClass = 'text-white';
+        $headerTextClass = 'text-white font-semibold';
         $defaultMessage = 'Start your week strong!';
-        $statusText = 'This Week\'s Goal';
     }
     
     $displayMessage = $motivationalMessage ?: $defaultMessage;
@@ -51,7 +53,7 @@
     <!-- Header with subtle accent -->
     <div class="{{ $headerBgClass }} {{ $headerBorderClass }} px-6 py-4 rounded-t-lg">
         <div class="flex items-center justify-between">
-            <h3 class="text-lg font-semibold text-[#4A5568] dark:text-gray-200 leading-[1.5]">
+            <h3 class="text-lg {{ $headerTextClass }} leading-[1.5]">
                 {{ $statusText }}
             </h3>
             @if($isGoalAchieved)
