@@ -47,8 +47,8 @@
     @foreach($processedBooks as $book)
         @php
             $statusClasses = match($book['status']) {
-                'completed' => 'bg-[#66CC99] text-white border-[#66CC99]',
-                'in-progress' => 'bg-[#3366CC] text-white border-[#3366CC]',
+                'completed' => 'bg-success-500 text-white border-[#66CC99]',
+                'in-progress' => 'bg-primary-500 text-white border-[#3366CC]',
                 default => 'bg-white dark:bg-gray-800 text-gray-700 dark:text-gray-300 border-[#D1D7E0] dark:border-gray-600 hover:border-[#3366CC]/30 dark:hover:border-[#3366CC]/50'
             };
         @endphp

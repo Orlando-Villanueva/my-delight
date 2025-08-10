@@ -44,29 +44,29 @@
             // Warning state: darker to lighter for better text/icon contrast
             $headerBgClass = 'bg-gradient-to-r from-accent-400 to-accent-300 dark:from-accent-700 dark:to-accent-600';
             $headerBorderClass = 'border-b-0';
-            $iconClass = 'text-accent-600 dark:text-accent-300';  // Keep the fire icon fiery!
+            $iconClass = 'text-accent-600 dark:text-accent-300 animate-pulse';  // Fading fire - getting weaker but alarming!
             $headerTextClass = 'text-white font-medium';
-            $numberColorClass = 'text-[#4A5568] dark:text-gray-200';
+            $numberColorClass = 'text-gray-700 dark:text-gray-200';
             $textColorClass = 'text-gray-600 dark:text-gray-300';
             break;
             
         case 'active':
             // Active state: beautiful blue gradient with fiery orange icon like production!
-            $headerBgClass = 'bg-gradient-to-r from-primary-600 to-primary-500 dark:from-primary-700 dark:to-primary-600';
+            $headerBgClass = 'bg-gradient-to-r from-primary-600 to-primary-500 dark:from-primary-600 dark:to-primary-500';
             $headerBorderClass = 'border-b-0';
             $iconClass = 'text-accent-500 dark:text-accent-400';  // Fire icon back to fiery orange!
             $headerTextClass = 'text-white font-semibold';  // Bold white text like weekly card
-            $numberColorClass = 'text-[#4A5568] dark:text-gray-200';
+            $numberColorClass = 'text-gray-700 dark:text-gray-200';
             $textColorClass = 'text-gray-600 dark:text-gray-300';
             break;
             
         case 'inactive':
         default:
-            // Inactive state: darker to lighter for better contrast
-            $headerBgClass = 'bg-gradient-to-r from-slate-400 to-slate-300 dark:from-slate-700 dark:to-slate-600';
+            // Inactive state: now uses blue header like weekly goal - consistent visual identity
+            $headerBgClass = 'bg-gradient-to-r from-primary-600 to-primary-500 dark:from-primary-700 dark:to-primary-600';
             $headerBorderClass = 'border-b-0';
-            $iconClass = 'text-accent-600 dark:text-accent-300';  // Fire is always fiery!
-            $headerTextClass = 'text-white font-medium';
+            $iconClass = 'text-accent-500 dark:text-accent-400';  // Fire is always fiery!
+            $headerTextClass = 'text-white font-semibold';
             $numberColorClass = 'text-gray-700 dark:text-gray-200';
             $textColorClass = 'text-gray-600 dark:text-gray-300';
             break;
@@ -98,7 +98,7 @@
         </div>
         
         @if($longestStreak > 0)
-            <div class="pt-3 border-t border-gray-200 dark:border-gray-600 mb-3">
+            <div class="mb-3">
                 <div class="flex justify-between text-sm leading-[1.5]">
                     <span class="{{ $textColorClass }}">Longest streak:</span>
                     <span class="font-semibold {{ $numberColorClass }}">{{ $longestStreak }} {{ Str::plural('day', $longestStreak) }}</span>
@@ -107,9 +107,11 @@
         @endif
         
         @if($message)
-            <p class="text-sm {{ $textColorClass }} leading-[1.5] text-center">
-                {{ $message }}
-            </p>
+            <div class="pt-3 border-t border-gray-200 dark:border-gray-600">
+                <p class="text-sm {{ $textColorClass }} leading-[1.5] text-center">
+                    {{ $message }}
+                </p>
+            </div>
         @endif
     </div>
 </div> 

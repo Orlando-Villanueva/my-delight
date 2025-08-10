@@ -66,11 +66,11 @@
     
     <!-- Main content -->
     <div class="{{ $sizeClasses[$size] ?? $sizeClasses['default'] }}">
-        <div class="flex items-center justify-between mb-4">
-            <div class="text-3xl lg:text-4xl font-bold text-[#4A5568] dark:text-gray-200 leading-[1.5]">
+        <div class="text-center mb-4">
+            <div class="text-3xl lg:text-4xl font-bold text-gray-700 dark:text-gray-200 leading-[1.5] mb-2">
                 {{ $currentProgress }}/{{ $weeklyTarget }}
             </div>
-            <div class="text-sm text-gray-600 dark:text-gray-400 text-right leading-[1.5]">
+            <div class="text-sm text-gray-600 dark:text-gray-300 leading-[1.5]">
                 {{ Str::plural('day', $currentProgress) }} this week
             </div>
         </div>
@@ -82,15 +82,9 @@
         </div>
         
         @if($displayMessage)
-            <p class="text-sm text-gray-600 dark:text-gray-400 leading-[1.5] mb-3">
-                {{ $displayMessage }}
-            </p>
-        @endif
-        
-        @if($showResearchInfo)
             <div class="pt-3 border-t border-gray-200 dark:border-gray-600">
-                <p class="text-xs text-gray-500 dark:text-gray-400 leading-[1.5]">
-                    Research-backed weekly target for spiritual growth
+                <p class="text-sm text-gray-600 dark:text-gray-300 leading-[1.5] text-center">
+                    {{ $displayMessage }}
                 </p>
             </div>
         @endif
