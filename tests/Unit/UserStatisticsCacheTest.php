@@ -84,6 +84,8 @@ class UserStatisticsCacheTest extends TestCase
         $this->assertTrue(Cache::has("user_longest_streak_{$this->user->id}"));
         $this->assertTrue(Cache::has("user_calendar_{$this->user->id}_{$currentYear}"));
         $this->assertTrue(Cache::has("user_calendar_{$this->user->id}_{$previousYear}"));
+        $this->assertTrue(Cache::has("user_total_reading_days_{$this->user->id}"));
+        $this->assertTrue(Cache::has("user_avg_chapters_per_day_{$this->user->id}"));
         
         // Invalidate cache
         $this->service->invalidateUserCache($this->user);
@@ -94,6 +96,8 @@ class UserStatisticsCacheTest extends TestCase
         $this->assertFalse(Cache::has("user_longest_streak_{$this->user->id}"));
         $this->assertFalse(Cache::has("user_calendar_{$this->user->id}_{$currentYear}"));
         $this->assertFalse(Cache::has("user_calendar_{$this->user->id}_{$previousYear}"));
+        $this->assertFalse(Cache::has("user_total_reading_days_{$this->user->id}"));
+        $this->assertFalse(Cache::has("user_avg_chapters_per_day_{$this->user->id}"));
     }
 
     public function testCacheHasDifferentTTLs()
@@ -110,5 +114,37 @@ class UserStatisticsCacheTest extends TestCase
         $this->assertTrue(Cache::has("user_current_streak_{$this->user->id}"));
         $this->assertTrue(Cache::has("user_longest_streak_{$this->user->id}"));
         $this->assertTrue(Cache::has("user_calendar_{$this->user->id}_" . now()->year));
+        $this->assertTrue(Cache::has("user_total_reading_days_{$this->user->id}"));
+        $this->assertTrue(Cache::has("user_avg_chapters_per_day_{$this->user->id}"));
+    }
+
+    public function testReadingSummaryIncludesNewStats()
+    {
+        // Create some reading logs to test with
+        $this->user->readingLogs()->create([
+            'book_id' => 1,
+            'chapter' => 1,
+            'passage_text' => 'Genesis 1',
+            'date_read' => now()->subDays(5)->toDateString(),
+        ]);
+        
+        $this->user->readingLogs()->create([
+            'book_id' => 1,
+            'chapter' => 2,
+            'passage_text' => 'Genesis 2',
+            'date_read' => now()->subDays(3)->toDateString(),
+        ]);
+
+        // Get dashboard stats which includes reading summary
+        $stats = $this->service->getDashboardStatistics($this->user);
+
+        // Verify new stats are included
+        $this->assertArrayHasKey('total_reading_days', $stats['reading_summary']);
+        $this->assertArrayHasKey('average_chapters_per_day', $stats['reading_summary']);
+        
+        // Verify values make sense
+        $this->assertEquals(2, $stats['reading_summary']['total_reading_days']);
+        $this->assertGreaterThan(0, $stats['reading_summary']['average_chapters_per_day']);
+        $this->assertLessThanOrEqual(2, $stats['reading_summary']['average_chapters_per_day']); // Should be reasonable
     }
 }

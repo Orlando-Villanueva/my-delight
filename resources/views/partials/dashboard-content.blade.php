@@ -16,10 +16,20 @@
         <!-- Left Column - Main Content (responsive width) -->
         <div class="lg:col-span-2 xl:col-span-3 space-y-4 xl:space-y-6">
 
-            <!-- Top Stats Row -->
-            <div class="grid grid-cols-1 sm:grid-cols-5 gap-4 lg:gap-6">
-                <!-- Streak Card - More Prominent (2/5 width) -->
-                <div class="sm:col-span-2">
+            <!-- Top Row - Goal-Oriented Widgets -->
+            <div class="grid grid-cols-1 sm:grid-cols-2 md:grid-cols-4 lg:grid-cols-2 xl:grid-cols-3 gap-4 lg:gap-6 mb-6">
+                <!-- Weekly Goal - Primary Focus -->
+                <div class="sm:col-span-1 md:col-span-2 lg:col-span-1 xl:col-span-1">
+                    <x-ui.weekly-goal-card
+                        :currentProgress="$weeklyGoal['current_progress']"
+                        :weeklyTarget="$weeklyGoal['weekly_target']"
+                        :motivationalMessage="$weeklyGoal['message'] ?? ''"
+                        :showResearchInfo="true"
+                        class="h-full" />
+                </div>
+
+                <!-- Daily Streak - Secondary Achievement -->
+                <div class="sm:col-span-1 md:col-span-2 lg:col-span-1 xl:col-span-1">
                     <x-ui.streak-counter
                         :currentStreak="$stats['streaks']['current_streak']"
                         :longestStreak="$stats['streaks']['longest_streak']"
@@ -28,28 +38,34 @@
                         class="h-full" />
                 </div>
 
-                <!-- Stats Panel - Compact (3/5 width) -->
-                <div class="sm:col-span-3">
+                <!-- Summary Stats - Supporting Metrics (2x2 grid) - Only on portrait/mobile/desktop -->
+                <div class="sm:col-span-1 md:col-span-2 lg:hidden xl:block xl:col-span-1">
                     <x-ui.summary-stats
-                        :thisWeekDays="$stats['reading_summary']['this_week_days']"
-                        :thisMonthDays="$stats['reading_summary']['this_month_days']"
-                        :daysInMonth="now()->daysInMonth"
+                        :daysRead="$stats['reading_summary']['total_reading_days']"
                         :totalChapters="$stats['reading_summary']['total_readings']"
                         :bibleProgress="$stats['book_progress']['overall_progress_percent']"
+                        :averageChaptersPerDay="$stats['reading_summary']['average_chapters_per_day']"
                         class="h-full" />
                 </div>
-            </div>
 
-            <!-- Mobile/Tablet Calendar - Shows only on mobile and portrait tablets -->
-            <div class="lg:hidden">
-                <!-- Tablet Portrait: More compact, Mobile: Full width -->
-                <div class="sm:max-w-md sm:mx-auto md:max-w-lg">
+                <!-- Mobile/Tablet Calendar - Shows only on mobile and portrait tablets -->
+                <div class="sm:col-span-1 md:col-span-2 lg:hidden">
                     <x-bible.calendar-heatmap
                         :user="auth()->user()"
                         :months="1"
                         :showLegend="false"
-                        class="sm:text-sm" />
+                        class="text-sm" />
                 </div>
+            </div>
+
+            <!-- Summary Stats Row - Full width horizontal layout on iPad Pro landscape only (1x4) -->
+            <div class="hidden lg:block xl:hidden lg:mb-4 lg:-mt-2">
+                <x-ui.summary-stats
+                    :daysRead="$stats['reading_summary']['total_reading_days']"
+                    :totalChapters="$stats['reading_summary']['total_readings']"
+                    :bibleProgress="$stats['book_progress']['overall_progress_percent']"
+                    :averageChaptersPerDay="$stats['reading_summary']['average_chapters_per_day']"
+                    class="h-full" />
             </div>
 
             <!-- Book Progress Visualization -->
@@ -74,6 +90,7 @@
                     :showLegend="false"
                     class="text-sm" />
             </div>
+
 
             <!-- Recent Readings -->
             @if(!empty($stats['recent_activity']))

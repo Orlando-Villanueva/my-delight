@@ -6,6 +6,7 @@ use Illuminate\Http\Request;
 use App\Services\ReadingFormService;
 use App\Services\UserStatisticsService;
 use App\Services\StreakStateService;
+use App\Models\User;
 
 class DashboardController extends Controller
 {
@@ -27,14 +28,17 @@ class DashboardController extends Controller
         
         // Get dashboard statistics
         $stats = $this->statisticsService->getDashboardStatistics($user);
-        
+
+        // Extract weekly goal data for easier access in views
+        $weeklyGoal = $stats['weekly_goal'];
+
         // Compute streak state and classes for the component
         $streakState = $this->streakStateService->determineStreakState(
             $stats['streaks']['current_streak'],
             $hasReadToday
         );
         $streakStateClasses = $this->streakStateService->getStateClasses($streakState);
-        
+
         // Get contextual message for the streak counter
         $streakMessage = $this->streakStateService->selectMessage(
             $stats['streaks']['current_streak'],
@@ -42,13 +46,13 @@ class DashboardController extends Controller
             $stats['streaks']['longest_streak'],
             $hasReadToday
         );
-        
+
         // Return partial for HTMX navigation, full page for direct access
         if ($request->header('HX-Request')) {
-            return view('partials.dashboard-page', compact('hasReadToday', 'streakState', 'streakStateClasses', 'streakMessage', 'stats'));
+            return view('partials.dashboard-page', compact('hasReadToday', 'streakState', 'streakStateClasses', 'streakMessage', 'stats', 'weeklyGoal'));
         }
 
         // Return full page for direct access (browser URL)
-        return view('dashboard', compact('hasReadToday', 'streakState', 'streakStateClasses', 'streakMessage', 'stats'));
+        return view('dashboard', compact('hasReadToday', 'streakState', 'streakStateClasses', 'streakMessage', 'stats', 'weeklyGoal'));
     }
 }

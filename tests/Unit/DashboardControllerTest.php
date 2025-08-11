@@ -75,4 +75,51 @@ class DashboardControllerTest extends TestCase
         $this->assertArrayHasKey('streaks', $data['stats']);
         $this->assertArrayHasKey('current_streak', $data['stats']['streaks']);
     }
+
+    public function test_index_includes_weekly_goal_data_for_regular_request()
+    {
+        $request = Request::create('/dashboard', 'GET');
+        
+        $response = $this->controller->index($request);
+        $data = $response->getData();
+        
+        // Verify weeklyGoal is available as a separate variable
+        $this->assertArrayHasKey('weeklyGoal', $data);
+        $this->assertIsArray($data['weeklyGoal']);
+        
+        // Verify weekly goal data structure
+        $weeklyGoal = $data['weeklyGoal'];
+        $this->assertArrayHasKey('current_progress', $weeklyGoal);
+        $this->assertArrayHasKey('weekly_target', $weeklyGoal);
+        $this->assertArrayHasKey('week_start', $weeklyGoal);
+        $this->assertArrayHasKey('week_end', $weeklyGoal);
+        $this->assertArrayHasKey('is_goal_achieved', $weeklyGoal);
+        $this->assertArrayHasKey('progress_percentage', $weeklyGoal);
+        $this->assertArrayHasKey('message', $weeklyGoal);
+        
+        // Verify weekly goal is also available in stats
+        $this->assertArrayHasKey('weekly_goal', $data['stats']);
+        $this->assertEquals($data['stats']['weekly_goal'], $data['weeklyGoal']);
+    }
+
+    public function test_index_includes_weekly_goal_data_for_htmx_request()
+    {
+        $request = Request::create('/dashboard', 'GET');
+        $request->headers->set('HX-Request', 'true');
+        
+        $response = $this->controller->index($request);
+        $data = $response->getData();
+        
+        // Verify weeklyGoal is available as a separate variable for HTMX requests too
+        $this->assertArrayHasKey('weeklyGoal', $data);
+        $this->assertIsArray($data['weeklyGoal']);
+        
+        // Verify weekly goal data structure
+        $weeklyGoal = $data['weeklyGoal'];
+        $this->assertArrayHasKey('current_progress', $weeklyGoal);
+        $this->assertArrayHasKey('weekly_target', $weeklyGoal);
+        $this->assertIsInt($weeklyGoal['current_progress']);
+        $this->assertIsInt($weeklyGoal['weekly_target']);
+        $this->assertIsBool($weeklyGoal['is_goal_achieved']);
+    }
 }

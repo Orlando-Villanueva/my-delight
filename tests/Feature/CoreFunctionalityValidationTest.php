@@ -2,8 +2,9 @@
 
 namespace Tests\Feature;
 
-use App\Models\User;
 use App\Models\ReadingLog;
+use App\Models\User;
+use Carbon\Carbon;
 use Illuminate\Foundation\Testing\RefreshDatabase;
 use Illuminate\Foundation\Testing\WithFaker;
 use Tests\TestCase;
@@ -96,18 +97,18 @@ class CoreFunctionalityValidationTest extends TestCase
         ]);
 
         $response = $this->actingAs($user)->get('/dashboard');
-        
+
         $response->assertStatus(200);
         $response->assertSee('Dashboard');
         $response->assertSee('Track your Bible reading progress');
-        
+
         // Check for key dashboard components
-        $response->assertSee('Current Streak');
-        $response->assertSee('This Week');
-        $response->assertSee('This Month');
+        $response->assertSee('Daily Streak');
+        $response->assertSee('Days Read');
         $response->assertSee('Total Chapters');
         $response->assertSee('Bible Progress');
-        
+        $response->assertSee('Avg/Day');
+
         // Check for recent readings
         $response->assertSee('Recent Readings');
         $response->assertSee('Genesis 1');
@@ -124,7 +125,7 @@ class CoreFunctionalityValidationTest extends TestCase
         // Test dashboard without reading today
         $response = $this->actingAs($user)->get('/dashboard');
         $response->assertStatus(200);
-        
+
         // Create a reading log for today
         ReadingLog::factory()->create([
             'user_id' => $user->id,
@@ -137,7 +138,7 @@ class CoreFunctionalityValidationTest extends TestCase
         // Test dashboard with reading today
         $response = $this->actingAs($user)->get('/dashboard');
         $response->assertStatus(200);
-        
+
         // Test HTMX request also includes the data
         $response = $this->actingAs($user)
             ->withHeaders(['HX-Request' => 'true'])
@@ -177,7 +178,7 @@ class CoreFunctionalityValidationTest extends TestCase
             'passage_text' => 'Genesis 1',
             'notes_text' => 'Great chapter about creation',
         ]);
-        
+
         // Verify the date separately (since it might include time)
         $readingLog = ReadingLog::where('user_id', $user->id)
             ->where('book_id', 1)
@@ -253,7 +254,7 @@ class CoreFunctionalityValidationTest extends TestCase
         $response = $this->actingAs($user)->get('/logs');
         $response->assertStatus(200);
         $response->assertSee('Reading History');
-        
+
         // Test the logs page contains the reading logs
         $response->assertSee('Genesis 1');
         $response->assertSee('Exodus 1');
@@ -288,23 +289,23 @@ class CoreFunctionalityValidationTest extends TestCase
         // Test dashboard mobile responsiveness
         $response = $this->actingAs($user)->get('/dashboard');
         $response->assertStatus(200);
-        
+
         // Check for viewport meta tag
         $response->assertSee('name="viewport"', false);
         $response->assertSee('width=device-width', false);
-        
+
         // Check for responsive grid classes
         $response->assertSee('grid-cols-1', false);
-        $response->assertSee('lg:grid-cols-4', false);
-        $response->assertSee('sm:col-span-2', false);
-        
+        $response->assertSee('lg:grid-cols-3', false);
+        $response->assertSee('xl:grid-cols-4', false);
+
         // Check for mobile-specific elements
         $response->assertSee('lg:hidden', false); // Mobile navigation and FAB
         $response->assertSee('hidden lg:block', false); // Desktop sidebar
 
         // Test guest pages (logout first to clear authentication)
         auth()->logout();
-        
+
         // Test login page mobile responsiveness (as guest)
         $response = $this->get('/login');
         $response->assertStatus(200);
@@ -384,9 +385,9 @@ class CoreFunctionalityValidationTest extends TestCase
 
         $response = $this->actingAs($user)->get('/dashboard');
         $response->assertStatus(200);
-        
+
         // Should show current streak
-        $response->assertSee('Current Streak');
+        $response->assertSee('Daily Streak');
         $response->assertSee('3'); // 3-day streak
     }
 
@@ -409,10 +410,89 @@ class CoreFunctionalityValidationTest extends TestCase
 
         $response = $this->actingAs($user)->get('/dashboard');
         $response->assertStatus(200);
-        
+
         // Should show book progress
         $response->assertSee('Bible Progress');
         // Genesis should show some progress (5/50 chapters = 10%)
         $response->assertSee('Genesis', false);
+    }
+
+    /**
+     * Test weekly goal statistics integration in dashboard
+     */
+    public function test_weekly_goal_statistics_integration(): void
+    {
+        $user = User::factory()->create();
+
+        // Create reading logs for current week (3 different days)
+        $weekStart = now()->startOfWeek(Carbon::SUNDAY);
+
+        ReadingLog::factory()->create([
+            'user_id' => $user->id,
+            'book_id' => 1,
+            'chapter' => 1,
+            'date_read' => $weekStart, // Sunday
+        ]);
+
+        ReadingLog::factory()->create([
+            'user_id' => $user->id,
+            'book_id' => 1,
+            'chapter' => 2,
+            'date_read' => $weekStart->copy()->addDays(2), // Tuesday
+        ]);
+
+        ReadingLog::factory()->create([
+            'user_id' => $user->id,
+            'book_id' => 1,
+            'chapter' => 3,
+            'date_read' => $weekStart->copy()->addDays(4), // Thursday
+        ]);
+
+        $response = $this->actingAs($user)->get('/dashboard');
+        $response->assertStatus(200);
+
+        // Test that dashboard statistics include weekly goal data
+        $response->assertViewHas('stats');
+        $stats = $response->viewData('stats');
+
+        $this->assertArrayHasKey('weekly_goal', $stats);
+        $this->assertArrayHasKey('current_progress', $stats['weekly_goal']);
+        $this->assertArrayHasKey('weekly_target', $stats['weekly_goal']);
+        $this->assertArrayHasKey('is_goal_achieved', $stats['weekly_goal']);
+
+        // Should show 3 days of progress this week
+        $this->assertEquals(3, $stats['weekly_goal']['current_progress']);
+        $this->assertEquals(4, $stats['weekly_goal']['weekly_target']);
+        $this->assertFalse($stats['weekly_goal']['is_goal_achieved']);
+    }
+
+    /**
+     * Test weekly goal achieved state
+     */
+    public function test_weekly_goal_achieved_state(): void
+    {
+        $user = User::factory()->create();
+
+        // Create reading logs for 4 different days this week (goal achieved)
+        $weekStart = now()->startOfWeek(Carbon::SUNDAY);
+
+        for ($day = 0; $day < 4; $day++) {
+            ReadingLog::factory()->create([
+                'user_id' => $user->id,
+                'book_id' => 1,
+                'chapter' => $day + 1,
+                'date_read' => $weekStart->copy()->addDays($day),
+            ]);
+        }
+
+        $response = $this->actingAs($user)->get('/dashboard');
+        $response->assertStatus(200);
+
+        $stats = $response->viewData('stats');
+
+        // Should show goal achieved
+        $this->assertEquals(4, $stats['weekly_goal']['current_progress']);
+        $this->assertTrue($stats['weekly_goal']['is_goal_achieved']);
+        $this->assertEquals(100.0, $stats['weekly_goal']['progress_percentage']);
     }
 }

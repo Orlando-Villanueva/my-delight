@@ -3,20 +3,24 @@
 namespace Tests\Unit;
 use App\Services\UserStatisticsService;
 use App\Services\ReadingLogService;
+use App\Services\WeeklyGoalService;
 use App\Contracts\ReadingLogInterface;
+use App\Models\User;
 use Carbon\Carbon;
 use PHPUnit\Framework\TestCase;
 
 class UserStatisticsServiceTest extends TestCase
 {
     protected ReadingLogService $readingLogService;
+    protected WeeklyGoalService $weeklyGoalService;
     protected UserStatisticsService $service;
 
     protected function setUp(): void
     {
         parent::setUp();
         $this->readingLogService = $this->createMock(ReadingLogService::class);
-        $this->service = new UserStatisticsService($this->readingLogService);
+        $this->weeklyGoalService = $this->createMock(WeeklyGoalService::class);
+        $this->service = new UserStatisticsService($this->readingLogService, $this->weeklyGoalService);
     }
 
     /**
@@ -126,5 +130,17 @@ class UserStatisticsServiceTest extends TestCase
 
         $result = $this->service->calculateSmartTimeAgo($reading);
         $this->assertEquals('5 hours ago', $result);
+    }
+
+    /**
+     * Test that UserStatisticsService has required dependencies and methods
+     */
+    public function testServiceDependenciesAndMethods()
+    {
+        // Test that UserStatisticsService has the required method for dashboard statistics
+        $this->assertTrue(method_exists($this->service, 'getDashboardStatistics'));
+        
+        // Test that the service was properly constructed with its dependencies
+        $this->assertInstanceOf(UserStatisticsService::class, $this->service);
     }
 }

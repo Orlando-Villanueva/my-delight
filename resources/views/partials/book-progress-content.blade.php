@@ -8,27 +8,27 @@
         <span class="text-base font-medium text-gray-700 dark:text-gray-300 leading-[1.5]">
             {{ $testament }} Testament
         </span>
-        <span class="text-lg lg:text-xl font-bold text-[#3366CC] leading-[1.5]">
+        <span class="text-lg lg:text-xl font-bold text-primary-500 leading-[1.5]">
             {{ $testamentProgress }}%
         </span>
     </div>
     
     <!-- Progress Bar -->
     <div class="w-full bg-gray-200 dark:bg-gray-600 rounded-full h-3 overflow-hidden">
-        <div class="bg-[#3366CC] h-3 transition-all duration-300" 
+        <div class="bg-primary-500 h-3 transition-all duration-300" 
              style="width: {{ $testamentProgress }}%"></div>
     </div>
     
     <!-- Stats Summary -->
     <div class="grid grid-cols-3 gap-2 text-center text-sm">
-        <div class="bg-[#66CC99]/10 dark:bg-[#66CC99]/20 rounded-lg py-2 px-1">
-            <div class="font-bold text-[#66CC99] text-base lg:text-lg leading-[1.5]">
+        <div class="bg-success-500/10 dark:bg-success-500/20 rounded-lg py-2 px-1">
+            <div class="font-bold text-success-500 text-base lg:text-lg leading-[1.5]">
                 {{ $completedBooks }}
             </div>
             <div class="text-sm text-gray-600 dark:text-gray-400 leading-tight">completed</div>
         </div>
-        <div class="bg-[#3366CC]/10 dark:bg-[#3366CC]/20 rounded-lg py-2 px-1">
-            <div class="font-bold text-[#3366CC] text-base lg:text-lg leading-[1.5]">
+        <div class="bg-primary-500/10 dark:bg-primary-500/20 rounded-lg py-2 px-1">
+            <div class="font-bold text-primary-500 text-base lg:text-lg leading-[1.5]">
                 {{ $inProgressBooks }}
             </div>
             <div class="text-sm text-gray-600 dark:text-gray-400 leading-tight">in progress</div>
@@ -47,9 +47,9 @@
     @foreach($processedBooks as $book)
         @php
             $statusClasses = match($book['status']) {
-                'completed' => 'bg-[#66CC99] text-white border-[#66CC99]',
-                'in-progress' => 'bg-[#3366CC] text-white border-[#3366CC]',
-                default => 'bg-white dark:bg-gray-800 text-gray-700 dark:text-gray-300 border-[#D1D7E0] dark:border-gray-600 hover:border-[#3366CC]/30 dark:hover:border-[#3366CC]/50'
+                'completed' => 'bg-success-500 text-white border-success-500',
+                'in-progress' => 'bg-primary-500 text-white border-primary-500',
+                default => 'bg-white dark:bg-gray-800 text-gray-700 dark:text-gray-300 border-gray-300 dark:border-gray-600 hover:border-primary-500/30 dark:hover:border-primary-500/50'
             };
         @endphp
         
@@ -76,7 +76,7 @@
             
             <!-- Completion Badge -->
             @if($book['status'] === 'completed')
-                <div class="absolute -top-1 -right-1 w-4 h-4 bg-[#66CC99] rounded-full flex items-center justify-center">
+                <div class="absolute -top-1 -right-1 w-4 h-4 bg-success-500 rounded-full flex items-center justify-center">
                     <div class="w-2 h-2 bg-white rounded-full"></div>
                 </div>
             @endif
@@ -85,17 +85,17 @@
 </div>
 
 <!-- Legend -->
-<div class="flex items-center justify-center space-x-6 mt-6 pt-4 border-t border-[#D1D7E0] dark:border-gray-600">
+<div class="flex items-center justify-center space-x-6 mt-6 pt-4 border-t border-gray-300 dark:border-gray-600">
     <div class="flex items-center space-x-2">
-        <div class="w-3 h-3 bg-[#66CC99] rounded border-2 border-[#66CC99]"></div>
+        <div class="w-3 h-3 bg-success-500 rounded border-2 border-success-500"></div>
         <span class="text-sm text-gray-600 dark:text-gray-400 leading-[1.5]">Completed</span>
     </div>
     <div class="flex items-center space-x-2">
-        <div class="w-3 h-3 bg-[#3366CC] rounded border-2 border-[#3366CC]"></div>
+        <div class="w-3 h-3 bg-primary-500 rounded border-2 border-primary-500"></div>
         <span class="text-sm text-gray-600 dark:text-gray-400 leading-[1.5]">In Progress</span>
     </div>
     <div class="flex items-center space-x-2">
-        <div class="w-3 h-3 bg-white dark:bg-gray-800 rounded border-2 border-[#D1D7E0] dark:border-gray-600"></div>
+        <div class="w-3 h-3 bg-white dark:bg-gray-800 rounded border-2 border-gray-300 dark:border-gray-600"></div>
         <span class="text-sm text-gray-600 dark:text-gray-400 leading-[1.5]">Not Started</span>
     </div>
 </div> 

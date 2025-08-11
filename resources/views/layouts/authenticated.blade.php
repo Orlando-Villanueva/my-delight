@@ -115,26 +115,6 @@
                     History
                 </button>
 
-                @if(app()->environment('local') || app()->environment('staging'))
-                    <!-- Development Demo Link -->
-                    <div class="pt-4 mt-4 border-t border-gray-200 dark:border-gray-600">
-                        <p class="px-2 text-xs font-semibold text-gray-400 dark:text-gray-500 uppercase tracking-wider mb-2">
-                            Development
-                        </p>
-                        <a href="{{ route('streak-demo') }}" target="_blank"
-                            class="group flex items-center px-2 py-2 text-base lg:text-sm xl:text-base font-medium rounded-md transition-colors leading-[1.5] w-full text-left text-[#4A5568] dark:text-gray-300 hover:bg-[#F5F7FA] dark:hover:bg-gray-700 hover:text-orange-500 dark:hover:text-orange-400">
-                            <svg class="w-5 h-5 lg:w-4 lg:h-4 xl:w-5 xl:h-5 mr-3 lg:mr-2 xl:mr-3" fill="none" stroke="currentColor" viewBox="0 0 24 24">
-                                <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2"
-                                    d="M7 21a4 4 0 01-4-4V5a2 2 0 012-2h4a2 2 0 012 2v14a4 4 0 01-4 4zM7 21h10a2 2 0 002-2v-4a2 2 0 00-2-2H7m0-4h10a2 2 0 002-2V5a2 2 0 00-2-2H7m0 0V3a2 2 0 012-2h6a2 2 0 012 2v2H9V3z">
-                                </path>
-                            </svg>
-                            Streak Demo
-                            <svg class="w-3 h-3 ml-auto opacity-50" fill="none" stroke="currentColor" viewBox="0 0 24 24">
-                                <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M10 6H6a2 2 0 00-2 2v10a2 2 0 002 2h10a2 2 0 002-2v-4M14 4h6m0 0v6m0-6L10 14"></path>
-                            </svg>
-                        </a>
-                    </div>
-                @endif
             </nav>
 
             <!-- User Profile Section - Enhanced Design (No Pro Features) -->
@@ -160,15 +140,6 @@
 
                 <!-- Action Buttons - Subtle with Blue Accents on Hover -->
                 <div class="space-y-1">
-                    <x-ui.button variant="ghost"
-                        class="w-full justify-start text-base text-gray-600 dark:text-gray-300 hover:bg-gray-100 dark:hover:bg-gray-700 hover:text-primary-500 dark:hover:text-primary-500 leading-[1.5]">
-                        <svg class="w-4 h-4 mr-3" fill="none" stroke="currentColor" viewBox="0 0 24 24">
-                            <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M10.325 4.317c.426-1.756 2.924-1.756 3.35 0a1.724 1.724 0 002.573 1.066c1.543-.94 3.31.826 2.37 2.37a1.724 1.724 0 001.065 2.572c1.756.426 1.756 2.924 0 3.35a1.724 1.724 0 00-1.066 2.573c.94 1.543-.826 3.31-2.37 2.37a1.724 1.724 0 00-2.572 1.065c-.426 1.756-2.924 1.756-3.35 0a1.724 1.724 0 00-2.573-1.066c-1.543.94-3.31-.826-2.37-2.37a1.724 1.724 0 00-1.065-2.572c-1.756-.426-1.756-2.924 0-3.35a1.724 1.724 0 001.066-2.573c-.94-1.543.826-3.31 2.37-2.37.996.608 2.296.07 2.572-1.065z"></path>
-                            <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M15 12a3 3 0 11-6 0 3 3 0 016 0z"></path>
-                        </svg>
-                        Settings
-                    </x-ui.button>
-
                     <form method="POST" action="{{ route('logout') }}" class="w-full">
                         @csrf
                         <x-ui.button type="submit" variant="ghost"

@@ -38,9 +38,16 @@ class ReadingLogService
             $data['passage_text'] = $this->formatPassageText($data['book_id'], $data);
         }
 
+        $dateRead = $data['date_read'] ?? now()->toDateString();
+        
+        // Check if user has already read today BEFORE creating the new reading
+        $hasReadToday = $user->readingLogs()
+            ->whereDate('date_read', $dateRead)
+            ->exists();
+
         // Handle multiple chapters if provided
         if (isset($data['chapters']) && is_array($data['chapters'])) {
-            return $this->logMultipleChapters($user, $data);
+            return $this->logMultipleChapters($user, $data, $hasReadToday);
         }
 
         // Single chapter logging
@@ -48,15 +55,15 @@ class ReadingLogService
             'book_id' => $data['book_id'],
             'chapter' => $data['chapter'],
             'passage_text' => $data['passage_text'],
-            'date_read' => $data['date_read'] ?? now()->toDateString(),
+            'date_read' => $dateRead,
             'notes_text' => $data['notes_text'] ?? null,
         ]);
 
         // Update book progress
         $this->updateBookProgress($user, $data['book_id'], $data['chapter']);
 
-        // Invalidate user statistics cache
-        $this->invalidateUserStatisticsCache($user);
+        // Invalidate user statistics cache with knowledge of whether this is first reading of the day
+        $this->invalidateUserStatisticsCache($user, !$hasReadToday);
 
         // Server-side state updated - HTMX will handle UI updates
 
@@ -66,7 +73,7 @@ class ReadingLogService
     /**
      * Log multiple chapters as separate reading log entries.
      */
-    private function logMultipleChapters(User $user, array $data): ReadingLog
+    private function logMultipleChapters(User $user, array $data, bool $hasReadToday): ReadingLog
     {
         $chapters = $data['chapters'];
         $firstLog = null;
@@ -90,7 +97,8 @@ class ReadingLogService
         }
 
         // Invalidate user statistics cache after logging multiple chapters
-        $this->invalidateUserStatisticsCache($user);
+        // Only the first reading of the day affects streaks and weekly goals
+        $this->invalidateUserStatisticsCache($user, !$hasReadToday);
 
         return $firstLog;
     }
@@ -311,18 +319,42 @@ class ReadingLogService
 
     /**
      * Invalidate user statistics cache when reading logs change.
+     * Uses smart invalidation to minimize expensive recalculations.
      */
-    private function invalidateUserStatisticsCache(User $user): void
+    private function invalidateUserStatisticsCache(User $user, bool $isFirstReadingOfDay = true): void
     {
         $currentYear = now()->year;
         $previousYear = $currentYear - 1;
         
-        // Clear all user-specific caches that depend on reading logs
+        // Always invalidate - these change on every reading
         Cache::forget("user_dashboard_stats_{$user->id}");
-        Cache::forget("user_current_streak_{$user->id}");
-        Cache::forget("user_longest_streak_{$user->id}");
         Cache::forget("user_calendar_{$user->id}_{$currentYear}");
         Cache::forget("user_calendar_{$user->id}_{$previousYear}");
+        Cache::forget("user_total_reading_days_{$user->id}");
+        Cache::forget("user_avg_chapters_per_day_{$user->id}");
+        
+        // Smart invalidation - only invalidate on first reading of the day
+        if ($isFirstReadingOfDay) {
+            // First reading of the day - streak and weekly goal will change
+            $weekStart = now()->startOfWeek(Carbon::SUNDAY)->toDateString();
+            Cache::forget("user_weekly_goal_{$user->id}_{$weekStart}");
+            Cache::forget("user_current_streak_{$user->id}");
+            
+            // Longest streak - only invalidate if current streak might exceed it
+            $cachedLongest = Cache::get("user_longest_streak_{$user->id}");
+            if ($cachedLongest === null) {
+                // No cached longest streak, need to calculate
+                Cache::forget("user_longest_streak_{$user->id}");
+            } else {
+                // Check if current streak + 1 (after today's reading) might exceed longest
+                $cachedCurrent = Cache::get("user_current_streak_{$user->id}");
+                if ($cachedCurrent === null || ($cachedCurrent + 1) > $cachedLongest) {
+                    Cache::forget("user_longest_streak_{$user->id}");
+                }
+            }
+        }
+        // If not first reading of the day, streak and weekly goal won't change
+        // so skip expensive invalidations
     }
 
     /**
@@ -334,8 +366,9 @@ class ReadingLogService
         $deleted = $readingLog->delete();
         
         if ($deleted) {
-            // Invalidate user statistics cache
-            $this->invalidateUserStatisticsCache($user);
+            // For deletions, we can't easily determine if this was the only reading of the day
+            // so we invalidate all caches to be safe
+            $this->invalidateUserStatisticsCache($user, true);
         }
         
         return $deleted;
@@ -349,8 +382,9 @@ class ReadingLogService
         $user = $readingLog->user;
         $readingLog->update($data);
         
-        // Invalidate user statistics cache
-        $this->invalidateUserStatisticsCache($user);
+        // For updates, we can't easily determine the impact on daily reading status
+        // so we invalidate all caches to be safe
+        $this->invalidateUserStatisticsCache($user, true);
         
         return $readingLog;
     }
