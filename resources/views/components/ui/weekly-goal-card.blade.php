@@ -15,34 +15,30 @@
         'large' => 'p-8 lg:p-6 xl:p-8'
     ];
     
+    // Design tokens for weekly goal styling - using app's custom success colors
+    $weeklyGoalGradient = 'bg-gradient-to-r from-success-500 to-success-400 dark:from-success-600 dark:to-success-500';
+    $weeklyGoalBorder = 'border-success-200 dark:border-success-700';
+    
     // Determine progress state and styling
     $isGoalAchieved = $currentProgress >= $weeklyTarget;
     $progressPercentage = min(($currentProgress / $weeklyTarget) * 100, 100);
     
     // Weekly goal card - MOST vibrant styling to match app's bold aesthetic (primary hierarchy)
-    $baseBackgroundClass = 'bg-white dark:bg-gray-800 border border-[#D1D7E0] dark:border-gray-700';
+    $baseBackgroundClass = 'bg-white dark:bg-gray-800 border border-gray-200 dark:border-gray-700';
     
-    // Weekly goal now uses green (success) colors - still most vibrant as primary
+    // Consistent styling across all states - using design tokens
+    $headerBgClass = $weeklyGoalGradient;
+    $headerBorderClass = 'border-b-0';
+    $progressBarClass = $weeklyGoalGradient;
+    $iconClass = 'text-white';
+    $headerTextClass = 'text-white font-semibold';
+    
+    // State-specific messages
     if ($isGoalAchieved) {
-        $headerBgClass = 'bg-gradient-to-r from-[#4DA67A] to-[#66CC99] dark:from-[#4DA67A] dark:to-[#66CC99]';
-        $headerBorderClass = 'border-b-0';
-        $progressBarClass = 'bg-gradient-to-r from-[#4DA67A] to-[#66CC99]';
-        $iconClass = 'text-white';
-        $headerTextClass = 'text-white font-semibold';
         $defaultMessage = 'Goal achieved! Research-backed target met.';
     } elseif ($currentProgress > 0) {
-        $headerBgClass = 'bg-gradient-to-r from-[#4DA67A] to-[#66CC99] dark:from-[#4DA67A] dark:to-[#66CC99]';
-        $headerBorderClass = 'border-b-0';
-        $progressBarClass = 'bg-gradient-to-r from-[#4DA67A] to-[#66CC99]';
-        $iconClass = 'text-white';
-        $headerTextClass = 'text-white font-semibold';
         $defaultMessage = 'Keep going! You\'re making progress.';
     } else {
-        $headerBgClass = 'bg-gradient-to-r from-[#4DA67A] to-[#66CC99] dark:from-[#4DA67A] dark:to-[#66CC99]';
-        $headerBorderClass = 'border-b-0';
-        $progressBarClass = 'bg-gradient-to-r from-[#4DA67A] to-[#66CC99]';
-        $iconClass = 'text-white';
-        $headerTextClass = 'text-white font-semibold';
         $defaultMessage = 'Start your week strong!';
     }
     

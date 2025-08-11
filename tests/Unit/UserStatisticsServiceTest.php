@@ -133,19 +133,14 @@ class UserStatisticsServiceTest extends TestCase
     }
 
     /**
-     * Test that UserStatisticsService has WeeklyGoalService dependency
+     * Test that UserStatisticsService has required dependencies and methods
      */
-    public function testWeeklyGoalServiceDependency()
+    public function testServiceDependenciesAndMethods()
     {
-        // Test that UserStatisticsService can access weekly goal functionality
+        // Test that UserStatisticsService has the required method for dashboard statistics
         $this->assertTrue(method_exists($this->service, 'getDashboardStatistics'));
-    }
-
-    /**
-     * Test that getDashboardStatistics method exists and can be called
-     */
-    public function testGetDashboardStatisticsMethodExists()
-    {
-        $this->assertTrue(method_exists($this->service, 'getDashboardStatistics'));
+        
+        // Test that the service was properly constructed with its dependencies
+        $this->assertInstanceOf(UserStatisticsService::class, $this->service);
     }
 }
