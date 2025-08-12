@@ -29,15 +29,15 @@ class SendWeeklyTargetAnnouncement extends Command
      */
     public function handle(EmailService $emailService): int
     {
-        $users = User::whereNotNull('email_verified_at')->get();
+        $users = User::whereNotNull('email')->get();
         $userCount = $users->count();
         
         if ($userCount === 0) {
-            $this->info('No verified users found to send emails to.');
+            $this->info('No users with email addresses found to send emails to.');
             return self::SUCCESS;
         }
 
-        $this->info("Found {$userCount} verified users to send announcements to:");
+        $this->info("Found {$userCount} users to send announcements to:");
         
         if ($this->option('dry-run')) {
             $this->warn('🧪 DRY RUN MODE - No emails will be sent');
