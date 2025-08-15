@@ -309,14 +309,14 @@
             class="fixed right-0 top-0 bottom-0 w-full max-w-lg bg-white dark:bg-gray-800 shadow-xl z-50 overflow-y-auto"
             x-trap.inert.noscroll="modalOpen" role="dialog" aria-modal="true" aria-labelledby="modal-title"
             aria-describedby="modal-description">
-            <div id="reading-log-modal-content" class="p-6">
-                <!-- HTMX will inject the form here -->
+            <!-- Loading Indicator (shown during HTMX requests) -->
+            <div id="modal-loading" class="htmx-indicator absolute inset-0 bg-white dark:bg-gray-800 flex items-center justify-center z-10">
+                <div class="animate-spin rounded-full h-8 w-8 border-b-2 border-primary-500"></div>
+                <span class="ml-3 text-gray-600 dark:text-gray-400">Loading form...</span>
+            </div>
 
-                <!-- Loading Indicator (shown during HTMX requests) -->
-                <div id="modal-loading" class="htmx-indicator flex items-center justify-center h-32">
-                    <div class="animate-spin rounded-full h-8 w-8 border-b-2 border-primary-500"></div>
-                    <span class="ml-3 text-gray-600 dark:text-gray-400">Loading form...</span>
-                </div>
+            <div id="reading-log-modal-content" class="p-6 relative">
+                <!-- HTMX will inject the form here -->
             </div>
         </aside>
     </div>
