@@ -2,14 +2,13 @@
 {{-- This component updates page headers via HTMX out-of-band swapping --}}
 {{-- Usage: @include('partials.header-update', ['title' => 'Page Title', 'subtitle' => 'Page subtitle']) --}}
 
-<h1 id="mobile-page-title" hx-swap-oob="innerHTML" class="text-lg font-semibold text-primary-600">
-    {{ $title }}
+<h1 id="mobile-page-title" hx-swap-oob="innerHTML" class="text-lg sm:text-xl font-semibold text-[#4A5568] dark:text-gray-200 leading-[1.5]">
+    {{ config('app.name') }}
 </h1>
 
-<h1 id="desktop-page-title" hx-swap-oob="innerHTML" class="text-2xl font-bold text-gray-700">
+<div hx-swap-oob="innerHTML:#desktop-page-title">
     {{ $title }}
-</h1>
-
-<p id="desktop-page-subtitle" hx-swap-oob="innerHTML" class="text-sm text-gray-500 mt-1">
-    {{ $subtitle }}
-</p> 
+    <span id="desktop-page-subtitle" class="text-sm text-gray-600 dark:text-gray-400 font-normal ml-3">
+        {{ $subtitle }}
+    </span>
+</div> 
