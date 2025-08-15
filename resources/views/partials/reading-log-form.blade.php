@@ -193,7 +193,8 @@
     }
     
     .htmx-request .htmx-indicator {
-        display: inline-flex;
+        display: flex;
+        pointer-events: all;
     }
     
     .htmx-request .htmx-indicator-hidden {

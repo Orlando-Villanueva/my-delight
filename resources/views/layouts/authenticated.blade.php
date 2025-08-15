@@ -310,7 +310,7 @@
             x-trap.inert.noscroll="modalOpen" role="dialog" aria-modal="true" aria-labelledby="modal-title"
             aria-describedby="modal-description">
             <!-- Loading Indicator (shown during HTMX requests) -->
-            <div id="modal-loading" class="htmx-indicator absolute inset-0 bg-white dark:bg-gray-800 flex items-center justify-center z-10">
+            <div id="modal-loading" class="htmx-indicator absolute inset-0 bg-white dark:bg-gray-800 flex items-center justify-center z-10 pointer-events-none">
                 <div class="animate-spin rounded-full h-8 w-8 border-b-2 border-primary-500"></div>
                 <span class="ml-3 text-gray-600 dark:text-gray-400">Loading form...</span>
             </div>
