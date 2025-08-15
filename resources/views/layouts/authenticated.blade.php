@@ -51,10 +51,7 @@
 
         // Set initial title on page load
         document.addEventListener('DOMContentLoaded', () => {
-            const initialView = '{{ request()->routeIs('
-            logs.*') ? '
-            logs ' : '
-            dashboard ' }}';
+            const initialView = '{{ request()->routeIs("logs.*") ? "logs" : "dashboard" }}';
             updateTitle(initialView);
         });
     </script>
