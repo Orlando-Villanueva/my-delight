@@ -26,7 +26,7 @@
     $currentLength = strlen($currentValue);
 @endphp
 
-<div {{ $attributes->merge(['class' => 'space-y-1']) }}>
+<div {{ $attributes->merge(['class' => 'space-y-1']) }} @if($showCounter && $maxlength) x-data="{ count: {{ $currentLength }} }" @endif>
     @if($label)
         <label for="{{ $textareaId }}" class="form-label {{ $required ? 'after:content-[\'*\'] after:ml-0.5 after:text-destructive' : '' }}">
             {{ $label }}
@@ -44,7 +44,7 @@
         {{ $maxlength ? 'maxlength=' . $maxlength : '' }}
         @if($hasError) aria-invalid="true" aria-describedby="{{ $textareaId }}-error" @endif
         @if($help && !$hasError) aria-describedby="{{ $textareaId }}-help" @endif
-        @if($showCounter && $maxlength) x-data="{ count: {{ $currentLength }} }" x-on:input="count = $event.target.value.length" @endif
+        @if($showCounter && $maxlength) x-on:input="count = $event.target.value.length" @endif
     >{{ $currentValue }}</textarea>
     
     @if($showCounter && $maxlength)
@@ -60,7 +60,7 @@
                     </p>
                 @endif
             </div>
-            <div class="text-sm text-muted-foreground" x-text="`${count}/${!! $maxlength !!}`">
+            <div class="text-sm text-muted-foreground" x-text="`${count}/{{ $maxlength }}`">
                 {{ $currentLength }}/{{ $maxlength }}
             </div>
         </div>

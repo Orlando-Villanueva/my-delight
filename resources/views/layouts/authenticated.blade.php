@@ -304,7 +304,7 @@
             x-transition:leave="transform transition ease-in duration-150" x-transition:leave-start="translate-x-0"
             x-transition:leave-end="translate-x-full"
             class="fixed right-0 top-0 bottom-0 w-full max-w-lg bg-white dark:bg-gray-800 shadow-xl z-50 overflow-y-auto"
-            x-trap.inert.noscroll="modalOpen" role="dialog" aria-modal="true" aria-labelledby="modal-title"
+            x-trap.noscroll="modalOpen" role="dialog" aria-modal="true" aria-labelledby="modal-title"
             aria-describedby="modal-description">
             <!-- Loading Indicator (shown during HTMX requests) -->
             <div id="modal-loading" class="htmx-indicator absolute inset-0 bg-white dark:bg-gray-800 flex items-center justify-center z-10 pointer-events-none">
