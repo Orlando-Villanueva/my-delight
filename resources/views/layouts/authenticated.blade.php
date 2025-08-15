@@ -72,10 +72,10 @@
         <!-- Desktop Sidebar Navigation -->
         <aside class="hidden lg:flex lg:flex-col w-48 xl:w-64 bg-white dark:bg-gray-800 border-r border-[#D1D7E0] dark:border-gray-700">
             <!-- Logo Section -->
-            <div class="px-6 lg:px-4 xl:px-6 py-4 border-b border-[#D1D7E0] dark:border-gray-700">
+            <div class="px-6 lg:px-4 xl:px-6 py-3 xl:py-4 border-b border-[#D1D7E0] dark:border-gray-700">
                 <a href="{{ route('dashboard') }}"
                     class="flex items-center text-xl lg:text-lg xl:text-xl font-semibold text-[#4A5568] dark:text-gray-200 hover:text-primary-500 dark:hover:text-primary-500 leading-[1.5]">
-                    <div class="w-8 h-8 rounded-lg flex items-center justify-center mr-3">
+                    <div class="w-8 h-9 rounded-lg flex items-center justify-center mr-3">
                         <img
                             src="{{ asset('images/logo-64.png') }}?v={{ config('app.asset_version') }}"
                             srcset="{{ asset('images/logo-64.png') }}?v={{ config('app.asset_version') }} 1x, {{ asset('images/logo-64-2x.png') }}?v={{ config('app.asset_version') }} 2x"
@@ -152,76 +152,31 @@
         </aside>
 
         <!-- Main Content Area -->
-        <div class="flex-1 flex flex-col overflow-hidden">
-            <!-- Mobile Header -->
-            <header class="lg:hidden bg-white dark:bg-gray-800 border-b border-[#D1D7E0] dark:border-gray-700 px-4 py-3 transition-colors">
-                <div class="flex items-center justify-between">
-                    <div class="flex items-center space-x-2">
-                        <div class="w-8 h-8 rounded-lg flex items-center justify-center">
-                            <img
-                                src="{{ asset('images/logo-64.png') }}?v={{ config('app.asset_version') }}"
-                                srcset="{{ asset('images/logo-64.png') }}?v={{ config('app.asset_version') }} 1x, {{ asset('images/logo-64-2x.png') }}?v={{ config('app.asset_version') }} 2x"
-                                alt="{{ config('app.name') }} Logo"
-                                class="w-full h-full object-contain" />
-                        </div>
-                        <h1 id="mobile-page-title" class="text-lg sm:text-xl font-semibold text-[#4A5568] dark:text-gray-200 leading-[1.5]">
-                            {{ config('app.name') }}
-                        </h1>
-                    </div>
-
-                    <!-- Mobile User Menu -->
-                    <div x-data="{ open: false }" class="relative">
-                        <button type="button" @click="open = !open"
-                            class="w-8 h-8 bg-primary-500 rounded-full flex items-center justify-center text-white text-sm font-medium">
-                            {{ auth()->check() ? substr(auth()->user()->name, 0, 1) : 'J' }}
-                        </button>
-
-                        <div x-show="open" @click.away="open = false" x-cloak
-                            class="absolute right-0 mt-2 w-48 bg-white dark:bg-gray-800 rounded-lg border border-[#D1D7E0] dark:border-gray-700 py-1 z-50 transition-colors">
-                            <div class="px-4 py-2 border-b border-[#D1D7E0] dark:border-gray-700">
-                                <p class="text-sm font-medium text-gray-900 dark:text-gray-100">
-                                    {{ auth()->check() ? auth()->user()->name : 'John Doe' }}
-                                </p>
-                                <p class="text-xs text-gray-500 dark:text-gray-400">
-                                    {{ auth()->check() ? auth()->user()->email : 'john@example.com' }}
-                                </p>
-                            </div>
-                            <form method="POST" action="{{ route('logout') }}">
-                                @csrf
-                                <button type="submit"
-                                    class="w-full text-left px-4 py-2 text-sm text-gray-700 dark:text-gray-300 hover:bg-gray-100 dark:hover:bg-gray-700">
-                                    Sign out
-                                </button>
-                            </form>
-                        </div>
-                    </div>
-                </div>
-            </header>
-
+        <div class="flex-1 flex flex-col lg:overflow-hidden">
             <!-- Desktop Header with Log Reading Button -->
             <header class="hidden lg:block bg-white dark:bg-gray-800 border-b border-[#D1D7E0] dark:border-gray-700 transition-colors lg:pr-4">
-                <div class="container mx-auto p-4 xl:p-6">
+                <div class="container mx-auto px-4 py-3 xl:px-6 xl:py-4">
                     <div class="flex items-center justify-between">
-                        <div class="flex items-center space-x-4 xl:block xl:space-x-0">
-                            <h1 id="desktop-page-title" class="text-2xl lg:text-[32px] font-semibold text-[#4A5568] dark:text-gray-200 leading-[1.5]">
+                        <div class="flex items-center">
+                            <h1 id="desktop-page-title" class="text-lg lg:text-xl font-semibold text-[#4A5568] dark:text-gray-200">
                                 @yield('page-title', 'Dashboard')
+                                <span id="desktop-page-subtitle" class="text-sm text-gray-600 dark:text-gray-400 font-normal ml-3">
+                                    @yield('page-subtitle', 'Track your Bible reading progress')
+                                </span>
                             </h1>
-                            <p id="desktop-page-subtitle" class="text-base text-gray-600 dark:text-gray-400 mt-1 leading-[1.5]">
-                                @yield('page-subtitle', 'Track your Bible reading progress')
-                            </p>
                         </div>
 
                         <!-- Primary Action Button - Desktop -->
-                        <div class="flex items-center space-x-3">
+                        <div class="flex items-center">
                             <x-ui.button
                                 variant="accent"
-                                size="lg"
+                                size="md"
                                 hx-get="{{ route('logs.create') }}"
                                 hx-target="#reading-log-modal-content"
                                 hx-swap="innerHTML"
                                 hx-indicator="#modal-loading"
                                 @click="modalOpen = true"
-                                class="!px-6 !py-3 !text-base">
+                                class="!px-4 !py-2 !my-0 !h-9">
                                 <svg class="w-4 h-4 mr-1" fill="none" stroke="currentColor" viewBox="0 0 24 24">
                                     <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M12 6v6m0 0v6m0-6h6m-6 0H6"></path>
                                 </svg>
@@ -232,9 +187,54 @@
                 </div>
             </header>
 
-            <!-- Page Content -->
-            <main class="flex-1 overflow-y-auto">
-                <div id="page-container" class="lg:flex lg:h-full  container mx-auto">
+            <!-- Page Content (includes mobile header that scrolls) -->
+            <main class="flex-1 lg:overflow-y-auto">
+                <!-- Mobile Header (inside scrollable area) -->
+                <header class="lg:hidden bg-white dark:bg-gray-800 border-b border-[#D1D7E0] dark:border-gray-700 px-4 py-3 transition-colors">
+                    <div class="flex items-center justify-between">
+                        <div class="flex items-center space-x-2">
+                            <div class="w-8 h-8 rounded-lg flex items-center justify-center">
+                                <img
+                                    src="{{ asset('images/logo-64.png') }}?v={{ config('app.asset_version') }}"
+                                    srcset="{{ asset('images/logo-64.png') }}?v={{ config('app.asset_version') }} 1x, {{ asset('images/logo-64-2x.png') }}?v={{ config('app.asset_version') }} 2x"
+                                    alt="{{ config('app.name') }} Logo"
+                                    class="w-full h-full object-contain" />
+                            </div>
+                            <h1 id="mobile-page-title" class="text-lg sm:text-xl font-semibold text-[#4A5568] dark:text-gray-200 leading-[1.5]">
+                                {{ config('app.name') }}
+                            </h1>
+                        </div>
+
+                        <!-- Mobile User Menu -->
+                        <div x-data="{ open: false }" class="relative">
+                            <button type="button" @click="open = !open"
+                                class="w-8 h-8 bg-primary-500 rounded-full flex items-center justify-center text-white text-sm font-medium">
+                                {{ auth()->check() ? substr(auth()->user()->name, 0, 1) : 'J' }}
+                            </button>
+
+                            <div x-show="open" @click.away="open = false" x-cloak
+                                class="absolute right-0 mt-2 w-48 bg-white dark:bg-gray-800 rounded-lg border border-[#D1D7E0] dark:border-gray-700 py-1 z-50 transition-colors">
+                                <div class="px-4 py-2 border-b border-[#D1D7E0] dark:border-gray-700">
+                                    <p class="text-sm font-medium text-gray-900 dark:text-gray-100">
+                                        {{ auth()->check() ? auth()->user()->name : 'John Doe' }}
+                                    </p>
+                                    <p class="text-xs text-gray-500 dark:text-gray-400">
+                                        {{ auth()->check() ? auth()->user()->email : 'john@example.com' }}
+                                    </p>
+                                </div>
+                                <form method="POST" action="{{ route('logout') }}">
+                                    @csrf
+                                    <button type="submit"
+                                        class="w-full text-left px-4 py-2 text-sm text-gray-700 dark:text-gray-300 hover:bg-gray-100 dark:hover:bg-gray-700">
+                                        Sign out
+                                    </button>
+                                </form>
+                            </div>
+                        </div>
+                    </div>
+                </header>
+
+                <div id="page-container" class="lg:flex lg:h-full container mx-auto">
                     @hasSection('sidebar')
                     <!-- Main Content (70% on desktop when sidebar present) -->
                     <div class="lg:flex-1 lg:max-w-[70%] p-4 lg:p-4 xl:p-6">
