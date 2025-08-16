@@ -6,7 +6,7 @@
 
 ## Phase 2 Tasks
 
-- [ ] 1. Extend WeeklyGoalService with weekly streak calculation methods
+- [x] 1. Extend WeeklyGoalService with weekly streak calculation methods
   - Add `calculateWeeklyStreak(User $user): int` method to calculate consecutive weeks with achieved goals
   - Add `isWeekGoalAchieved(User $user, Carbon $weekStart): bool` helper method
   - Add `getWeeklyStreakData(User $user): array` method to return complete streak data structure
