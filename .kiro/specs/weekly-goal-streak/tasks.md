@@ -27,9 +27,10 @@
 - [ ] 3. Update UserStatisticsService to include weekly streak data
   - Add `getWeeklyStreakStatistics(User $user): array` method to UserStatisticsService
   - Extend `getDashboardStatistics()` method to include `'weekly_streak'` key in return array
-  - Add appropriate caching for weekly streak data (similar to existing weekly goal caching)
+  - Add appropriate caching for weekly streak data (cache until Sunday 12:01 AM, follows existing patterns)
   - Ensure backward compatibility with existing weekly goal data and caching patterns
   - Add error handling to gracefully handle streak calculation failures
+  - Implement cache key pattern: `weekly_streak_{user_id}` with week-aware expiry
   - _Requirements: 4.1, 4.2, 4.4, 6.3_
 
 - [ ] 4. Integrate weekly streak card into dashboard layout with summary stats reorganization
