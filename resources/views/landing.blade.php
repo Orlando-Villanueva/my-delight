@@ -164,7 +164,7 @@
                     <!-- Hero Visual -->
                     <div class="relative" role="img" aria-label="Screenshots of Delight Bible reading tracker application">
                         <!-- Desktop Screenshot - Hidden on mobile -->
-                        <div class="hidden lg:block bg-white rounded-2xl shadow-2xl p-0 transform rotate-1 hover:rotate-0 transition-transform duration-300">
+                        <div class="hidden lg:block bg-white rounded-2xl shadow-2xl p-0 transform rotate-1">
                             <div class="rounded-lg overflow-hidden">
                                 <img
                                     src="{{ asset('images/screenshots/desktop_100.png') }}"
@@ -190,7 +190,7 @@
                         </div>
 
                         <!-- Mobile Screenshot - Floating (Desktop only) -->
-                        <div class="hidden lg:block absolute -bottom-6 -right-6 w-36 sm:w-40 lg:w-48 bg-white rounded-xl shadow-xl p-0 transform rotate-6 hover:rotate-3 transition-transform duration-300">
+                        <div class="hidden lg:block absolute -bottom-6 -right-6 w-36 sm:w-40 lg:w-48 bg-white rounded-xl shadow-xl p-0 transform rotate-6">
                             <div class="rounded-lg overflow-hidden">
                                 <img
                                     src="{{ asset('images/screenshots/mobile_100.png') }}"
