@@ -6,6 +6,8 @@ use App\Models\User;
 use Carbon\Carbon;
 use Illuminate\Support\Facades\Log;
 use Exception;
+use Illuminate\Database\QueryException;
+use InvalidArgumentException;
 
 class WeeklyGoalService
 {
@@ -15,10 +17,20 @@ class WeeklyGoalService
     private const int DEFAULT_WEEKLY_GOAL = 4;
     private const int FIRST_DAY_OF_WEEK = Carbon::SUNDAY;
     private const int LAST_DAY_OF_WEEK = Carbon::SATURDAY;
+    private const int MAX_WEEKS_TO_CHECK = 52;
 
     public function __construct()
     {
         // Self-contained service with no dependencies
+    }
+
+    /**
+     * Generate consistent cache keys for weekly goal related data
+     */
+    private function getCacheKey(string $type, User $user, string $suffix = ''): string
+    {
+        $baseKey = "weekly_goal_{$type}_{$user->id}";
+        return $suffix ? "{$baseKey}_{$suffix}" : $baseKey;
     }
 
 
@@ -27,6 +39,10 @@ class WeeklyGoalService
      */
     public function getWeeklyGoalData(User $user): array
     {
+        if (!$user || !$user->id) {
+            throw new InvalidArgumentException('Valid user with ID required');
+        }
+        
         try {
             $weekStart = now()->startOfWeek(self::FIRST_DAY_OF_WEEK);
             $currentProgress = $this->calculateWeekProgress($user, now());
@@ -108,10 +124,14 @@ class WeeklyGoalService
      */
     public function calculateWeeklyStreak(User $user): int
     {
+        if (!$user || !$user->id) {
+            throw new InvalidArgumentException('Valid user with ID required');
+        }
+        
         try {
             $currentWeekStart = now()->startOfWeek(self::FIRST_DAY_OF_WEEK);
             $streakCount = 0;
-            $maxWeeksToCheck = 52; // Start with 52 weeks, expand if needed
+            $maxWeeksToCheck = self::MAX_WEEKS_TO_CHECK;
             
             // Get weekly data for the specified range
             $weeklyData = $this->getWeeklyDataWithDateRange($user, $maxWeeksToCheck);
@@ -127,10 +147,19 @@ class WeeklyGoalService
             }
             
             return $streakCount;
-        } catch (Exception $e) {
-            Log::error('Error calculating weekly streak', [
+        } catch (QueryException $e) {
+            Log::error('Database error calculating weekly streak', [
                 'user_id' => $user->id,
-                'error' => $e->getMessage()
+                'error' => $e->getMessage(),
+                'sql_state' => $e->getCode()
+            ]);
+            
+            return 0;
+        } catch (Exception $e) {
+            Log::error('Unexpected error calculating weekly streak', [
+                'user_id' => $user->id,
+                'error' => $e->getMessage(),
+                'type' => get_class($e)
             ]);
             
             return 0;

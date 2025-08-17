@@ -6,6 +6,17 @@ use Carbon\Carbon;
 
 class StreakStateService
 {
+    private const int WARNING_HOUR = 18;
+
+    /**
+     * Generate consistent cache keys for warning state tracking
+     */
+    private function getWarningStateCacheKey(?int $userId = null): string
+    {
+        $userId = $userId ?? auth()->id();
+        $dateString = now()->format('Y-m-d');
+        return "warning_state_{$userId}_{$dateString}";
+    }
 
     /**
      * Determine the visual state of the streak counter component
@@ -24,8 +35,8 @@ class StreakStateService
             return 'inactive';
         }
 
-        // Warning state: has streak but hasn't read today and it's past warning time (6 PM)
-        if ($currentStreak > 0 && !$hasReadToday && $currentTime->hour >= 18) {
+        // Warning state: has streak but hasn't read today and it's past warning time
+        if ($currentStreak > 0 && !$hasReadToday && $currentTime->hour >= self::WARNING_HOUR) {
             // Mark that user entered warning state today for acknowledgment tracking
             $this->markWarningStateToday();
             return 'warning';
@@ -235,8 +246,7 @@ class StreakStateService
     private function wasInWarningStateToday(): bool
     {
         // Check if there's a cached warning state flag for today
-        $cacheKey = 'warning_state_' . auth()->id() . '_' . now()->format('Y-m-d');
-        return cache()->has($cacheKey);
+        return cache()->has($this->getWarningStateCacheKey());
     }
 
     /**
@@ -247,9 +257,8 @@ class StreakStateService
      */
     public function markWarningStateToday(): void
     {
-        $cacheKey = 'warning_state_' . auth()->id() . '_' . now()->format('Y-m-d');
         // Cache until end of day - will automatically clear at midnight
         $minutesUntilMidnight = now()->diffInMinutes(now()->endOfDay());
-        cache()->put($cacheKey, true, $minutesUntilMidnight);
+        cache()->put($this->getWarningStateCacheKey(), true, $minutesUntilMidnight);
     }
 }
