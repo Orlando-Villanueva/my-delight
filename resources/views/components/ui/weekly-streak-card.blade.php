@@ -25,7 +25,7 @@
     ];
     
     // Design tokens for weekly streak styling - purple/indigo for secondary hierarchy
-    $weeklyStreakGradient = 'bg-gradient-to-r from-purple-600 to-purple-500 dark:from-purple-800 dark:to-purple-700';
+    $weeklyStreakGradient = 'bg-gradient-to-r from-purple-600 to-purple-700 dark:from-purple-700 dark:to-purple-800';
     
     // Base styling - consistent with other cards
     $baseBackgroundClass = 'bg-white dark:bg-gray-800 border border-gray-200 dark:border-gray-700';
@@ -33,7 +33,7 @@
     // Consistent styling - secondary to weekly goal, but still prominent
     $headerBgClass = $weeklyStreakGradient;
     $headerBorderClass = 'border-b-0';
-    $iconClass = 'text-white';
+    $iconClass = 'text-accent-500 dark:text-accent-500';
     $headerTextClass = 'text-white font-semibold';
     $numberColorClass = 'text-gray-700 dark:text-gray-200';
     $textColorClass = 'text-gray-600 dark:text-gray-300';

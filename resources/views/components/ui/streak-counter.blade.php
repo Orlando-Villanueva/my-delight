@@ -52,9 +52,9 @@
             
         case 'active':
             // Active state: beautiful blue gradient with fiery orange icon like production!
-            $headerBgClass = 'bg-gradient-to-r from-primary-600 to-primary-500 dark:from-primary-600 dark:to-primary-500';
+            $headerBgClass = 'bg-gradient-to-r from-primary-500 to-primary-600 dark:from-primary-500 dark:to-primary-600';
             $headerBorderClass = 'border-b-0';
-            $iconClass = 'text-accent-500 dark:text-accent-400';  // Fire icon back to fiery orange!
+            $iconClass = 'text-accent-500 dark:text-accent-500';  // Fire icon back to fiery orange!
             $headerTextClass = 'text-white font-semibold';  // Bold white text like weekly card
             $numberColorClass = 'text-gray-700 dark:text-gray-200';
             $textColorClass = 'text-gray-600 dark:text-gray-300';
