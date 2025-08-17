@@ -32,6 +32,9 @@ class DashboardController extends Controller
         // Extract weekly goal data for easier access in views
         $weeklyGoal = $stats['weekly_goal'];
 
+        // Extract weekly streak data for easier access in views
+        $weeklyStreak = $stats['weekly_streak'];
+
         // Compute streak state and classes for the component
         $streakState = $this->streakStateService->determineStreakState(
             $stats['streaks']['current_streak'],
@@ -49,10 +52,10 @@ class DashboardController extends Controller
 
         // Return partial for HTMX navigation, full page for direct access
         if ($request->header('HX-Request')) {
-            return view('partials.dashboard-page', compact('hasReadToday', 'streakState', 'streakStateClasses', 'streakMessage', 'stats', 'weeklyGoal'));
+            return view('partials.dashboard-page', compact('hasReadToday', 'streakState', 'streakStateClasses', 'streakMessage', 'stats', 'weeklyGoal', 'weeklyStreak'));
         }
 
         // Return full page for direct access (browser URL)
-        return view('dashboard', compact('hasReadToday', 'streakState', 'streakStateClasses', 'streakMessage', 'stats', 'weeklyGoal'));
+        return view('dashboard', compact('hasReadToday', 'streakState', 'streakStateClasses', 'streakMessage', 'stats', 'weeklyGoal', 'weeklyStreak'));
     }
 }

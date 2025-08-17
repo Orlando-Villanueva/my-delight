@@ -57,10 +57,11 @@ class WeeklyGoalService
 2. **Weekly Streak** (Secondary) - New weekly-streak-card with complementary but subdued styling
 3. **Daily Streak** (Supporting) - Existing streak card maintains current position
 
-**Layout Approach (Option 2 - Summary Stats in Separate Row)**:
+**Layout Approach (Summary Stats in Separate Row)**:
 - **Top Row**: Weekly Goal | Weekly Streak | Daily Streak (3 cards maximum)
 - **Summary Stats Row**: Moves to its own full-width row below (like current LG screen behavior)
 - **Benefits**: More breathing room for goal/streak cards, simpler responsive logic, clearer hierarchy
+- **Migration Strategy**: Remove complex responsive hiding/showing of summary stats - always show in separate row
 - **Responsive Grid**: 
   - XL screens: `xl:grid-cols-3` for top row (Weekly Goal | Weekly Streak | Daily Streak)
   - LG screens: `lg:grid-cols-3` for top row 
@@ -70,6 +71,7 @@ class WeeklyGoalService
 - Weekly Goal (Primary): Green gradient - most prominent
 - Weekly Streak (Secondary): Purple/indigo gradient - prominent but secondary  
 - Daily Streak (Supporting): Blue gradient - existing styling maintained
+- **Visual Distinction**: Purple/indigo provides clear differentiation from existing blue daily streak theming
 
 ### New UI Component Structure
 
@@ -172,6 +174,8 @@ return [
 - **Invalid Date Ranges**: Use safe fallback calculations
 - **Streak Calculation Failures**: Return 0 streak with encouraging message
 - **User Registration Edge Cases**: Handle users with insufficient history gracefully
+- **Timezone Handling**: Use Carbon's timezone-aware week boundaries with user's local timezone
+- **Calculation State**: Show "calculating..." state vs generic default when streak computation is in progress
 
 ### UI Level Error Handling
 - **Missing Streak Data**: Display "Start your first weekly streak!" message
@@ -224,17 +228,15 @@ return [
 - **HTMX Compatibility**: Streak data included in existing dashboard partial responses
 - **Layout Impact**: Minimal CSS additions, reuses existing grid and styling patterns
 
-### Calculation Efficiency
-- **Smart Break Detection**: Stop calculating immediately when a week with <4 days is found (don't scan entire history)
-- **Date Range Optimization**: Start with reasonable date range (52 weeks), expand if streak is longer than initial range
-- **Early Exit Strategy**: Return streak count as soon as break is detected
-- **Fallback Strategy**: Return cached/default values if calculations take too long
+### Calculation Efficiency (MVP Approach)
+- **Smart Break Detection**: Stop calculating immediately when a week with <4 days is found
+- **Simple Query**: Direct calculation without complex optimizations for early-stage app
 
-### Cache Invalidation Strategy
-- **Weekly Streak Cache**: Cache invalidated only on Sunday night after week evaluation, not on each reading log
-- **Cache Duration**: Weekly streak data cached for 24 hours since streaks only change weekly
-- **Cache Key Pattern**: `weekly_streak_{user_id}` for user-specific streak data
-- **Performance Benefit**: Eliminates redundant calculations during the week when streak values cannot change
+### Cache Strategy (MVP Approach)
+- **Simple Caching**: Follow existing UserStatisticsService caching patterns for consistency
+- **Cache Duration**: Until Sunday 12:01 AM (when week boundaries reset and streaks can change)
+- **Cache Key**: `weekly_streak_{user_id}` for user-specific streak data
+- **Week-Aware Expiry**: Cache expires when weeks end to ensure accurate streak display
 
 ## Implementation Approach - Phase 2
 

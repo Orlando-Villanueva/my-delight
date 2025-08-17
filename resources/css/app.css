@@ -100,19 +100,6 @@ html {
     }
 }
 
-/* Reduced motion support */
-@media (prefers-reduced-motion: reduce) {
-    * {
-        animation-duration: 0.01ms !important;
-        animation-iteration-count: 1 !important;
-        transition-duration: 0.01ms !important;
-        scroll-behavior: auto !important;
-    }
-    
-    html {
-        scroll-behavior: auto;
-    }
-}
 
 /* Essential Component Classes - Only what we actually use */
 @layer components {

@@ -7,8 +7,8 @@
 
 <div {{ $attributes->merge(['class' => 'bg-white dark:bg-gray-800 border border-[#D1D7E0] dark:border-gray-700 h-full transition-colors rounded-lg shadow-lg']) }}>
     <div class="p-6 lg:px-3 lg:py-4 xl:p-6 h-full flex items-center">
-        <!-- Responsive Grid: 1x4 on iPad Pro landscape only, 2x2 on others -->
-        <div class="grid grid-cols-2 lg:grid-cols-4 xl:grid-cols-2 gap-x-5 gap-y-10 lg:gap-y-5 xl:gap-y-10 lg:gap-x-4 xl:gap-x-5 w-full">
+        <!-- Responsive: 2x2 when sharing row (iPad), 1x4 when own row (desktop) -->
+        <div class="grid grid-cols-2 xl:grid-cols-4 gap-x-4 gap-y-4 xl:gap-y-0 xl:gap-x-8 w-full">
             <!-- Days Read -->
             <div class="flex flex-col items-center text-center">
                 <div class="p-3 rounded-lg bg-green-50 dark:bg-green-900/20 mb-3">

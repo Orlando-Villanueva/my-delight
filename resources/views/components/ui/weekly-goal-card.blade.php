@@ -16,7 +16,7 @@
     ];
     
     // Design tokens for weekly goal styling - using app's custom success colors
-    $weeklyGoalGradient = 'bg-gradient-to-r from-success-600 to-success-500 dark:from-success-600 dark:to-success-500';
+    $weeklyGoalGradient = 'bg-gradient-to-r from-success-600 to-success-500 dark:from-success-600 dark:to-success-700';
     $weeklyGoalBorder = 'border-success-200 dark:border-success-700';
     
     // Determine progress state and styling
