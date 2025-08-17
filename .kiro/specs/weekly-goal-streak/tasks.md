@@ -16,7 +16,7 @@
   - Add proper error handling and fallback values for streak calculations
   - _Requirements: 2.1, 2.2, 2.3, 4.1, 4.2, 4.4_
 
-- [ ] 2. Create weekly streak card Blade component
+- [x] 2. Create weekly streak card Blade component
   - Create `resources/views/components/ui/weekly-streak-card.blade.php` component
   - Implement secondary styling that complements but doesn't overshadow weekly goal card
   - Add streak count display with appropriate messaging based on streak length
