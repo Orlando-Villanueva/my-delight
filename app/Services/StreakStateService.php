@@ -26,6 +26,8 @@ class StreakStateService
 
         // Warning state: has streak but hasn't read today and it's past warning time (6 PM)
         if ($currentStreak > 0 && !$hasReadToday && $currentTime->hour >= 18) {
+            // Mark that user entered warning state today for acknowledgment tracking
+            $this->markWarningStateToday();
             return 'warning';
         }
 
@@ -87,11 +89,11 @@ class StreakStateService
                     return $this->selectActiveMessage($currentStreak);
                 }
                 
-                // If user has read today and has a streak > 2, show acknowledgment message occasionally
-                // Avoid acknowledgment for streaks 1-2 since they're building from 0, not maintaining an existing streak
-                if ($hasReadToday && $currentStreak > 2 && $this->shouldShowAcknowledgment()) {
+                // Check if user was in warning state today and then read to save their streak
+                if ($hasReadToday && $this->wasInWarningStateToday()) {
                     return $this->selectAcknowledgmentMessage();
                 }
+                
                 return $this->selectActiveMessage($currentStreak);
             
             default:
@@ -225,15 +227,29 @@ class StreakStateService
     }
 
     /**
-     * Determine if acknowledgment message should be shown (25% chance)
+     * Check if user was in warning state today (after 6 PM before reading)
+     * This is used to show acknowledgment messages only after the user "saved" their streak
      * 
      * @return bool
      */
-    private function shouldShowAcknowledgment(): bool
+    private function wasInWarningStateToday(): bool
     {
-        // Show acknowledgment message 25% of the time when user has read today
-        $dateString = now()->format('Y-m-d');
-        $seed = hash('crc32b', $dateString . '_acknowledge_chance');
-        return (hexdec(substr($seed, 0, 8)) % 4) === 0;
+        // Check if there's a cached warning state flag for today
+        $cacheKey = 'warning_state_' . auth()->id() . '_' . now()->format('Y-m-d');
+        return cache()->has($cacheKey);
+    }
+
+    /**
+     * Mark that user was in warning state today
+     * This should be called when the user enters warning state (after 6 PM without reading)
+     * 
+     * @return void
+     */
+    public function markWarningStateToday(): void
+    {
+        $cacheKey = 'warning_state_' . auth()->id() . '_' . now()->format('Y-m-d');
+        // Cache until end of day - will automatically clear at midnight
+        $minutesUntilMidnight = now()->diffInMinutes(now()->endOfDay());
+        cache()->put($cacheKey, true, $minutesUntilMidnight);
     }
 }
