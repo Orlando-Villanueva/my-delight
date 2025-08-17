@@ -14,8 +14,8 @@
     
     $numberSizes = [
         'small' => 'text-2xl lg:text-3xl',
-        'default' => 'text-3xl lg:text-4xl',
-        'large' => 'text-4xl lg:text-5xl'
+        'default' => 'text-4xl lg:text-5xl',
+        'large' => 'text-5xl lg:text-6xl'
     ];
     
     $iconSizes = [

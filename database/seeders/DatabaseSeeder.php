@@ -65,12 +65,18 @@ class DatabaseSeeder extends Seeder
 
             // 6 days ago - single chapter
             ['book_id' => 40, 'chapter' => 5, 'passage_text' => 'Matthew 5', 'date' => $today->copy()->subDays(6), 'notes' => 'The Sermon on the Mount. Blessed are the poor in spirit.'],
+
+            // 7 days ago - single chapter
+            ['book_id' => 43, 'chapter' => 14, 'passage_text' => 'John 14', 'date' => $today->copy()->subDays(7), 'notes' => 'I am the way, the truth, and the life. Let not your heart be troubled.'],
         ];
 
-        // Medium-term readings (8-30 days ago) - 14 entries
+        // Medium-term readings (8-30 days ago) - 15 entries
         $mediumLogs = [
             // Day 8 - Single reading
             ['book_id' => 40, 'chapter' => 6, 'passage_text' => 'Matthew 6', 'date' => $today->copy()->subDays(8), 'notes' => 'The Lord\'s Prayer. Do not worry about tomorrow.'],
+
+            // Day 9 - Add fourth reading day for last week to achieve weekly goal
+            ['book_id' => 44, 'chapter' => 1, 'passage_text' => 'Acts 1', 'date' => $today->copy()->subDays(9), 'notes' => 'You will receive power when the Holy Spirit comes upon you.'],
 
             // Day 10 - Multiple Psalms in one day
             ['book_id' => 19, 'chapter' => 91, 'passage_text' => 'Psalms 91', 'date' => $today->copy()->subDays(10), 'notes' => 'He who dwells in the shelter of the Most High...'],

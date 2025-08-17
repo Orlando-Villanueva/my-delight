@@ -16,10 +16,10 @@
         <!-- Left Column - Main Content (responsive width) -->
         <div class="lg:col-span-2 xl:col-span-3 space-y-4 xl:space-y-6">
 
-            <!-- Top Row - Goal-Oriented Widgets -->
-            <div class="grid grid-cols-1 sm:grid-cols-2 md:grid-cols-4 lg:grid-cols-2 xl:grid-cols-3 gap-4 lg:gap-6 mb-6">
+            <!-- Cards Grid: 2x2 on iPad (portrait/landscape), 3+1 on desktop -->
+            <div class="grid grid-cols-1 sm:grid-cols-2 md:grid-cols-2 lg:grid-cols-2 xl:grid-cols-3 gap-4 lg:gap-4 xl:gap-6">
                 <!-- Weekly Goal - Primary Focus -->
-                <div class="sm:col-span-1 md:col-span-2 lg:col-span-1 xl:col-span-1">
+                <div class="sm:col-span-1 lg:col-span-1 xl:col-span-1">
                     <x-ui.weekly-goal-card
                         :currentProgress="$weeklyGoal['current_progress']"
                         :weeklyTarget="$weeklyGoal['weekly_target']"
@@ -28,8 +28,17 @@
                         class="h-full" />
                 </div>
 
+                <!-- Weekly Streak - Secondary Achievement -->
+                <div class="sm:col-span-1 lg:col-span-1 xl:col-span-1">
+                    <x-ui.weekly-streak-card
+                        :streakCount="$weeklyStreak['streak_count'] ?? 0"
+                        :isActive="$weeklyStreak['is_active'] ?? false"
+                        :motivationalMessage="$weeklyStreak['motivational_message'] ?? ''"
+                        class="h-full" />
+                </div>
+
                 <!-- Daily Streak - Secondary Achievement -->
-                <div class="sm:col-span-1 md:col-span-2 lg:col-span-1 xl:col-span-1">
+                <div class="sm:col-span-2 md:col-span-1 lg:col-span-1 xl:col-span-1">
                     <x-ui.streak-counter
                         :currentStreak="$stats['streaks']['current_streak']"
                         :longestStreak="$stats['streaks']['longest_streak']"
@@ -38,8 +47,8 @@
                         class="h-full" />
                 </div>
 
-                <!-- Summary Stats - Supporting Metrics (2x2 grid) - Only on portrait/mobile/desktop -->
-                <div class="sm:col-span-1 md:col-span-2 lg:hidden xl:block xl:col-span-1">
+                <!-- Summary Stats - Fourth card on iPad (portrait & landscape), hidden on desktop -->
+                <div class="sm:col-span-2 md:col-span-1 lg:col-span-1 xl:hidden">
                     <x-ui.summary-stats
                         :daysRead="$stats['reading_summary']['total_reading_days']"
                         :totalChapters="$stats['reading_summary']['total_readings']"
@@ -47,25 +56,25 @@
                         :averageChaptersPerDay="$stats['reading_summary']['average_chapters_per_day']"
                         class="h-full" />
                 </div>
-
-                <!-- Mobile/Tablet Calendar - Shows only on mobile and portrait tablets -->
-                <div class="sm:col-span-1 md:col-span-2 lg:hidden">
-                    <x-bible.calendar-heatmap
-                        :user="auth()->user()"
-                        :months="1"
-                        :showLegend="false"
-                        class="text-sm" />
-                </div>
             </div>
 
-            <!-- Summary Stats Row - Full width horizontal layout on iPad Pro landscape only (1x4) -->
-            <div class="hidden lg:block xl:hidden lg:mb-4 lg:-mt-2">
+            <!-- Summary Stats Row - Desktop only -->
+            <div class="hidden xl:block">
                 <x-ui.summary-stats
                     :daysRead="$stats['reading_summary']['total_reading_days']"
                     :totalChapters="$stats['reading_summary']['total_readings']"
                     :bibleProgress="$stats['book_progress']['overall_progress_percent']"
                     :averageChaptersPerDay="$stats['reading_summary']['average_chapters_per_day']"
                     class="h-full" />
+            </div>
+
+            <!-- Mobile Calendar Row - Shows only on mobile -->
+            <div class="lg:hidden md:mx-32">
+                <x-bible.calendar-heatmap
+                    :user="auth()->user()"
+                    :months="1"
+                    :showLegend="false"
+                    class="text-sm" />
             </div>
 
             <!-- Book Progress Visualization -->

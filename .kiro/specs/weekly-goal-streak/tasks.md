@@ -24,7 +24,7 @@
   - Ensure responsive design matches existing dashboard card patterns
   - _Requirements: 1.1, 1.2, 3.1, 3.3, 3.4, 5.1, 5.2, 5.3, 5.4_
 
-- [ ] 3. Update UserStatisticsService to include weekly streak data
+- [x] 3. Update UserStatisticsService to include weekly streak data
   - Add `getWeeklyStreakStatistics(User $user): array` method to UserStatisticsService
   - Extend `getDashboardStatistics()` method to include `'weekly_streak'` key in return array
   - Add appropriate caching for weekly streak data (cache until Sunday 12:01 AM, follows existing patterns)
@@ -33,7 +33,7 @@
   - Implement cache key pattern: `weekly_streak_{user_id}` with week-aware expiry
   - _Requirements: 4.1, 4.2, 4.4, 6.3_
 
-- [ ] 4. Integrate weekly streak card into dashboard layout with summary stats reorganization
+- [x] 4. Integrate weekly streak card into dashboard layout with summary stats reorganization
   - Update `resources/views/partials/dashboard-content.blade.php` to include weekly streak card
   - Position weekly streak card in top row: Weekly Goal | Weekly Streak | Daily Streak
   - Move summary stats component to its own full-width row below the goal/streak cards (like current LG behavior)
