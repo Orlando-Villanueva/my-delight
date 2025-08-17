@@ -78,7 +78,7 @@ class UserStatisticsService
         $weekStart = now()->startOfWeek(Carbon::SUNDAY)->toDateString();
         
         return Cache::remember(
-            "weekly_streak_{$user->id}_{$weekStart}",
+            "user_weekly_streak_{$user->id}_{$weekStart}",
             $this->getWeeklyStreakCacheExpiry(), // Cache until Sunday 12:01 AM
             function() use ($user) {
                 try {
@@ -359,7 +359,7 @@ class UserStatisticsService
         Cache::forget("user_current_streak_{$user->id}");
         Cache::forget("user_longest_streak_{$user->id}");
         Cache::forget("user_weekly_goal_{$user->id}_{$weekStart}");
-        Cache::forget("weekly_streak_{$user->id}_{$weekStart}");
+        Cache::forget("user_weekly_streak_{$user->id}_{$weekStart}");
         Cache::forget("user_calendar_{$user->id}_{$currentYear}");
         Cache::forget("user_calendar_{$user->id}_{$previousYear}");
         Cache::forget("user_total_reading_days_{$user->id}");
