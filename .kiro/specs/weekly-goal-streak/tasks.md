@@ -44,7 +44,7 @@
   - Test layout on mobile, tablet, and desktop screen sizes
   - _Requirements: 3.1, 3.2, 6.1, 6.2, 6.4, 6.5_
 
-- [ ] 5. Add unit tests for weekly streak calculations
+- [x] 5. Add unit tests for weekly streak calculations
   - Create `tests/Unit/WeeklyGoalServiceTest.php` for testing streak calculation methods
   - Test `calculateWeeklyStreak()` method with various reading patterns (0, 1, 2-3, 4+ weeks)
   - Test streak breaking scenarios (weeks with <4 days reading)
