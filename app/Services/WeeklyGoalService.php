@@ -120,7 +120,7 @@ class WeeklyGoalService
 
     /**
      * Calculate the current weekly streak for a user.
-     * Counts consecutive weeks with achieved goals (4+ days) working backwards from the most recent completed week.
+ma     * Counts consecutive weeks with achieved goals (4+ days) working backwards from current week (if goal achieved) or most recent completed week.
      */
     public function calculateWeeklyStreak(User $user): int
     {
@@ -133,10 +133,19 @@ class WeeklyGoalService
             $streakCount = 0;
             $maxWeeksToCheck = self::MAX_WEEKS_TO_CHECK;
             
-            // Get weekly data for the specified range
-            $weeklyData = $this->getWeeklyDataWithDateRange($user, $maxWeeksToCheck);
+            // Check if current week goal is achieved
+            $currentWeekProgress = $this->calculateWeekProgress($user, now());
+            $currentWeekAchieved = $currentWeekProgress >= self::DEFAULT_WEEKLY_GOAL;
             
-            // Check each week backwards from most recent completed week
+            // If current week goal is achieved, include it in the streak
+            if ($currentWeekAchieved) {
+                $streakCount = 1;
+            }
+            
+            // Get weekly data for the specified range (excluding current week)
+            $weeklyData = $this->getWeeklyDataWithDateRange($user, $maxWeeksToCheck, false);
+            
+            // Check each completed week backwards
             foreach ($weeklyData as $weekData) {
                 if ($weekData['is_goal_achieved']) {
                     $streakCount++;
@@ -223,11 +232,19 @@ class WeeklyGoalService
      * Get weekly data for a specified date range with optimized queries.
      * Returns array of weeks with their reading progress and goal achievement status.
      */
-    private function getWeeklyDataWithDateRange(User $user, int $weeksBack): array
+    private function getWeeklyDataWithDateRange(User $user, int $weeksBack, bool $includeCurrentWeek = true): array
     {
         try {
             $currentWeekStart = now()->startOfWeek(self::FIRST_DAY_OF_WEEK);
-            $endDate = $currentWeekStart->copy()->subWeek(); // Start from most recent completed week
+            
+            if ($includeCurrentWeek) {
+                // Start from current week
+                $endDate = $currentWeekStart->copy();
+            } else {
+                // Start from most recent completed week
+                $endDate = $currentWeekStart->copy()->subWeek();
+            }
+            
             $startDate = $endDate->copy()->subWeeks($weeksBack - 1);
             
             $weeklyData = [];
@@ -256,6 +273,7 @@ class WeeklyGoalService
             Log::error('Error getting weekly data with date range', [
                 'user_id' => $user->id,
                 'weeks_back' => $weeksBack,
+                'include_current_week' => $includeCurrentWeek,
                 'error' => $e->getMessage()
             ]);
             

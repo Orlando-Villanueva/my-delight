@@ -33,6 +33,19 @@ class DatabaseSeeder extends Seeder
         $stats = $syncService->syncBookProgressForUser($seedUser);
         $this->command->info("Synced {$stats['processed_logs']} reading logs and updated {$stats['updated_books_count']} books with book progress.");
 
+        // Create test user with 3 reading days this week
+        $seedUser2 = User::factory()->create([
+            'name' => 'Seed User 2',
+            'email' => 'seed.user2@example.com',
+        ]);
+
+        $this->createCurrentWeekTestData($seedUser2);
+
+        // Sync book progress for seeduser2
+        $this->command->info("Syncing book progress for seeduser2...");
+        $stats2 = $syncService->syncBookProgressForUser($seedUser2);
+        $this->command->info("Synced {$stats2['processed_logs']} reading logs and updated {$stats2['updated_books_count']} books with book progress.");
+
         // Clear all caches to ensure fresh statistics
         $this->command->info("Clearing application caches...");
         cache()->flush();
@@ -234,5 +247,58 @@ class DatabaseSeeder extends Seeder
         $this->command->info("- Week 6 (days 36-42): 15 readings");
         $this->command->info("- Total: " . count($allLogs) . " readings over 42 days");
         $this->command->info("- Average: " . round(count($allLogs) / 42, 2) . " readings per day");
+    }
+
+    /**
+     * Create test data for current week with 3 reading days (goal not achieved yet)
+     */
+    private function createCurrentWeekTestData(User $user): void
+    {
+        $currentWeekStart = Carbon::now()->startOfWeek(Carbon::SUNDAY);
+        
+        // Create 3 reading logs in current week (Sunday, Tuesday, Thursday)
+        $readingLogs = [
+            [
+                'book_id' => 19,
+                'chapter' => 1,
+                'passage_text' => 'Psalms 1',
+                'date' => $currentWeekStart->copy(), // Sunday
+                'notes' => 'Blessed is the man who walks not in the counsel of the wicked.'
+            ],
+            [
+                'book_id' => 40,
+                'chapter' => 5,
+                'passage_text' => 'Matthew 5',
+                'date' => $currentWeekStart->copy()->addDays(2), // Tuesday
+                'notes' => 'The Beatitudes - Blessed are the poor in spirit.'
+            ],
+            [
+                'book_id' => 43,
+                'chapter' => 3,
+                'passage_text' => 'John 3',
+                'date' => $currentWeekStart->copy()->addDays(4), // Thursday
+                'notes' => 'For God so loved the world that he gave his one and only Son.'
+            ]
+        ];
+
+        foreach ($readingLogs as $logData) {
+            $readingDate = $logData['date'];
+            $loggedAt = $readingDate->copy()->addHours(2)->addMinutes(30);
+
+            ReadingLog::create([
+                'user_id' => $user->id,
+                'book_id' => $logData['book_id'],
+                'chapter' => $logData['chapter'],
+                'passage_text' => $logData['passage_text'],
+                'date_read' => $readingDate->toDateString(),
+                'notes_text' => $logData['notes'],
+                'created_at' => $loggedAt,
+                'updated_at' => $loggedAt,
+            ]);
+        }
+
+        $this->command->info("Created current week test data for {$user->name}:");
+        $this->command->info("- 3 reading days this week (goal not achieved yet)");
+        $this->command->info("- Weekly streak should be 0 until 4th reading is added");
     }
 }
