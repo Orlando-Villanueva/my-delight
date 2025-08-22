@@ -120,7 +120,7 @@ class WeeklyGoalService
 
     /**
      * Calculate the current weekly streak for a user.
-ma     * Counts consecutive weeks with achieved goals (4+ days) working backwards from current week (if goal achieved) or most recent completed week.
+     * Counts consecutive weeks with achieved goals (4+ days) working backwards from current week (if goal achieved) or most recent completed week.
      */
     public function calculateWeeklyStreak(User $user): int
     {
@@ -142,7 +142,7 @@ ma     * Counts consecutive weeks with achieved goals (4+ days) working backward
                 $streakCount = 1;
             }
             
-            // Get weekly data for the specified range (excluding current week)
+            // Get weekly data for the specified range (excluding current week since we handled it above)
             $weeklyData = $this->getWeeklyDataWithDateRange($user, $maxWeeksToCheck, false);
             
             // Check each completed week backwards

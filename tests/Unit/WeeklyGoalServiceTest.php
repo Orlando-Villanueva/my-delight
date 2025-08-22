@@ -402,6 +402,23 @@ class WeeklyGoalServiceTest extends TestCase
         $this->assertEquals(0, $streak);
     }
 
+    public function test_weekly_streak_includes_current_week_when_goal_achieved()
+    {
+        $currentWeekStart = now()->startOfWeek(Carbon::SUNDAY);
+        
+        // Create 4 readings in current week (goal achieved)
+        for ($day = 0; $day < 4; $day++) {
+            ReadingLog::factory()->create([
+                'user_id' => $this->user->id,
+                'date_read' => $currentWeekStart->copy()->addDays($day)->toDateString(),
+            ]);
+        }
+        
+        // Current week SHOULD count toward streak when goal is achieved
+        $streak = $this->service->calculateWeeklyStreak($this->user);
+        $this->assertEquals(1, $streak);
+    }
+
     public function test_weekly_streak_with_year_boundary()
     {
         // Test streak calculation across year boundary
