@@ -80,8 +80,63 @@
   - _Requirements: 7.1, 7.2, 7.3, 7.4_
 
 - [x] 11. Integrate with existing authentication system
-  - Ensure sign-up and login CTAs properly redirect to existing auth pages
+  - Ensure sign-up and login CTAs properly redirect to existing auth pagesexpla
   - Test integration with Laravel Fortify authentication
   - Verify proper handling of already authenticated users
   - Test multilingual support for English and French
   - _Requirements: 3.1, 3.3, 3.4_
+
+- [ ] 12. Update hero section with SEO-optimized content
+  - Update main headline to include "Bible Tracking App" keyword naturally
+  - Enhance subheadline to mention weekly goals, streaks, and Bible reading tracker functionality
+  - Update primary CTA button text to include tracking-related keywords
+  - Modify hero note to emphasize "Free Bible tracking app" messaging
+  - Ensure all changes maintain compelling, natural-sounding copy
+  - _Requirements: 1.1, 1.2, 5.4, 5.5_
+
+- [ ] 13. Expand and reorganize features section for new functionality
+  - Add weekly goals feature card as primary feature explaining 4-day per week default system
+  - Add weekly streaks feature card as primary feature explaining consecutive week achievements
+  - Update daily reading log description to include "Bible tracking" terminology
+  - Rename "Streak Tracking" to "Daily Streak Tracking" for clarity
+  - Update "Visual Progress" to "Book Completion Grid" with specific mention of 66 Bible books
+  - Update "Reading Statistics" to include new summary stats (days read, total chapters, Bible progress %, avg chapters/day)
+  - Reorganize layout to accommodate 6 features in 3x2 grid on desktop
+  - Add special styling for weekly goal and weekly streak cards as featured items
+  - _Requirements: 2.1, 2.4, 2.5, 2.6_
+
+- [ ] 14. Update SEO metadata and structured data
+  - Update page title to "Delight - Bible Tracking App | Free Bible Reading Tracker with Weekly Goals"
+  - Enhance meta description to include primary keywords and new features
+  - Add comprehensive keywords list including "bible tracking app", "bible reading tracker", "bible habit tracker"
+  - Update Open Graph tags to highlight Bible tracking and weekly goal features
+  - Enhance structured data markup to emphasize Bible tracking functionality and feature list
+  - Update canonical URL and ensure proper SEO tag structure
+  - _Requirements: 5.1, 5.2, 5.4, 5.5_
+
+- [ ] 15. Replace screenshots with current app interface
+  - Take new desktop screenshot showing updated dashboard with all current widgets:
+    - Weekly goal widget with progress display
+    - Weekly streak widget with count and messaging
+    - Daily streak counter
+    - Book completion grid with testament toggle
+    - Enhanced summary stats section
+  - Take first mobile screenshot focusing on weekly features:
+    - Weekly goal widget (mobile-optimized)
+    - Weekly streak widget (mobile-optimized)
+    - Touch-friendly interface elements
+  - Take second mobile screenshot focusing on daily stats:
+    - Daily streak counter (mobile view)
+    - Enhanced summary stats (days read, total chapters, Bible progress %, avg chapters/day)
+    - Book selection interface
+  - Optimize all screenshots for web performance while maintaining visual quality
+  - Update alt text for all images with SEO keywords and accurate feature descriptions
+  - _Requirements: 8.1, 8.2, 8.3, 8.4_
+
+- [ ] 16. Implement natural keyword integration throughout content
+  - Review all existing copy to naturally incorporate "Bible tracking app" and "Bible reading tracker" terms
+  - Update feature descriptions to include relevant secondary keywords without keyword stuffing
+  - Enhance "How It Works" section to mention Bible tracking and habit building
+  - Update footer content to include relevant keywords where appropriate
+  - Ensure all keyword integration feels natural and user-focused
+  - _Requirements: 5.4, 5.5_
