@@ -1,0 +1,108 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Social Media Preview Card</title>
+    <script src="https://cdn.tailwindcss.com"></script>
+    <script>
+        tailwind.config = {
+            theme: {
+                extend: {
+                    colors: {
+                        'primary': {
+                            500: '#3366CC',
+                            600: '#2c5aa0'
+                        },
+                        'accent': {
+                            500: '#f97316',
+                            600: '#ea580c'
+                        }
+                    }
+                }
+            }
+        }
+    </script>
+</head>
+<body class="bg-black p-8">
+    <!-- Social Media Preview Card - 1200x630 ratio -->
+    <div class="w-[1200px] h-[630px] bg-gradient-to-br from-blue-50 to-white shadow-2xl flex items-center justify-between p-16 mx-auto">
+        <!-- Left Content -->
+        <div class="flex-1 pr-12">
+            <!-- Logo and Brand -->
+            <div class="flex items-center mb-8">
+                <img src="./images/logo-64-2x.png" alt="Delight logo" class="w-16 h-16 mr-4" />
+                <h1 class="text-4xl font-bold text-gray-900">Delight</h1>
+            </div>
+            
+            <!-- Main Headline -->
+            <h2 class="text-5xl font-bold text-gray-900 leading-tight mb-6">
+                The Bible Tracker That Builds Lasting Habits
+            </h2>
+            
+            <!-- Subheadline -->
+            <p class="text-2xl text-gray-600 mb-8 leading-relaxed">
+                Track daily reading, build weekly streaks, and visualize your progress through Scripture.
+            </p>
+            
+            <!-- Features Icons -->
+            <div class="flex space-x-8">
+                <div class="text-center">
+                    <div class="text-4xl mb-2">🎯</div>
+                    <div class="text-sm font-semibold text-gray-700">Weekly Goals</div>
+                </div>
+                <div class="text-center">
+                    <div class="text-4xl mb-2">📅</div>
+                    <div class="text-sm font-semibold text-gray-700">Weekly Streaks</div>
+                </div>
+                <div class="text-center">
+                    <div class="text-4xl mb-2">📊</div>
+                    <div class="text-sm font-semibold text-gray-700">Progress Tracking</div>
+                </div>
+                <div class="text-center">
+                    <div class="text-4xl mb-2">🔥</div>
+                    <div class="text-sm font-semibold text-gray-700">Daily Streaks</div>
+                </div>
+            </div>
+        </div>
+        
+        <!-- Right Visual -->
+        <div class="flex-shrink-0 relative">
+            <!-- Main Phone Mockup -->
+            <div class="bg-gray-900 rounded-[3rem] p-3 transform rotate-3 shadow-2xl">
+                <div class="bg-white rounded-[2.5rem] w-80 h-96 flex items-center justify-center">
+                    <!-- Simulated App Interface -->
+                    <div class="w-full h-full p-6 space-y-4">
+                        <!-- Header -->
+                        <div class="flex items-center justify-between mb-6">
+                            <h3 class="text-lg font-bold text-gray-900">Today's Reading</h3>
+                            <div class="w-8 h-8 bg-accent-500 rounded-full"></div>
+                        </div>
+                        
+                        <!-- Weekly Goal Widget (Success color) -->
+                        <div class="bg-gradient-to-r from-green-500 to-green-600 rounded-xl p-4 text-white">
+                            <div class="text-sm font-medium mb-1">🎯 Weekly Goal</div>
+                            <div class="text-2xl font-bold">3/4 days</div>
+                            <div class="text-xs opacity-90">Almost there!</div>
+                        </div>
+                        
+                        <!-- Daily Streak (Primary color) -->
+                        <div class="bg-gradient-to-r from-primary-500 to-primary-600 rounded-xl p-4 text-white">
+                            <div class="text-sm font-medium mb-1">🔥 Daily Streak</div>
+                            <div class="text-2xl font-bold">45 days</div>
+                            <div class="text-xs opacity-90">On fire!</div>
+                        </div>
+                    </div>
+                </div>
+            </div>
+            
+        </div>
+    </div>
+    
+    <!-- Instructions -->
+    <div class="mt-8 text-center text-gray-600 max-w-2xl mx-auto">
+        <p class="text-lg">📸 Screenshot this card at 1200x630 pixels for social media previews</p>
+        <p class="text-sm mt-2">Recommended: Use browser dev tools to set viewport to 1200x630 before screenshotting</p>
+    </div>
+</body>
+</html>
