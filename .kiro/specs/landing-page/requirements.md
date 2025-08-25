@@ -23,12 +23,10 @@ The landing page serves as the primary entry point for new visitors to Delight, 
 
 #### Acceptance Criteria
 
-1. WHEN a visitor views the features section THEN the system SHALL display the core features: daily reading log, weekly goals, weekly streaks, daily streak tracking, book completion grid, and reading statistics
+1. WHEN a visitor views the features section THEN the system SHALL display the core features: daily reading log, streak tracking, book completion grid, and basic statistics
 2. WHEN a visitor reads about features THEN the system SHALL present each feature with a clear benefit statement and visual representation
-3. WHEN a visitor sees the features THEN the system SHALL emphasize the motivational aspects of weekly goals, weekly streaks, daily streaks, and visual progress tracking
-4. WHEN a visitor learns about weekly goals THEN the system SHALL explain how users can set and track weekly reading targets (4 days per week default)
-5. WHEN a visitor learns about weekly streaks THEN the system SHALL explain how consecutive weeks of achieved goals build momentum and consistency
-6. IF a visitor wants more detail THEN the system SHALL provide enough information to understand the value without overwhelming them
+3. WHEN a visitor sees the features THEN the system SHALL emphasize the motivational aspects of streaks and visual progress
+4. IF a visitor wants more detail THEN the system SHALL provide enough information to understand the value without overwhelming them
 
 ### Requirement 3
 
@@ -58,11 +56,10 @@ The landing page serves as the primary entry point for new visitors to Delight, 
 
 #### Acceptance Criteria
 
-1. WHEN search engines crawl the page THEN the system SHALL provide proper meta titles, descriptions, and Open Graph tags optimized for "Bible Tracking App" and "Bible reading tracker" keywords
-2. WHEN the page is shared on social media THEN the system SHALL display appropriate preview images and descriptions highlighting the tracking and habit-building features
-3. WHEN search engines index the page THEN the system SHALL include structured data markup for better search visibility with emphasis on Bible reading tracking functionality
-4. WHEN users search for "Bible Tracking App" or "Bible reading tracker" THEN the system SHALL be optimized to rank well for these specific keywords
-5. IF users search for related terms like "Bible habit tracker", "Scripture reading app", or "Bible progress tracker" THEN the system SHALL include these variations in the content and metadata
+1. WHEN search engines crawl the page THEN the system SHALL provide proper meta titles, descriptions, and Open Graph tags
+2. WHEN the page is shared on social media THEN the system SHALL display appropriate preview images and descriptions
+3. WHEN search engines index the page THEN the system SHALL include structured data markup for better search visibility
+4. IF users search for Bible reading habit trackers THEN the system SHALL be optimized for relevant keywords
 
 ### Requirement 6
 
@@ -87,17 +84,6 @@ The landing page serves as the primary entry point for new visitors to Delight, 
 4. IF legal documents don't exist yet THEN the system SHALL create basic, appropriate policies for the app's simple functionality
 
 ### Requirement 8
-
-**User Story:** As a visitor evaluating the app, I want to see current and accurate screenshots that showcase the latest features, so that I can understand what the actual app interface looks like with all available functionality.
-
-#### Acceptance Criteria
-
-1. WHEN a visitor views the hero section THEN the system SHALL display updated screenshots showing the weekly goal and weekly streak widgets in the dashboard
-2. WHEN a visitor sees the app screenshots THEN the system SHALL show the book completion grid feature prominently in the interface
-3. WHEN a visitor evaluates the visual design THEN the system SHALL present screenshots that accurately reflect the current state of the application
-4. IF screenshots are outdated THEN the system SHALL be updated with new screenshots that include all implemented features including weekly goals, weekly streaks, and book progress visualization
-
-### Requirement 9
 
 **User Story:** As a visitor on any device, I want the landing page to load quickly and perform smoothly, so that I have a positive first impression of the app's quality.
 
