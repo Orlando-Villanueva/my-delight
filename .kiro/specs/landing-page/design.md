@@ -36,24 +36,27 @@ The landing page follows a single-page application approach with distinct sectio
 ```html
 <section class="hero-section">
   <div class="container">
-    <h1 class="hero-headline">Build Your Bible Reading Habit</h1>
-    <p class="hero-subheadline">Track your daily reading, maintain streaks, and visualize your progress through Scripture</p>
+    <h1 class="hero-headline">Struggling to Stay Consistent with Bible Reading? You're Not Alone.</h1>
+    <p class="hero-subheadline">Build the habit that transforms lives. Research shows reading 4+ days per week creates dramatic spiritual growth - and Delight makes it achievable with progress tracking, flexible goals, and celebration of every step forward.</p>
     <div class="hero-cta">
-      <a href="/register" class="btn-primary">Start Reading Today</a>
-      <p class="hero-note">Free to use • No credit card required</p>
+      <a href="/register" class="btn-primary">Start Building Life-Changing Habits - Free</a>
+      <p class="hero-note">✨ Based on proven research • No rigid daily pressure • Free forever</p>
     </div>
   </div>
   <div class="hero-visual">
-    <img src="{{ asset('images/screenshots/desktop.png') }}" alt="Delight app dashboard showing reading progress and streak tracking" class="hero-screenshot">
+    <img src="{{ asset('images/screenshots/desktop_updated.png') }}" alt="Delight Bible tracking app dashboard showing weekly goals, weekly streaks, book completion grid, and daily reading progress" class="hero-screenshot">
   </div>
 </section>
 ```
 
 **Design Specifications:**
 - **Background**: Subtle gradient from light blue to white
-- **Typography**: Large, bold headline (text-4xl md:text-6xl)
-- **CTA Button**: Orange accent color (#f97316) with hover effects
-- **Visual**: Actual app screenshot showing the dashboard with reading progress
+- **Typography**: Large, bold headline (text-4xl md:text-6xl) with SEO-optimized text
+- **CTA Button**: Orange accent color (#f97316) with hover effects and keyword-rich text
+- **Visual**: Updated app screenshot showing weekly goals, weekly streaks, and book completion grid
+- **SEO Integration**: Natural inclusion of "Bible reading consistency", "Bible habit tracker", and "daily Bible reading" keywords
+- **Empathy-First Approach**: Addresses the common struggle with Bible reading consistency
+- **Grace-Based Messaging**: Emphasizes progress over perfection to reduce shame/guilt
 
 ### Features Section Component
 ```html
@@ -61,34 +64,84 @@ The landing page follows a single-page application approach with distinct sectio
   <div class="container">
     <h2 class="section-headline">Everything You Need to Stay Consistent</h2>
     <div class="features-grid">
+      <!-- Primary Features - Weekly Goals & Streaks -->
+      <div class="feature-card featured">
+        <div class="feature-icon">🎯</div>
+        <h3>Research-Based Weekly Goals</h3>
+        <p>Default 4-day weekly goal based on studies of 100,000+ people: reading 4+ days per week creates 228% more spiritual growth than 1-3 days. Achievable consistency that transforms lives.</p>
+      </div>
+      <div class="feature-card featured">
+        <div class="feature-icon">📅</div>
+        <h3>Weekly Streaks</h3>
+        <p>Build long-term consistency by maintaining consecutive weeks of achieved reading goals and watch your momentum grow</p>
+      </div>
+      <!-- Core Features -->
       <div class="feature-card">
         <div class="feature-icon">📖</div>
         <h3>Daily Reading Log</h3>
-        <p>Easily track which chapters you've read with our intuitive book and chapter selector</p>
+        <p>Easily track which chapters you've read with our intuitive book and chapter selector for seamless Bible tracking</p>
       </div>
-      <!-- Additional feature cards -->
+      <div class="feature-card">
+        <div class="feature-icon">🔥</div>
+        <h3>Daily Streak Tracking</h3>
+        <p>Build momentum with daily reading streaks and get motivated by your consistency in this Bible reading tracker</p>
+      </div>
+      <div class="feature-card">
+        <div class="feature-icon">📊</div>
+        <h3>Book Completion Grid</h3>
+        <p>See your journey through Scripture with our beautiful visual grid showing progress across all 66 Bible books</p>
+      </div>
+      <div class="feature-card">
+        <div class="feature-icon">📈</div>
+        <h3>Reading Statistics</h3>
+        <p>Track your total chapters read, books completed, and longest streaks with comprehensive analytics in your Bible tracking app</p>
+      </div>
     </div>
   </div>
 </section>
 ```
 
 **Design Specifications:**
-- **Layout**: 2x2 grid on desktop, single column on mobile
+- **Layout**: 3x2 grid on desktop (6 features), 2x3 on tablet, single column on mobile
+- **Featured Cards**: Weekly Goals and Weekly Streaks get special styling (gradient background or accent border)
 - **Cards**: White background with subtle shadow and border radius
-- **Icons**: Large emoji or simple SVG icons
+- **Icons**: Large emoji or simple SVG icons with consistent sizing
 - **Spacing**: Generous padding and margins for readability
+- **SEO Integration**: Natural keyword placement in feature descriptions
 
-### Social Proof Section Component
+### How It Works Section Component
 ```html
-<section class="testimonials-section">
+<section class="how-it-works-section">
   <div class="container">
-    <h2 class="section-headline">Join Thousands Building Better Habits</h2>
-    <div class="testimonials-grid">
-      <div class="testimonial-card">
-        <blockquote>"Delight helped me read through the entire Bible for the first time. The streak feature kept me motivated every day."</blockquote>
-        <cite>— Sarah M., Regular User</cite>
+    <h2 class="section-headline">The Science Behind Life-Changing Bible Reading</h2>
+    <div class="research-solution-grid">
+      <div class="research-card">
+        <div class="research-icon">📊</div>
+        <h3>The Research</h3>
+        <p>Studies of 100,000+ people show that reading 1-3 days per week has virtually no impact. But 4+ days per week creates dramatic life transformation - 228% more likely to share faith, 60% less spiritual stagnation.</p>
       </div>
-      <!-- Additional testimonials -->
+      <div class="solution-card">
+        <div class="solution-icon">🎯</div>
+        <h3>Our Approach</h3>
+        <p>Delight helps you hit that proven 4-day threshold with flexible weekly goals, progress celebration, and gentle accountability that works with your life, not against it.</p>
+      </div>
+    </div>
+    <div class="steps-grid">
+      <div class="step-card">
+        <div class="step-number">1</div>
+        <h3>Read & Log</h3>
+        <p>Simply log which chapter you read today. Takes 30 seconds.</p>
+      </div>
+      <div class="step-card">
+        <div class="step-number">2</div>
+        <h3>See Progress</h3>
+        <p>Watch your streaks grow and books fill up in beautiful visual grids.</p>
+      </div>
+      <div class="step-card">
+        <div class="step-number">3</div>
+        <h3>Stay Motivated</h3>
+        <p>Gentle reminders and progress celebration keep you coming back.</p>
+      </div>
     </div>
   </div>
 </section>
@@ -96,8 +149,10 @@ The landing page follows a single-page application approach with distinct sectio
 
 **Design Specifications:**
 - **Background**: Light gray section to create visual separation
-- **Cards**: Clean white cards with quotation styling
-- **Typography**: Italic text for quotes, smaller attribution text
+- **Research/Solution Cards**: Side-by-side layout highlighting the scientific foundation
+- **Steps Grid**: 3-column layout with numbered circles and clean typography
+- **Research Focus**: Emphasizes proven effectiveness of 4-day weekly approach
+- **Encouraging Design**: Warm, motivating visual tone that celebrates achievable goals
 
 ### Navigation Component
 ```html
@@ -175,45 +230,70 @@ The landing page content will be primarily static but structured for easy mainte
 // Static content structure for maintainability
 $landingPageContent = [
     'hero' => [
-        'headline' => 'Build Your Bible Reading Habit',
-        'subheadline' => 'Track your daily reading, maintain streaks, and visualize your progress through Scripture',
-        'cta_text' => 'Start Reading Today',
-        'note' => 'Free to use • No credit card required'
+        'headline' => 'Struggling to Stay Consistent with Bible Reading? You\'re Not Alone.',
+        'subheadline' => 'Build the habit that transforms lives. Research shows reading 4+ days per week creates dramatic spiritual growth - and Delight makes it achievable with progress tracking, flexible goals, and celebration of every step forward.',
+        'cta_text' => 'Start Building Life-Changing Habits - Free',
+        'note' => '✨ Based on proven research • No rigid daily pressure • Free forever'
     ],
     'features' => [
         [
+            'icon' => '🎯',
+            'title' => 'Research-Based Weekly Goals',
+            'description' => 'Default 4-day weekly goal based on proven research: reading 4+ days per week creates 228% more spiritual growth than 1-3 days. Achievable consistency that transforms lives.'
+        ],
+        [
+            'icon' => '📅',
+            'title' => 'Weekly Streaks',
+            'description' => 'Build long-term consistency by maintaining consecutive weeks of achieved reading goals and watch your momentum grow'
+        ],
+        [
             'icon' => '📖',
             'title' => 'Daily Reading Log',
-            'description' => 'Easily track which chapters you\'ve read with our intuitive book and chapter selector'
+            'description' => 'Easily track which chapters you\'ve read with our intuitive book and chapter selector for seamless Bible tracking'
         ],
         [
             'icon' => '🔥',
-            'title' => 'Streak Tracking',
-            'description' => 'Build momentum with reading streaks and get motivated by your consistency'
+            'title' => 'Daily Streak Tracking',
+            'description' => 'Build momentum with daily reading streaks and get motivated by your consistency in this Bible reading tracker'
         ],
         [
             'icon' => '📊',
-            'title' => 'Visual Progress',
-            'description' => 'See your journey through Scripture with our beautiful book completion grid'
+            'title' => 'Book Completion Grid',
+            'description' => 'See your journey through Scripture with our beautiful visual grid showing progress across all 66 Bible books'
         ],
         [
             'icon' => '📈',
             'title' => 'Reading Statistics',
-            'description' => 'Track your total chapters read, books completed, and longest streaks'
+            'description' => 'Track comprehensive analytics including total days read, chapters completed, Bible progress percentage, and average chapters per day in your Bible tracking app'
         ]
     ],
-    'testimonials' => [
-        [
-            'quote' => 'Delight helped me read through the entire Bible for the first time. The streak feature kept me motivated every day.',
-            'author' => 'Sarah M.'
+    'how_it_works' => [
+        'research' => [
+            'icon' => '📊',
+            'title' => 'The Research',
+            'description' => 'Studies of 100,000+ people show that reading 1-3 days per week has virtually no impact. But 4+ days per week creates dramatic life transformation - 228% more likely to share faith, 60% less spiritual stagnation.'
         ],
-        [
-            'quote' => 'The visual progress grid makes it so satisfying to see how much I\'ve accomplished. It\'s like a game!',
-            'author' => 'Michael R.'
+        'solution' => [
+            'icon' => '🎯',
+            'title' => 'Our Approach',
+            'description' => 'Delight helps you hit that proven 4-day threshold with flexible weekly goals, progress celebration, and gentle accountability that works with your life, not against it.'
         ],
-        [
-            'quote' => 'Simple, clean, and exactly what I needed to build a consistent reading habit.',
-            'author' => 'Jennifer L.'
+        'steps' => [
+            [
+                'number' => '1',
+                'title' => 'Read & Log',
+                'description' => 'Simply log which chapter you read today. Takes 30 seconds.'
+            ],
+            [
+                'number' => '2',
+                'title' => 'See Progress',
+                'description' => 'Watch your streaks grow and books fill up in beautiful visual grids.'
+            ],
+            [
+                'number' => '3',
+                'title' => 'Stay Motivated',
+                'description' => 'Gentle reminders and progress celebration keep you coming back.'
+            ]
         ]
     ]
 ];
@@ -222,9 +302,9 @@ $landingPageContent = [
 ### SEO Metadata Model
 ```php
 $seoData = [
-    'title' => 'Delight - Build Your Bible Reading Habit | Free Bible Tracker',
-    'description' => 'Track your daily Bible reading, maintain streaks, and visualize your progress through Scripture. Free Bible reading habit tracker with beautiful progress visualization.',
-    'keywords' => 'bible reading, habit tracker, scripture reading, bible study, reading streaks, christian app',
+    'title' => 'Delight - Research-Based Bible Habit Tracker | Power of 4 Reading Goals',
+    'description' => 'Build life-changing Bible reading habits with proven 4-day weekly goals. Based on research of 100,000+ people showing dramatic spiritual growth at 4+ days per week. Free habit tracker.',
+    'keywords' => 'bible reading consistency, Power of 4 bible reading, research-based bible habits, 4 day bible reading, bible habit tracker, bible reading accountability, overcome bible reading struggles, bible engagement study',
     'og_image' => asset('images/og-image.png'),
     'canonical_url' => config('app.url')
 ];
@@ -291,28 +371,76 @@ $seoData = [
 - **Forms**: Clear labels, validation states, accessible inputs
 - **Animations**: Subtle transitions for better user experience
 
+## Screenshot Requirements
+
+### Updated Desktop Screenshot Specifications
+The new desktop screenshot must showcase:
+- **Weekly Goal Widget**: Prominently displayed showing current progress (e.g., "3/4 days this week")
+- **Weekly Streak Widget**: Showing active streak count and motivational messaging
+- **Book Completion Grid**: Visible testament toggle and book progress visualization
+- **Daily Streak Counter**: Current daily streak display
+- **Reading Log Interface**: Book and chapter selection interface
+- **Overall Layout**: Clean, modern dashboard layout with all widgets properly arranged
+
+### Updated Mobile Screenshot Specifications
+Two mobile screenshots should be taken to showcase different widget combinations:
+
+**Mobile Screenshot 1 - Weekly Focus:**
+- **Weekly Goal Widget**: Mobile-optimized weekly goal display showing current progress
+- **Weekly Streak Widget**: Mobile-friendly weekly streak counter and messaging
+- **Touch-Friendly Interface**: Large, accessible buttons and touch targets
+- **Responsive Layout**: Proper mobile stacking and spacing
+
+**Mobile Screenshot 2 - Daily Stats & Summary:**
+- **Daily Streak Counter**: Mobile-optimized daily streak display
+- **Enhanced Summary Stats**: New statistics including:
+  - Days Read (total reading days)
+  - Total Chapters Read
+  - Bible Progress Percentage (overall completion)
+  - Average Chapters Per Day
+- **Book Selection Interface**: Mobile-optimized book and chapter selection
+- **Responsive Design**: Clean mobile layout with proper touch targets
+
+## SEO Content Strategy
+
+### Updated Keyword Strategy
+- **Primary Keywords**: "Bible reading consistency", "Bible habit tracker", "4 day Bible reading"
+- **Research-Based Keywords**: "Power of 4 Bible reading", "research-based Bible habits", "Bible engagement study"
+- **Problem-Solution Keywords**: "overcome Bible reading struggles", "build Bible reading habits", "Bible reading accountability"
+- **Long-tail Keywords**: "how to read Bible 4 days per week", "Bible reading habit app with weekly goals", "proven Bible reading consistency"
+
+### Content Optimization Guidelines
+- **Empathy-First Approach**: Address the emotional struggle before presenting the solution
+- **Grace-Based Language**: Emphasize progress over perfection, reducing shame/guilt associations
+- **Problem-Solution Format**: Acknowledge common failures then present gentle alternatives
+- **Natural Keyword Integration**: Keywords flow naturally within empathetic, encouraging copy
+- **Avoid Religious Pressure**: Focus on personal growth rather than spiritual obligation
+
 ## Implementation Approach
 
-### Phase 1: Core Structure
-1. Create new Blade template for landing page
-2. Implement basic HTML structure with semantic markup
-3. Add Tailwind CSS styling for responsive layout
-4. Configure routing and controller logic
+### Phase 1: Content Updates
+1. Update hero section with empathy-first headline addressing consistency struggles
+2. Replace social proof section with "How It Works" problem-solution format
+3. Revise all copy to emphasize grace-filled tracking and progress celebration
+4. Update CTAs to focus on journey and consistency rather than just tracking
+5. Integrate new keyword strategy naturally throughout all content
 
-### Phase 2: Content and Styling
-1. Implement hero section with compelling copy
-2. Build features section with grid layout
-3. Add testimonials section with social proof
-4. Style navigation and footer components
+### Phase 2: Screenshot Replacement
+1. Take new desktop screenshots showing current dashboard with all widgets (weekly goals, weekly streaks, daily streaks, book completion grid)
+2. Take two mobile screenshots:
+   - Mobile Screenshot 1: Weekly goal and weekly streak widgets
+   - Mobile Screenshot 2: Daily streak and enhanced summary stats (days read, total chapters, Bible progress %, avg chapters/day)
+3. Optimize images for web performance while maintaining visual quality
+4. Update alt text and image descriptions with SEO keywords and accurate widget descriptions
 
-### Phase 3: Optimization and Enhancement
-1. Add SEO metadata and structured data
-2. Implement performance optimizations
-3. Add subtle animations and interactions
-4. Configure analytics and tracking
+### Phase 3: SEO Enhancement
+1. Update meta titles, descriptions, and Open Graph tags with target keywords
+2. Enhance structured data markup to highlight Bible tracking functionality
+3. Add keyword-rich content throughout the page while maintaining readability
+4. Implement semantic HTML improvements for better search engine understanding
 
-### Phase 4: Testing and Refinement
-1. Cross-browser and device testing
-2. Accessibility audit and improvements
-3. Performance optimization and monitoring
-4. A/B testing setup for conversion optimization
+### Phase 4: Testing and Validation
+1. Test keyword density and natural language flow
+2. Validate SEO improvements with tools like Google Search Console
+3. Test updated screenshots across different devices and screen sizes
+4. Monitor search ranking improvements for target keywords
