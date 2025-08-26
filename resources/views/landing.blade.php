@@ -8,7 +8,7 @@
 
     <!-- SEO Meta Tags -->
     <title>{{ config('app.name', 'Delight') }} - Bible Tracking App | Free Bible Reading Tracker with Weekly Goals</title>
-    <meta name="description" content="Overcome Bible reading struggles with research-based weekly goals. Set achievable 4-day targets, build weekly streaks, and track progress. Free Bible reading tracker with gentle accountability.">
+    <meta name="description" content="Make Bible reading consistency achievable with gentle tracking and motivation. Hit the research-backed 4-day threshold through weekly goals, streaks, and progress visualization."
     <meta name="keywords" content="bible tracking app, bible reading tracker, bible habit tracker, Power of 4 bible reading, research-based bible habits, 4 day bible reading, bible reading accountability, overcome bible reading struggles, bible engagement study, scripture reading app, daily bible reading, bible progress tracker">
     <meta name="author" content="Delight">
     <meta name="robots" content="index, follow, max-image-preview:large, max-snippet:-1, max-video-preview:-1">
@@ -27,7 +27,7 @@
 
     <!-- Open Graph Meta Tags -->
     <meta property="og:title" content="Delight - Bible Reading Tracker with Weekly Goals">
-    <meta property="og:description" content="Research-based weekly goals make Bible reading consistency achievable. Track daily reading, build weekly streaks, visualize progress through Scripture.">
+    <meta property="og:description" content="Bible reading tracker that makes consistency achievable. Gentle motivation helps you hit the research-backed 4-day threshold for lasting transformation."
     <meta property="og:type" content="website">
     <meta property="og:url" content="{{ config('app.url') }}">
     <meta property="og:image" content="{{ asset('images/screenshots/preview-social.png') }}">
@@ -240,7 +240,7 @@
                                 <x-ui.card-title class="text-white">Research-Based Weekly Goals</x-ui.card-title>
                                 <p class="text-orange-200 text-xs mb-2">Hit the 4-day threshold without pressure</p>
                                 <p class="text-orange-100 leading-relaxed mt-3">
-                                    Set achievable weekly reading goals (4 days default) proven to create lasting habits. Focus on progress, not perfection, with flexible targets that work with your life.
+                                    Stay motivated to hit the proven 4-day threshold with achievable weekly targets. Focus on progress, not perfection, with gentle accountability that works with your life.
                                 </p>
                             </x-ui.card-content>
                         </x-ui.card>
@@ -347,7 +347,7 @@
                         <div class="text-5xl mb-6" role="img" aria-label="Target approach icon">🎯</div>
                         <h3 class="text-2xl font-bold text-gray-900 mb-4">Our Approach</h3>
                         <p class="text-gray-600 leading-relaxed">
-                            Delight helps you hit that proven 4-day threshold with flexible weekly goals, progress celebration, and gentle accountability that works with your life, not against it. This Bible tracking app makes consistency achievable.
+                            Delight makes consistency achievable with gentle tracking and motivation. Weekly goals help you stay focused on hitting that proven 4-day threshold through flexible targets and progress celebration.
                         </p>
                     </div>
                 </div>
@@ -397,7 +397,7 @@
                     Ready to Experience the Power of 4-Day Bible Reading?
                 </h2>
                 <p class="text-xl text-white mb-8">
-                    Join readers using our research-based approach with gentle accountability. Build the consistency that creates lasting transformation.
+                    Join readers discovering how gentle tracking makes Bible reading consistency achievable. Experience the transformation that comes from hitting the 4-day threshold.
                 </p>
                 <x-ui.button variant="accent" size="lg" href="{{ route('register') }}" aria-label="Start building life-changing Bible reading habits">
                     Start Building Life-Changing Habits
