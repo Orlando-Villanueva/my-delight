@@ -151,12 +151,9 @@
 
                         <!-- Primary CTA -->
                         <div class="space-y-4">
-                            <x-ui.button variant="accent" size="lg" href="{{ route('register') }}" aria-describedby="cta-description">
+                            <x-ui.button variant="accent" size="lg" href="{{ route('register') }}">
                                 Start Building Life-Changing Habits
                             </x-ui.button>
-                            <p id="cta-description" class="text-sm text-gray-700">
-                                ✨ Based on proven research • Free to use
-                            </p>
                         </div>
                     </div>
 
