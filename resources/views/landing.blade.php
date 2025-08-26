@@ -141,7 +141,7 @@
             <div class="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8">
                 <div class="grid lg:grid-cols-2 gap-2 items-center">
                     <!-- Hero Content -->
-                    <div class="text-center lg:text-left">
+                    <div class="text-center lg:text-left lg:pr-24">
                         <h1 id="hero-heading" class="text-4xl md:text-5xl font-bold text-gray-900 leading-tight mb-6">
                             Struggling to Stay Consistent with Bible Reading?
                         </h1>
