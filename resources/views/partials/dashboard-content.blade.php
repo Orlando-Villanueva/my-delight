@@ -71,8 +71,10 @@
             <!-- Mobile Calendar Row - Shows only on mobile -->
             <div class="lg:hidden md:mx-32">
                 <x-bible.calendar-heatmap
-                    :user="auth()->user()"
-                    :months="1"
+                    :calendar="$calendarData['calendar']"
+                    :monthName="$calendarData['monthName']"
+                    :thisMonthReadings="$calendarData['thisMonthReadings']"
+                    :successRate="$calendarData['successRate']"
                     :showLegend="false"
                     class="text-sm" />
             </div>
@@ -94,8 +96,10 @@
             <!-- Reading Calendar - Compact for sidebar -->
             <div class="xl:max-w-none">
                 <x-bible.calendar-heatmap
-                    :user="auth()->user()"
-                    :months="1"
+                    :calendar="$calendarData['calendar']"
+                    :monthName="$calendarData['monthName']"
+                    :thisMonthReadings="$calendarData['thisMonthReadings']"
+                    :successRate="$calendarData['successRate']"
                     :showLegend="false"
                     class="text-sm" />
             </div>

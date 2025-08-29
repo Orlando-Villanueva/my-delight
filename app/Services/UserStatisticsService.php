@@ -272,6 +272,89 @@ class UserStatisticsService
         );
     }
 
+    /**
+     * Get monthly calendar data with grid layout and statistics.
+     */
+    public function getMonthlyCalendarData(User $user, ?int $year = null, ?int $month = null): array
+    {
+        $currentDate = now();
+        $year = $year ?? $currentDate->year;
+        $month = $month ?? $currentDate->month;
+        
+        $targetDate = Carbon::create($year, $month, 1);
+        $monthKey = $targetDate->format('Y-m');
+        
+        return Cache::remember(
+            "user_monthly_calendar_{$user->id}_{$monthKey}",
+            900, // 15 minutes TTL - lighter than full year
+            function () use ($user, $year, $month, $targetDate, $currentDate) {
+                $monthName = $targetDate->format('F Y');
+                
+                // Get calendar data for this month
+                $calendarData = $this->getCalendarData($user, (string) $year);
+                
+                // Generate calendar grid for the month
+                $firstDay = $targetDate->copy()->startOfMonth();
+                $lastDay = $targetDate->copy()->endOfMonth();
+                $daysInMonth = $lastDay->day;
+                $startingDayOfWeek = $firstDay->dayOfWeek; // 0 = Sunday, 6 = Saturday
+                
+                $calendar = [];
+                
+                // Add empty cells for days before month starts
+                for ($i = 0; $i < $startingDayOfWeek; $i++) {
+                    $calendar[] = null;
+                }
+                
+                // Add days of the month with reading data
+                for ($day = 1; $day <= $daysInMonth; $day++) {
+                    $date = $firstDay->copy()->addDays($day - 1);
+                    $dateStr = $date->toDateString();
+                    
+                    // Get reading data for this day from the cached calendar data
+                    $dayData = $calendarData[$dateStr] ?? null;
+                    $readingCount = $dayData ? $dayData['reading_count'] : 0;
+                    $hasReading = $dayData ? $dayData['has_reading'] : false;
+                    
+                    $calendar[] = [
+                        'day' => $day,
+                        'date' => $date,
+                        'hasReading' => $hasReading,
+                        'readingCount' => $readingCount,
+                        'isToday' => $date->isToday(),
+                        'dateString' => $dateStr
+                    ];
+                }
+                
+                // Calculate monthly statistics
+                $thisMonthReadings = 0;
+                foreach ($calendar as $day) {
+                    if ($day !== null && $day['hasReading']) {
+                        $thisMonthReadings++;
+                    }
+                }
+                
+                // Calculate success rate based on days passed in month
+                $today = now();
+                $daysPassedInMonth = $today->month === $month && $today->year === $year 
+                    ? min($daysInMonth, $today->day) 
+                    : $daysInMonth;
+                $successRate = $daysPassedInMonth > 0 ? round(($thisMonthReadings / $daysPassedInMonth) * 100) : 0;
+                
+                return [
+                    'calendar' => $calendar,
+                    'monthName' => $monthName,
+                    'year' => $year,
+                    'month' => $month,
+                    'thisMonthReadings' => $thisMonthReadings,
+                    'successRate' => $successRate,
+                    'daysInMonth' => $daysInMonth,
+                    'daysPassedInMonth' => $daysPassedInMonth,
+                ];
+            }
+        );
+    }
+
 
 
     /**
@@ -352,6 +435,7 @@ class UserStatisticsService
     {
         $currentYear = now()->year;
         $previousYear = $currentYear - 1;
+        $currentMonth = now()->format('Y-m');
         $weekStart = now()->startOfWeek(Carbon::SUNDAY)->toDateString();
         
         // Clear all user-specific caches
@@ -362,6 +446,7 @@ class UserStatisticsService
         Cache::forget("user_weekly_streak_{$user->id}_{$weekStart}");
         Cache::forget("user_calendar_{$user->id}_{$currentYear}");
         Cache::forget("user_calendar_{$user->id}_{$previousYear}");
+        Cache::forget("user_monthly_calendar_{$user->id}_{$currentMonth}");
         Cache::forget("user_total_reading_days_{$user->id}");
         Cache::forget("user_avg_chapters_per_day_{$user->id}");
     }
