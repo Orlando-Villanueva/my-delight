@@ -328,9 +328,11 @@ class UserStatisticsService
                 
                 // Calculate monthly statistics
                 $thisMonthReadings = 0;
+                $thisMonthChapters = 0;
                 foreach ($calendar as $day) {
                     if ($day !== null && $day['hasReading']) {
                         $thisMonthReadings++;
+                        $thisMonthChapters += $day['readingCount'];
                     }
                 }
                 
@@ -347,6 +349,7 @@ class UserStatisticsService
                     'year' => $year,
                     'month' => $month,
                     'thisMonthReadings' => $thisMonthReadings,
+                    'thisMonthChapters' => $thisMonthChapters,
                     'successRate' => $successRate,
                     'daysInMonth' => $daysInMonth,
                     'daysPassedInMonth' => $daysPassedInMonth,

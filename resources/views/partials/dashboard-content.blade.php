@@ -74,6 +74,7 @@
                     :calendar="$calendarData['calendar']"
                     :monthName="$calendarData['monthName']"
                     :thisMonthReadings="$calendarData['thisMonthReadings']"
+                    :thisMonthChapters="$calendarData['thisMonthChapters']"
                     :successRate="$calendarData['successRate']"
                     :showLegend="false"
                     class="text-sm" />
@@ -99,6 +100,7 @@
                     :calendar="$calendarData['calendar']"
                     :monthName="$calendarData['monthName']"
                     :thisMonthReadings="$calendarData['thisMonthReadings']"
+                    :thisMonthChapters="$calendarData['thisMonthChapters']"
                     :successRate="$calendarData['successRate']"
                     :showLegend="false"
                     class="text-sm" />

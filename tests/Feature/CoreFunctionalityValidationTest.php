@@ -495,4 +495,90 @@ class CoreFunctionalityValidationTest extends TestCase
         $this->assertTrue($stats['weekly_goal']['is_goal_achieved']);
         $this->assertEquals(100.0, $stats['weekly_goal']['progress_percentage']);
     }
+
+    /**
+     * Test monthly calendar data with chapters read calculation
+     */
+    public function test_monthly_calendar_chapters_calculation(): void
+    {
+        $user = User::factory()->create();
+
+        // Create reading logs for different days this month with varying chapter counts
+        $today = today();
+        $startOfMonth = $today->copy()->startOfMonth();
+
+        // Day 1: Read 1 chapter
+        ReadingLog::factory()->create([
+            'user_id' => $user->id,
+            'book_id' => 1, // Genesis
+            'chapter' => 1,
+            'date_read' => $startOfMonth,
+        ]);
+
+        // Day 2: Read 3 chapters (range)
+        for ($chapter = 2; $chapter <= 4; $chapter++) {
+            ReadingLog::factory()->create([
+                'user_id' => $user->id,
+                'book_id' => 1, // Genesis
+                'chapter' => $chapter,
+                'date_read' => $startOfMonth->copy()->addDay(),
+            ]);
+        }
+
+        // Day 5: Read 2 chapters
+        for ($chapter = 5; $chapter <= 6; $chapter++) {
+            ReadingLog::factory()->create([
+                'user_id' => $user->id,
+                'book_id' => 1, // Genesis
+                'chapter' => $chapter,
+                'date_read' => $startOfMonth->copy()->addDays(4),
+            ]);
+        }
+
+        $response = $this->actingAs($user)->get('/dashboard');
+        $response->assertStatus(200);
+
+        // Check that calendar data is present
+        $response->assertViewHas('calendarData');
+        $calendarData = $response->viewData('calendarData');
+
+        // Verify calendar data structure
+        $this->assertArrayHasKey('calendar', $calendarData);
+        $this->assertArrayHasKey('monthName', $calendarData);
+        $this->assertArrayHasKey('thisMonthReadings', $calendarData);
+        $this->assertArrayHasKey('thisMonthChapters', $calendarData);
+        $this->assertArrayHasKey('successRate', $calendarData);
+
+        // Verify statistics: 3 days read, 6 total chapters (1 + 3 + 2)
+        $this->assertEquals(3, $calendarData['thisMonthReadings']);
+        $this->assertEquals(6, $calendarData['thisMonthChapters']);
+
+        // Check that the calendar widget displays the chapters stat
+        $response->assertSee('Chapters');
+        $response->assertSee('6'); // Should show total chapters read
+    }
+
+    /**
+     * Test calendar widget displays correctly with no readings
+     */
+    public function test_monthly_calendar_empty_state(): void
+    {
+        $user = User::factory()->create();
+
+        $response = $this->actingAs($user)->get('/dashboard');
+        $response->assertStatus(200);
+
+        $response->assertViewHas('calendarData');
+        $calendarData = $response->viewData('calendarData');
+
+        // Verify empty state
+        $this->assertEquals(0, $calendarData['thisMonthReadings']);
+        $this->assertEquals(0, $calendarData['thisMonthChapters']);
+        $this->assertEquals(0, $calendarData['successRate']);
+
+        // Check that the calendar widget shows zeros
+        $response->assertSee('Days Read');
+        $response->assertSee('Chapters');
+        $response->assertSee('Success Rate');
+    }
 }

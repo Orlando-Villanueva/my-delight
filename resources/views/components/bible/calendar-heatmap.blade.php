@@ -2,6 +2,7 @@
     'calendar' => [],
     'monthName' => '',
     'thisMonthReadings' => 0,
+    'thisMonthChapters' => 0,
     'successRate' => 0,
     'showLegend' => false
 ])
@@ -68,10 +69,14 @@
             
             <!-- Monthly Stats -->
             <div class="pt-3 lg:pt-2 border-t border-[#D1D7E0] dark:border-gray-600">
-                <div class="grid grid-cols-2 gap-4 lg:gap-2 text-center">
+                <div class="grid grid-cols-3 gap-2 lg:gap-1 xl:gap-2 text-center">
                     <div>
                         <div class="text-lg lg:text-base xl:text-lg font-bold text-[#66CC99] dark:text-[#66CC99] leading-[1.5]">{{ $thisMonthReadings }}</div>
-                        <div class="text-sm lg:text-xs xl:text-sm text-gray-600 dark:text-gray-400 leading-[1.5]">This Month</div>
+                        <div class="text-sm lg:text-xs xl:text-sm text-gray-600 dark:text-gray-400 leading-[1.5]">Days Read</div>
+                    </div>
+                    <div>
+                        <div class="text-lg lg:text-base xl:text-lg font-bold text-purple-600 dark:text-purple-400 leading-[1.5]">{{ $thisMonthChapters }}</div>
+                        <div class="text-sm lg:text-xs xl:text-sm text-gray-600 dark:text-gray-400 leading-[1.5]">Chapters</div>
                     </div>
                     <div>
                         <div class="text-lg lg:text-base xl:text-lg font-bold text-[#3366CC] dark:text-blue-400 leading-[1.5]">{{ $successRate }}%</div>
