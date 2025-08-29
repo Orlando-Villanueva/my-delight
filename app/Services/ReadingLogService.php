@@ -325,11 +325,13 @@ class ReadingLogService
     {
         $currentYear = now()->year;
         $previousYear = $currentYear - 1;
+        $currentMonth = now()->format('Y-m');
         
         // Always invalidate - these change on every reading
         Cache::forget("user_dashboard_stats_{$user->id}");
         Cache::forget("user_calendar_{$user->id}_{$currentYear}");
         Cache::forget("user_calendar_{$user->id}_{$previousYear}");
+        Cache::forget("user_monthly_calendar_{$user->id}_{$currentMonth}");
         Cache::forget("user_total_reading_days_{$user->id}");
         Cache::forget("user_avg_chapters_per_day_{$user->id}");
         
