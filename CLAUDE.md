@@ -26,6 +26,7 @@ php artisan migrate:status
 # Testing
 php artisan test
 vendor/bin/pest
+composer test
 
 # Development utilities  
 php artisan tinker
@@ -43,6 +44,7 @@ npm run build
 - Laravel Herd provides native web server with .test domains
 - Use Laravel Herd's GUI or configured local domains instead
 - For testing, use `php artisan test`, route inspection, or Herd's built-in server
+- **Note:** `composer dev` script exists but contradicts this policy - use Herd instead
 
 ### Code Quality
 ```bash
@@ -61,11 +63,15 @@ The application implements a clean Service Layer Pattern for business logic sepa
 ```
 app/
 ├── Services/
-│   ├── ReadingLogService.php      # Core reading log business logic
-│   ├── UserStatisticsService.php  # Dashboard statistics & analytics  
-│   ├── BookProgressService.php    # Bible book completion tracking
-│   ├── BibleReferenceService.php  # Bible reference validation & formatting
-│   └── StreakStateService.php     # Streak calculation logic
+│   ├── ReadingLogService.php         # Core reading log business logic
+│   ├── UserStatisticsService.php     # Dashboard statistics & analytics  
+│   ├── BookProgressService.php       # Bible book completion tracking
+│   ├── BookProgressSyncService.php   # Book progress synchronization
+│   ├── BibleReferenceService.php     # Bible reference validation & formatting
+│   ├── StreakStateService.php        # Streak calculation logic
+│   ├── ReadingFormService.php        # Reading form handling & validation
+│   ├── WeeklyGoalService.php         # Weekly reading goal management
+│   └── EmailService.php              # Email notifications & communication
 ├── Http/Controllers/              # Thin controllers delegate to services
 ├── Models/                        # Eloquent models (User, ReadingLog, BookProgress)
 └── View/Components/               # Blade components for UI
@@ -76,6 +82,10 @@ app/
 - **UserStatisticsService:** Calculates dashboard statistics, streaks, and progress summaries  
 - **BibleReferenceService:** Validates Bible references and formats book/chapter data
 - **BookProgressService:** Manages denormalized book completion tracking
+- **BookProgressSyncService:** Synchronizes book progress across user data
+- **ReadingFormService:** Handles reading form processing and validation
+- **WeeklyGoalService:** Manages weekly reading goals and progress tracking
+- **EmailService:** Handles email notifications and user communications
 
 ### HTMX-Native Architecture
 - Server returns HTML fragments, not JSON
@@ -123,6 +133,7 @@ book_progress (id, user_id, book_id, book_name, total_chapters, chapters_read, c
 - Focus on core user workflow: register → log reading → view progress  
 - Test streak calculations, Bible reference validation, book progress updates
 - Use Pest for unit and feature tests
+- **Testing Database:** Uses `database/testing.sqlite` (separate from development database)
 
 ## Key Features & Business Logic
 
@@ -162,6 +173,18 @@ book_progress (id, user_id, book_id, book_name, total_chapters, chapters_read, c
 - Validate requests against Product Requirements Document
 - Never implement features outside documented scope without explicit approval
 - Preserve original tasks in Linear issues - don't remove, only mark complete
+
+### Development Guidelines (Post-MVP, ~10 Active Users)
+- **Scale Reality Check:** Currently optimizing for 10-100 users, not enterprise scale
+- **Time Management:** Balance feature development with user feedback and bug fixes
+- **Framework Trust:** Leverage Laravel's built-in solutions for reliability
+- **User Impact Focus:** Prioritize features that improve the core reading habit loop
+- **Essential Testing:** Focus on functionality that affects real user workflows
+
+### Linear Issue Management
+- **Wait for user testing confirmation** before updating Linear issues with completion status
+- Allow users to test code changes and verify functionality before marking tasks complete
+- Only update Linear issues after receiving explicit user confirmation that changes work correctly
 
 ## File Structure Guide
 
