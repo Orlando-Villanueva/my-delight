@@ -3,6 +3,7 @@
 namespace App\Services;
 
 use App\Models\User;
+use App\Models\ReadingLog;
 use Carbon\Carbon;
 use Illuminate\Support\Facades\Log;
 use Exception;
@@ -77,10 +78,10 @@ class WeeklyGoalService
             $weekStart = $referenceDate->copy()->startOfWeek(self::FIRST_DAY_OF_WEEK);
             $weekEnd = $referenceDate->copy()->endOfWeek(self::LAST_DAY_OF_WEEK);
             
-            // Use efficient database-level distinct count instead of collection manipulation
-            return $user->readingLogs()
-                ->whereBetween('date_read', [$weekStart->toDateString(), $weekEnd->toDateString()])
-                ->distinct('date_read')
+            // Count distinct dates using Eloquent model with scopes
+            return ReadingLog::forUser($user->id)
+                ->dateRange($weekStart->toDateString(), $weekEnd->toDateString())
+                ->distinct()
                 ->count('date_read');
         } catch (Exception $e) {
             Log::error('Error calculating week progress', [
