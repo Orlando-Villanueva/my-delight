@@ -1,4 +1,5 @@
 {
+    "_note": "For Herd MCP setup: Update the herd-mcp.phar path if your Herd installation differs from the default location",
     "mcpServers": {
         "laravel-boost": {
             "command": "php",
@@ -10,7 +11,7 @@
         "herd": {
             "command": "php",
             "args": [
-                "C:/Users/Junio/.config/herd/bin/herd-mcp.phar"
+                "${USERPROFILE}/.config/herd/bin/herd-mcp.phar"
             ],
             "env": {
                 "SITE_PATH": "W:\\Projects\\Herd\\biblehabit"
