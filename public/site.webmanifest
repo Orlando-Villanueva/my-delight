@@ -1,0 +1,61 @@
+{
+  "name": "Delight",
+  "short_name": "Delight",
+  "description": "Track your Bible reading habits and build consistency with streak tracking and progress visualization",
+  "start_url": "/",
+  "display": "standalone",
+  "background_color": "#f9fafb",
+  "theme_color": "#3366CC",
+  "orientation": "portrait-primary",
+  "categories": ["lifestyle", "productivity", "education"],
+  "lang": "en-US",
+  "scope": "/",
+  "icons": [
+    {
+      "src": "/images/logo-64-fixed.png",
+      "sizes": "64x64",
+      "type": "image/png"
+    },
+    {
+      "src": "/images/logo-192-fixed.png",
+      "sizes": "192x192",
+      "type": "image/png",
+      "purpose": "any"
+    },
+    {
+      "src": "/images/logo-192-fixed.png",
+      "sizes": "192x192",
+      "type": "image/png",
+      "purpose": "maskable"
+    },
+    {
+      "src": "/images/logo-512-fixed.png",
+      "sizes": "512x512",
+      "type": "image/png",
+      "purpose": "any"
+    }
+  ],
+  "screenshots": [
+    {
+      "src": "/images/screenshots/mobile_101.png",
+      "sizes": "1440x2983",
+      "type": "image/png",
+      "form_factor": "narrow",
+      "label": "Dashboard view on mobile"
+    },
+    {
+      "src": "/images/screenshots/mobile_102_fixed.png",
+      "sizes": "1440x2983",
+      "type": "image/png",
+      "form_factor": "narrow",
+      "label": "Reading log on mobile"
+    },
+    {
+      "src": "/images/screenshots/desktop_101.png",
+      "sizes": "1920x1080",
+      "type": "image/png",
+      "form_factor": "wide",
+      "label": "Dashboard view on desktop"
+    }
+  ]
+}
