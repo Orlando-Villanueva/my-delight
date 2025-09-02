@@ -12,7 +12,10 @@
       "mcp__linear-server__create_comment",
       "Bash(git add:*)",
       "Bash(gh pr diff:*)",
-      "Bash(gh pr view:*)"
+      "Bash(gh pr view:*)",
+      "mcp__laravel-boost__search-docs",
+      "mcp__laravel-boost__application-info",
+      "mcp__laravel-boost__get-config"
     ],
     "deny": []
   },

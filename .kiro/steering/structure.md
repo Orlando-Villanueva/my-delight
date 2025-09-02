@@ -1,97 +1,167 @@
-# Delight - Project Structure
+# Project Structure
 
-## Directory Organization
+## Root Directory
+```
+delight/
+├── app/                    # Laravel application code
+├── bootstrap/              # Application bootstrapping
+├── config/                 # Configuration files
+├── database/               # Database migrations, factories, seeders
+├── docs/                   # Project documentation
+├── lang/                   # Internationalization files
+├── public/                 # Web server document root
+├── resources/              # Views, CSS, JS, and other assets
+├── routes/                 # Route definitions
+├── storage/                # File storage and logs
+├── tests/                  # Test files
+├── .kiro/                  # Kiro IDE configuration
+├── composer.json           # PHP dependencies
+├── package.json            # JavaScript dependencies
+├── vite.config.js          # Asset build configuration
+└── README.md               # Project documentation
+```
 
-### Core Application Code
-- **`app/`**: Application code
-  - **`Actions/`**: Single-purpose action classes
-  - **`Console/`**: Artisan commands
-  - **`Contracts/`**: Interfaces and contracts
-  - **`Http/`**: Controllers, middleware, and requests
-    - **`Controllers/`**: Handle HTTP requests
-    - **`Middleware/`**: Request/response filters
-    - **`Requests/`**: Form validation classes
-  - **`Mail/`**: Mail classes
-  - **`Models/`**: Eloquent models
-  - **`Notifications/`**: Notification classes
-  - **`Providers/`**: Service providers
-  - **`Services/`**: Business logic services
-    - `ReadingLogService.php`: Handles reading log operations
-    - `UserStatisticsService.php`: Calculates user statistics
-    - `BookProgressService.php`: Manages book progress tracking
-  - **`View/`**: View composers and components
+## Application Structure (app/)
 
-### Configuration
-- **`config/`**: Configuration files
-  - `app.php`: Application configuration
-  - `auth.php`: Authentication settings
-  - `bible.php`: Bible reference configuration
-  - `database.php`: Database connections
-  - `filesystems.php`: File storage settings
-  - `fortify.php`: Laravel Fortify configuration
+### Core Application
+```
+app/
+├── Http/
+│   ├── Controllers/        # HTTP request handlers
+│   └── Middleware/         # HTTP middleware
+├── Models/                 # Eloquent models
+│   ├── User.php           # User authentication model
+│   ├── ReadingLog.php     # Bible reading entries
+│   └── BookProgress.php   # Book completion tracking
+├── Services/              # Business logic layer
+│   ├── ReadingLogService.php      # Reading log operations
+│   ├── UserStatisticsService.php  # Dashboard statistics
+│   ├── BibleReferenceService.php  # Bible data operations
+│   ├── BookProgressService.php    # Book progress tracking
+│   └── StreakStateService.php     # Streak calculations
+├── Providers/             # Service providers
+├── Actions/               # Laravel Fortify actions
+├── Mail/                  # Email templates and logic
+├── Notifications/         # User notifications
+└── View/                  # View components
+```
 
-### Resources
-- **`resources/`**: Frontend assets and templates
-  - **`css/`**: Stylesheets
-  - **`js/`**: JavaScript files
-  - **`views/`**: Blade templates
-    - **`auth/`**: Authentication views
-    - **`components/`**: Reusable UI components
-    - **`layouts/`**: Page layouts
-    - **`partials/`**: Partial views for HTMX responses
+### Key Services Architecture
+- **ReadingLogService**: Handles Bible reading log creation, validation, and retrieval
+- **UserStatisticsService**: Calculates dashboard metrics and progress statistics
+- **BibleReferenceService**: Manages Bible book data and validation
+- **BookProgressService**: Tracks completion status for all 66 Bible books
+- **StreakStateService**: Calculates current and longest reading streaks
 
-### Database
-- **`database/`**: Database-related files
-  - **`factories/`**: Model factories
-  - **`migrations/`**: Database migrations
-  - **`seeders/`**: Database seeders
+## Frontend Structure (resources/)
 
-### Routes
-- **`routes/`**: Application routes
-  - `web.php`: Web routes
-  - `api.php`: API routes
-  - `console.php`: Console routes
-  - `channels.php`: Broadcasting channels
+### Views (Blade Templates)
+```
+resources/views/
+├── layouts/               # Base layouts
+├── components/            # Reusable UI components
+├── auth/                  # Authentication pages
+├── logs/                  # Reading log pages
+├── partials/              # Partial templates
+├── dashboard.blade.php    # Main dashboard
+└── landing.blade.php      # Landing page
+```
 
-### Tests
-- **`tests/`**: Test files
-  - **`Feature/`**: Feature tests
-  - **`Unit/`**: Unit tests
+### Assets
+```
+resources/
+├── css/
+│   └── app.css           # Main Tailwind CSS file
+└── js/
+    ├── app.js            # Main JavaScript entry
+    └── bootstrap.js      # JavaScript bootstrapping
+```
 
-### Documentation
-- **`docs/`**: Project documentation
-  - `Technical Architecture.md`: Architecture overview
-  - `Database Schema Documentation.md`: Database schema details
-  - `HTMX Implementation Guide.md`: HTMX usage patterns
-  - `Alpine.js Component Guide.md`: Alpine.js usage patterns
+## Database Structure
 
-### UI Prototype
-- **`ui-prototype/`**: Next.js UI prototype
+### Migrations
+```
+database/migrations/
+├── create_users_table.php
+├── create_reading_logs_table.php
+├── create_book_progress_table.php
+└── [timestamp]_*.php     # Additional migrations
+```
 
-## Architectural Patterns
+### Core Models
+- **User**: Authentication and user data
+- **ReadingLog**: Individual Bible reading entries (book_id, chapter, date_read, notes)
+- **BookProgress**: Denormalized progress tracking for each Bible book per user
+
+### Factories & Seeders
+```
+database/
+├── factories/            # Model factories for testing
+└── seeders/             # Database seeding
+```
+
+## Configuration Files
+
+### Key Configurations
+- `config/bible.php` - Bible reference data (66 books, chapter counts)
+- `config/fortify.php` - Authentication configuration
+- `config/telescope.php` - Development debugging
+- `config/streak_messages.php` - Streak milestone messages
+
+## Internationalization
+```
+lang/
+├── en/                   # English translations
+│   └── bible.php        # Bible book names in English
+└── fr/                   # French translations
+    └── bible.php        # Bible book names in French
+```
+
+## Testing Structure
+```
+tests/
+├── Feature/              # Integration tests
+├── Unit/                 # Unit tests
+├── Pest.php             # Pest configuration
+└── TestCase.php         # Base test case
+```
+
+## Development Files
+- `.kiro/` - Kiro IDE configuration and specs
+- `docs/` - Comprehensive project documentation
+- `phpunit.xml` - Testing configuration
+- `.env.example` - Environment configuration template
+
+## Key Architectural Patterns
 
 ### Service Layer Pattern
-- Controllers should be thin and delegate business logic to services
-- Services handle all business logic and data manipulation
-- Models represent data structures and relationships
+Business logic is encapsulated in service classes rather than controllers, promoting:
+- Clean separation of concerns
+- Testable business logic
+- Reusable code across different contexts
+- Thin controllers that delegate to services
 
-### HTMX + Alpine.js Pattern
-- HTMX for server-driven UI updates
-- Alpine.js for client-side interactivity
-- Server returns HTML fragments for HTMX requests
-- Minimize client-side state management
+### HTMX-First Frontend
+- Server-rendered HTML fragments (not JSON APIs)
+- Controllers support both HTMX and standard Laravel requests
+- Uses `hx-*` attributes for interactions
+- Progressive enhancement approach
+- Zero-Duplication Component Pattern with reusable Blade partials
 
-### File Naming Conventions
-- **Controllers**: Singular, suffixed with `Controller` (e.g., `ReadingLogController`)
-- **Models**: Singular, PascalCase (e.g., `ReadingLog`)
-- **Services**: Singular, suffixed with `Service` (e.g., `ReadingLogService`)
-- **Migrations**: Timestamp prefix with snake_case description (e.g., `2024_01_15_create_reading_logs_table`)
-- **Blade Views**: Snake_case (e.g., `reading_log.blade.php`)
-- **Partials**: Prefixed with underscore (e.g., `_reading_form.blade.php`)
+### Bible Reference System
+- Static configuration approach via `config/bible.php`
+- 66 books with chapter counts and testament organization
+- Translations in `lang/{locale}/bible.php` files
+- BibleReferenceService handles validation and formatting
+- Supports English and French localization
 
-### Database Conventions
-- Table names: Plural, snake_case (e.g., `reading_logs`)
-- Primary keys: `id`
-- Foreign keys: Singular model name with `_id` suffix (e.g., `user_id`)
-- Timestamps: `created_at`, `updated_at`
-- Soft deletes: `deleted_at`
+### Performance Optimizations
+- **Denormalized Progress Tracking**: `BookProgress` table for efficient statistics
+- **Caching Strategy**: Dashboard stats (5min), streaks (15min), Bible data (24hr)
+- **Event-based cache invalidation**: Clears relevant caches on new reading logs
+- **Composite database indexes**: Optimized for calendar and streak queries
+
+### Authentication & Security
+- Laravel Fortify for authentication (not complex HTMX auth)
+- Standard Laravel forms with proper CSRF protection
+- Custom middleware for security headers and query logging
