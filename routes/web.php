@@ -15,6 +15,9 @@ if (app()->environment('local') || app()->environment('staging')) {
 }
 
 Route::get('/', function () {
+    if (auth()->check()) {
+        return redirect()->route('dashboard');
+    }
     return view('landing');
 })->name('landing');
 
