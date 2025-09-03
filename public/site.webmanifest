@@ -2,7 +2,7 @@
   "name": "Delight",
   "short_name": "Delight",
   "description": "Track your Bible reading habits and build consistency with streak tracking and progress visualization",
-  "start_url": "/",
+  "start_url": "/dashboard",
   "display": "standalone",
   "background_color": "#f9fafb",
   "theme_color": "#3366CC",
