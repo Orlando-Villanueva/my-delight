@@ -44,6 +44,15 @@ npm run build
 - Use Laravel Herd's GUI or configured local domains instead
 - For testing, use `php artisan test`, route inspection, or Herd's built-in server
 
+### CSS Development
+```bash
+# Watch for changes during development
+./tailwindcss-windows-x64.exe -i resources/css/app.css -o public/css/tailwind.css --watch
+
+# Build for production
+./tailwindcss-windows-x64.exe -i resources/css/app.css -o public/css/tailwind.css --minify
+```
+
 ### Code Quality
 ```bash
 # Code formatting (if configured)
@@ -556,3 +565,4 @@ it('has emails', function (string $email) {
 - Every change must be programmatically tested. Write a new test or update an existing test, then run the affected tests to make sure they pass.
 - Run the minimum number of tests needed to ensure code quality and speed. Use `php artisan test` with a specific filename or filter.
 </laravel-boost-guidelines>
+- Just remember to run the watch commands or remind me to
