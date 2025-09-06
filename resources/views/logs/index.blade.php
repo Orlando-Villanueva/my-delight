@@ -5,6 +5,6 @@
 
 @section('content')
     <div id="main-content" class="h-full">
-        @include('partials.logs-content', compact('logs', 'filter'))
+        @include('partials.logs-content', compact('logs'))
     </div>
 @endsection 

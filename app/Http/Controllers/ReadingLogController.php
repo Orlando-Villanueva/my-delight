@@ -152,33 +152,15 @@ class ReadingLogController extends Controller
     }
 
     /**
-     * Display a listing of reading logs with filtering options.
+     * Display a listing of reading logs with infinite scroll pagination.
      * Supports both HTMX content loading and direct page access.
      */
     public function index(Request $request)
     {
         $user = $request->user();
 
-        // Get filter parameter (days back)
-        $filter = $request->get('filter', '7'); // Default to last 7 days
-        $validFilters = ['7', '30', '90', 'all'];
-
-        if (!in_array($filter, $validFilters)) {
-            $filter = '7';
-        }
-
-        // Calculate date range based on filter
-        $startDate = null;
-        if ($filter !== 'all') {
-            $startDate = now()->subDays((int)$filter)->toDateString();
-        }
-
-        // Get reading logs and group by reading session to avoid duplicates
+        // Get reading logs - all records, chronologically ordered
         $allLogs = $user->readingLogs()->recentFirst();
-
-        if ($startDate) {
-            $allLogs->dateRange($startDate);
-        }
 
         // Group by date_read to show all readings for each day
         $groupedLogs = $allLogs->get()
@@ -227,19 +209,14 @@ class ReadingLogController extends Controller
         if ($request->header('HX-Request')) {
             // If it's an infinite scroll request (has page parameter), return just the items
             if ($request->has('page') && $request->get('page') > 1) {
-                return view('partials.reading-log-infinite-scroll', compact('logs', 'filter'));
-            }
-
-            // If it's a filter request (has filter parameter), return just the content
-            if ($request->has('filter')) {
-                return view('partials.reading-log-list', compact('logs', 'filter'));
+                return view('partials.reading-log-infinite-scroll', compact('logs'));
             }
 
             // Otherwise, return the page container for HTMX navigation
-            return view('partials.logs-page', compact('logs', 'filter'));
+            return view('partials.logs-page', compact('logs'));
         }
 
         // Return full page for direct access (browser URL)
-        return view('logs.index', compact('logs', 'filter'));
+        return view('logs.index', compact('logs'));
     }
 }
