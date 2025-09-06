@@ -11,7 +11,6 @@ if (app()->environment('local') || app()->environment('staging')) {
     Route::get('/telescope', function () {
         return redirect('/telescope/requests');
     });
-    
 }
 
 Route::get('/', function () {

@@ -18,7 +18,10 @@
       "mcp__laravel-boost__get-config",
       "mcp__herd__get_all_sites",
       "mcp__github__get_pull_request_files",
-      "mcp__laravel-boost__list-routes"
+      "mcp__laravel-boost__list-routes",
+      "Bash(php artisan make:mail:*)",
+      "Bash(php artisan make:command:*)",
+      "Bash(git checkout:*)"
     ],
     "deny": []
   },
