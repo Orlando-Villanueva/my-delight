@@ -11,7 +11,16 @@
     <!-- Favicon -->
     <link rel="icon" href="{{ asset('favicon.ico') }}" type="image/x-icon">
     <link rel="apple-touch-icon" sizes="192x192" href="{{ asset('images/logo-192.png') }}">
+    
+    <!-- PWA Manifest -->
+    <link rel="manifest" href="{{ asset('site.webmanifest') }}">
+    
+    <!-- PWA Meta Tags -->
     <meta name="theme-color" content="#3366CC">
+    <meta name="mobile-web-app-capable" content="yes">
+    <meta name="apple-mobile-web-app-capable" content="yes">
+    <meta name="apple-mobile-web-app-status-bar-style" content="default">
+    <meta name="apple-mobile-web-app-title" content="Delight">
 
     <!-- Fonts -->
     <link rel="preconnect" href="https://fonts.bunny.net">
@@ -24,7 +33,7 @@
     <script defer src="https://unpkg.com/alpinejs@3.13.3/dist/cdn.min.js"></script>
 
     <!-- Styles / Scripts -->
-    @vite(['resources/css/app.css', 'resources/js/app.js'])
+    <link href="{{ asset('css/tailwind.css') }}" rel="stylesheet">
 
     <!-- Alpine.js Cloak -->
     <style>
@@ -94,6 +103,20 @@
             </footer>
         </div>
     @endif
+
+    <!-- PWA Service Worker Registration -->
+    <script>
+        if ('serviceWorker' in navigator) {
+            window.addEventListener('load', function() {
+                navigator.serviceWorker.register('/sw.js')
+                    .then(function(registration) {
+                        console.log('ServiceWorker registration successful with scope: ', registration.scope);
+                    }, function(err) {
+                        console.log('ServiceWorker registration failed: ', err);
+                    });
+            });
+        }
+    </script>
 </body>
 
 </html>

@@ -76,25 +76,26 @@ class WeeklyGoalServiceTest extends TestCase
     public function test_calculate_week_progress_with_multiple_readings_same_day()
     {
         // Create multiple readings on the same day - should only count as 1 day
-        $today = now()->toDateString();
+        $weekStart = now()->startOfWeek(Carbon::SUNDAY);
+        $testDate = $weekStart->toDateString(); // Use a known date within the current week
         
         ReadingLog::factory()->create([
             'user_id' => $this->user->id,
-            'date_read' => $today,
+            'date_read' => $testDate,
             'book_id' => 1,
             'chapter' => 1,
         ]);
         
         ReadingLog::factory()->create([
             'user_id' => $this->user->id,
-            'date_read' => $today,
+            'date_read' => $testDate,
             'book_id' => 1,
             'chapter' => 2,
         ]);
         
         ReadingLog::factory()->create([
             'user_id' => $this->user->id,
-            'date_read' => $today,
+            'date_read' => $testDate,
             'book_id' => 2,
             'chapter' => 1,
         ]);

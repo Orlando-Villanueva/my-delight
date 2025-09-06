@@ -35,6 +35,9 @@ class DashboardController extends Controller
         // Extract weekly streak data for easier access in views
         $weeklyStreak = $stats['weekly_streak'];
 
+        // Get monthly calendar data for calendar widget
+        $calendarData = $this->statisticsService->getMonthlyCalendarData($user);
+
         // Compute streak state and classes for the component
         $streakState = $this->streakStateService->determineStreakState(
             $stats['streaks']['current_streak'],
@@ -52,10 +55,10 @@ class DashboardController extends Controller
 
         // Return partial for HTMX navigation, full page for direct access
         if ($request->header('HX-Request')) {
-            return view('partials.dashboard-page', compact('hasReadToday', 'streakState', 'streakStateClasses', 'streakMessage', 'stats', 'weeklyGoal', 'weeklyStreak'));
+            return view('partials.dashboard-page', compact('hasReadToday', 'streakState', 'streakStateClasses', 'streakMessage', 'stats', 'weeklyGoal', 'weeklyStreak', 'calendarData'));
         }
 
         // Return full page for direct access (browser URL)
-        return view('dashboard', compact('hasReadToday', 'streakState', 'streakStateClasses', 'streakMessage', 'stats', 'weeklyGoal', 'weeklyStreak'));
+        return view('dashboard', compact('hasReadToday', 'streakState', 'streakStateClasses', 'streakMessage', 'stats', 'weeklyGoal', 'weeklyStreak', 'calendarData'));
     }
 }

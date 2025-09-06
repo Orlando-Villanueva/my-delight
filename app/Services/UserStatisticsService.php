@@ -272,7 +272,117 @@ class UserStatisticsService
         );
     }
 
+    /**
+     * Get monthly calendar data with grid layout and statistics.
+     */
+    public function getMonthlyCalendarData(User $user, ?int $year = null, ?int $month = null): array
+    {
+        $currentDate = now();
+        $year = $year ?? $currentDate->year;
+        $month = $month ?? $currentDate->month;
+        
+        $targetDate = Carbon::create($year, $month, 1);
+        $monthKey = $targetDate->format('Y-m');
+        
+        return Cache::remember(
+            "user_monthly_calendar_{$user->id}_{$monthKey}",
+            900, // 15 minutes TTL - lighter than full year
+            fn() => $this->buildMonthlyCalendarData($user, $year, $month, $targetDate)
+        );
+    }
 
+
+
+    /**
+     * Build monthly calendar data with grid layout and statistics.
+     */
+    private function buildMonthlyCalendarData(User $user, int $year, int $month, Carbon $targetDate): array
+    {
+        $monthName = $targetDate->format('F Y');
+        $calendarData = $this->getCalendarData($user, (string) $year);
+        
+        $calendar = $this->generateMonthlyCalendarGrid($calendarData, $targetDate);
+        $statistics = $this->calculateMonthlyStatistics($calendar, $year, $month);
+        
+        return array_merge([
+            'calendar' => $calendar,
+            'monthName' => $monthName,
+            'year' => $year,
+            'month' => $month,
+        ], $statistics);
+    }
+
+    /**
+     * Generate calendar grid for the month with reading data.
+     */
+    private function generateMonthlyCalendarGrid(array $calendarData, Carbon $targetDate): array
+    {
+        $firstDay = $targetDate->copy()->startOfMonth();
+        $lastDay = $targetDate->copy()->endOfMonth();
+        $daysInMonth = $lastDay->day;
+        $startingDayOfWeek = $firstDay->dayOfWeek; // 0 = Sunday, 6 = Saturday
+        
+        $calendar = [];
+        
+        // Add empty cells for days before month starts
+        for ($i = 0; $i < $startingDayOfWeek; $i++) {
+            $calendar[] = null;
+        }
+        
+        // Add days of the month with reading data
+        for ($day = 1; $day <= $daysInMonth; $day++) {
+            $date = $firstDay->copy()->addDays($day - 1);
+            $dateStr = $date->toDateString();
+            
+            // Get reading data for this day from the cached calendar data
+            $dayData = $calendarData[$dateStr] ?? null;
+            $readingCount = $dayData ? $dayData['reading_count'] : 0;
+            $hasReading = $dayData ? $dayData['has_reading'] : false;
+            
+            $calendar[] = [
+                'day' => $day,
+                'date' => $date,
+                'hasReading' => $hasReading,
+                'readingCount' => $readingCount,
+                'isToday' => $date->isToday(),
+                'dateString' => $dateStr
+            ];
+        }
+        
+        return $calendar;
+    }
+
+    /**
+     * Calculate monthly statistics from calendar data.
+     */
+    private function calculateMonthlyStatistics(array $calendar, int $year, int $month): array
+    {
+        $thisMonthReadings = 0;
+        $thisMonthChapters = 0;
+        
+        foreach ($calendar as $day) {
+            if ($day !== null && $day['hasReading']) {
+                $thisMonthReadings++;
+                $thisMonthChapters += $day['readingCount'];
+            }
+        }
+        
+        // Calculate success rate based on days passed in month
+        $today = now();
+        $daysInMonth = Carbon::create($year, $month, 1)->daysInMonth;
+        $daysPassedInMonth = $today->month === $month && $today->year === $year 
+            ? min($daysInMonth, $today->day) 
+            : $daysInMonth;
+        $successRate = $daysPassedInMonth > 0 ? round(($thisMonthReadings / $daysPassedInMonth) * 100) : 0;
+        
+        return [
+            'thisMonthReadings' => $thisMonthReadings,
+            'thisMonthChapters' => $thisMonthChapters,
+            'successRate' => $successRate,
+            'daysInMonth' => $daysInMonth,
+            'daysPassedInMonth' => $daysPassedInMonth,
+        ];
+    }
 
     /**
      * Calculate smart time ago that considers the context of when reading was done vs when it was logged.
@@ -352,6 +462,7 @@ class UserStatisticsService
     {
         $currentYear = now()->year;
         $previousYear = $currentYear - 1;
+        $currentMonth = now()->format('Y-m');
         $weekStart = now()->startOfWeek(Carbon::SUNDAY)->toDateString();
         
         // Clear all user-specific caches
@@ -362,6 +473,7 @@ class UserStatisticsService
         Cache::forget("user_weekly_streak_{$user->id}_{$weekStart}");
         Cache::forget("user_calendar_{$user->id}_{$currentYear}");
         Cache::forget("user_calendar_{$user->id}_{$previousYear}");
+        Cache::forget("user_monthly_calendar_{$user->id}_{$currentMonth}");
         Cache::forget("user_total_reading_days_{$user->id}");
         Cache::forget("user_avg_chapters_per_day_{$user->id}");
     }
