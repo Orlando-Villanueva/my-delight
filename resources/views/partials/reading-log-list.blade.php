@@ -5,7 +5,7 @@
     {{-- Reading Log Entries Container --}}
     <div id="log-list" class="relative flex flex-col gap-y-4">
         {{-- Include the infinite scroll partial which handles both items and scroll sentinel --}}
-        @include('partials.reading-log-infinite-scroll', compact('logs', 'filter'))
+        @include('partials.reading-log-infinite-scroll', compact('logs'))
     </div>
 @else
     {{-- Empty State --}}
@@ -20,55 +20,17 @@
 
         <h3 class="text-lg font-medium text-gray-900 mb-2">No reading logs found</h3>
 
-        @if ($filter === 'all')
-            <p class="text-gray-600 mb-6">You haven't logged any Bible readings yet. Start building your reading habit!
-            </p>
-            <x-ui.button 
-                variant="primary"
-                size="default"
-                hx-get="{{ route('logs.create') }}" 
-                hx-target="#reading-log-modal-content"
-                hx-swap="innerHTML" 
-                hx-indicator="#modal-loading" 
-                @click="modalOpen = true"
-            >
-                📖 Log Your First Reading
-            </x-ui.button>
-        @else
-            @php
-                $filterText = match ($filter) {
-                    '7' => 'the last 7 days',
-                    '30' => 'the last 30 days',
-                    '90' => 'the last 90 days',
-                    default => 'this time period',
-                };
-            @endphp
-            <p class="text-gray-600 mb-6">No readings logged in {{ $filterText }}. Try expanding your date range or
-                log a new reading.</p>
-            <div class="space-x-4">
-                <x-ui.button 
-                    variant="outline"
-                    size="default"
-                    hx-get="{{ route('logs.index', ['filter' => 'all']) }}"
-                    hx-target="#reading-content" 
-                    hx-swap="innerHTML" 
-                    hx-indicator="#loading"
-                    data-filter="all"
-                >
-                    View All Readings
-                </x-ui.button>
-                <x-ui.button 
-                    variant="accent"
-                    size="default"
-                    hx-get="{{ route('logs.create') }}" 
-                    hx-target="#reading-log-modal-content"
-                    hx-swap="innerHTML" 
-                    hx-indicator="#modal-loading" 
-                    @click="modalOpen = true"
-                >
-                    📖 Log Reading
-                </x-ui.button>
-            </div>
-        @endif
+        <p class="text-gray-600 mb-6">You haven't logged any Bible readings yet. Start building your reading habit!</p>
+        <x-ui.button 
+            variant="primary"
+            size="default"
+            hx-get="{{ route('logs.create') }}" 
+            hx-target="#reading-log-modal-content"
+            hx-swap="innerHTML" 
+            hx-indicator="#modal-loading" 
+            @click="modalOpen = true"
+        >
+            📖 Log Your First Reading
+        </x-ui.button>
     </div>
 @endif
