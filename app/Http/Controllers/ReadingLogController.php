@@ -43,8 +43,8 @@ class ReadingLogController extends Controller
 
         // Return appropriate view based on request type
         if ($request->header('HX-Request')) {
-            // For HTMX requests, return the page content partial
-            return view('partials.reading-log-page-content', $data);
+            // For HTMX requests, return the page container partial
+            return view('partials.reading-log-create-page', $data);
         }
 
         // For direct page access, return the full page template
@@ -111,7 +111,7 @@ class ReadingLogController extends Controller
 
                 // Return fresh page content with success message and reset form
                 return response()
-                    ->view('partials.reading-log-page-content', array_merge(
+                    ->view('partials.reading-log-create-page', array_merge(
                         compact('books', 'errors'),
                         $formContext
                     ))
@@ -132,7 +132,7 @@ class ReadingLogController extends Controller
             $formContext = $this->readingFormService->getFormContextData($request->user());
 
             // Return appropriate partial based on request type
-            $partial = $request->header('HX-Request') ? 'partials.reading-log-page-content' : 'partials.reading-log-form';
+            $partial = $request->header('HX-Request') ? 'partials.reading-log-create-page' : 'logs.create';
 
             return view($partial, array_merge(
                 compact('books', 'errors'),
@@ -149,7 +149,7 @@ class ReadingLogController extends Controller
             $formContext = $this->readingFormService->getFormContextData($request->user());
 
             // Return appropriate partial based on request type
-            $partial = $request->header('HX-Request') ? 'partials.reading-log-page-content' : 'partials.reading-log-form';
+            $partial = $request->header('HX-Request') ? 'partials.reading-log-create-page' : 'logs.create';
 
             return view($partial, array_merge(
                 compact('books', 'errors'),
@@ -168,7 +168,7 @@ class ReadingLogController extends Controller
                 $formContext = $this->readingFormService->getFormContextData($request->user());
 
                 // Return appropriate partial based on request type
-                $partial = $request->header('HX-Request') ? 'partials.reading-log-page-content' : 'partials.reading-log-form';
+                $partial = $request->header('HX-Request') ? 'partials.reading-log-create-page' : 'logs.create';
 
                 return view($partial, array_merge(
                     compact('books', 'errors'),

@@ -5,6 +5,8 @@
 
 @section('content')
     <div id="main-content" class="h-full">
-        @include('partials.reading-log-page-content', compact('books', 'errors', 'allowYesterday'))
+        <div class="max-w-2xl mx-auto">
+            @include('partials.reading-log-form', compact('books', 'errors', 'allowYesterday', 'hasReadYesterday', 'currentStreak', 'hasReadToday'))
+        </div>
     </div>
 @endsection 

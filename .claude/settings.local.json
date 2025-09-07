@@ -22,7 +22,9 @@
       "Bash(php artisan make:mail:*)",
       "Bash(php artisan make:command:*)",
       "Bash(git checkout:*)",
-      "mcp__laravel-boost__get-absolute-url"
+      "mcp__laravel-boost__get-absolute-url",
+      "Bash(vendor/bin/pint:*)",
+      "Bash(php vendor/bin/pint:*)"
     ],
     "deny": []
   },
