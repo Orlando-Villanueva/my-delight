@@ -8,12 +8,6 @@
             <span class="ml-3 text-gray-600 dark:text-gray-400">Loading readings...</span>
         </div>
 
-        <div id="reading-list-container"
-            hx-trigger="readingLogAdded from:body"
-            hx-get="{{ route('logs.index') }}"
-            hx-target="this"
-            hx-swap="innerHTML">
-            @include('partials.reading-log-list', compact('logs'))
-        </div>
+        @include('partials.reading-log-list', compact('logs'))
     </div>
 </div>
