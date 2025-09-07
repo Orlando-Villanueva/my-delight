@@ -395,6 +395,7 @@ class ReadingLogService
     /**
      * Render reading log cards HTML for infinite scroll responses.
      * Takes a collection of grouped logs and returns concatenated card HTML.
+     * Includes infinite scroll sentinel if there are more pages.
      */
     public function renderReadingLogCardsHtml($logs): string
     {
@@ -412,6 +413,13 @@ class ReadingLogService
                     'logsForDay' => $logsForDay
                 ])->render();
             }
+        }
+        
+        // Add infinite scroll sentinel if there are more pages
+        if ($logs->hasMorePages()) {
+            $cardsHtml .= view('partials.infinite-scroll-sentinel', [
+                'logs' => $logs
+            ])->render();
         }
         
         return $cardsHtml;
