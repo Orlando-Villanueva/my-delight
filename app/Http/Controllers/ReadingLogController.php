@@ -213,6 +213,11 @@ class ReadingLogController extends Controller
                 return response($cardsHtml);
             }
 
+            // If this is a refresh request (from readingLogAdded trigger), return just the list
+            if ($request->has('refresh')) {
+                return view('partials.reading-log-list', compact('logs'));
+            }
+
             // Otherwise, return the page container for HTMX navigation
             return view('partials.logs-page', compact('logs'));
         }
