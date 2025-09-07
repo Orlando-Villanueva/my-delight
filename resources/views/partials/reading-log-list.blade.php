@@ -2,10 +2,37 @@
 {{-- This partial is loaded via HTMX for seamless filtering --}}
 
 @if ($logs->count() > 0)
-    {{-- Reading Log Entries Container --}}
-    <div id="log-list" class="relative flex flex-col gap-y-4">
-        {{-- Include the infinite scroll partial which handles both items and scroll sentinel --}}
-        @include('partials.reading-log-infinite-scroll', compact('logs'))
+    {{-- Reading Log Entries Container - Simplified architecture for consistent spacing --}}
+    <div id="log-list" class="relative">
+        {{-- Content Container - All cards render here with consistent spacing --}}
+        <div id="log-list-content" class="space-y-4">
+            @foreach ($logs as $logsForDay)
+                @if ($logsForDay->count() === 1)
+                    {{-- Single reading: use individual card --}}
+                    <x-bible.reading-log-card :log="$logsForDay->first()" />
+                @else
+                    {{-- Multiple readings: use daily grouped card --}}
+                    <x-bible.daily-reading-card :logsForDay="$logsForDay" />
+                @endif
+            @endforeach
+        </div>
+        
+        {{-- Intersection Observer Sentinel for Infinite Scroll --}}
+        @if ($logs->hasMorePages())
+            <div id="infinite-scroll-sentinel" 
+                hx-get="{{ $logs->nextPageUrl() }}" 
+                hx-trigger="intersect once" 
+                hx-target="#log-list-content"
+                hx-swap="beforeend"
+                hx-indicator=".htmx-indicator" 
+                class="flex justify-center py-4 mt-4">
+                {{-- Loading indicator that shows during fetch --}}
+                <div class="htmx-indicator flex items-center space-x-2 text-gray-500">
+                    <div class="animate-spin h-5 w-5 border-2 border-primary-600 border-t-transparent rounded-full"></div>
+                    <span class="text-sm">Loading more readings...</span>
+                </div>
+            </div>
+        @endif
     </div>
 @else
     {{-- Empty State --}}

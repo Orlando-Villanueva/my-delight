@@ -207,9 +207,10 @@ class ReadingLogController extends Controller
 
         // Return appropriate view based on request type
         if ($request->header('HX-Request')) {
-            // If it's an infinite scroll request (has page parameter), return just the items
+            // If it's an infinite scroll request (has page parameter), return just the new cards
             if ($request->has('page') && $request->get('page') > 1) {
-                return view('partials.reading-log-infinite-scroll', compact('logs'));
+                $cardsHtml = $this->readingLogService->renderReadingLogCardsHtml($logs);
+                return response($cardsHtml);
             }
 
             // Otherwise, return the page container for HTMX navigation

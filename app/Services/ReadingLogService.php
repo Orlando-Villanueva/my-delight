@@ -391,4 +391,29 @@ class ReadingLogService
         
         return $readingLog;
     }
+
+    /**
+     * Render reading log cards HTML for infinite scroll responses.
+     * Takes a collection of grouped logs and returns concatenated card HTML.
+     */
+    public function renderReadingLogCardsHtml($logs): string
+    {
+        $cardsHtml = '';
+        
+        foreach ($logs as $logsForDay) {
+            if ($logsForDay->count() === 1) {
+                // Single reading: use individual card
+                $cardsHtml .= view('components.bible.reading-log-card', [
+                    'log' => $logsForDay->first()
+                ])->render();
+            } else {
+                // Multiple readings: use daily grouped card
+                $cardsHtml .= view('components.bible.daily-reading-card', [
+                    'logsForDay' => $logsForDay
+                ])->render();
+            }
+        }
+        
+        return $cardsHtml;
+    }
 } 
