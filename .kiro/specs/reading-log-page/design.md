@@ -32,7 +32,7 @@ resources/views/partials/reading-log-page-content.blade.php (HTMX-swappable cont
 - **Route**: `{{ route('logs.create') }}`
 
 #### Mobile Navigation
-- **Floating Action Button**: Modify existing FAB to use HTMX navigation instead of modal
+- **Floating Action Button**: Modify existing FAB to use HTMX navigation instead of modal, remains visible across all pages for consistent UX
 - **Bottom Navigation**: No changes required (remains Dashboard + History only)
 
 #### Header Button
@@ -93,30 +93,26 @@ The form will maintain identical functionality with these adaptations:
 
 #### Success State Design
 After successful submission, display:
-- **Success Message**: Dismissable confirmation using existing error message styling
-- **Form Reset**: Clean form ready for next entry with draft data cleared
-- **Close Button**: Allow users to dismiss the success message manually
+- **Success Message**: Laravel flash message with standard styling
+- **Form Reset**: Clean form ready for next entry
+- **Auto-dismiss**: Success message auto-dismisses after 5 seconds with manual close option
 
 #### Implementation
 ```blade
 @if(session('success'))
-<div class="mb-6 bg-green-50 dark:bg-green-900/20 border border-green-200 dark:border-green-800 rounded-md p-4" x-data="{ show: true }" x-show="show">
+<div class="mb-6 bg-green-50 dark:bg-green-900/20 border border-green-200 dark:border-green-800 rounded-md p-4" 
+     x-data="{ show: true }" 
+     x-show="show" 
+     x-init="setTimeout(() => show = false, 5000)">
     <div class="flex items-center justify-between">
         <div class="flex items-center">
             <svg class="w-5 h-5 text-green-400 mr-3">...</svg>
-            <div>
-                <h3 class="text-sm font-medium text-green-800 dark:text-green-400">
-                    Reading logged successfully!
-                </h3>
-                <p class="text-sm text-green-700 dark:text-green-300 mt-1">
-                    {{ session('success') }}
-                </p>
-            </div>
+            <p class="text-sm text-green-700 dark:text-green-300">
+                {{ session('success') }}
+            </p>
         </div>
         <button @click="show = false" class="text-green-400 hover:text-green-600">
-            <svg class="w-4 h-4" fill="none" stroke="currentColor" viewBox="0 0 24 24">
-                <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M6 18L18 6M6 6l12 12"></path>
-            </svg>
+            <svg class="w-4 h-4">...</svg>
         </button>
     </div>
 </div>
@@ -200,26 +196,19 @@ The existing data models and validation remain unchanged:
 - **Modal Cleanup**: Remove modal-related Alpine.js state and handlers
 - **Draft Persistence**: Use Alpine.js `$persist` for form state preservation
 
-### Draft Persistence System
-- **Storage**: Use Alpine.js `$persist` with sessionStorage for form draft data
-- **Scope**: Preserve book selection, chapter input, date selection, and notes
-- **Lifecycle**: Clear drafts on successful submission, preserve on navigation
-- **Reset**: Clear drafts on page reload (browser refresh)
+### Form State Management (Simplified)
+- **Validation Errors**: Use Laravel's `old()` helper for form field persistence on validation errors
+- **Browser Native**: Leverage browser's natural form state preservation
+- **Reset**: Clear form after successful submission
 
-#### Draft Implementation Example
-```javascript
-x-data="{
-    formData: $persist({
-        book: '',
-        chapter: '',
-        date_read: 'today',
-        notes_text: ''
-    }).using(sessionStorage),
-    clearDraft() {
-        this.formData = { book: '', chapter: '', date_read: 'today', notes_text: '' }
-    }
-}"
+#### Implementation Notes
+```blade
+<!-- Use old() helper for validation error persistence -->
+<input name="chapter" value="{{ old('chapter') }}" />
+<textarea name="notes_text">{{ old('notes_text') }}</textarea>
 ```
+
+**Future Enhancement**: Advanced draft persistence with sessionStorage can be added post-MVP if user testing shows need.
 
 ### Route Configuration
 - **New Route**: `GET /logs/create` for reading log page with same auth middleware

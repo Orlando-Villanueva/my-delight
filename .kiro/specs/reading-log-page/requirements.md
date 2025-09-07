@@ -23,10 +23,10 @@ Convert the existing reading log modal into a dedicated page that integrates wit
 
 #### Acceptance Criteria
 
-1. WHEN I am on mobile THEN the floating action button SHALL remain visible and functional
+1. WHEN I am on mobile THEN the floating action button SHALL remain visible and functional across all pages
 2. WHEN I tap the floating action button THEN the system SHALL navigate to the reading log page using HTMX
 3. WHEN on mobile THEN there SHALL NOT be a "Log Reading" item in the bottom navigation bar
-4. WHEN the reading log page is active on mobile THEN the floating action button SHALL become hidden
+4. WHEN I am on the reading log page THEN the floating action button SHALL remain visible for consistent navigation
 
 ### Requirement 3
 
@@ -46,12 +46,11 @@ Convert the existing reading log modal into a dedicated page that integrates wit
 
 #### Acceptance Criteria
 
-1. WHEN I successfully submit a reading log THEN the system SHALL display a dismissable success message using existing error message styling
+1. WHEN I successfully submit a reading log THEN the system SHALL display a success message using Laravel's flash messaging
 2. WHEN I successfully submit a reading log THEN the form SHALL be reset to default values for easy re-use
 3. WHEN I successfully submit a reading log THEN I SHALL remain on the reading log page instead of being redirected
 4. WHEN a reading log is successfully added THEN the dashboard content SHALL be updated via HTMX triggers (maintaining existing behavior)
-5. WHEN I see a success message THEN I SHALL be able to dismiss it by clicking a close button
-6. WHEN I successfully submit a reading log THEN any draft form data SHALL be cleared
+5. WHEN I see a success message THEN it SHALL auto-dismiss after 5 seconds with option to close manually
 
 ### Requirement 5
 
@@ -62,7 +61,7 @@ Convert the existing reading log modal into a dedicated page that integrates wit
 1. WHEN I click the "Log Reading" button in the desktop header THEN the system SHALL navigate to the reading log page using HTMX
 2. WHEN I click the "Log Reading" button THEN the system SHALL NOT open a modal
 3. WHEN the reading log page is active THEN the header button SHALL remain visible and functional
-4. WHEN I click the header "Log Reading" button while already on the reading log page THEN the page SHALL refresh/reload the form
+4. WHEN I click the header "Log Reading" button while already on the reading log page THEN the system SHALL navigate normally (no special behavior)
 
 ### Requirement 6
 
@@ -86,14 +85,14 @@ Convert the existing reading log modal into a dedicated page that integrates wit
 3. WHEN I access `/logs/create` directly THEN I SHALL be authenticated using the same middleware as Dashboard and History pages
 4. WHEN I bookmark the reading log page URL THEN I SHALL be able to access it directly (with proper authentication)
 
-### Requirement 8
+### Requirement 8 (Future Enhancement)
 
 **User Story:** As a user, I want my form input to be preserved when I navigate between pages, so that I don't lose my work if I accidentally navigate away.
 
 #### Acceptance Criteria
 
-1. WHEN I start filling out the reading log form THEN my input SHALL be saved as draft data
-2. WHEN I navigate away from the reading log page THEN my draft data SHALL be preserved
-3. WHEN I return to the reading log page THEN my draft data SHALL be restored in the form
-4. WHEN I successfully submit the form THEN my draft data SHALL be cleared
-5. WHEN I reload the page THEN my draft data SHALL be cleared (fresh start)
+1. WHEN I start filling out the reading log form THEN my input SHALL use browser's native form persistence
+2. WHEN validation errors occur THEN form data SHALL be preserved using Laravel's `old()` helper
+3. WHEN I successfully submit the form THEN form data SHALL be cleared
+
+**Note:** Advanced draft persistence with sessionStorage is moved to post-MVP phase for simplified initial implementation.
