@@ -21,7 +21,8 @@
       "mcp__laravel-boost__list-routes",
       "Bash(php artisan make:mail:*)",
       "Bash(php artisan make:command:*)",
-      "Bash(git checkout:*)"
+      "Bash(git checkout:*)",
+      "mcp__laravel-boost__get-absolute-url"
     ],
     "deny": []
   },

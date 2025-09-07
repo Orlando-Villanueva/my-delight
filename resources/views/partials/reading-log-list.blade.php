@@ -3,7 +3,11 @@
 
 @if ($logs->count() > 0)
     {{-- Reading Log Entries Container - Simplified architecture for consistent spacing --}}
-    <div id="log-list" class="relative">
+    <div id="log-list" class="relative"
+        hx-trigger="readingLogAdded from:body"
+        hx-get="{{ route('logs.index') }}?refresh=1"
+        hx-target="this"
+        hx-swap="outerHTML">
         {{-- Content Container - All cards render here with consistent spacing --}}
         <div id="log-list-content" class="space-y-4">
             @foreach ($logs as $logsForDay)
