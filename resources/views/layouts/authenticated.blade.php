@@ -246,7 +246,7 @@
                 <div id="page-container" class="lg:flex lg:h-full container mx-auto">
                     @hasSection('sidebar')
                     <!-- Main Content (70% on desktop when sidebar present) -->
-                    <div class="lg:flex-1 lg:max-w-[70%] p-4 lg:p-4 xl:p-6">
+                    <div class="lg:flex-1 lg:max-w-[70%] p-4 lg:p-4 xl:p-6 pb-5 md:pb-20 lg:pb-4 xl:pb-6">
                         @yield('content')
                     </div>
 
@@ -256,7 +256,7 @@
                     </div>
                     @else
                     <!-- Full-width Content when no sidebar is defined -->
-                    <div class="flex-1 p-4 xl:p-6">
+                    <div class="flex-1 p-4 xl:p-6 pb-5 md:pb-20 lg:pb-6">
                         @yield('content')
                     </div>
                     @endif
