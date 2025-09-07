@@ -273,7 +273,7 @@
         </div>
         <!-- Mobile Bottom Navigation -->
         <nav class="lg:hidden fixed bottom-0 left-0 right-0 bg-white dark:bg-gray-800 border-t border-[#D1D7E0] dark:border-gray-700 px-4 py-2 z-40 h-20 transition-colors">
-            <div class="flex justify-around">
+            <div class="flex justify-around items-end relative">
                 <button type="button" hx-get="{{ route('dashboard') }}" hx-target="#page-container"
                     hx-swap="innerHTML" hx-push-url="true"
                     @click="previousView = currentView; currentView = 'dashboard'"
@@ -284,6 +284,15 @@
                             d="M3 7v10a2 2 0 002 2h14a2 2 0 002-2V9a2 2 0 00-2-2H5a2 2 0 00-2-2z"></path>
                     </svg>
                     <span class="text-xs mt-1">Dashboard</span>
+                </button>
+
+                <!-- Elevated Circular Add Reading Button (Center) -->
+                <button type="button" hx-get="{{ route('logs.create') }}" hx-target="#page-container"
+                    hx-swap="innerHTML" hx-push-url="true" @click="previousView = currentView; currentView = 'create'"
+                    class="absolute bottom-6 left-1/2 transform -translate-x-1/2 w-14 h-14 bg-accent-500 hover:bg-accent-600 active:bg-accent-700 text-white rounded-full flex items-center justify-center shadow-lg transition-all duration-200 z-50">
+                    <svg class="w-7 h-7" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                        <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M12 6v6m0 0v6m0-6h6m-6 0H6"></path>
+                    </svg>
                 </button>
 
                 <button type="button" hx-get="{{ route('logs.index') }}" hx-target="#page-container"
@@ -300,14 +309,6 @@
             </div>
         </nav>
 
-        <!-- Floating Action Button - Mobile Only -->
-        <button type="button" hx-get="{{ route('logs.create') }}" hx-target="#page-container"
-            hx-swap="innerHTML" hx-push-url="true" @click="previousView = currentView; currentView = 'create'"
-            class="lg:hidden fixed bottom-24 right-4 w-14 h-14 bg-accent-500 hover:bg-accent-600 text-white rounded-full flex items-center justify-center z-50 shadow-lg transition-colors">
-            <svg class="w-6 h-6" fill="none" stroke="currentColor" viewBox="0 0 24 24">
-                <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M12 6v6m0 0v6m0-6h6m-6 0H6"></path>
-            </svg>
-        </button>
 
     </div>
 
