@@ -42,7 +42,7 @@
         }
     </style>
 
-    <!-- Dynamic Title Script -->
+    <!-- Navigation & Title Scripts -->
     <script>
         function updateTitle(currentView) {
             const appName = '{{ config('app.name', 'Delight') }}';
@@ -63,19 +63,30 @@
             const initialView = '{{ request()->routeIs("logs.create") ? "create" : (request()->routeIs("logs.*") ? "logs" : "dashboard") }}';
             updateTitle(initialView);
         });
+
     </script>
 </head>
 
 <body class="bg-[#F5F7FA] dark:bg-gray-900 text-gray-600 min-h-screen font-sans antialiased transition-colors">
     <div class="flex h-screen" x-data="{
         currentView: '{{ request()->routeIs('logs.create') ? 'create' : (request()->routeIs('logs.*') ? 'logs' : 'dashboard') }}',
-        previousView: 'dashboard',
         init() {
             this.$watch('currentView', (value) => {
-                updateTitle(value);
+                updateTitle(value === 'create' ? 'create' : 'dashboard');
             });
+        },
+        toggleAddButton() {
+            if (this.currentView === 'create') {
+                htmx.ajax('GET', '{{ route('dashboard') }}', {target: '#page-container', swap: 'innerHTML'});
+                history.pushState(null, '', '{{ route('dashboard') }}');
+                this.currentView = 'dashboard';
+            } else {
+                htmx.ajax('GET', '{{ route('logs.create') }}', {target: '#page-container', swap: 'innerHTML'});
+                history.pushState(null, '', '{{ route('logs.create') }}');
+                this.currentView = 'create';
+            }
         }
-    }">
+    }"
         <!-- Desktop Sidebar Navigation -->
         <aside class="hidden lg:flex lg:flex-col w-48 xl:w-64 bg-white dark:bg-gray-800 border-r border-[#D1D7E0] dark:border-gray-700">
             <!-- Logo Section -->
@@ -276,7 +287,7 @@
             <div class="flex justify-around items-end relative">
                 <button type="button" hx-get="{{ route('dashboard') }}" hx-target="#page-container"
                     hx-swap="innerHTML" hx-push-url="true"
-                    @click="previousView = currentView; currentView = 'dashboard'"
+                    @click="currentView = 'dashboard'"
                     :class="currentView === 'dashboard' ? 'text-primary-500' : 'text-gray-500 dark:text-gray-400 hover:text-primary-500'"
                     class="flex flex-col items-center py-2 px-3 min-w-[44px] min-h-[44px] justify-center transition-colors leading-[1.5]">
                     <svg class="w-6 h-6" fill="none" stroke="currentColor" viewBox="0 0 24 24">
@@ -287,16 +298,18 @@
                 </button>
 
                 <!-- Elevated Circular Add Reading Button (Center) -->
-                <button type="button" hx-get="{{ route('logs.create') }}" hx-target="#page-container"
-                    hx-swap="innerHTML" hx-push-url="true" @click="previousView = currentView; currentView = 'create'"
+                <button type="button" 
+                    @click="toggleAddButton()"
                     class="absolute bottom-6 left-1/2 transform -translate-x-1/2 w-14 h-14 bg-accent-500 hover:bg-accent-600 active:bg-accent-700 text-white rounded-full flex items-center justify-center shadow-lg transition-all duration-200 z-50">
-                    <svg class="w-7 h-7" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                    <svg class="w-7 h-7 transition-transform duration-300 ease-in-out" 
+                         :class="currentView === 'create' ? 'rotate-45' : 'rotate-0'"
+                         fill="none" stroke="currentColor" viewBox="0 0 24 24">
                         <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M12 6v6m0 0v6m0-6h6m-6 0H6"></path>
                     </svg>
                 </button>
 
                 <button type="button" hx-get="{{ route('logs.index') }}" hx-target="#page-container"
-                    hx-swap="innerHTML" hx-push-url="true" @click="previousView = currentView; currentView = 'logs'"
+                    hx-swap="innerHTML" hx-push-url="true" @click="currentView = 'logs'"
                     :class="currentView === 'logs' ? 'text-primary-500' : 'text-gray-500 dark:text-gray-400 hover:text-primary-500'"
                     class="flex flex-col items-center py-2 px-3 min-w-[44px] min-h-[44px] justify-center transition-colors leading-[1.5]">
                     <svg class="w-6 h-6" fill="none" stroke="currentColor" viewBox="0 0 24 24">

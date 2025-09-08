@@ -1,7 +1,7 @@
 {{-- Unified Reading Log Form Component --}}
 {{-- This partial contains just the form logic and can be included in different layouts --}}
 
-<div class="px-2 sm:px-20 lg:px-32">
+<div class="sm:px-20 lg:px-32">
 {{-- Success Message --}}
 @if(session('success'))
     <div class="mb-6 bg-green-50 dark:bg-green-900/20 border border-green-200 dark:border-green-800 rounded-md p-4" 
