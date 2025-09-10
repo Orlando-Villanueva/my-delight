@@ -297,7 +297,12 @@
                 <!-- Elevated Circular Add Reading Button (Center) -->
                 <button type="button"
                     @click="toggleAddButton()"
-                    class="absolute bottom-6 left-1/2 transform -translate-x-1/2 w-14 h-14 bg-accent-500 hover:bg-accent-600 active:bg-accent-700 text-white rounded-full flex items-center justify-center shadow-lg transition-all duration-200 z-50">
+                    class="absolute bottom-6 left-1/2 transform -translate-x-1/2 w-14 h-14 rounded-full flex items-center justify-center shadow-lg transition-all duration-200 z-50"
+                    :class="currentView === 'create' 
+                        ? 'bg-accent-300 text-white/70 cursor-default' 
+                        : 'bg-accent-500 hover:bg-accent-600 active:bg-accent-700 text-white'"
+                    :aria-disabled="currentView === 'create'"
+                    :aria-label="currentView === 'create' ? 'Already on add reading page' : 'Add new reading'">
                     <svg class="w-7 h-7"
                         fill="none" stroke="currentColor" viewBox="0 0 24 24">
                         <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M12 6v6m0 0v6m0-6h6m-6 0H6"></path>
