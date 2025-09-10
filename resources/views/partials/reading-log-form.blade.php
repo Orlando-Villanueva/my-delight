@@ -169,7 +169,7 @@
             variant="accent" 
             size="lg"
             hx-indicator="#save-loading"
-            class="px-6 py-3 text-base font-medium shadow-sm"
+            class="w-full sm:w-auto px-6 py-3 text-base font-medium shadow-sm"
         >
             <span id="save-loading" class="htmx-indicator hidden">
                 <svg class="animate-spin -ml-1 mr-3 h-5 w-5 text-white" xmlns="http://www.w3.org/2000/svg" fill="none" viewBox="0 0 24 24">
