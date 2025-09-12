@@ -5,7 +5,7 @@
 
 @section('content')
     <div id="main-content" class="h-full">
-        <div class="max-w-2xl mx-auto">
+        <div class="max-w-2xl mx-auto sm:px-20 lg:px-32">
             @include('partials.reading-log-form', compact('books', 'errors', 'allowYesterday', 'hasReadYesterday', 'currentStreak', 'hasReadToday'))
         </div>
     </div>

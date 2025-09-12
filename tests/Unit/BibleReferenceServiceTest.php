@@ -7,11 +7,11 @@ beforeEach(function () {
 });
 
 describe('BibleReferenceService', function () {
-    
+
     describe('getBibleBook()', function () {
         it('can get a book by ID', function () {
             $book = $this->service->getBibleBook(1);
-            
+
             expect($book)->not->toBeNull()
                 ->and($book['id'])->toBe(1)
                 ->and($book['name'])->toBe('Genesis')
@@ -21,7 +21,7 @@ describe('BibleReferenceService', function () {
 
         it('can get a book by English name', function () {
             $book = $this->service->getBibleBook('Genesis');
-            
+
             expect($book)->not->toBeNull()
                 ->and($book['id'])->toBe(1)
                 ->and($book['name'])->toBe('Genesis');
@@ -29,7 +29,7 @@ describe('BibleReferenceService', function () {
 
         it('can get a book by French name', function () {
             $book = $this->service->getBibleBook('Genèse', 'fr');
-            
+
             expect($book)->not->toBeNull()
                 ->and($book['id'])->toBe(1)
                 ->and($book['name'])->toBe('Genèse');
@@ -70,7 +70,7 @@ describe('BibleReferenceService', function () {
         });
 
         it('throws exception for invalid book ID', function () {
-            expect(fn() => $this->service->formatBibleReference(99, 1))
+            expect(fn () => $this->service->formatBibleReference(99, 1))
                 ->toThrow(InvalidArgumentException::class);
         });
     });
@@ -83,7 +83,7 @@ describe('BibleReferenceService', function () {
         });
 
         it('throws exception for invalid book ID', function () {
-            expect(fn() => $this->service->getBookChapterCount(99))
+            expect(fn () => $this->service->getBookChapterCount(99))
                 ->toThrow(InvalidArgumentException::class);
         });
     });
@@ -157,7 +157,7 @@ describe('BibleReferenceService', function () {
     describe('parseBibleReference()', function () {
         it('parses valid Bible references', function () {
             $parsed = $this->service->parseBibleReference('Genesis 1');
-            
+
             expect($parsed)->not->toBeNull()
                 ->and($parsed['book_id'])->toBe(1)
                 ->and($parsed['chapter'])->toBe(1)
@@ -167,7 +167,7 @@ describe('BibleReferenceService', function () {
 
         it('parses references with verses', function () {
             $parsed = $this->service->parseBibleReference('John 3:16');
-            
+
             expect($parsed)->not->toBeNull()
                 ->and($parsed['book_id'])->toBe(43)
                 ->and($parsed['chapter'])->toBe(3)
@@ -176,7 +176,7 @@ describe('BibleReferenceService', function () {
 
         it('handles French book names', function () {
             $parsed = $this->service->parseBibleReference('Jean 3', 'fr');
-            
+
             expect($parsed)->not->toBeNull()
                 ->and($parsed['book_id'])->toBe(43)
                 ->and($parsed['book_name'])->toBe('Jean');
@@ -192,14 +192,14 @@ describe('BibleReferenceService', function () {
     describe('testament operations', function () {
         it('gets testament information', function () {
             $oldTestament = $this->service->getTestament('old');
-            
+
             expect($oldTestament)->not->toBeNull()
                 ->and($oldTestament['name'])->toBe('Old Testament')
                 ->and($oldTestament['range'])->toBe([1, 39])
                 ->and($oldTestament['books_count'])->toBe(39);
 
             $newTestament = $this->service->getTestament('new');
-            
+
             expect($newTestament)->not->toBeNull()
                 ->and($newTestament['name'])->toBe('New Testament')
                 ->and($newTestament['range'])->toBe([40, 66])
@@ -208,7 +208,7 @@ describe('BibleReferenceService', function () {
 
         it('lists all testaments', function () {
             $testaments = $this->service->listTestaments();
-            
+
             expect($testaments)->toHaveCount(2)
                 ->and($testaments)->toHaveKeys(['old', 'new']);
         });
@@ -216,7 +216,7 @@ describe('BibleReferenceService', function () {
         it('gets books in testament', function () {
             $oldTestamentBooks = $this->service->getBooksInTestament('old');
             $newTestamentBooks = $this->service->getBooksInTestament('new');
-            
+
             expect($oldTestamentBooks)->toHaveCount(39)
                 ->and($newTestamentBooks)->toHaveCount(27);
         });
@@ -257,4 +257,4 @@ describe('BibleReferenceService', function () {
             expect($this->service->getAdjacentBook(1, 'previous'))->toBeNull();
         });
     });
-}); 
+});

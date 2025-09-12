@@ -2,13 +2,12 @@
 
 namespace App\Services;
 
-use App\Models\User;
 use App\Models\ReadingLog;
-use App\Models\BookProgress;
-use Illuminate\Support\Collection;
+use App\Models\User;
 use Carbon\Carbon;
-use InvalidArgumentException;
+use Illuminate\Support\Collection;
 use Illuminate\Support\Facades\Cache;
+use InvalidArgumentException;
 
 class ReadingLogService
 {
@@ -21,25 +20,25 @@ class ReadingLogService
 
     /**
      * Log a new Bible reading entry for a user (supports single chapter or chapter ranges).
-     * 
+     *
      * Expected data format:
      * - For single chapter: ['book_id' => int, 'chapter' => int, ...]
      * - For chapter ranges: ['book_id' => int, 'chapters' => [int, int, ...], ...]
-     * 
+     *
      * Note: The controller parses 'chapter_input' from forms and converts it to the appropriate format.
      */
     public function logReading(User $user, array $data): ReadingLog
     {
         // Validate and format the Bible reference
         $this->validateBibleReference($data['book_id'], $data);
-        
+
         // Format passage text if not provided
-        if (!isset($data['passage_text'])) {
+        if (! isset($data['passage_text'])) {
             $data['passage_text'] = $this->formatPassageText($data['book_id'], $data);
         }
 
         $dateRead = $data['date_read'] ?? now()->toDateString();
-        
+
         // Check if user has already read today BEFORE creating the new reading
         $hasReadToday = $user->readingLogs()
             ->whereDate('date_read', $dateRead)
@@ -63,7 +62,7 @@ class ReadingLogService
         $this->updateBookProgress($user, $data['book_id'], $data['chapter']);
 
         // Invalidate user statistics cache with knowledge of whether this is first reading of the day
-        $this->invalidateUserStatisticsCache($user, !$hasReadToday);
+        $this->invalidateUserStatisticsCache($user, ! $hasReadToday);
 
         // Server-side state updated - HTMX will handle UI updates
 
@@ -77,7 +76,7 @@ class ReadingLogService
     {
         $chapters = $data['chapters'];
         $firstLog = null;
-        
+
         foreach ($chapters as $chapter) {
             $readingLog = $user->readingLogs()->create([
                 'book_id' => $data['book_id'],
@@ -89,7 +88,7 @@ class ReadingLogService
 
             // Update book progress for each chapter
             $this->updateBookProgress($user, $data['book_id'], $chapter);
-            
+
             // Return the first log for response consistency
             if ($firstLog === null) {
                 $firstLog = $readingLog;
@@ -98,7 +97,7 @@ class ReadingLogService
 
         // Invalidate user statistics cache after logging multiple chapters
         // Only the first reading of the day affects streaks and weekly goals
-        $this->invalidateUserStatisticsCache($user, !$hasReadToday);
+        $this->invalidateUserStatisticsCache($user, ! $hasReadToday);
 
         return $firstLog;
     }
@@ -143,7 +142,7 @@ class ReadingLogService
             ->distinct()
             ->orderBy('date_read', 'desc')
             ->pluck('date_read')
-            ->map(fn($date) => Carbon::parse($date)->startOfDay())
+            ->map(fn ($date) => Carbon::parse($date)->startOfDay())
             ->unique()
             ->values();
 
@@ -153,25 +152,24 @@ class ReadingLogService
 
         $today = Carbon::today();
         $yesterday = Carbon::yesterday();
-        
+
         // Check if user has read recently (today or yesterday - grace period)
-        $hasRecentReading = $readingDates->contains(fn($date) => 
-            $date->equalTo($today) || $date->equalTo($yesterday)
+        $hasRecentReading = $readingDates->contains(fn ($date) => $date->equalTo($today) || $date->equalTo($yesterday)
         );
 
-        if (!$hasRecentReading) {
+        if (! $hasRecentReading) {
             return 0;
         }
 
         // Convert to array of date strings for easier lookup
-        $readingDateStrings = $readingDates->map(fn($date) => $date->toDateString())->toArray();
-        
+        $readingDateStrings = $readingDates->map(fn ($date) => $date->toDateString())->toArray();
+
         // Start streak calculation from today or yesterday (whichever has a reading)
         $streak = 0;
         $checkDate = $today->copy();
-        
+
         // If no reading today but reading yesterday, start from yesterday
-        if (!in_array($today->toDateString(), $readingDateStrings) && 
+        if (! in_array($today->toDateString(), $readingDateStrings) &&
             in_array($yesterday->toDateString(), $readingDateStrings)) {
             $checkDate = $yesterday->copy();
         }
@@ -196,7 +194,7 @@ class ReadingLogService
             ->distinct()
             ->orderBy('date_read', 'asc')
             ->pluck('date_read')
-            ->map(fn($date) => Carbon::parse($date)->startOfDay())
+            ->map(fn ($date) => Carbon::parse($date)->startOfDay())
             ->unique()
             ->values();
 
@@ -211,7 +209,7 @@ class ReadingLogService
         foreach ($readingDates->skip(1) as $date) {
             // Cast to int as diffInDays may return float depending on Carbon version
             $daysDifference = (int) $previousDate->diffInDays($date);
-            
+
             // Consecutive days should have exactly 1 day difference
             if ($daysDifference === 1) {
                 $currentStreak++;
@@ -220,7 +218,7 @@ class ReadingLogService
                 // Gap found, reset current streak
                 $currentStreak = 1;
             }
-            
+
             $previousDate = $date;
         }
 
@@ -232,19 +230,19 @@ class ReadingLogService
      */
     private function validateBibleReference(int $bookId, array $data): void
     {
-        if (!$this->bibleService->validateBookId($bookId)) {
+        if (! $this->bibleService->validateBookId($bookId)) {
             throw new InvalidArgumentException("Invalid book ID: {$bookId}");
         }
 
         if (isset($data['chapter'])) {
-            if (!$this->bibleService->validateChapterNumber($bookId, $data['chapter'])) {
+            if (! $this->bibleService->validateChapterNumber($bookId, $data['chapter'])) {
                 throw new InvalidArgumentException("Invalid chapter number for book ID: {$bookId}");
             }
         }
 
         if (isset($data['chapters']) && is_array($data['chapters'])) {
             foreach ($data['chapters'] as $chapter) {
-                if (!$this->bibleService->validateChapterNumber($bookId, $chapter)) {
+                if (! $this->bibleService->validateChapterNumber($bookId, $chapter)) {
                     throw new InvalidArgumentException("Invalid chapter number {$chapter} for book ID: {$bookId}");
                 }
             }
@@ -259,6 +257,7 @@ class ReadingLogService
         if (isset($data['chapters']) && is_array($data['chapters'])) {
             $startChapter = min($data['chapters']);
             $endChapter = max($data['chapters']);
+
             return $this->bibleService->formatBibleReferenceRange($bookId, $startChapter, $endChapter);
         }
 
@@ -274,7 +273,7 @@ class ReadingLogService
     {
         // Get book information from BibleReferenceService
         $book = $this->bibleService->getBibleBook($bookId);
-        if (!$book) {
+        if (! $book) {
             throw new InvalidArgumentException("Invalid book ID: {$bookId}");
         }
 
@@ -294,12 +293,12 @@ class ReadingLogService
 
         // Get current chapters read
         $chaptersRead = $bookProgress->chapters_read ?? [];
-        
+
         // Add new chapter if not already recorded
-        if (!in_array($chapter, $chaptersRead)) {
+        if (! in_array($chapter, $chaptersRead)) {
             $chaptersRead[] = $chapter;
             sort($chaptersRead); // Keep chapters sorted
-            
+
             // Update book progress
             $bookProgress->chapters_read = $chaptersRead;
             $bookProgress->completion_percent = round((count($chaptersRead) / $book['chapters']) * 100, 2);
@@ -307,7 +306,7 @@ class ReadingLogService
             $bookProgress->save();
         }
     }
-    
+
     /**
      * Update book progress from an existing reading log.
      * This is useful for syncing book progress with seeded reading logs.
@@ -326,7 +325,7 @@ class ReadingLogService
         $currentYear = now()->year;
         $previousYear = $currentYear - 1;
         $currentMonth = now()->format('Y-m');
-        
+
         // Always invalidate - these change on every reading
         Cache::forget("user_dashboard_stats_{$user->id}");
         Cache::forget("user_calendar_{$user->id}_{$currentYear}");
@@ -334,7 +333,7 @@ class ReadingLogService
         Cache::forget("user_monthly_calendar_{$user->id}_{$currentMonth}");
         Cache::forget("user_total_reading_days_{$user->id}");
         Cache::forget("user_avg_chapters_per_day_{$user->id}");
-        
+
         // Smart invalidation - only invalidate on first reading of the day
         if ($isFirstReadingOfDay) {
             // First reading of the day - streak and weekly goal will change
@@ -342,7 +341,7 @@ class ReadingLogService
             Cache::forget("user_weekly_goal_{$user->id}_{$weekStart}");
             Cache::forget("user_weekly_streak_{$user->id}_{$weekStart}");
             Cache::forget("user_current_streak_{$user->id}");
-            
+
             // Longest streak - only invalidate if current streak might exceed it
             $cachedLongest = Cache::get("user_longest_streak_{$user->id}");
             if ($cachedLongest === null) {
@@ -367,13 +366,13 @@ class ReadingLogService
     {
         $user = $readingLog->user;
         $deleted = $readingLog->delete();
-        
+
         if ($deleted) {
             // For deletions, we can't easily determine if this was the only reading of the day
             // so we invalidate all caches to be safe
             $this->invalidateUserStatisticsCache($user, true);
         }
-        
+
         return $deleted;
     }
 
@@ -384,11 +383,11 @@ class ReadingLogService
     {
         $user = $readingLog->user;
         $readingLog->update($data);
-        
+
         // For updates, we can't easily determine the impact on daily reading status
         // so we invalidate all caches to be safe
         $this->invalidateUserStatisticsCache($user, true);
-        
+
         return $readingLog;
     }
 
@@ -400,28 +399,28 @@ class ReadingLogService
     public function renderReadingLogCardsHtml($logs): string
     {
         $cardsHtml = '';
-        
+
         foreach ($logs as $logsForDay) {
             if ($logsForDay->count() === 1) {
                 // Single reading: use individual card
                 $cardsHtml .= view('components.bible.reading-log-card', [
-                    'log' => $logsForDay->first()
+                    'log' => $logsForDay->first(),
                 ])->render();
             } else {
                 // Multiple readings: use daily grouped card
                 $cardsHtml .= view('components.bible.daily-reading-card', [
-                    'logsForDay' => $logsForDay
+                    'logsForDay' => $logsForDay,
                 ])->render();
             }
         }
-        
+
         // Add infinite scroll sentinel if there are more pages
         if ($logs->hasMorePages()) {
             $cardsHtml .= view('partials.infinite-scroll-sentinel', [
-                'logs' => $logs
+                'logs' => $logs,
             ])->render();
         }
-        
+
         return $cardsHtml;
     }
-} 
+}

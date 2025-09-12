@@ -99,7 +99,7 @@ class ReadingLogController extends Controller
             // Create reading log using service
             $log = $this->readingLogService->logReading($request->user(), $validated);
 
-            // Check if this is an HTMX request for the new page context
+            // Check if this is an HTMX request for the form replacement
             if ($request->header('HX-Request')) {
                 // Get fresh form data for page display
                 $books = $this->bibleReferenceService->listBibleBooks(null, 'en');
@@ -109,9 +109,9 @@ class ReadingLogController extends Controller
                 // Set success message
                 session()->flash('success', "{$log->passage_text} recorded for {$log->date_read->format('M d, Y')}");
 
-                // Return fresh page content with success message and reset form
+                // Return just the form container with success message and reset form
                 return response()
-                    ->view('partials.reading-log-create-page', array_merge(
+                    ->view('partials.reading-log-form', array_merge(
                         compact('books', 'errors'),
                         $formContext
                     ))
@@ -132,7 +132,7 @@ class ReadingLogController extends Controller
             $formContext = $this->readingFormService->getFormContextData($request->user());
 
             // Return appropriate partial based on request type
-            $partial = $request->header('HX-Request') ? 'partials.reading-log-create-page' : 'logs.create';
+            $partial = $request->header('HX-Request') ? 'partials.reading-log-form' : 'logs.create';
 
             return view($partial, array_merge(
                 compact('books', 'errors'),
@@ -149,7 +149,7 @@ class ReadingLogController extends Controller
             $formContext = $this->readingFormService->getFormContextData($request->user());
 
             // Return appropriate partial based on request type
-            $partial = $request->header('HX-Request') ? 'partials.reading-log-create-page' : 'logs.create';
+            $partial = $request->header('HX-Request') ? 'partials.reading-log-form' : 'logs.create';
 
             return view($partial, array_merge(
                 compact('books', 'errors'),

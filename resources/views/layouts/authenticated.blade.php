@@ -192,7 +192,7 @@
                         </div>
 
                         <!-- Primary Action Button - Desktop -->
-                        <div class="flex items-center">
+                        <div class="flex flex-col items-end">
                             <x-ui.button
                                 variant="accent"
                                 size="md"

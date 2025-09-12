@@ -2,7 +2,6 @@
 
 use Monolog\Handler\NullHandler;
 use Monolog\Handler\StreamHandler;
-use Monolog\Handler\SyslogUdpHandler;
 use Monolog\Processor\PsrLogMessageProcessor;
 
 return [
@@ -104,7 +103,7 @@ return [
         'emergency' => [
             'path' => storage_path('logs/laravel.log'),
         ],
-        
+
         'query' => [
             'driver' => 'daily',
             'path' => storage_path('logs/query.log'),
@@ -112,7 +111,7 @@ return [
             'days' => 7,
             'replace_placeholders' => true,
         ],
-        
+
         'performance' => [
             'driver' => 'daily',
             'path' => storage_path('logs/performance.log'),

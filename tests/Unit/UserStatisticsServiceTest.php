@@ -1,18 +1,20 @@
 <?php
 
 namespace Tests\Unit;
-use App\Services\UserStatisticsService;
-use App\Services\ReadingLogService;
-use App\Services\WeeklyGoalService;
+
 use App\Contracts\ReadingLogInterface;
-use App\Models\User;
+use App\Services\ReadingLogService;
+use App\Services\UserStatisticsService;
+use App\Services\WeeklyGoalService;
 use Carbon\Carbon;
 use PHPUnit\Framework\TestCase;
 
 class UserStatisticsServiceTest extends TestCase
 {
     protected ReadingLogService $readingLogService;
+
     protected WeeklyGoalService $weeklyGoalService;
+
     protected UserStatisticsService $service;
 
     protected function setUp(): void
@@ -31,13 +33,14 @@ class UserStatisticsServiceTest extends TestCase
         $mock = $this->createMock(ReadingLogInterface::class);
         $mock->method('getDateRead')->willReturn($dateRead);
         $mock->method('getCreatedAt')->willReturn($createdAt);
+
         return $mock;
     }
 
     /**
      * Test that formatTimeAgo formats time consistently for different time ranges
      */
-    public function testFormatTimeAgoConsistency()
+    public function test_format_time_ago_consistency()
     {
         $now = Carbon::now();
 
@@ -64,7 +67,7 @@ class UserStatisticsServiceTest extends TestCase
     /**
      * Test that formatTimeAgo handles edge cases correctly
      */
-    public function testFormatTimeAgoEdgeCases()
+    public function test_format_time_ago_edge_cases()
     {
         $now = Carbon::now();
 
@@ -80,7 +83,7 @@ class UserStatisticsServiceTest extends TestCase
     /**
      * Test that calculateSmartTimeAgo uses created_at for today readings
      */
-    public function testCalculateSmartTimeAgoForTodayReadings()
+    public function test_calculate_smart_time_ago_for_today_readings()
     {
         $today = Carbon::now()->startOfDay();
         $createdAt = Carbon::now()->subHours(3);
@@ -94,7 +97,7 @@ class UserStatisticsServiceTest extends TestCase
     /**
      * Test that calculateSmartTimeAgo always returns "1 day ago" for yesterday readings
      */
-    public function testCalculateSmartTimeAgoForYesterdayReadings()
+    public function test_calculate_smart_time_ago_for_yesterday_readings()
     {
         $yesterday = Carbon::now()->subDay()->startOfDay();
         $createdAt = Carbon::now()->subMinutes(30); // Recently logged
@@ -108,7 +111,7 @@ class UserStatisticsServiceTest extends TestCase
     /**
      * Test that calculateSmartTimeAgo uses date_read for older readings
      */
-    public function testCalculateSmartTimeAgoForOlderReadings()
+    public function test_calculate_smart_time_ago_for_older_readings()
     {
         $threeDaysAgo = Carbon::now()->subDays(3);
         $createdAt = Carbon::now()->subHours(1); // Recently logged
@@ -122,7 +125,7 @@ class UserStatisticsServiceTest extends TestCase
     /**
      * Test that calculateSmartTimeAgo falls back to created_at when date_read is null
      */
-    public function testCalculateSmartTimeAgoFallbackWhenDateReadIsNull()
+    public function test_calculate_smart_time_ago_fallback_when_date_read_is_null()
     {
         $createdAt = Carbon::now()->subHours(5);
 
@@ -135,11 +138,11 @@ class UserStatisticsServiceTest extends TestCase
     /**
      * Test that UserStatisticsService has required dependencies and methods
      */
-    public function testServiceDependenciesAndMethods()
+    public function test_service_dependencies_and_methods()
     {
         // Test that UserStatisticsService has the required method for dashboard statistics
         $this->assertTrue(method_exists($this->service, 'getDashboardStatistics'));
-        
+
         // Test that the service was properly constructed with its dependencies
         $this->assertInstanceOf(UserStatisticsService::class, $this->service);
     }

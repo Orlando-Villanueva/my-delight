@@ -4,7 +4,6 @@ namespace Tests\Unit;
 
 use App\Models\User;
 use App\Services\UserStatisticsService;
-use App\Services\ReadingLogService;
 use Illuminate\Foundation\Testing\RefreshDatabase;
 use Illuminate\Support\Facades\Cache;
 use Tests\TestCase;
@@ -14,70 +13,71 @@ class UserStatisticsCacheTest extends TestCase
     use RefreshDatabase;
 
     protected UserStatisticsService $service;
+
     protected User $user;
 
     protected function setUp(): void
     {
         parent::setUp();
-        
+
         $this->user = User::factory()->create();
         $this->service = app(UserStatisticsService::class);
-        
+
         // Clear cache before each test
         Cache::flush();
     }
 
-    public function testGetDashboardStatisticsCachesResults()
+    public function test_get_dashboard_statistics_caches_results()
     {
         // First call should cache the results
         $firstResult = $this->service->getDashboardStatistics($this->user);
-        
+
         // Verify cache key exists
         $this->assertTrue(Cache::has("user_dashboard_stats_{$this->user->id}"));
-        
+
         // Second call should return cached results
         $secondResult = $this->service->getDashboardStatistics($this->user);
-        
+
         $this->assertEquals($firstResult, $secondResult);
     }
 
-    public function testGetStreakStatisticsCachesIndividualStreaks()
+    public function test_get_streak_statistics_caches_individual_streaks()
     {
         // Call streak statistics
         $this->service->getStreakStatistics($this->user);
-        
+
         // Verify individual streak caches exist
         $this->assertTrue(Cache::has("user_current_streak_{$this->user->id}"));
         $this->assertTrue(Cache::has("user_longest_streak_{$this->user->id}"));
     }
 
-    public function testGetCalendarDataCachesResults()
+    public function test_get_calendar_data_caches_results()
     {
         $year = now()->year;
-        
+
         // First call should cache the results
         $firstResult = $this->service->getCalendarData($this->user, $year);
-        
+
         // Verify cache key exists
         $this->assertTrue(Cache::has("user_calendar_{$this->user->id}_{$year}"));
-        
+
         // Second call should return cached results
         $secondResult = $this->service->getCalendarData($this->user, $year);
-        
+
         $this->assertEquals($firstResult, $secondResult);
     }
 
-    public function testInvalidateUserCacheClearsAllCaches()
+    public function test_invalidate_user_cache_clears_all_caches()
     {
         $currentYear = now()->year;
         $previousYear = $currentYear - 1;
-        
+
         // Populate caches
         $this->service->getDashboardStatistics($this->user);
         $this->service->getStreakStatistics($this->user);
         $this->service->getCalendarData($this->user, $currentYear);
         $this->service->getCalendarData($this->user, $previousYear);
-        
+
         // Verify caches exist
         $this->assertTrue(Cache::has("user_dashboard_stats_{$this->user->id}"));
         $this->assertTrue(Cache::has("user_current_streak_{$this->user->id}"));
@@ -86,10 +86,10 @@ class UserStatisticsCacheTest extends TestCase
         $this->assertTrue(Cache::has("user_calendar_{$this->user->id}_{$previousYear}"));
         $this->assertTrue(Cache::has("user_total_reading_days_{$this->user->id}"));
         $this->assertTrue(Cache::has("user_avg_chapters_per_day_{$this->user->id}"));
-        
+
         // Invalidate cache
         $this->service->invalidateUserCache($this->user);
-        
+
         // Verify all caches are cleared
         $this->assertFalse(Cache::has("user_dashboard_stats_{$this->user->id}"));
         $this->assertFalse(Cache::has("user_current_streak_{$this->user->id}"));
@@ -100,25 +100,25 @@ class UserStatisticsCacheTest extends TestCase
         $this->assertFalse(Cache::has("user_avg_chapters_per_day_{$this->user->id}"));
     }
 
-    public function testCacheHasDifferentTTLs()
+    public function test_cache_has_different_tt_ls()
     {
         // This test verifies that different cache keys have different TTLs
         // We can't directly test TTL values, but we can verify the caching behavior
-        
+
         $this->service->getDashboardStatistics($this->user);
         $this->service->getStreakStatistics($this->user);
         $this->service->getCalendarData($this->user);
-        
+
         // All caches should exist after creation
         $this->assertTrue(Cache::has("user_dashboard_stats_{$this->user->id}"));
         $this->assertTrue(Cache::has("user_current_streak_{$this->user->id}"));
         $this->assertTrue(Cache::has("user_longest_streak_{$this->user->id}"));
-        $this->assertTrue(Cache::has("user_calendar_{$this->user->id}_" . now()->year));
+        $this->assertTrue(Cache::has("user_calendar_{$this->user->id}_".now()->year));
         $this->assertTrue(Cache::has("user_total_reading_days_{$this->user->id}"));
         $this->assertTrue(Cache::has("user_avg_chapters_per_day_{$this->user->id}"));
     }
 
-    public function testReadingSummaryIncludesNewStats()
+    public function test_reading_summary_includes_new_stats()
     {
         // Create some reading logs to test with
         $this->user->readingLogs()->create([
@@ -127,7 +127,7 @@ class UserStatisticsCacheTest extends TestCase
             'passage_text' => 'Genesis 1',
             'date_read' => now()->subDays(5)->toDateString(),
         ]);
-        
+
         $this->user->readingLogs()->create([
             'book_id' => 1,
             'chapter' => 2,
@@ -141,7 +141,7 @@ class UserStatisticsCacheTest extends TestCase
         // Verify new stats are included
         $this->assertArrayHasKey('total_reading_days', $stats['reading_summary']);
         $this->assertArrayHasKey('average_chapters_per_day', $stats['reading_summary']);
-        
+
         // Verify values make sense
         $this->assertEquals(2, $stats['reading_summary']['total_reading_days']);
         $this->assertGreaterThan(0, $stats['reading_summary']['average_chapters_per_day']);

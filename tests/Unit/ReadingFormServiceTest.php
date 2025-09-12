@@ -2,8 +2,8 @@
 
 namespace Tests\Unit;
 
-use App\Models\User;
 use App\Models\ReadingLog;
+use App\Models\User;
 use App\Services\ReadingFormService;
 use App\Services\ReadingLogService;
 use Illuminate\Foundation\Testing\RefreshDatabase;
@@ -14,12 +14,13 @@ class ReadingFormServiceTest extends TestCase
     use RefreshDatabase;
 
     protected ReadingFormService $service;
+
     protected User $user;
 
     protected function setUp(): void
     {
         parent::setUp();
-        
+
         $readingLogService = $this->app->make(ReadingLogService::class);
         $this->service = new ReadingFormService($readingLogService);
         $this->user = User::factory()->create();
@@ -152,7 +153,7 @@ class ReadingFormServiceTest extends TestCase
 
         // Verify that hasReadToday is true in the context data
         $this->assertTrue($contextData['hasReadToday']);
-        
+
         // Verify the method returns the same result as calling hasReadToday directly
         $this->assertEquals(
             $this->service->hasReadToday($this->user),

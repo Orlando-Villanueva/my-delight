@@ -21,18 +21,18 @@ class QueryLogger
         if (app()->environment('local', 'testing', 'development')) {
             // Enable query logging
             DB::enableQueryLog();
-            
+
             // Process the request
             $response = $next($request);
-            
+
             // Get the query log
             $queries = DB::getQueryLog();
-            
+
             // Log slow queries (over 100ms)
             $slowQueries = collect($queries)->filter(function ($query) {
                 return $query['time'] > 100; // 100ms threshold
             });
-            
+
             if ($slowQueries->isNotEmpty()) {
                 Log::channel('query')->warning('Slow queries detected:', [
                     'url' => $request->fullUrl(),
@@ -40,18 +40,18 @@ class QueryLogger
                     'queries' => $slowQueries->toArray(),
                 ]);
             }
-            
+
             // Log all queries if debug mode is enabled
             if (config('app.debug')) {
-                Log::channel('query')->debug('Queries for ' . $request->fullUrl(), [
+                Log::channel('query')->debug('Queries for '.$request->fullUrl(), [
                     'count' => count($queries),
                     'queries' => $queries,
                 ]);
             }
-            
+
             return $response;
         }
-        
+
         return $next($request);
     }
 }
