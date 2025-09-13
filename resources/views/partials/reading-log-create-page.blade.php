@@ -2,7 +2,7 @@
 {{-- This partial is loaded via HTMX navigation and includes the page-container structure --}}
 
 @include('partials.header-update', [
-    'title' => 'Log Bible Reading',
+    'title' => 'Log Reading',
     'subtitle' => 'Record your Bible reading progress'
 ])
 

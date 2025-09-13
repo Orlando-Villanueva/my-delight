@@ -156,7 +156,7 @@ class CoreFunctionalityValidationTest extends TestCase
         // Test reading log form loads
         $response = $this->actingAs($user)->get('/logs/create');
         $response->assertStatus(200);
-        $response->assertSee('Log Bible Reading');
+        $response->assertSee('Log Reading');
 
         // Test successful reading log creation
         $readingData = [
@@ -351,7 +351,7 @@ class CoreFunctionalityValidationTest extends TestCase
 
         $response = $this->actingAs($user)->post('/logs', $invalidData);
         $response->assertStatus(200); // Returns form with errors
-        $response->assertSee('Log Bible Reading'); // Form is redisplayed
+        $response->assertSee('Log Reading'); // Form is redisplayed
     }
 
     /**

@@ -52,7 +52,7 @@
             } else if (currentView === 'logs') {
                 document.title = `History - ${appName}`;
             } else if (currentView === 'create') {
-                document.title = `Log Bible Reading - ${appName}`;
+                document.title = `Log Reading - ${appName}`;
             } else {
                 document.title = appName;
             }
@@ -115,6 +115,16 @@
                     Dashboard
                 </button>
 
+                <button type="button" hx-get="{{ route('logs.create') }}" hx-target="#page-container"
+                    hx-swap="innerHTML" hx-push-url="true" @click="previousView = currentView; currentView = 'create'"
+                    :class="currentView === 'create' ? 'bg-primary-500 text-white' : 'text-[#4A5568] dark:text-gray-300 hover:bg-[#F5F7FA] dark:hover:bg-gray-700 hover:text-primary-500 dark:hover:text-primary-500'"
+                    class="group flex items-center px-2 py-2 text-base lg:text-sm xl:text-base font-medium rounded-md transition-colors leading-[1.5] w-full text-left">
+                    <svg class="w-5 h-5 lg:w-4 lg:h-4 xl:w-5 xl:h-5 mr-3 lg:mr-2 xl:mr-3" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                        <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M12 6v6m0 0v6m0-6h6m-6 0H6"></path>
+                    </svg>
+                    Log Reading
+                </button>
+
                 <button type="button" hx-get="{{ route('logs.index') }}" hx-target="#page-container"
                     hx-swap="innerHTML" hx-push-url="true" @click="previousView = currentView; currentView = 'logs'"
                     :class="currentView === 'logs' ? 'bg-primary-500 text-white' : 'text-[#4A5568] dark:text-gray-300 hover:bg-[#F5F7FA] dark:hover:bg-gray-700 hover:text-primary-500 dark:hover:text-primary-500'"
@@ -125,16 +135,6 @@
                         </path>
                     </svg>
                     History
-                </button>
-
-                <button type="button" hx-get="{{ route('logs.create') }}" hx-target="#page-container"
-                    hx-swap="innerHTML" hx-push-url="true" @click="previousView = currentView; currentView = 'create'"
-                    :class="currentView === 'create' ? 'bg-primary-500 text-white' : 'text-[#4A5568] dark:text-gray-300 hover:bg-[#F5F7FA] dark:hover:bg-gray-700 hover:text-primary-500 dark:hover:text-primary-500'"
-                    class="group flex items-center px-2 py-2 text-base lg:text-sm xl:text-base font-medium rounded-md transition-colors leading-[1.5] w-full text-left">
-                    <svg class="w-5 h-5 lg:w-4 lg:h-4 xl:w-5 xl:h-5 mr-3 lg:mr-2 xl:mr-3" fill="none" stroke="currentColor" viewBox="0 0 24 24">
-                        <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M12 6v6m0 0v6m0-6h6m-6 0H6"></path>
-                    </svg>
-                    Log Bible Reading
                 </button>
 
             </nav>
@@ -205,7 +205,7 @@
                                 <svg class="w-4 h-4 mr-1" fill="none" stroke="currentColor" viewBox="0 0 24 24">
                                     <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M12 6v6m0 0v6m0-6h6m-6 0H6"></path>
                                 </svg>
-                                Log Bible Reading
+                                Log Reading
                             </x-ui.button>
                         </div>
                     </div>
