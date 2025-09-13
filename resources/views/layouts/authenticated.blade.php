@@ -71,7 +71,7 @@
         currentView: '{{ request()->routeIs('logs.create') ? 'create' : (request()->routeIs('logs.*') ? 'logs' : 'dashboard') }}',
         init() {
             this.$watch('currentView', (value) => {
-                updateTitle(value === 'create' ? 'create' : 'dashboard');
+                updateTitle(value);
             });
         },
         toggleAddButton() {
