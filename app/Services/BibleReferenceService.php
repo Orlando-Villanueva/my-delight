@@ -2,13 +2,15 @@
 
 namespace App\Services;
 
-use InvalidArgumentException;
 use Exception;
+use InvalidArgumentException;
 
 class BibleReferenceService
 {
     private array $bibleConfig;
+
     private string $defaultLocale;
+
     private array $supportedLocales;
 
     public function __construct(?array $bibleConfig = null)
@@ -22,16 +24,16 @@ class BibleReferenceService
     private function loadBibleConfig(): array
     {
         // Include the config file directly to avoid dependency on Laravel's config system during tests
-        $configPath = __DIR__ . '/../../config/bible.php';
+        $configPath = __DIR__.'/../../config/bible.php';
         if (file_exists($configPath)) {
             return include $configPath;
         }
-        
+
         // Fallback: try to load from Laravel's config system
         if (function_exists('config')) {
             return config('bible', []);
         }
-        
+
         return [];
     }
 
@@ -49,8 +51,10 @@ class BibleReferenceService
                 $book = $this->bibleConfig['books'][$bookId];
                 // Return localized name for the requested locale
                 $book['name'] = $this->getLocalizedBookName($bookId, $locale);
+
                 return $book;
             }
+
             return null;
         }
 
@@ -60,6 +64,7 @@ class BibleReferenceService
             if (strtolower($translatedName) === strtolower($identifier)) {
                 // Return localized name for the requested locale
                 $book['name'] = $this->getLocalizedBookName($bookId, $locale);
+
                 return $book;
             }
         }
@@ -72,7 +77,7 @@ class BibleReferenceService
      */
     public function validateBibleReference(int $bookId, int $chapter): bool
     {
-        if (!$this->validateBookId($bookId)) {
+        if (! $this->validateBookId($bookId)) {
             return false;
         }
 
@@ -85,12 +90,13 @@ class BibleReferenceService
     public function formatBibleReference(int $bookId, int $chapter, ?string $locale = null): string
     {
         $locale = $locale ?? $this->defaultLocale;
-        
-        if (!$this->validateBookId($bookId)) {
+
+        if (! $this->validateBookId($bookId)) {
             throw new InvalidArgumentException("Invalid book ID: {$bookId}");
         }
 
         $bookName = $this->getLocalizedBookName($bookId, $locale);
+
         return "{$bookName} {$chapter}";
     }
 
@@ -100,17 +106,17 @@ class BibleReferenceService
     public function formatBibleReferenceRange(int $bookId, int $startChapter, int $endChapter, ?string $locale = null): string
     {
         $locale = $locale ?? $this->defaultLocale;
-        
-        if (!$this->validateBookId($bookId)) {
+
+        if (! $this->validateBookId($bookId)) {
             throw new InvalidArgumentException("Invalid book ID: {$bookId}");
         }
 
         $bookName = $this->getLocalizedBookName($bookId, $locale);
-        
+
         if ($startChapter === $endChapter) {
             return "{$bookName} {$startChapter}";
         }
-        
+
         return "{$bookName} {$startChapter}-{$endChapter}";
     }
 
@@ -119,7 +125,7 @@ class BibleReferenceService
      */
     public function validateChapterRange(int $bookId, int $startChapter, int $endChapter): bool
     {
-        if (!$this->validateBookId($bookId)) {
+        if (! $this->validateBookId($bookId)) {
             return false;
         }
 
@@ -128,6 +134,7 @@ class BibleReferenceService
         }
 
         $maxChapters = $this->getBookChapterCount($bookId);
+
         return $startChapter >= 1 && $endChapter <= $maxChapters;
     }
 
@@ -137,36 +144,37 @@ class BibleReferenceService
     public function parseChapterInput(string $chapterInput): array
     {
         $chapterInput = trim($chapterInput);
-        
+
         // Check for range (e.g., "1-3")
         if (preg_match('/^(\d+)-(\d+)$/', $chapterInput, $matches)) {
             $start = (int) $matches[1];
             $end = (int) $matches[2];
-            
+
             // Ensure start <= end
             if ($start > $end) {
                 [$start, $end] = [$end, $start];
             }
-            
+
             return [
                 'type' => 'range',
                 'start' => $start,
                 'end' => $end,
-                'chapters' => range($start, $end)
+                'chapters' => range($start, $end),
             ];
         }
-        
+
         // Single chapter
         if (preg_match('/^\d+$/', $chapterInput)) {
             $chapter = (int) $chapterInput;
+
             return [
                 'type' => 'single',
                 'start' => $chapter,
                 'end' => $chapter,
-                'chapters' => [$chapter]
+                'chapters' => [$chapter],
             ];
         }
-        
+
         throw new InvalidArgumentException("Invalid chapter input format: {$chapterInput}");
     }
 
@@ -175,7 +183,7 @@ class BibleReferenceService
      */
     public function getBookChapterCount(int $bookId): int
     {
-        if (!isset($this->bibleConfig['books'][$bookId])) {
+        if (! isset($this->bibleConfig['books'][$bookId])) {
             throw new InvalidArgumentException("Invalid book ID: {$bookId}");
         }
 
@@ -200,7 +208,7 @@ class BibleReferenceService
                 'id' => $book['id'],
                 'name' => $this->getLocalizedBookName($bookId, $locale),
                 'chapters' => $book['chapters'],
-                'testament' => $book['testament']
+                'testament' => $book['testament'],
             ];
         }
 
@@ -220,11 +228,12 @@ class BibleReferenceService
      */
     public function validateChapterNumber(int $bookId, int $chapter): bool
     {
-        if (!$this->validateBookId($bookId)) {
+        if (! $this->validateBookId($bookId)) {
             return false;
         }
 
         $maxChapters = $this->getBookChapterCount($bookId);
+
         return $chapter >= 1 && $chapter <= $maxChapters;
     }
 
@@ -234,36 +243,36 @@ class BibleReferenceService
     public function getLocalizedBookName(int $bookId, ?string $locale = null): string
     {
         $locale = $locale ?? $this->defaultLocale;
-        
-        if (!$this->validateBookId($bookId)) {
+
+        if (! $this->validateBookId($bookId)) {
             throw new InvalidArgumentException("Invalid book ID: {$bookId}");
         }
 
         // Use Laravel's translation system if available
         $translationKey = "bible.books.{$bookId}";
-        
+
         // Try to get translation, fallback to English if not found
         if (function_exists('__') && app()->bound('translator')) {
             try {
                 $translation = __($translationKey, [], $locale);
-                
+
                 // If translation key is returned unchanged, try fallback locale
                 if ($translation === $translationKey && $locale !== $this->defaultLocale) {
                     $translation = __($translationKey, [], $this->defaultLocale);
                 }
-                
+
                 // If still no translation, use fallback
                 if ($translation === $translationKey) {
                     return $this->getTranslationFallback($bookId, $locale);
                 }
-                
+
                 return $translation;
             } catch (Exception $e) {
                 // If translation fails, use fallback
                 return $this->getTranslationFallback($bookId, $locale);
             }
         }
-        
+
         // Fallback for testing environment or when translator not available
         return $this->getTranslationFallback($bookId, $locale);
     }
@@ -288,7 +297,7 @@ class BibleReferenceService
                 50 => 'Philippians', 51 => 'Colossians', 52 => '1 Thessalonians', 53 => '2 Thessalonians', 54 => '1 Timothy',
                 55 => '2 Timothy', 56 => 'Titus', 57 => 'Philemon', 58 => 'Hebrews', 59 => 'James',
                 60 => '1 Peter', 61 => '2 Peter', 62 => '1 John', 63 => '2 John', 64 => '3 John',
-                65 => 'Jude', 66 => 'Revelation'
+                65 => 'Jude', 66 => 'Revelation',
             ],
             'fr' => [
                 1 => 'Genèse', 2 => 'Exode', 3 => 'Lévitique', 4 => 'Nombres', 5 => 'Deutéronome',
@@ -304,8 +313,8 @@ class BibleReferenceService
                 50 => 'Philippiens', 51 => 'Colossiens', 52 => '1 Thessaloniciens', 53 => '2 Thessaloniciens', 54 => '1 Timothée',
                 55 => '2 Timothée', 56 => 'Tite', 57 => 'Philémon', 58 => 'Hébreux', 59 => 'Jacques',
                 60 => '1 Pierre', 61 => '2 Pierre', 62 => '1 Jean', 63 => '2 Jean', 64 => '3 Jean',
-                65 => 'Jude', 66 => 'Apocalypse'
-            ]
+                65 => 'Jude', 66 => 'Apocalypse',
+            ],
         ];
 
         return $translations[$locale][$bookId] ?? $translations[$this->defaultLocale][$bookId] ?? "Book {$bookId}";
@@ -317,10 +326,10 @@ class BibleReferenceService
     public function parseBibleReference(string $reference, ?string $locale = null): ?array
     {
         $locale = $locale ?? $this->defaultLocale;
-        
+
         // Remove extra whitespace and normalize
         $reference = trim($reference);
-        
+
         // Try to match pattern: "Book Chapter" or "Book Chapter:Verse"
         if (preg_match('/^(.+?)\s+(\d+)(?::(\d+))?$/i', $reference, $matches)) {
             $bookName = trim($matches[1]);
@@ -329,12 +338,12 @@ class BibleReferenceService
 
             // Find book by name
             $book = $this->getBibleBook($bookName, $locale);
-            if (!$book) {
+            if (! $book) {
                 return null;
             }
 
             // Validate chapter
-            if (!$this->validateChapterNumber($book['id'], $chapter)) {
+            if (! $this->validateChapterNumber($book['id'], $chapter)) {
                 return null;
             }
 
@@ -343,7 +352,7 @@ class BibleReferenceService
                 'book_name' => $this->getLocalizedBookName($book['id'], $locale),
                 'chapter' => $chapter,
                 'verse' => $verse,
-                'formatted' => $this->formatBibleReference($book['id'], $chapter, $locale)
+                'formatted' => $this->formatBibleReference($book['id'], $chapter, $locale),
             ];
         }
 
@@ -356,23 +365,23 @@ class BibleReferenceService
     public function getTestament(string $testament, ?string $locale = null): ?array
     {
         $locale = $locale ?? $this->defaultLocale;
-        
-        if (!isset($this->bibleConfig['testaments'][$testament])) {
+
+        if (! isset($this->bibleConfig['testaments'][$testament])) {
             return null;
         }
 
         $testamentData = $this->bibleConfig['testaments'][$testament];
-        
+
         // Get localized testament name
         $translationKey = "bible.testaments.{$testament}";
-        $name = (function_exists('__') && app()->bound('translator')) 
-            ? __($translationKey, [], $locale) 
+        $name = (function_exists('__') && app()->bound('translator'))
+            ? __($translationKey, [], $locale)
             : $this->getTestamentFallback($testament, $locale);
-        
+
         return [
             'name' => $name,
             'range' => $testamentData['range'],
-            'books_count' => $testamentData['range'][1] - $testamentData['range'][0] + 1
+            'books_count' => $testamentData['range'][1] - $testamentData['range'][0] + 1,
         ];
     }
 
@@ -383,10 +392,10 @@ class BibleReferenceService
     {
         $translations = [
             'en' => ['old' => 'Old Testament', 'new' => 'New Testament'],
-            'fr' => ['old' => 'Ancien Testament', 'new' => 'Nouveau Testament']
+            'fr' => ['old' => 'Ancien Testament', 'new' => 'Nouveau Testament'],
         ];
 
-        return $translations[$locale][$testament] ?? $translations[$this->defaultLocale][$testament] ?? ucfirst($testament) . ' Testament';
+        return $translations[$locale][$testament] ?? $translations[$this->defaultLocale][$testament] ?? ucfirst($testament).' Testament';
     }
 
     /**
@@ -426,7 +435,7 @@ class BibleReferenceService
     public function getRandomBook(?string $testament = null, ?string $locale = null): array
     {
         $books = $this->listBibleBooks($testament, $locale);
-        
+
         if (empty($books)) {
             throw new InvalidArgumentException("No books found for testament: {$testament}");
         }
@@ -439,18 +448,19 @@ class BibleReferenceService
      */
     public function getAdjacentBook(int $bookId, string $direction = 'next'): ?array
     {
-        if (!$this->validateBookId($bookId)) {
+        if (! $this->validateBookId($bookId)) {
             return null;
         }
 
         $targetId = $direction === 'next' ? $bookId + 1 : $bookId - 1;
-        
+
         if (isset($this->bibleConfig['books'][$targetId])) {
             $book = $this->bibleConfig['books'][$targetId];
             $book['name'] = $this->getLocalizedBookName($targetId);
+
             return $book;
         }
-        
+
         return null;
     }
 
@@ -460,13 +470,13 @@ class BibleReferenceService
     public function getBooksInTestament(string $testament, ?string $locale = null): array
     {
         $testamentInfo = $this->getTestament($testament, $locale);
-        if (!$testamentInfo) {
+        if (! $testamentInfo) {
             return [];
         }
 
         $books = [];
         [$start, $end] = $testamentInfo['range'];
-        
+
         for ($i = $start; $i <= $end; $i++) {
             if (isset($this->bibleConfig['books'][$i])) {
                 $book = $this->bibleConfig['books'][$i];
@@ -474,11 +484,11 @@ class BibleReferenceService
                     'id' => $book['id'],
                     'name' => $this->getLocalizedBookName($i, $locale),
                     'chapters' => $book['chapters'],
-                    'testament' => $book['testament']
+                    'testament' => $book['testament'],
                 ];
             }
         }
 
         return $books;
     }
-} 
+}

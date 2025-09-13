@@ -58,6 +58,7 @@ class FortifyServiceProvider extends ServiceProvider
 
             // More lenient for local development, strict for production
             $limit = app()->environment('local') ? 20 : 5;
+
             return Limit::perMinute($limit)->by($throttleKey);
         });
 

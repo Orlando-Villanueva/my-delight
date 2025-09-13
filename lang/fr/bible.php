@@ -77,4 +77,4 @@ return [
         'old' => 'Ancien Testament',
         'new' => 'Nouveau Testament',
     ],
-]; 
+];

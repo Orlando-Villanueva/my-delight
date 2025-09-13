@@ -2,7 +2,6 @@
 
 namespace Database\Factories;
 
-use App\Models\ReadingLog;
 use App\Models\User;
 use Illuminate\Database\Eloquent\Factories\Factory;
 
@@ -20,7 +19,7 @@ class ReadingLogFactory extends Factory
     {
         $bookId = $this->faker->numberBetween(1, 66);
         $chapter = $this->faker->numberBetween(1, 50);
-        
+
         return [
             'user_id' => User::factory(),
             'book_id' => $bookId,

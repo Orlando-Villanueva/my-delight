@@ -24,6 +24,6 @@ class SendWelcomeNotification implements ShouldQueue
      */
     public function handle(Registered $event): void
     {
-        $event->user->notify(new WelcomeNotification());
+        $event->user->notify(new WelcomeNotification);
     }
 }

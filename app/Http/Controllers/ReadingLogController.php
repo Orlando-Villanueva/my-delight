@@ -3,15 +3,14 @@
 namespace App\Http\Controllers;
 
 use App\Services\BibleReferenceService;
-use App\Services\ReadingLogService;
 use App\Services\ReadingFormService;
+use App\Services\ReadingLogService;
 use App\Services\UserStatisticsService;
-use Carbon\Carbon;
+use Illuminate\Database\QueryException;
 use Illuminate\Http\Request;
+use Illuminate\Pagination\LengthAwarePaginator;
 use Illuminate\Support\MessageBag;
 use Illuminate\Validation\ValidationException;
-use Illuminate\Database\QueryException;
-use Illuminate\Pagination\LengthAwarePaginator;
 use InvalidArgumentException;
 
 class ReadingLogController extends Controller
@@ -25,7 +24,7 @@ class ReadingLogController extends Controller
 
     /**
      * Show the form for creating a new reading log.
-     * Returns the modal form partial for HTMX loading.
+     * Returns either the page view or HTMX content partial based on request type.
      */
     public function create(Request $request)
     {
@@ -35,16 +34,21 @@ class ReadingLogController extends Controller
         $books = $this->bibleReferenceService->listBibleBooks(null, $locale);
 
         // Pass empty error bag for consistent template behavior
-        $errors = new MessageBag();
+        $errors = new MessageBag;
 
         // Get form context data (yesterday logic, streak info)
         $formContext = $this->readingFormService->getFormContextData($request->user());
 
-        // Always return partial view for modal display
-        return view('partials.reading-log-form', array_merge(
-            compact('books', 'errors'),
-            $formContext
-        ));
+        $data = array_merge(compact('books', 'errors'), $formContext);
+
+        // Return appropriate view based on request type
+        if ($request->header('HX-Request')) {
+            // For HTMX requests, return the page container partial
+            return view('partials.reading-log-create-page', $data);
+        }
+
+        // For direct page access, return the full page template
+        return view('logs.create', $data);
     }
 
     /**
@@ -61,20 +65,20 @@ class ReadingLogController extends Controller
                 'book_id' => 'required|integer|min:1|max:66',
                 'chapter_input' => ['required', 'string', 'regex:/^(\d+|\d+-\d+)$/'],
                 'date_read' => "required|date|in:{$today},{$yesterday}",
-                'notes_text' => 'nullable|string|max:1000'
+                'notes_text' => 'nullable|string|max:1000',
             ]);
 
             // Parse chapter input (single or range)
             $chapterData = $this->bibleReferenceService->parseChapterInput($validated['chapter_input']);
 
             // Validate chapter range using service
-            if (!$this->bibleReferenceService->validateChapterRange(
+            if (! $this->bibleReferenceService->validateChapterRange(
                 $validated['book_id'],
                 $chapterData['start'],
                 $chapterData['end']
             )) {
                 throw ValidationException::withMessages([
-                    'chapter_input' => 'Invalid chapter range for the selected book.'
+                    'chapter_input' => 'Invalid chapter range for the selected book.',
                 ]);
             }
 
@@ -95,8 +99,28 @@ class ReadingLogController extends Controller
             // Create reading log using service
             $log = $this->readingLogService->logReading($request->user(), $validated);
 
-            // Always return HTMX success partial
-            return view('partials.reading-log-success-message', compact('log'));
+            // Check if this is an HTMX request for the form replacement
+            if ($request->header('HX-Request')) {
+                // Get fresh form data for page display
+                $books = $this->bibleReferenceService->listBibleBooks(null, 'en');
+                $errors = new MessageBag;
+                $formContext = $this->readingFormService->getFormContextData($request->user());
+
+                // Set success message
+                session()->flash('success', "{$log->passage_text} recorded for {$log->date_read->format('M d, Y')}");
+
+                // Return just the form container with success message and reset form
+                return response()
+                    ->view('partials.reading-log-form', array_merge(
+                        compact('books', 'errors'),
+                        $formContext
+                    ))
+                    ->header('HX-Trigger', 'readingLogAdded');
+            } else {
+                // For non-HTMX requests (tests, direct submissions), return the success message
+                // This maintains backwards compatibility with existing tests
+                return view('partials.reading-log-success-message', compact('log'));
+            }
         } catch (ValidationException $e) {
             // Get books data for form re-display
             $books = $this->bibleReferenceService->listBibleBooks(null, 'en');
@@ -107,8 +131,10 @@ class ReadingLogController extends Controller
             // Get form context data (yesterday logic, streak info)
             $formContext = $this->readingFormService->getFormContextData($request->user());
 
-            // Return form with validation errors
-            return view('partials.reading-log-form', array_merge(
+            // Return appropriate partial based on request type
+            $partial = $request->header('HX-Request') ? 'partials.reading-log-form' : 'logs.create';
+
+            return view($partial, array_merge(
                 compact('books', 'errors'),
                 $formContext
             ));
@@ -122,8 +148,10 @@ class ReadingLogController extends Controller
             // Get form context data (yesterday logic, streak info)
             $formContext = $this->readingFormService->getFormContextData($request->user());
 
-            // Return form with validation errors
-            return view('partials.reading-log-form', array_merge(
+            // Return appropriate partial based on request type
+            $partial = $request->header('HX-Request') ? 'partials.reading-log-form' : 'logs.create';
+
+            return view($partial, array_merge(
                 compact('books', 'errors'),
                 $formContext
             ));
@@ -139,8 +167,10 @@ class ReadingLogController extends Controller
                 // Get form context data (yesterday logic, streak info)
                 $formContext = $this->readingFormService->getFormContextData($request->user());
 
-                // Return form with validation errors
-                return view('partials.reading-log-form', array_merge(
+                // Return appropriate partial based on request type
+                $partial = $request->header('HX-Request') ? 'partials.reading-log-create-page' : 'logs.create';
+
+                return view($partial, array_merge(
                     compact('books', 'errors'),
                     $formContext
                 ));
@@ -170,7 +200,7 @@ class ReadingLogController extends Controller
             ->map(function ($logsForDay) {
                 // Deduplicate readings within each day by passage + date + created_at (same session)
                 $deduplicated = $logsForDay->groupBy(function ($log) {
-                    return $log->passage_text . '|' . $log->date_read . '|' . $log->created_at->format('Y-m-d H:i:s');
+                    return $log->passage_text.'|'.$log->date_read.'|'.$log->created_at->format('Y-m-d H:i:s');
                 })
                     ->map(function ($group) {
                         return $group->first(); // Take the first entry from each group
@@ -182,6 +212,7 @@ class ReadingLogController extends Controller
                     // Use the service's smart time calculation for consistent display across all components
                     $log->time_ago = $this->userStatisticsService->calculateSmartTimeAgo($log);
                     $log->logged_time_ago = $this->userStatisticsService->formatTimeAgo($log->created_at);
+
                     return $log;
                 })->sortByDesc('created_at')->values();
             })
@@ -210,6 +241,7 @@ class ReadingLogController extends Controller
             // If it's an infinite scroll request (has page parameter), return just the new cards
             if ($request->has('page') && $request->get('page') > 1) {
                 $cardsHtml = $this->readingLogService->renderReadingLogCardsHtml($logs);
+
                 return response($cardsHtml);
             }
 

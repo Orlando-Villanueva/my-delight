@@ -2,11 +2,11 @@
 
 namespace App\Notifications;
 
+use Exception;
 use Illuminate\Bus\Queueable;
 use Illuminate\Notifications\Messages\MailMessage;
 use Illuminate\Notifications\Notification;
 use Illuminate\Support\Facades\Log;
-use Exception;
 
 class WelcomeNotification extends Notification
 {

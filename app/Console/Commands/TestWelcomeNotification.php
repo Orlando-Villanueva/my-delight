@@ -30,7 +30,7 @@ class TestWelcomeNotification extends Command
     {
         $email = $this->option('email');
 
-        if (!$email) {
+        if (! $email) {
             $email = $this->ask('Enter email address to send test welcome notification to');
         }
 
@@ -43,7 +43,7 @@ class TestWelcomeNotification extends Command
                 'email' => $email,
             ]);
 
-            $testUser->notify(new WelcomeNotification());
+            $testUser->notify(new WelcomeNotification);
 
             // Clean up the test user
             $testUser->delete();
@@ -51,7 +51,7 @@ class TestWelcomeNotification extends Command
             $this->info('✅ Welcome notification sent successfully!');
             $this->info('Check your email or Mailpit at http://localhost:8025 to view the email.');
         } catch (Exception $e) {
-            $this->error('❌ Failed to send notification: ' . $e->getMessage());
+            $this->error('❌ Failed to send notification: '.$e->getMessage());
         }
     }
 }

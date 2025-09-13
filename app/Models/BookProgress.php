@@ -73,7 +73,7 @@ class BookProgress extends Model
     public function scopeInProgress($query)
     {
         return $query->where('is_completed', false)
-                    ->where('completion_percent', '>', 0);
+            ->where('completion_percent', '>', 0);
     }
 
     /**
@@ -90,11 +90,11 @@ class BookProgress extends Model
     public function addChapter(int $chapter): void
     {
         $chaptersRead = $this->chapters_read ?? [];
-        
-        if (!in_array($chapter, $chaptersRead)) {
+
+        if (! in_array($chapter, $chaptersRead)) {
             $chaptersRead[] = $chapter;
             sort($chaptersRead);
-            
+
             $this->chapters_read = $chaptersRead;
             $this->updateCompletionStatus();
         }
@@ -106,10 +106,10 @@ class BookProgress extends Model
     public function updateCompletionStatus(): void
     {
         $chaptersReadCount = count($this->chapters_read ?? []);
-        $this->completion_percent = $this->total_chapters > 0 
+        $this->completion_percent = $this->total_chapters > 0
             ? round(($chaptersReadCount / $this->total_chapters) * 100, 2)
             : 0;
-        
+
         $this->is_completed = $this->completion_percent >= 100;
         $this->last_updated = now();
     }
@@ -129,4 +129,4 @@ class BookProgress extends Model
     {
         return in_array($chapter, $this->chapters_read ?? []);
     }
-} 
+}

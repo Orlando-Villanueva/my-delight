@@ -8,7 +8,8 @@
 
 <div hx-swap-oob="innerHTML:#desktop-page-title">
     {{ $title }}
-    <span id="desktop-page-subtitle" class="text-sm text-gray-600 dark:text-gray-400 font-normal ml-3">
-        {{ $subtitle }}
-    </span>
+</div>
+
+<div hx-swap-oob="innerHTML:#desktop-page-subtitle">
+    {{ $subtitle }}
 </div> 

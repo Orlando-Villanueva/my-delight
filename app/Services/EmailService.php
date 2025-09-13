@@ -15,21 +15,21 @@ class EmailService
     {
         try {
             $mailCallback();
-            
-            Log::info("Email sent successfully", [
+
+            Log::info('Email sent successfully', [
                 'context' => $context,
                 'timestamp' => now(),
             ]);
-            
+
             return true;
         } catch (Exception $e) {
-            Log::error("Email delivery failed", [
+            Log::error('Email delivery failed', [
                 'context' => $context,
                 'error' => $e->getMessage(),
                 'timestamp' => now(),
                 'trace' => $e->getTraceAsString(),
             ]);
-            
+
             return false;
         }
     }
@@ -92,7 +92,7 @@ class EmailService
         } catch (Exception $e) {
             return [
                 'success' => false,
-                'message' => 'Email configuration test failed: ' . $e->getMessage(),
+                'message' => 'Email configuration test failed: '.$e->getMessage(),
             ];
         }
     }
@@ -108,8 +108,8 @@ class EmailService
             'from_name' => config('mail.from.name'),
             'smtp_host' => config('mail.mailers.smtp.host'),
             'smtp_port' => config('mail.mailers.smtp.port'),
-            'mailgun_domain' => !empty(config('mail.mailers.mailgun.domain')),
-            'mailgun_secret' => !empty(config('mail.mailers.mailgun.secret')),
+            'mailgun_domain' => ! empty(config('mail.mailers.mailgun.domain')),
+            'mailgun_secret' => ! empty(config('mail.mailers.mailgun.secret')),
         ];
     }
 }

@@ -5,7 +5,6 @@ namespace Tests\Feature;
 use App\Models\User;
 use App\Notifications\CustomResetPasswordNotification;
 use Illuminate\Foundation\Testing\RefreshDatabase;
-use Illuminate\Support\Facades\Mail;
 use Illuminate\Support\Facades\Notification;
 use Illuminate\Support\Facades\Password;
 use Tests\TestCase;
@@ -55,7 +54,7 @@ class PasswordResetEmailTest extends TestCase
         // Create a notification instance to test URL generation
         $token = Password::createToken($user);
         $notification = new CustomResetPasswordNotification($token);
-        
+
         // Test that the reset URL is generated correctly
         $resetUrl = $notification->resetUrl($user);
         $this->assertStringContainsString('reset-password', $resetUrl);
@@ -119,7 +118,7 @@ class PasswordResetEmailTest extends TestCase
 
         $response->assertStatus(302);
         $response->assertRedirect('/dashboard');
-        
+
         // Verify user can login with new password
         $this->assertTrue(auth()->attempt([
             'email' => 'test@example.com',
@@ -146,7 +145,7 @@ class PasswordResetEmailTest extends TestCase
     public function test_email_service_handles_errors_gracefully(): void
     {
         $emailService = app(\App\Services\EmailService::class);
-        
+
         // Test with a callback that throws an exception
         $result = $emailService->sendWithErrorHandling(function () {
             throw new \Exception('Test email error');

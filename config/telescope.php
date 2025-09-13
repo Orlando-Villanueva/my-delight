@@ -17,7 +17,7 @@ return [
     */
 
     'enabled' => env('TELESCOPE_ENABLED', false),
-    
+
     /*
     |--------------------------------------------------------------------------
     | Telescope Data Pruning
@@ -28,7 +28,7 @@ return [
     | Production should have shorter retention periods.
     |
     */
-    
+
     'prune' => [
         'hours' => env('TELESCOPE_PRUNE_HOURS', 24),
     ],

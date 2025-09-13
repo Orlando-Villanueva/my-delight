@@ -14,7 +14,7 @@ class Kernel extends ConsoleKernel
     {
         // Prune Telescope entries daily
         $schedule->command('telescope:prune --hours=24')
-                 ->daily();
+            ->daily();
     }
 
     /**

@@ -33,11 +33,12 @@ class TestEmailConfiguration extends Command
 
         // Test configuration
         $configStatus = $emailService->testEmailConfiguration();
-        
+
         if ($configStatus['success']) {
-            $this->info('✅ ' . $configStatus['message']);
+            $this->info('✅ '.$configStatus['message']);
         } else {
-            $this->error('❌ ' . $configStatus['message']);
+            $this->error('❌ '.$configStatus['message']);
+
             return 1;
         }
 
@@ -45,7 +46,7 @@ class TestEmailConfiguration extends Command
         $this->newLine();
         $this->info('Current email configuration:');
         $config = $emailService->getConfigurationStatus();
-        
+
         foreach ($config as $key => $value) {
             $this->line("  {$key}: {$value}");
         }
@@ -54,22 +55,23 @@ class TestEmailConfiguration extends Command
         if ($this->option('send')) {
             $this->newLine();
             $this->info('Sending test email...');
-            
+
             $testUrl = url('/test-reset-url');
-            
+
             $recipient = $this->option('to') ?: config('mail.from.address');
-            
+
             try {
                 Mail::to($recipient)
                     ->send(new PasswordResetMail($testUrl));
-                
+
                 $this->info("✅ Test email sent successfully to: {$recipient}");
-                
+
                 if (config('mail.default') === 'smtp' && config('mail.mailers.smtp.host') === 'localhost') {
                     $this->info('📧 Check Mailpit at http://localhost:8025 to view the email');
                 }
             } catch (\Exception $e) {
-                $this->error('❌ Failed to send test email: ' . $e->getMessage());
+                $this->error('❌ Failed to send test email: '.$e->getMessage());
+
                 return 1;
             }
         } else {

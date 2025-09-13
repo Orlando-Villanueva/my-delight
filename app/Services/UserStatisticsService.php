@@ -22,7 +22,7 @@ class UserStatisticsService
         return Cache::remember(
             "user_dashboard_stats_{$user->id}",
             300, // 5 minutes TTL
-            fn() => [
+            fn () => [
                 'streaks' => $this->getStreakStatistics($user),
                 'reading_summary' => $this->getReadingSummary($user),
                 'book_progress' => $this->getBookProgressSummary($user),
@@ -41,13 +41,13 @@ class UserStatisticsService
         $currentStreak = Cache::remember(
             "user_current_streak_{$user->id}",
             3600, // 60 minutes TTL - expensive walking calculation
-            fn() => $this->readingLogService->calculateCurrentStreak($user)
+            fn () => $this->readingLogService->calculateCurrentStreak($user)
         );
 
         $longestStreak = Cache::remember(
             "user_longest_streak_{$user->id}",
             3600, // 60 minutes TTL - most expensive full history analysis
-            fn() => $this->readingLogService->calculateLongestStreak($user)
+            fn () => $this->readingLogService->calculateLongestStreak($user)
         );
 
         return [
@@ -62,11 +62,11 @@ class UserStatisticsService
     public function getWeeklyGoalStatistics(User $user): array
     {
         $weekStart = now()->startOfWeek(Carbon::SUNDAY)->toDateString();
-        
+
         return Cache::remember(
             "user_weekly_goal_{$user->id}_{$weekStart}",
             900, // 15 minutes TTL - light query with date range filter
-            fn() => $this->weeklyGoalService->getWeeklyGoalData($user)
+            fn () => $this->weeklyGoalService->getWeeklyGoalData($user)
         );
     }
 
@@ -76,11 +76,11 @@ class UserStatisticsService
     public function getWeeklyStreakStatistics(User $user): array
     {
         $weekStart = now()->startOfWeek(Carbon::SUNDAY)->toDateString();
-        
+
         return Cache::remember(
             "user_weekly_streak_{$user->id}_{$weekStart}",
             $this->getWeeklyStreakCacheExpiry(), // Cache until Sunday 12:01 AM
-            function() use ($user) {
+            function () use ($user) {
                 try {
                     return $this->weeklyGoalService->getWeeklyStreakData($user);
                 } catch (\Exception $e) {
@@ -89,7 +89,7 @@ class UserStatisticsService
                         'streak_count' => 0,
                         'is_active' => false,
                         'motivational_message' => 'Start your first weekly streak!',
-                        'error' => true
+                        'error' => true,
                     ];
                 }
             }
@@ -104,7 +104,7 @@ class UserStatisticsService
         $totalReadings = $user->readingLogs()->count();
         $firstReading = $user->readingLogs()->oldest()->first();
         $lastReading = $user->readingLogs()->latest()->first();
-        
+
         $daysSinceFirst = $firstReading
             ? Carbon::parse($firstReading->date_read)->diffInDays(now()) + 1
             : 0;
@@ -129,7 +129,7 @@ class UserStatisticsService
         return Cache::remember(
             "user_total_reading_days_{$user->id}",
             3600, // 60 minutes TTL - expensive distinct count query
-            fn() => $user->readingLogs()->distinct('date_read')->count('date_read')
+            fn () => $user->readingLogs()->distinct('date_read')->count('date_read')
         );
     }
 
@@ -141,10 +141,11 @@ class UserStatisticsService
         return Cache::remember(
             "user_avg_chapters_per_day_{$user->id}",
             3600, // 60 minutes TTL - calculation based on cached values
-            function() use ($totalReadings, $daysSinceFirst) {
+            function () use ($totalReadings, $daysSinceFirst) {
                 if ($totalReadings === 0 || $daysSinceFirst === 0) {
                     return 0.0;
                 }
+
                 return round($totalReadings / $daysSinceFirst, 2);
             }
         );
@@ -161,7 +162,6 @@ class UserStatisticsService
             ->distinct('date_read')
             ->count('date_read');
     }
-
 
     /**
      * Get book progress summary.
@@ -208,7 +208,7 @@ class UserStatisticsService
             ->get()
             ->unique(function ($log) {
                 // Use a safer separator that won't appear in passage text
-                return $log->passage_text . '::' . $log->date_read;
+                return $log->passage_text.'::'.$log->date_read;
             })
             ->take($limit);
 
@@ -229,7 +229,7 @@ class UserStatisticsService
     public function getCalendarData(User $user, ?string $year = null): array
     {
         $year = $year ?? now()->year;
-        
+
         return Cache::remember(
             "user_calendar_{$user->id}_{$year}",
             3600, // 60 minutes TTL - processes full year of data
@@ -280,18 +280,16 @@ class UserStatisticsService
         $currentDate = now();
         $year = $year ?? $currentDate->year;
         $month = $month ?? $currentDate->month;
-        
+
         $targetDate = Carbon::create($year, $month, 1);
         $monthKey = $targetDate->format('Y-m');
-        
+
         return Cache::remember(
             "user_monthly_calendar_{$user->id}_{$monthKey}",
             900, // 15 minutes TTL - lighter than full year
-            fn() => $this->buildMonthlyCalendarData($user, $year, $month, $targetDate)
+            fn () => $this->buildMonthlyCalendarData($user, $year, $month, $targetDate)
         );
     }
-
-
 
     /**
      * Build monthly calendar data with grid layout and statistics.
@@ -300,10 +298,10 @@ class UserStatisticsService
     {
         $monthName = $targetDate->format('F Y');
         $calendarData = $this->getCalendarData($user, (string) $year);
-        
+
         $calendar = $this->generateMonthlyCalendarGrid($calendarData, $targetDate);
         $statistics = $this->calculateMonthlyStatistics($calendar, $year, $month);
-        
+
         return array_merge([
             'calendar' => $calendar,
             'monthName' => $monthName,
@@ -321,34 +319,34 @@ class UserStatisticsService
         $lastDay = $targetDate->copy()->endOfMonth();
         $daysInMonth = $lastDay->day;
         $startingDayOfWeek = $firstDay->dayOfWeek; // 0 = Sunday, 6 = Saturday
-        
+
         $calendar = [];
-        
+
         // Add empty cells for days before month starts
         for ($i = 0; $i < $startingDayOfWeek; $i++) {
             $calendar[] = null;
         }
-        
+
         // Add days of the month with reading data
         for ($day = 1; $day <= $daysInMonth; $day++) {
             $date = $firstDay->copy()->addDays($day - 1);
             $dateStr = $date->toDateString();
-            
+
             // Get reading data for this day from the cached calendar data
             $dayData = $calendarData[$dateStr] ?? null;
             $readingCount = $dayData ? $dayData['reading_count'] : 0;
             $hasReading = $dayData ? $dayData['has_reading'] : false;
-            
+
             $calendar[] = [
                 'day' => $day,
                 'date' => $date,
                 'hasReading' => $hasReading,
                 'readingCount' => $readingCount,
                 'isToday' => $date->isToday(),
-                'dateString' => $dateStr
+                'dateString' => $dateStr,
             ];
         }
-        
+
         return $calendar;
     }
 
@@ -359,22 +357,22 @@ class UserStatisticsService
     {
         $thisMonthReadings = 0;
         $thisMonthChapters = 0;
-        
+
         foreach ($calendar as $day) {
             if ($day !== null && $day['hasReading']) {
                 $thisMonthReadings++;
                 $thisMonthChapters += $day['readingCount'];
             }
         }
-        
+
         // Calculate success rate based on days passed in month
         $today = now();
         $daysInMonth = Carbon::create($year, $month, 1)->daysInMonth;
-        $daysPassedInMonth = $today->month === $month && $today->year === $year 
-            ? min($daysInMonth, $today->day) 
+        $daysPassedInMonth = $today->month === $month && $today->year === $year
+            ? min($daysInMonth, $today->day)
             : $daysInMonth;
         $successRate = $daysPassedInMonth > 0 ? round(($thisMonthReadings / $daysPassedInMonth) * 100) : 0;
-        
+
         return [
             'thisMonthReadings' => $thisMonthReadings,
             'thisMonthChapters' => $thisMonthChapters,
@@ -452,6 +450,7 @@ class UserStatisticsService
     private function getWeeklyStreakCacheExpiry(): int
     {
         $nextSunday = now()->next(Carbon::SUNDAY)->startOfDay()->addMinute();
+
         return now()->diffInSeconds($nextSunday);
     }
 
@@ -464,7 +463,7 @@ class UserStatisticsService
         $previousYear = $currentYear - 1;
         $currentMonth = now()->format('Y-m');
         $weekStart = now()->startOfWeek(Carbon::SUNDAY)->toDateString();
-        
+
         // Clear all user-specific caches
         Cache::forget("user_dashboard_stats_{$user->id}");
         Cache::forget("user_current_streak_{$user->id}");

@@ -18,4 +18,4 @@ Route::middleware('auth:sanctum')->get('/user', function (Request $request) {
     return $request->user();
 });
 
-// Future API routes for mobile apps will be added here in post-MVP phases 
+// Future API routes for mobile apps will be added here in post-MVP phases

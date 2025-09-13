@@ -15,7 +15,7 @@ class UserAuthenticationTest extends TestCase
     protected function setUp(): void
     {
         parent::setUp();
-        
+
         // Disable CSRF middleware for all tests in this class
         $this->withoutMiddleware(VerifyCsrfToken::class);
     }
@@ -32,7 +32,7 @@ class UserAuthenticationTest extends TestCase
         $response = $this->post('/register', $userData);
 
         $response->assertRedirect('/dashboard');
-        
+
         $this->assertDatabaseHas('users', [
             'name' => 'John Doe',
             'email' => 'john@example.com',
@@ -52,7 +52,7 @@ class UserAuthenticationTest extends TestCase
         ];
 
         $response = $this->post('/register', $userData);
-        
+
         $response->assertSessionHasErrors('email');
         $this->assertDatabaseMissing('users', ['email' => 'invalid-email']);
     }
@@ -68,7 +68,7 @@ class UserAuthenticationTest extends TestCase
         ];
 
         $response = $this->post('/register', $userData);
-        
+
         $response->assertSessionHasErrors('password');
         $this->assertDatabaseMissing('users', ['email' => 'john@example.com']);
     }
@@ -84,7 +84,7 @@ class UserAuthenticationTest extends TestCase
         ];
 
         $response = $this->post('/register', $userData);
-        
+
         $response->assertSessionHasErrors('password');
         $this->assertDatabaseMissing('users', ['email' => 'john@example.com']);
     }
@@ -102,9 +102,9 @@ class UserAuthenticationTest extends TestCase
         ];
 
         $response = $this->post('/register', $userData);
-        
+
         $response->assertSessionHasErrors('email');
-        
+
         // Ensure only one user exists with this email
         $this->assertEquals(1, User::where('email', 'john@example.com')->count());
     }
@@ -191,15 +191,15 @@ class UserAuthenticationTest extends TestCase
         // Test fillable fields
         $this->assertEquals('John Doe', $user->name);
         $this->assertEquals('john@example.com', $user->email);
-        
+
         // Test hidden fields
         $userArray = $user->toArray();
         $this->assertArrayNotHasKey('password', $userArray);
         $this->assertArrayNotHasKey('remember_token', $userArray);
-        
+
         // Test casts
         $this->assertInstanceOf(\Carbon\Carbon::class, $user->email_verified_at);
-        
+
         // Test password is hashed
         $this->assertTrue(Hash::check('ValidPass123!', $user->password));
     }
@@ -220,9 +220,9 @@ class UserAuthenticationTest extends TestCase
 
         $response->assertRedirect('/dashboard');
         $this->assertAuthenticatedAs($user);
-        
+
         // Check that remember token is set
         $user->refresh();
         $this->assertNotNull($user->remember_token);
     }
-} 
+}

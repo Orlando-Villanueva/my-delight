@@ -14,7 +14,7 @@ return new class extends Migration
         Schema::table('reading_logs', function (Blueprint $table) {
             // Drop the old constraint that prevented multiple chapters per day from same book
             $table->dropUnique('unique_user_book_chapter_date');
-            
+
             // Add new constraint that only prevents exact duplicate entries
             $table->unique(['user_id', 'book_id', 'chapter', 'date_read'], 'unique_user_exact_reading');
         });

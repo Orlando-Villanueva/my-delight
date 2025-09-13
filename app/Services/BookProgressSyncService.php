@@ -2,10 +2,8 @@
 
 namespace App\Services;
 
-use App\Models\User;
 use App\Models\ReadingLog;
-use App\Services\BibleReferenceService;
-use Illuminate\Support\Facades\DB;
+use App\Models\User;
 
 class BookProgressSyncService
 {
@@ -32,7 +30,7 @@ class BookProgressSyncService
             'processed_logs' => $readingLogs->count(),
             'updated_books' => [],
             'created_books' => 0,
-            'updated_existing_books' => 0
+            'updated_existing_books' => 0,
         ];
 
         if ($readingLogs->isEmpty()) {
@@ -49,7 +47,7 @@ class BookProgressSyncService
         foreach ($logsByBook as $bookId => $bookLogs) {
             // Get book information
             $book = $bibleService->getBibleBook($bookId);
-            if (!$book) {
+            if (! $book) {
                 continue; // Skip invalid book IDs
             }
 
@@ -109,7 +107,7 @@ class BookProgressSyncService
         $stats = [
             'users_processed' => 0,
             'total_logs_processed' => 0,
-            'total_books_updated' => 0
+            'total_books_updated' => 0,
         ];
 
         foreach ($userIds as $userId) {

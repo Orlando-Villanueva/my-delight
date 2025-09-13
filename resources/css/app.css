@@ -186,6 +186,9 @@ html {
     .form-error {
         @apply text-destructive-600 dark:text-destructive-400 text-sm mt-1;
     }
+    .form-success {
+        @apply text-success-600 dark:text-success-400 text-sm mt-1;
+    }
 }
 
 /* Additional accessibility improvements */

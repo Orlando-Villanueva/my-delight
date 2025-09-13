@@ -22,7 +22,7 @@ return new class extends Migration
             $table->boolean('is_completed')->default(false);
             $table->timestamp('last_updated')->useCurrent()->useCurrentOnUpdate();
             $table->timestamps();
-            
+
             // Indexes for performance
             $table->unique(['user_id', 'book_id'], 'unique_user_book');
             $table->index(['user_id', 'completion_percent'], 'idx_user_completion');
@@ -37,4 +37,4 @@ return new class extends Migration
     {
         Schema::dropIfExists('book_progress');
     }
-}; 
+};

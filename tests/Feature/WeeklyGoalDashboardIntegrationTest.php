@@ -2,9 +2,9 @@
 
 namespace Tests\Feature;
 
-use Tests\TestCase;
 use App\Models\User;
 use Illuminate\Foundation\Testing\RefreshDatabase;
+use Tests\TestCase;
 
 class WeeklyGoalDashboardIntegrationTest extends TestCase
 {
@@ -24,10 +24,10 @@ class WeeklyGoalDashboardIntegrationTest extends TestCase
 
         // Assert the view has the weekly goal data
         $response->assertViewHas('weeklyGoal');
-        
+
         // Get the view data
         $viewData = $response->viewData('weeklyGoal');
-        
+
         // Assert the weekly goal data structure
         $this->assertIsArray($viewData);
         $this->assertArrayHasKey('current_progress', $viewData);
@@ -37,7 +37,7 @@ class WeeklyGoalDashboardIntegrationTest extends TestCase
         $this->assertArrayHasKey('is_goal_achieved', $viewData);
         $this->assertArrayHasKey('progress_percentage', $viewData);
         $this->assertArrayHasKey('message', $viewData);
-        
+
         // Assert data types
         $this->assertIsInt($viewData['current_progress']);
         $this->assertIsInt($viewData['weekly_target']);
@@ -46,7 +46,7 @@ class WeeklyGoalDashboardIntegrationTest extends TestCase
         $this->assertIsBool($viewData['is_goal_achieved']);
         $this->assertIsNumeric($viewData['progress_percentage']);
         $this->assertIsString($viewData['message']);
-        
+
         // Assert default values
         $this->assertEquals(4, $viewData['weekly_target']);
         $this->assertGreaterThanOrEqual(0, $viewData['current_progress']);
@@ -61,7 +61,7 @@ class WeeklyGoalDashboardIntegrationTest extends TestCase
 
         // Make an HTMX request to the dashboard
         $response = $this->get('/dashboard', [
-            'HX-Request' => 'true'
+            'HX-Request' => 'true',
         ]);
 
         // Assert the response is successful
@@ -69,10 +69,10 @@ class WeeklyGoalDashboardIntegrationTest extends TestCase
 
         // Assert the view has the weekly goal data
         $response->assertViewHas('weeklyGoal');
-        
+
         // Get the view data
         $viewData = $response->viewData('weeklyGoal');
-        
+
         // Assert the weekly goal data structure is present
         $this->assertIsArray($viewData);
         $this->assertArrayHasKey('current_progress', $viewData);
@@ -95,7 +95,7 @@ class WeeklyGoalDashboardIntegrationTest extends TestCase
         // Get both weekly goal and stats data
         $weeklyGoal = $response->viewData('weeklyGoal');
         $stats = $response->viewData('stats');
-        
+
         // Assert that weeklyGoal matches stats['weekly_goal']
         $this->assertEquals($stats['weekly_goal'], $weeklyGoal);
     }
@@ -110,7 +110,7 @@ class WeeklyGoalDashboardIntegrationTest extends TestCase
         $weekStart = now()->startOfWeek(\Carbon\Carbon::SUNDAY)->toDateString();
         $cacheKey = "user_weekly_streak_{$user->id}_{$weekStart}";
         cache()->put($cacheKey, ['test_data' => 'should_be_cleared'], 3600);
-        
+
         // Verify cache exists
         $this->assertTrue(cache()->has($cacheKey));
 
@@ -119,7 +119,7 @@ class WeeklyGoalDashboardIntegrationTest extends TestCase
             'book_id' => 1,
             'chapter_input' => '1',
             'date_read' => today()->toDateString(),
-            'notes_text' => 'Test passage'
+            'notes_text' => 'Test passage',
         ]);
 
         // Assert the reading log was created successfully (returns HTMX view)
