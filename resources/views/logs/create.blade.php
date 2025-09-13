@@ -1,6 +1,6 @@
 @extends('layouts.authenticated')
 
-@section('page-title', 'Log Bible Reading')
+@section('page-title', 'Log Reading')
 @section('page-subtitle', 'Record your Bible reading progress')
 
 @section('content')
