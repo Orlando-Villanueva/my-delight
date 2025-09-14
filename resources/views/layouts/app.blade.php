@@ -33,7 +33,7 @@
     <script defer src="https://unpkg.com/alpinejs@3.13.3/dist/cdn.min.js"></script>
 
     <!-- Styles / Scripts -->
-    <link href="{{ asset('css/tailwind.css') }}" rel="stylesheet">
+    <link href="{{ asset('css/tailwind.css') }}?v={{ filemtime(public_path('css/tailwind.css')) }}" rel="stylesheet">
 
     <!-- Alpine.js Cloak -->
     <style>
