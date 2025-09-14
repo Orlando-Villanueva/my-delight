@@ -299,7 +299,7 @@
                     @click="toggleAddButton()"
                     class="absolute bottom-6 left-1/2 transform -translate-x-1/2 w-14 h-14 rounded-full flex items-center justify-center shadow-lg transition-all duration-200 z-50"
                     :class="currentView === 'create' 
-                        ? 'bg-accent-300 text-white/70 cursor-default' 
+                        ? 'bg-accent-300 dark:bg-accent-700 text-white/70 dark:text-white cursor-default' 
                         : 'bg-accent-500 hover:bg-accent-600 active:bg-accent-700 text-white'"
                     :aria-disabled="currentView === 'create'"
                     :aria-label="currentView === 'create' ? 'Already on add reading page' : 'Add new reading'">
