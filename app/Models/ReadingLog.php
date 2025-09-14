@@ -62,11 +62,11 @@ class ReadingLog extends Model implements ReadingLogInterface
     public function scopeDateRange($query, $startDate, $endDate = null)
     {
         $query->where('date_read', '>=', $startDate);
-        
+
         if ($endDate) {
             $query->where('date_read', '<=', $endDate);
         }
-        
+
         return $query;
     }
 
@@ -101,4 +101,4 @@ class ReadingLog extends Model implements ReadingLogInterface
     {
         return $this->created_at;
     }
-} 
+}

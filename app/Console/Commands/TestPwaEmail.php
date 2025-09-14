@@ -29,24 +29,24 @@ class TestPwaEmail extends Command
     public function handle(): int
     {
         $email = $this->argument('email') ?? 'test@example.com';
-        
+
         // Get or create test user
         $user = User::where('email', $email)->first();
-        
-        if (!$user) {
+
+        if (! $user) {
             $user = User::factory()->create([
                 'name' => 'Test User',
-                'email' => $email
+                'email' => $email,
             ]);
             $this->info("Created test user: {$email}");
         }
-        
+
         // Send the email
         Mail::to($user->email)->send(new PwaAnnouncement($user));
-        
+
         $this->info("PWA announcement email sent to: {$user->email}");
-        $this->info("Check Mailpit at: http://localhost:8025");
-        
+        $this->info('Check Mailpit at: http://localhost:8025');
+
         return Command::SUCCESS;
     }
 }

@@ -20,11 +20,11 @@ return new class extends Migration
             $table->date('date_read');
             $table->text('notes_text')->nullable();
             $table->timestamps();
-            
+
             // Indexes for performance
             $table->index(['user_id', 'date_read'], 'idx_user_date');
             $table->index(['user_id', 'book_id', 'chapter'], 'idx_user_book_chapter');
-            
+
             // Prevent duplicate readings on same date
             $table->unique(['user_id', 'book_id', 'chapter', 'date_read'], 'unique_user_book_chapter_date');
         });
@@ -37,4 +37,4 @@ return new class extends Migration
     {
         Schema::dropIfExists('reading_logs');
     }
-}; 
+};

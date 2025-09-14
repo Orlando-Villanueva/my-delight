@@ -11,10 +11,10 @@
     <!-- Favicon -->
     <link rel="icon" href="{{ asset('favicon.ico') }}" type="image/x-icon">
     <link rel="apple-touch-icon" sizes="192x192" href="{{ asset('images/logo-192.png') }}">
-    
+
     <!-- PWA Manifest -->
     <link rel="manifest" href="{{ asset('site.webmanifest') }}">
-    
+
     <!-- PWA Meta Tags -->
     <meta name="theme-color" content="#3366CC">
     <meta name="mobile-web-app-capable" content="yes">
@@ -29,8 +29,6 @@
     <!-- HTMX CDN -->
     <script src="https://cdn.jsdelivr.net/npm/htmx.org@2.0.5/dist/htmx.min.js"></script>
 
-    <!-- Alpine.js Focus Plugin for Modal Accessibility -->
-    <script defer src="https://unpkg.com/@alpinejs/focus@3.13.3/dist/cdn.min.js"></script>
     <!-- Alpine.js CDN -->
     <script defer src="https://unpkg.com/alpinejs@3.13.3/dist/cdn.min.js"></script>
 
@@ -44,7 +42,7 @@
         }
     </style>
 
-    <!-- Dynamic Title Script -->
+    <!-- Navigation & Title Scripts -->
     <script>
         function updateTitle(currentView) {
             const appName = '{{ config('app.name', 'Delight') }}';
@@ -53,6 +51,8 @@
                 document.title = `Dashboard - ${appName}`;
             } else if (currentView === 'logs') {
                 document.title = `History - ${appName}`;
+            } else if (currentView === 'create') {
+                document.title = `Log Reading - ${appName}`;
             } else {
                 document.title = appName;
             }
@@ -60,7 +60,7 @@
 
         // Set initial title on page load
         document.addEventListener('DOMContentLoaded', () => {
-            const initialView = '{{ request()->routeIs("logs.*") ? "logs" : "dashboard" }}';
+            const initialView = '{{ request()->routeIs("logs.create") ? "create" : (request()->routeIs("logs.*") ? "logs" : "dashboard") }}';
             updateTitle(initialView);
         });
     </script>
@@ -68,16 +68,22 @@
 
 <body class="bg-[#F5F7FA] dark:bg-gray-900 text-gray-600 min-h-screen font-sans antialiased transition-colors">
     <div class="flex h-screen" x-data="{
-        currentView: '{{ request()->routeIs('logs.*') ? 'logs' : 'dashboard' }}',
-        previousView: 'dashboard',
-        modalOpen: false,
+        currentView: '{{ request()->routeIs('logs.create') ? 'create' : (request()->routeIs('logs.*') ? 'logs' : 'dashboard') }}',
         init() {
             this.$watch('currentView', (value) => {
                 updateTitle(value);
             });
+        },
+        toggleAddButton() {
+            if (this.currentView === 'create') {
+                return; // Do nothing - already on create page
+            } else {
+                htmx.ajax('GET', '{{ route('logs.create') }}', {target: '#page-container', swap: 'innerHTML'});
+                history.pushState(null, '', '{{ route('logs.create') }}');
+                this.currentView = 'create';
+            }
         }
-    }" @keydown.escape.window="modalOpen = false"
-        @close-modal.window="modalOpen = false">
+    }"
         <!-- Desktop Sidebar Navigation -->
         <aside class="hidden lg:flex lg:flex-col w-48 xl:w-64 bg-white dark:bg-gray-800 border-r border-[#D1D7E0] dark:border-gray-700">
             <!-- Logo Section -->
@@ -107,6 +113,16 @@
                             d="M3 7v10a2 2 0 002 2h14a2 2 0 002-2V9a2 2 0 00-2-2H5a2 2 0 00-2-2z"></path>
                     </svg>
                     Dashboard
+                </button>
+
+                <button type="button" hx-get="{{ route('logs.create') }}" hx-target="#page-container"
+                    hx-swap="innerHTML" hx-push-url="true" @click="previousView = currentView; currentView = 'create'"
+                    :class="currentView === 'create' ? 'bg-primary-500 text-white' : 'text-[#4A5568] dark:text-gray-300 hover:bg-[#F5F7FA] dark:hover:bg-gray-700 hover:text-primary-500 dark:hover:text-primary-500'"
+                    class="group flex items-center px-2 py-2 text-base lg:text-sm xl:text-base font-medium rounded-md transition-colors leading-[1.5] w-full text-left">
+                    <svg class="w-5 h-5 lg:w-4 lg:h-4 xl:w-5 xl:h-5 mr-3 lg:mr-2 xl:mr-3" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                        <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M12 6v6m0 0v6m0-6h6m-6 0H6"></path>
+                    </svg>
+                    Log Reading
                 </button>
 
                 <button type="button" hx-get="{{ route('logs.index') }}" hx-target="#page-container"
@@ -169,22 +185,22 @@
                         <div class="flex items-center">
                             <h1 id="desktop-page-title" class="text-lg lg:text-xl font-semibold text-[#4A5568] dark:text-gray-200">
                                 @yield('page-title', 'Dashboard')
-                                <span id="desktop-page-subtitle" class="text-sm text-gray-600 dark:text-gray-400 font-normal ml-3">
-                                    @yield('page-subtitle', 'Track your Bible reading progress')
-                                </span>
                             </h1>
+                            <span id="desktop-page-subtitle" class="text-sm text-gray-600 dark:text-gray-400 font-normal ml-3">
+                                @yield('page-subtitle', 'Track your Bible reading progress')
+                            </span>
                         </div>
 
                         <!-- Primary Action Button - Desktop -->
-                        <div class="flex items-center">
+                        <div class="flex flex-col items-end">
                             <x-ui.button
                                 variant="accent"
                                 size="md"
                                 hx-get="{{ route('logs.create') }}"
-                                hx-target="#reading-log-modal-content"
+                                hx-target="#page-container"
                                 hx-swap="innerHTML"
-                                hx-indicator="#modal-loading"
-                                @click="modalOpen = true"
+                                hx-push-url="true"
+                                @click="previousView = currentView; currentView = 'create'"
                                 class="!px-4 !py-2 !my-0 !h-9">
                                 <svg class="w-4 h-4 mr-1" fill="none" stroke="currentColor" viewBox="0 0 24 24">
                                     <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M12 6v6m0 0v6m0-6h6m-6 0H6"></path>
@@ -265,10 +281,10 @@
         </div>
         <!-- Mobile Bottom Navigation -->
         <nav class="lg:hidden fixed bottom-0 left-0 right-0 bg-white dark:bg-gray-800 border-t border-[#D1D7E0] dark:border-gray-700 px-4 py-2 z-40 h-20 transition-colors">
-            <div class="flex justify-around">
+            <div class="flex justify-around items-end relative">
                 <button type="button" hx-get="{{ route('dashboard') }}" hx-target="#page-container"
                     hx-swap="innerHTML" hx-push-url="true"
-                    @click="previousView = currentView; currentView = 'dashboard'"
+                    @click="currentView = 'dashboard'"
                     :class="currentView === 'dashboard' ? 'text-primary-500' : 'text-gray-500 dark:text-gray-400 hover:text-primary-500'"
                     class="flex flex-col items-center py-2 px-3 min-w-[44px] min-h-[44px] justify-center transition-colors leading-[1.5]">
                     <svg class="w-6 h-6" fill="none" stroke="currentColor" viewBox="0 0 24 24">
@@ -278,8 +294,23 @@
                     <span class="text-xs mt-1">Dashboard</span>
                 </button>
 
+                <!-- Elevated Circular Add Reading Button (Center) -->
+                <button type="button"
+                    @click="toggleAddButton()"
+                    class="absolute bottom-6 left-1/2 transform -translate-x-1/2 w-14 h-14 rounded-full flex items-center justify-center shadow-lg transition-all duration-200 z-50"
+                    :class="currentView === 'create' 
+                        ? 'bg-accent-300 dark:bg-accent-700 text-white/70 dark:text-white cursor-default' 
+                        : 'bg-accent-500 hover:bg-accent-600 active:bg-accent-700 text-white'"
+                    :aria-disabled="currentView === 'create'"
+                    :aria-label="currentView === 'create' ? 'Already on add reading page' : 'Add new reading'">
+                    <svg class="w-7 h-7"
+                        fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                        <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M12 6v6m0 0v6m0-6h6m-6 0H6"></path>
+                    </svg>
+                </button>
+
                 <button type="button" hx-get="{{ route('logs.index') }}" hx-target="#page-container"
-                    hx-swap="innerHTML" hx-push-url="true" @click="previousView = currentView; currentView = 'logs'"
+                    hx-swap="innerHTML" hx-push-url="true" @click="currentView = 'logs'"
                     :class="currentView === 'logs' ? 'text-primary-500' : 'text-gray-500 dark:text-gray-400 hover:text-primary-500'"
                     class="flex flex-col items-center py-2 px-3 min-w-[44px] min-h-[44px] justify-center transition-colors leading-[1.5]">
                     <svg class="w-6 h-6" fill="none" stroke="currentColor" viewBox="0 0 24 24">
@@ -292,39 +323,7 @@
             </div>
         </nav>
 
-        <!-- Floating Action Button - Mobile Only -->
-        <button type="button" hx-get="{{ route('logs.create') }}" hx-target="#reading-log-modal-content"
-            hx-swap="innerHTML" hx-indicator="#modal-loading" @click="modalOpen = true"
-            class="lg:hidden fixed bottom-24 right-4 w-14 h-14 bg-accent-500 hover:bg-accent-600 text-white rounded-full flex items-center justify-center z-50 shadow-lg transition-colors">
-            <svg class="w-6 h-6" fill="none" stroke="currentColor" viewBox="0 0 24 24">
-                <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M12 6v6m0 0v6m0-6h6m-6 0H6"></path>
-            </svg>
-        </button>
 
-        <!-- Reading Log Modal / Slide-over Container -->
-        <!-- Modal Backdrop -->
-        <div x-show="modalOpen" x-cloak x-transition.opacity class="fixed inset-0 bg-black/40 z-40"
-            @click="modalOpen = false">
-        </div>
-
-        <!-- Modal / Slide-over Panel -->
-        <aside x-show="modalOpen" x-cloak x-transition:enter="transform transition ease-in-out duration-300"
-            x-transition:enter-start="translate-x-full" x-transition:enter-end="translate-x-0"
-            x-transition:leave="transform transition ease-in duration-150" x-transition:leave-start="translate-x-0"
-            x-transition:leave-end="translate-x-full"
-            class="fixed right-0 top-0 bottom-0 w-full max-w-lg bg-white dark:bg-gray-800 shadow-xl z-50 overflow-y-auto"
-            x-trap.noscroll="modalOpen" role="dialog" aria-modal="true" aria-labelledby="modal-title"
-            aria-describedby="modal-description">
-            <!-- Loading Indicator (shown during HTMX requests) -->
-            <div id="modal-loading" class="htmx-indicator absolute inset-0 bg-white dark:bg-gray-800 flex items-center justify-center z-10 pointer-events-none">
-                <div class="animate-spin rounded-full h-8 w-8 border-b-2 border-primary-500"></div>
-                <span class="ml-3 text-gray-600 dark:text-gray-400">Loading form...</span>
-            </div>
-
-            <div id="reading-log-modal-content" class="p-6 relative">
-                <!-- HTMX will inject the form here -->
-            </div>
-        </aside>
     </div>
 
     <!-- PWA Service Worker Registration -->

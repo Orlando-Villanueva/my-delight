@@ -15,7 +15,7 @@ class TelescopeServiceProvider extends TelescopeApplicationServiceProvider
     public function register(): void
     {
         // Only register Telescope in local environment
-        if (!$this->app->environment('local')) {
+        if (! $this->app->environment('local')) {
             return;
         }
 
@@ -57,6 +57,7 @@ class TelescopeServiceProvider extends TelescopeApplicationServiceProvider
         Gate::define('viewTelescope', function ($user) {
             // Allow access based on environment-configured admin emails
             $adminEmails = config('telescope.admin_emails', []);
+
             return in_array($user->email, $adminEmails);
         });
     }

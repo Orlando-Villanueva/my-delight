@@ -2,11 +2,10 @@
 
 namespace App\Http\Controllers;
 
-use Illuminate\Http\Request;
 use App\Services\ReadingFormService;
-use App\Services\UserStatisticsService;
 use App\Services\StreakStateService;
-use App\Models\User;
+use App\Services\UserStatisticsService;
+use Illuminate\Http\Request;
 
 class DashboardController extends Controller
 {
@@ -22,10 +21,10 @@ class DashboardController extends Controller
     public function index(Request $request)
     {
         $user = auth()->user();
-        
+
         // Get reading status for today
         $hasReadToday = $this->readingFormService->hasReadToday($user);
-        
+
         // Get dashboard statistics
         $stats = $this->statisticsService->getDashboardStatistics($user);
 

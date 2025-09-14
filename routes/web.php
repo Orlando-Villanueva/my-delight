@@ -1,10 +1,10 @@
 <?php
 
-use Illuminate\Support\Facades\Route;
-use Illuminate\Http\Request;
 use App\Http\Controllers\DashboardController;
 use App\Http\Controllers\ReadingLogController;
 use App\Http\Controllers\SitemapController;
+use Illuminate\Http\Request;
+use Illuminate\Support\Facades\Route;
 
 // Development Routes (Local Development Only)
 if (app()->environment('local') || app()->environment('staging')) {
@@ -17,6 +17,7 @@ Route::get('/', function () {
     if (auth()->check()) {
         return redirect()->route('dashboard');
     }
+
     return view('landing');
 })->name('landing');
 
@@ -31,8 +32,6 @@ Route::get('/privacy-policy', function () {
 Route::get('/terms-of-service', function () {
     return view('legal.terms-of-service');
 })->name('terms-of-service');
-
-
 
 // Authentication Routes (GET routes for views - POST routes handled by Fortify)
 Route::middleware('guest')->group(function () {
@@ -68,7 +67,7 @@ Route::middleware('auth')->group(function () {
         $testament = $request->input('testament');
 
         // Validate the testament value
-        if (!in_array($testament, ['Old', 'New'])) {
+        if (! in_array($testament, ['Old', 'New'])) {
             return response('Invalid testament', 400);
         }
 

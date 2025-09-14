@@ -18,7 +18,7 @@ class AuthenticationMiddlewareTest extends TestCase
 
         // Test other protected routes
         $protectedRoutes = ['/logs', '/logs/create'];
-        
+
         foreach ($protectedRoutes as $route) {
             $response = $this->get($route);
             $response->assertRedirect('/login');
@@ -94,7 +94,7 @@ class AuthenticationMiddlewareTest extends TestCase
         $response = $this->actingAs($user)
             ->withSession(['_token' => 'test-token'])
             ->post('/logout', ['_token' => 'test-token']);
-        
+
         // Fortify typically redirects to root path after logout
         $response->assertRedirect('/');
     }
@@ -120,4 +120,4 @@ class AuthenticationMiddlewareTest extends TestCase
         $response = $this->get('/forgot-password');
         $response->assertOk();
     }
-} 
+}
