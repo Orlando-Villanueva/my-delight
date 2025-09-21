@@ -35,9 +35,9 @@
         <template x-for="chapter in chapterNumbers" :key="chapter">
             <button type="button"
                     @click="selectChapter(chapter)"
-                    class="chapter-button aspect-square flex items-center justify-center text-sm font-medium rounded-lg border-2 transition-all duration-200"
+                    class="aspect-square flex items-center justify-center text-sm font-medium rounded-lg border-2 transition-all duration-200 hover:-translate-y-px active:translate-y-0"
                     :class="getChapterButtonClass(chapter)"
-                    style="min-height: 44px; min-width: 44px;"
+                    style="min-height: 44px; min-width: 44px; touch-action: manipulation;"
                     x-text="chapter">
             </button>
         </template>
@@ -191,64 +191,16 @@ function gridChapterSelector(totalChapters, initialValue) {
             const isInRange = this.selectedChapters.length > 1 && isSelected;
 
             if (isSelected) {
-                if (isFirst && this.selectedChapters.length === 1) {
-                    return 'bg-primary-500 text-white border-primary-500 shadow-md chapter-button-selected';
-                } else if (isInRange) {
-                    return 'bg-primary-500 text-white border-primary-500 shadow-sm chapter-button-range';
-                } else {
-                    return 'bg-primary-500 text-white border-primary-500 shadow-md chapter-button-selected';
+                let classes = 'bg-primary-500 text-white border-primary-500 animate-select-pulse';
+                if (isInRange) {
+                    classes += ' chapter-range-shadow';
                 }
+                return classes;
             }
 
-            return 'bg-white dark:bg-gray-800 text-gray-700 dark:text-gray-300 border-gray-300 dark:border-gray-600 hover:border-primary-500/30 dark:hover:border-primary-500/50 hover:shadow-sm chapter-button-default';
+            return 'bg-white dark:bg-gray-800 text-gray-700 dark:text-gray-300 border-gray-300 dark:border-gray-600 hover:border-primary-500/30 dark:hover:border-primary-500/50';
         }
     }
 }
 </script>
 
-<style>
-.chapter-button {
-    touch-action: manipulation;
-}
-
-.chapter-button:hover {
-    transform: translateY(-1px);
-}
-
-.chapter-button:active {
-    transform: translateY(0);
-}
-
-.chapter-button-selected {
-    animation: selectPulse 0.3s ease-out;
-}
-
-.chapter-button-range {
-    animation: rangePulse 0.2s ease-out;
-}
-
-@keyframes selectPulse {
-    0% { transform: scale(1); }
-    50% { transform: scale(1.05); }
-    100% { transform: scale(1); }
-}
-
-@keyframes rangePulse {
-    0% { transform: scale(1); }
-    50% { transform: scale(1.02); }
-    100% { transform: scale(1); }
-}
-
-/* Touch target compliance */
-@media (max-width: 768px) {
-    .chapter-button {
-        min-height: 48px;
-        min-width: 48px;
-    }
-}
-
-/* Visual feedback for range selection */
-.chapter-button-range {
-    box-shadow: inset 0 0 0 1px rgba(51, 102, 204, 0.3);
-}
-</style>

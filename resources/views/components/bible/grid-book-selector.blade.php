@@ -58,9 +58,9 @@
         <template x-for="book in filteredBooks" :key="book.id">
             <button type="button"
                     @click="selectBook(book)"
-                    class="book-button p-3 rounded-lg border-2 text-center transition-all duration-200 shadow-sm"
+                    class="p-3 rounded-lg border-2 text-center transition-all duration-200 shadow-sm hover:-translate-y-px active:translate-y-0"
                     :class="getBookButtonClass(book)"
-                    style="min-height: 44px; min-width: 44px;">
+                    style="min-height: 44px; min-width: 44px; touch-action: manipulation;">
                 <div class="font-semibold text-sm mb-1" x-text="book.name"></div>
                 <div class="text-xs opacity-75" x-text="book.chapters + ' chapters'"></div>
             </button>
@@ -135,41 +135,10 @@ function gridBookSelector(books, initialTestament, initialValue) {
 
         getBookButtonClass(book) {
             return this.selectedBookId == book.id
-                ? 'bg-primary-500 text-white border-primary-500 shadow-md book-button-selected'
-                : 'bg-white dark:bg-gray-800 text-gray-700 dark:text-gray-300 border-gray-300 dark:border-gray-600 hover:border-primary-500/30 dark:hover:border-primary-500/50 hover:shadow-md book-button-default';
+                ? 'bg-primary-500 text-white border-primary-500 shadow-md animate-select-pulse'
+                : 'bg-white dark:bg-gray-800 text-gray-700 dark:text-gray-300 border-gray-300 dark:border-gray-600 hover:border-primary-500/30 dark:hover:border-primary-500/50 hover:shadow-md';
         }
     }
 }
 </script>
 
-<style>
-.book-button {
-    touch-action: manipulation;
-}
-
-.book-button:hover {
-    transform: translateY(-1px);
-}
-
-.book-button:active {
-    transform: translateY(0);
-}
-
-.book-button-selected {
-    animation: selectPulse 0.3s ease-out;
-}
-
-@keyframes selectPulse {
-    0% { transform: scale(1); }
-    50% { transform: scale(1.05); }
-    100% { transform: scale(1); }
-}
-
-/* Touch target compliance */
-@media (max-width: 768px) {
-    .book-button {
-        min-height: 48px;
-        padding: 12px 8px;
-    }
-}
-</style>
