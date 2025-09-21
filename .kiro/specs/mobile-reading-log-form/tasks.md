@@ -34,13 +34,14 @@
   - Follow HTMX-Alpine.js first principle: minimal client-side state, server-driven data
   - _Requirements: 1.5, 3.4, 4.3_
 
-- [ ] 4. Add CSS styles for grid components
+- [x] 4. Add CSS styles for grid components (Tailwind-native approach)
 
-  - Add `.book-button`, `.book-button-default`, `.book-button-selected` styles to app.css
-  - Add `.chapter-button`, `.chapter-button-default`, `.chapter-button-selected` styles
-  - Implement hover states with theme color integration (primary-500, gray scales)
-  - Add responsive grid classes `.book-grid` and `.chapter-grid`
-  - Include touch target compliance (min 44px) and dark mode support
+  - Use inline Tailwind utilities for component styling instead of custom CSS classes
+  - Add only essential animations to app.css (`.animate-select-pulse`, `.animate-range-pulse`, `.chapter-range-shadow`)
+  - Implement hover states with Tailwind utilities (`hover:-translate-y-px`, `hover:border-primary-500/30`)
+  - Use responsive grid utilities directly (`grid grid-cols-2 sm:grid-cols-3 md:grid-cols-4 gap-3`)
+  - Include touch target compliance with inline styles (`style="min-height: 44px"`) and dark mode support
+  - Alpine.js functions return full Tailwind utility strings for better maintainability
   - _Requirements: 6.1, 6.2, 6.3, 6.4, 6.5, 8.1, 8.2, 8.5, 8.6_
 
 - [ ] 5. Create main grid reading form component
