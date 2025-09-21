@@ -1,5 +1,11 @@
 # Implementation Plan
 
+## Technology Boundaries
+
+**Alpine.js for Form UI Logic**: Grid interactions, selection states, visual feedback, progressive disclosure
+**HTMX for Server Communication**: Form submission, cross-section updates, server validation, testament persistence
+**Progressive Enhancement**: Standard form fallback without JavaScript
+
 - [x] 1. Create grid book selector component
 
   - Create `resources/views/components/bible/grid-book-selector.blade.php` with testament toggle integration
@@ -9,7 +15,7 @@
   - Include book selection event dispatching and hidden form input
   - _Requirements: 1.1, 1.2, 1.3, 1.4, 1.5, 2.1, 2.2, 2.3, 2.4, 2.5_
 
-- [ ] 2. Create grid chapter selector component
+- [x] 2. Create grid chapter selector component
 
   - Create `resources/views/components/bible/grid-chapter-selector.blade.php` with numbered chapter grid
   - Implement Alpine.js `gridChapterSelector()` function with click logic (single/range/unselect)
@@ -18,13 +24,14 @@
   - Include back navigation button and chapter selection event dispatching
   - _Requirements: 3.1, 3.2, 3.3, 3.4, 3.5, 4.1, 4.2, 4.3, 4.4, 4.5, 4.6_
 
-- [ ] 3. Create selection label display component
+- [x] 3. Create selection label display component (HTMX-Alpine.js First)
 
-  - Create `resources/views/components/bible/selection-label.blade.php` for dynamic selection display
-  - Implement label updates: "Book: Genesis" → "Book: Genesis 1" → "Book: Genesis 1-5"
+  - Create `resources/views/components/bible/selection-label.blade.php` as simple display component
+  - Use Alpine.js `x-bind` for reactive updates from parent state (no internal state management)
+  - Implement label updates: "Selection: Genesis" → "Selection: Genesis 1" → "Selection: Genesis 1-5"
   - Add proper styling with existing theme colors and responsive design
-  - Position label below grid as specified in requirements
-  - Include empty state handling for no selection
+  - Include empty state handling with `x-if` templates
+  - Follow HTMX-Alpine.js first principle: minimal client-side state, server-driven data
   - _Requirements: 1.5, 3.4, 4.3_
 
 - [ ] 4. Add CSS styles for grid components

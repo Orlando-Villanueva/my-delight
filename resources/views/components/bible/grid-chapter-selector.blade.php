@@ -81,24 +81,13 @@ function gridChapterSelector(totalChapters, initialValue) {
         chapterNumbers: Array.from({length: totalChapters}, (_, i) => i + 1),
         selectedChapters: [],
         firstSelection: null,
-        chapterInput: initialValue || '',
         book: null,
 
         init() {
             // Parse initial value if provided
-            if (this.chapterInput) {
-                this.parseInitialValue(this.chapterInput);
+            if (initialValue) {
+                this.parseInitialValue(initialValue);
             }
-
-            // Listen for book selection events
-            this.$watch('book', (newBook) => {
-                if (newBook) {
-                    this.totalChapters = newBook.chapters;
-                    this.chapterNumbers = Array.from({length: newBook.chapters}, (_, i) => i + 1);
-                    // Reset selection when book changes
-                    this.resetSelection();
-                }
-            });
         },
 
         parseInitialValue(value) {
@@ -149,39 +138,27 @@ function gridChapterSelector(totalChapters, initialValue) {
                 }
             }
 
-            this.updateChapterInput();
             this.dispatchSelectionEvent();
         },
 
         resetSelection() {
             this.firstSelection = null;
             this.selectedChapters = [];
-            this.chapterInput = '';
         },
 
-        updateChapterInput() {
-            if (this.selectedChapters.length === 0) {
-                this.chapterInput = '';
-            } else if (this.selectedChapters.length === 1) {
-                this.chapterInput = this.selectedChapters[0].toString();
-            } else {
-                // Multiple chapters - check if it's a consecutive range
-                const sorted = [...this.selectedChapters].sort((a, b) => a - b);
-                const first = sorted[0];
-                const last = sorted[sorted.length - 1];
+        get chapterInput() {
+            if (this.selectedChapters.length === 0) return '';
+            if (this.selectedChapters.length === 1) return this.selectedChapters[0].toString();
 
-                // Check if all chapters are consecutive
-                const isConsecutive = sorted.every((num, index) =>
-                    index === 0 || num === sorted[index - 1] + 1
-                );
+            const sorted = [...this.selectedChapters].sort((a, b) => a - b);
+            const first = sorted[0];
+            const last = sorted[sorted.length - 1];
 
-                if (isConsecutive && sorted.length > 1) {
-                    this.chapterInput = `${first}-${last}`;
-                } else {
-                    // Non-consecutive, use comma separation (fallback)
-                    this.chapterInput = sorted.join(',');
-                }
-            }
+            const isConsecutive = sorted.every((num, index) =>
+                index === 0 || num === sorted[index - 1] + 1
+            );
+
+            return isConsecutive && sorted.length > 1 ? `${first}-${last}` : sorted.join(',');
         },
 
         dispatchSelectionEvent() {

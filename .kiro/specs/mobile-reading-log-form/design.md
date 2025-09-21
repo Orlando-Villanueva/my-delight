@@ -19,13 +19,26 @@ Grid Reading Log Form
 └── Form Integration Layer
 ```
 
-### State Management
+### State Management & Technology Boundaries
 
-The form will manage state through:
-- **Testament Filter**: Old/New Testament toggle state
-- **Book Selection**: Selected book data and grid display
-- **Chapter Selection**: Single chapter or range selection
-- **Form Navigation**: Back/forward between book and chapter selection
+**Alpine.js Territory (Client-Side UI State)**:
+- **Form Interactions**: Book/chapter selection, grid states, visual feedback
+- **Progressive Disclosure**: Book grid → chapter grid → form submission
+- **UI State**: Selected books, chapters, button states, animations
+- **Testament Toggle**: Immediate UI switching (client-side filtering)
+- **Form Validation**: Client-side feedback and enabling/disabling submit
+
+**HTMX Territory (Server Communication)**:
+- **Form Submission**: POST to `/logs` endpoint with form data
+- **Cross-Section Updates**: Dashboard stats, recent logs refresh after submission
+- **Server Validation**: Display validation errors from server response
+- **Testament Persistence**: Save testament preference to server session
+- **Success Handling**: Display success messages, trigger page updates
+
+**Hybrid Approach**:
+- **Testament Toggle**: Alpine.js for immediate UI + HTMX for server persistence
+- **Form State**: Alpine.js manages selection, HTMX handles submission
+- **Progressive Enhancement**: Works without JavaScript via standard form submission
 
 ## Components and Interfaces
 
@@ -222,32 +235,47 @@ function gridChapterSelector(totalChapters) {
 }
 ```
 
-### 3. Selection Label Component
+### 3. Selection Label Component (HTMX-Alpine.js First)
 
 **Location**: `resources/views/components/bible/selection-label.blade.php`
+
+**Design Principle**: Simple display component using Alpine.js `x-bind` for reactive updates from parent state. No client-side state management.
 
 **Props**:
 ```php
 @props([
-    'book' => null,
-    'chapters' => null
+    'selectedBook' => null,
+    'selectedChapters' => null
 ])
 ```
 
 **Component Structure**:
 ```blade
-<div class="bg-gray-50 dark:bg-gray-800 rounded-lg p-3 border border-gray-200 dark:border-gray-600">
-    <div class="text-sm font-medium text-gray-700 dark:text-gray-300">
-        @if($book && $chapters)
-            📖 <strong>Book:</strong> {{ $book['name'] }} {{ $chapters }}
-        @elseif($book)
-            📚 <strong>Book:</strong> {{ $book['name'] }}
-        @else
-            <span class="text-gray-500 dark:text-gray-400">No selection yet</span>
-        @endif
+<div class="bg-gray-50 dark:bg-gray-800 rounded-lg p-4 border border-gray-200 dark:border-gray-600 transition-all duration-200">
+    <div class="flex items-center gap-2 text-sm font-medium text-gray-700 dark:text-gray-300">
+        <template x-if="selectedBook || selectedChapters">
+            <div class="flex items-center gap-2 w-full">
+                <div class="text-lg">📖</div>
+                <div class="flex-1">
+                    <span class="text-gray-600 dark:text-gray-400">Selection:</span>
+                    <span class="ml-2 text-gray-900 dark:text-gray-100 font-semibold"
+                          x-text="selectedBook ? (selectedChapters ? `${selectedBook.name} ${selectedChapters}` : selectedBook.name) : ''"></span>
+                </div>
+            </div>
+        </template>
+        <template x-if="!selectedBook && !selectedChapters">
+            <div class="flex items-center gap-2 w-full">
+                <div class="text-lg">📚</div>
+                <div class="flex-1">
+                    <span class="text-gray-500 dark:text-gray-400 italic">No selection yet - choose a book to get started</span>
+                </div>
+            </div>
+        </template>
     </div>
 </div>
 ```
+
+**Alpine.js Integration**: Receives data via `x-bind` from parent form component. No internal state management or event listeners.
 
 ### 4. Main Form Integration Component
 

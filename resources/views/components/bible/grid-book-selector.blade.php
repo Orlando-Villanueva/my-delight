@@ -45,8 +45,7 @@
         <input type="search"
                placeholder="{{ $searchPlaceholder }}"
                x-model="searchQuery"
-               class="form-input pl-10 w-full"
-               @input="updateFilteredBooks()">
+               class="form-input pl-10 w-full">
         <svg class="w-5 h-5 absolute left-3 top-1/2 transform -translate-y-1/2 text-gray-400"
              fill="none" stroke="currentColor" viewBox="0 0 24 24">
             <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2"
@@ -98,12 +97,8 @@ function gridBookSelector(books, initialTestament, initialValue) {
         selectedBookId: initialValue || '',
         selectedBook: null,
         activeTestament: initialTestament,
-        filteredBooks: [],
 
         init() {
-            this.updateFilteredBooks();
-
-            // Set initial selected book if value provided
             if (this.selectedBookId) {
                 this.selectedBook = this.allBooks.find(book => book.id == this.selectedBookId);
             }
@@ -111,14 +106,11 @@ function gridBookSelector(books, initialTestament, initialValue) {
 
         setActiveTestament(testament) {
             this.activeTestament = testament;
-            this.updateFilteredBooks();
         },
 
-        updateFilteredBooks() {
-            // Filter by testament first
+        get filteredBooks() {
             let books = this.allBooks.filter(book => book.testament === this.activeTestament);
 
-            // Then filter by search query if provided
             if (this.searchQuery.trim()) {
                 const query = this.searchQuery.toLowerCase();
                 books = books.filter(book =>
@@ -126,14 +118,13 @@ function gridBookSelector(books, initialTestament, initialValue) {
                 );
             }
 
-            this.filteredBooks = books;
+            return books;
         },
 
         selectBook(book) {
             this.selectedBookId = book.id;
             this.selectedBook = book;
 
-            // Dispatch event for parent components
             this.$dispatch('book-selected', {
                 book: book,
                 bookId: book.id,
@@ -143,13 +134,9 @@ function gridBookSelector(books, initialTestament, initialValue) {
         },
 
         getBookButtonClass(book) {
-            const isSelected = this.selectedBookId == book.id;
-
-            if (isSelected) {
-                return 'bg-primary-500 text-white border-primary-500 shadow-md book-button-selected';
-            }
-
-            return 'bg-white dark:bg-gray-800 text-gray-700 dark:text-gray-300 border-gray-300 dark:border-gray-600 hover:border-primary-500/30 dark:hover:border-primary-500/50 hover:shadow-md book-button-default';
+            return this.selectedBookId == book.id
+                ? 'bg-primary-500 text-white border-primary-500 shadow-md book-button-selected'
+                : 'bg-white dark:bg-gray-800 text-gray-700 dark:text-gray-300 border-gray-300 dark:border-gray-600 hover:border-primary-500/30 dark:hover:border-primary-500/50 hover:shadow-md book-button-default';
         }
     }
 }
