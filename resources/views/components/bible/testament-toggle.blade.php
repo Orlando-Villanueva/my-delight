@@ -14,7 +14,7 @@
             hx-headers='{"X-CSRF-TOKEN": "{{ csrf_token() }}"}'
             hx-swap="none"
             :class="{ 'bg-[#3366CC] text-white shadow-sm': activeTestament === 'Old', 'text-gray-600 dark:text-gray-400 hover:text-[#3366CC] hover:bg-white dark:hover:bg-gray-600': activeTestament !== 'Old' }"
-            class="px-3 py-1.5 text-sm font-medium transition-all leading-[1.5] rounded {{ $currentTestament === 'Old' ? 'bg-[#3366CC] text-white shadow-sm' : 'text-gray-600 dark:text-gray-400 hover:text-[#3366CC] hover:bg-white dark:hover:bg-gray-600' }}">
+            class="px-2 py-1 text-xs font-medium transition-all leading-[1.5] rounded {{ $currentTestament === 'Old' ? 'bg-[#3366CC] text-white shadow-sm' : 'text-gray-600 dark:text-gray-400 hover:text-[#3366CC] hover:bg-white dark:hover:bg-gray-600' }}">
         Old
     </button>
     <button x-on:click="activeTestament = 'New'"
@@ -23,7 +23,7 @@
             hx-headers='{"X-CSRF-TOKEN": "{{ csrf_token() }}"}'
             hx-swap="none"
             :class="{ 'bg-[#3366CC] text-white shadow-sm': activeTestament === 'New', 'text-gray-600 dark:text-gray-400 hover:text-[#3366CC] hover:bg-white dark:hover:bg-gray-600': activeTestament !== 'New' }"
-            class="px-3 py-1.5 text-sm font-medium transition-all leading-[1.5] rounded {{ $currentTestament === 'New' ? 'bg-[#3366CC] text-white shadow-sm' : 'text-gray-600 dark:text-gray-400 hover:text-[#3366CC] hover:bg-white dark:hover:bg-gray-600' }}">
+            class="px-2 py-1 text-xs font-medium transition-all leading-[1.5] rounded {{ $currentTestament === 'New' ? 'bg-[#3366CC] text-white shadow-sm' : 'text-gray-600 dark:text-gray-400 hover:text-[#3366CC] hover:bg-white dark:hover:bg-gray-600' }}">
         New
     </button>
 </div> 

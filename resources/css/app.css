@@ -106,23 +106,23 @@ html {
 
     /* Button variants - using Bible Habit colors */
     .btn {
-        @apply inline-flex items-center justify-center gap-2 px-4 py-2 text-sm font-medium rounded-md border border-transparent transition-colors focus:outline-none focus:ring-2 focus:ring-offset-2;
+        @apply inline-flex items-center justify-center gap-2 px-4 py-2 text-sm font-medium rounded-md border border-transparent transition-colors focus:outline-none;
     }
 
     .btn-primary {
-        @apply bg-primary-500 text-white hover:bg-primary-600 focus:ring-primary-500;
+        @apply bg-primary-500 text-white hover:bg-primary-600;
     }
 
     .btn-secondary {
-        @apply bg-gray-100 text-gray-900 hover:bg-gray-200 focus:ring-gray-500;
+        @apply bg-gray-100 text-gray-900 hover:bg-gray-200;
     }
 
     .btn-success {
-        @apply bg-success-500 text-white hover:bg-success-400 focus:ring-success-500;
+        @apply bg-success-500 text-white hover:bg-success-400;
     }
 
     .btn-accent {
-        @apply bg-accent-500 text-white hover:bg-accent-600 focus:ring-accent-500;
+        @apply bg-accent-500 text-white hover:bg-accent-600;
     }
 
     .btn-destructive {
@@ -130,11 +130,11 @@ html {
     }
 
     .btn-outline {
-        @apply border-gray-300 bg-white text-gray-700 hover:bg-gray-50 focus:ring-gray-500;
+        @apply border-gray-300 bg-white text-gray-700 hover:bg-gray-50;
     }
 
     .btn-ghost {
-        @apply bg-transparent text-gray-700 hover:bg-gray-100 focus:ring-gray-500;
+        @apply bg-transparent text-gray-700 hover:bg-gray-100;
     }
 
     /* Card components */

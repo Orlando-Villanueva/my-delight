@@ -53,11 +53,11 @@
             };
         @endphp
         
-        <div class="relative p-3 rounded-lg border-2 text-center transition-all duration-200 shadow-sm hover:shadow-md cursor-pointer group {{ $statusClasses }}"
+        <div class="relative p-4 rounded-lg border-2 text-center transition-all duration-200 shadow-sm hover:shadow-md cursor-pointer group {{ $statusClasses }}"
              title="{{ $book['name'] }}: {{ $book['chapters_read'] }}/{{ $book['chapter_count'] }} chapters ({{ $book['percentage'] }}%)">
             
             <!-- Book Name -->
-            <div class="font-semibold text-sm mb-1 truncate leading-[1.5]">
+            <div class="font-semibold text-sm mb-1 leading-[1.5]">
                 {{ $book['name'] }}
             </div>
             
