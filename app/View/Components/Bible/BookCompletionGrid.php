@@ -23,8 +23,12 @@ class BookCompletionGrid extends Component
         $oldData = $this->bookProgressService->getTestamentProgress($user, 'Old');
         $newData = $this->bookProgressService->getTestamentProgress($user, 'New');
 
-        // Use session preference, fallback to component prop, then default to 'Old'
-        $testament = session('testament_preference', 'Old');
+        // Always default to 'Old' as requested
+        $testament = 'Old';
+
+        // Convert Collections to arrays for Alpine.js
+        $oldData['processed_books'] = $oldData['processed_books']->toArray();
+        $newData['processed_books'] = $newData['processed_books']->toArray();
 
         return view('components.bible.book-completion-grid', [
             'oldData' => $oldData,
