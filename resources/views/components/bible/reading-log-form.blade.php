@@ -12,7 +12,7 @@
       hx-target="#reading-log-form-container"
       hx-swap="outerHTML"
       class="w-full max-w-lg mx-auto space-y-4"
-      x-data="mobileReadingForm(@js($books))"
+      x-data="readingLogForm(@js($books))"
       x-init="init()">
     @csrf
 
@@ -106,7 +106,7 @@
                     class="form-input pl-10 w-full shadow-none" />
             </div>
 
-            <div class="max-h-80 overflow-y-auto">
+            <div class="overflow-y-auto" style="max-height: calc(100vh - 400px);">
                 <div class="grid grid-cols-2 gap-3">
                     <template x-for="book in filteredBooks" :key="book.id">
                         <button
@@ -193,14 +193,15 @@
             class="resize-none" />
     </div>
 
-    <!-- Submit Button -->
-    <x-ui.button
-        type="submit"
-        variant="accent"
-        size="lg"
-        class="w-full"
-        hx-indicator="#save-loading"
-        x-bind:disabled="!isSubmitEnabled">
+    <!-- Submit Button - Only show when book is selected -->
+    <div x-show="selectedBook">
+        <x-ui.button
+            type="submit"
+            variant="accent"
+            size="lg"
+            class="w-full"
+            hx-indicator="#save-loading"
+            x-bind:disabled="!isSubmitEnabled">
         <span id="save-loading" class="htmx-indicator hidden">
             <svg class="animate-spin -ml-1 mr-3 h-5 w-5 text-white" xmlns="http://www.w3.org/2000/svg" fill="none" viewBox="0 0 24 24">
                 <circle class="opacity-25" cx="12" cy="12" r="10" stroke="currentColor" stroke-width="4"></circle>
@@ -211,7 +212,8 @@
         <span class="htmx-indicator-hidden">
             Log Reading
         </span>
-    </x-ui.button>
+        </x-ui.button>
+    </div>
 
     <!-- Hidden Inputs for Form Submission -->
     <input type="hidden" name="book_id" x-model="selectedBookId">
@@ -232,7 +234,7 @@
 </div>
 
 <script>
-function mobileReadingForm(books) {
+function readingLogForm(books) {
     return {
         // Book data
         allBooks: books,

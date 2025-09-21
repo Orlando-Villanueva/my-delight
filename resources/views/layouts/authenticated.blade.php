@@ -280,46 +280,47 @@
             </main>
         </div>
         <!-- Mobile Bottom Navigation -->
-        <nav class="lg:hidden fixed bottom-0 left-0 right-0 bg-white dark:bg-gray-800 border-t border-[#D1D7E0] dark:border-gray-700 px-4 py-2 z-40 h-20 transition-colors">
-            <div class="flex justify-around items-end relative">
-                <button type="button" hx-get="{{ route('dashboard') }}" hx-target="#page-container"
-                    hx-swap="innerHTML" hx-push-url="true"
-                    @click="currentView = 'dashboard'"
-                    :class="currentView === 'dashboard' ? 'text-primary-500' : 'text-gray-500 dark:text-gray-400 hover:text-primary-500'"
-                    class="flex flex-col items-center py-2 px-3 min-w-[44px] min-h-[44px] justify-center transition-colors leading-[1.5]">
-                    <svg class="w-6 h-6" fill="none" stroke="currentColor" viewBox="0 0 24 24">
-                        <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2"
-                            d="M3 7v10a2 2 0 002 2h14a2 2 0 002-2V9a2 2 0 00-2-2H5a2 2 0 00-2-2z"></path>
-                    </svg>
-                    <span class="text-xs mt-1">Dashboard</span>
-                </button>
+        <nav class="lg:hidden fixed bottom-0 left-0 right-0 bg-white dark:bg-gray-800 border-t border-[#D1D7E0] dark:border-gray-700 px-4 py-3 z-40 transition-colors">
+            <div class="flex items-center">
+                <div class="flex-1 flex justify-center">
+                    <button type="button" hx-get="{{ route('dashboard') }}" hx-target="#page-container"
+                        hx-swap="innerHTML" hx-push-url="true"
+                        @click="currentView = 'dashboard'"
+                        :class="currentView === 'dashboard' ? 'text-primary-500' : 'text-gray-500 dark:text-gray-400 hover:text-primary-500'"
+                        class="flex flex-col items-center py-2 px-3 min-w-[60px] min-h-[48px] justify-center transition-colors leading-[1.5]">
+                        <svg class="w-6 h-6" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                            <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2"
+                                d="M3 7v10a2 2 0 002 2h14a2 2 0 002-2V9a2 2 0 00-2-2H5a2 2 0 00-2-2z"></path>
+                        </svg>
+                        <span class="text-xs mt-1">Dashboard</span>
+                    </button>
+                </div>
 
-                <!-- Elevated Circular Add Reading Button (Center) -->
+                <!-- Centered Add Reading Button -->
                 <button type="button"
                     @click="toggleAddButton()"
-                    class="absolute bottom-6 left-1/2 transform -translate-x-1/2 w-14 h-14 rounded-full flex items-center justify-center shadow-lg transition-all duration-200 z-50"
-                    :class="currentView === 'create' 
-                        ? 'bg-accent-300 dark:bg-accent-700 text-white/70 dark:text-white cursor-default' 
-                        : 'bg-accent-500 hover:bg-accent-600 active:bg-accent-700 text-white'"
+                    class="flex items-center justify-center px-6 py-3 rounded-full transition-all duration-200"
+                    :class="currentView === 'create'
+                        ? 'bg-accent-300 dark:bg-accent-700 text-white/70 dark:text-white cursor-default'
+                        : 'bg-accent-500 hover:bg-accent-600 active:bg-accent-700 text-white shadow-md'"
                     :aria-disabled="currentView === 'create'"
                     :aria-label="currentView === 'create' ? 'Already on add reading page' : 'Add new reading'">
-                    <svg class="w-7 h-7"
-                        fill="none" stroke="currentColor" viewBox="0 0 24 24">
-                        <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M12 6v6m0 0v6m0-6h6m-6 0H6"></path>
-                    </svg>
+                    <span class="text-sm font-medium">Log Reading</span>
                 </button>
 
-                <button type="button" hx-get="{{ route('logs.index') }}" hx-target="#page-container"
-                    hx-swap="innerHTML" hx-push-url="true" @click="currentView = 'logs'"
-                    :class="currentView === 'logs' ? 'text-primary-500' : 'text-gray-500 dark:text-gray-400 hover:text-primary-500'"
-                    class="flex flex-col items-center py-2 px-3 min-w-[44px] min-h-[44px] justify-center transition-colors leading-[1.5]">
-                    <svg class="w-6 h-6" fill="none" stroke="currentColor" viewBox="0 0 24 24">
-                        <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2"
-                            d="M8 7V3m8 4V3m-9 8h10M5 21h14a2 2 0 002-2V7a2 2 0 00-2-2H5a2 2 0 00-2-2v16a2 2 0 002 2z">
-                        </path>
-                    </svg>
-                    <span class="text-xs mt-1">History</span>
-                </button>
+                <div class="flex-1 flex justify-center">
+                    <button type="button" hx-get="{{ route('logs.index') }}" hx-target="#page-container"
+                        hx-swap="innerHTML" hx-push-url="true" @click="currentView = 'logs'"
+                        :class="currentView === 'logs' ? 'text-primary-500' : 'text-gray-500 dark:text-gray-400 hover:text-primary-500'"
+                        class="flex flex-col items-center py-2 px-3 min-w-[60px] min-h-[48px] justify-center transition-colors leading-[1.5]">
+                        <svg class="w-6 h-6" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                            <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2"
+                                d="M8 7V3m8 4V3m-9 8h10M5 21h14a2 2 0 002-2V7a2 2 0 00-2-2H5a2 2 0 00-2-2v16a2 2 0 002 2z">
+                            </path>
+                        </svg>
+                        <span class="text-xs mt-1">History</span>
+                    </button>
+                </div>
             </div>
         </nav>
 
