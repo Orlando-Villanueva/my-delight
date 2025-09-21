@@ -85,7 +85,7 @@
 
     <!-- Book Selection with Testament Toggle and Search -->
     <div x-show="!selectedBook" x-transition>
-        <x-ui.card class="p-6">
+        <x-ui.card class="p-6 bg-white dark:bg-gray-800 border border-[#D1D7E0] dark:border-gray-700 transition-colors shadow-lg">
             <div class="flex items-center justify-between mb-3">
                 <label class="text-sm font-medium text-gray-700 dark:text-gray-300">Select Book</label>
                 <x-bible.testament-toggle
@@ -106,14 +106,14 @@
                     class="form-input pl-10 w-full shadow-none" />
             </div>
 
-            <div class="overflow-y-auto" style="max-height: calc(100vh - 400px);">
+            <div class="overflow-y-auto" style="max-height: calc(100vh - 408px);">
                 <div class="grid grid-cols-2 gap-3">
                     <template x-for="book in filteredBooks" :key="book.id">
                         <button
                             type="button"
                             x-on:click="handleBookSelect(book)"
                             class="justify-center text-center h-auto py-4 px-4 rounded-md border transition-all duration-200 hover:-translate-y-px active:translate-y-0"
-                            :class="book.id === selectedBookId ? 'bg-primary-500 text-white border-primary-500' : 'bg-white dark:bg-gray-800 text-gray-700 dark:text-gray-300 border-gray-300 dark:border-gray-600 hover:border-primary-500/30 dark:hover:border-primary-500/50'"
+                            :class="book.id === selectedBookId ? 'bg-primary-500 text-white border-primary-500' : 'bg-white dark:bg-gray-700 text-gray-700 dark:text-gray-200 border-gray-300 dark:border-gray-600 hover:border-primary-500/30 dark:hover:border-primary-500/50 hover:bg-gray-50 dark:hover:bg-gray-600'"
                             style="min-height: 64px; touch-action: manipulation;">
                             <div class="flex flex-col items-center">
                                 <span class="text-sm font-semibold" x-text="book.name"></span>
@@ -135,7 +135,7 @@
 
     <!-- Chapter Selection -->
     <div x-show="selectedBookData" x-transition>
-        <x-ui.card class="p-6">
+        <x-ui.card class="p-6 bg-white dark:bg-gray-800 border border-[#D1D7E0] dark:border-gray-700 transition-colors shadow-lg">
             <div class="flex items-center gap-2 mb-3">
                 <x-ui.button
                     type="button"
