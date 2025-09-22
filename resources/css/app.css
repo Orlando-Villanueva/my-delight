@@ -130,11 +130,11 @@ html {
     }
 
     .btn-outline {
-        @apply border-gray-300 bg-white text-gray-700 hover:bg-gray-50;
+        @apply border-gray-300 dark:border-gray-600 bg-white dark:bg-gray-800 text-gray-700 dark:text-gray-300 hover:bg-gray-50 dark:hover:bg-gray-700;
     }
 
     .btn-ghost {
-        @apply bg-transparent text-gray-700 hover:bg-gray-100;
+        @apply bg-transparent text-gray-700 dark:text-gray-300 hover:bg-gray-100 dark:hover:bg-gray-700;
     }
 
     /* Card components */
