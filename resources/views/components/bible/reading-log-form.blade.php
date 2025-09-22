@@ -112,12 +112,7 @@
                 </label>
             </div>
 
-            <!-- Instruction Text -->
-            <div class="text-sm text-gray-600 dark:text-gray-400 bg-blue-50 dark:bg-blue-900/20 rounded-lg p-3 mb-3">
-                💡 <strong>Tip:</strong> Click a chapter, then click another to create a range (e.g., 3-7)
-            </div>
-
-            <div class="overflow-y-auto" :style="chapterNumbers.length > 25 ? (startChapter !== null ? 'max-height: calc(100vh - 558px);' : 'max-height: calc(100vh - 412px);') : ''">
+            <div class="overflow-y-auto" :style="chapterNumbers.length > 25 ? (startChapter !== null ? 'max-height: calc(100vh - 512px);' : 'max-height: calc(100vh - 366px);') : ''">
                 <div class="grid grid-cols-5 gap-2">
                     <template x-for="chapter in chapterNumbers" :key="chapter">
                         <button
@@ -130,6 +125,11 @@
                         </button>
                     </template>
                 </div>
+            </div>
+
+            <!-- Subtle tip at bottom -->
+            <div class="text-xs text-gray-500 dark:text-gray-500 text-center mt-3 opacity-75">
+                Tip: Click a chapter, then another to create a range
             </div>
 
             <!-- Reading Preview -->
