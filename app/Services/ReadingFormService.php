@@ -40,12 +40,13 @@ class ReadingFormService
         // Yesterday option logic:
         // 1. If already read yesterday, don't show the option
         // 2. If user is new (created today), don't allow yesterday (they didn't exist)
-        // 3. Allow yesterday if user had readings before yesterday (potential streak to recover)
-        $hadReadingsBeforeYesterday = $user->readingLogs()
-            ->whereDate('date_read', '<', today()->subDay())
+        // 3. Allow yesterday only if logging yesterday would actually recover a streak
+        //    (i.e., there's a reading on the day before yesterday)
+        $hadReadingDayBeforeYesterday = $user->readingLogs()
+            ->whereDate('date_read', today()->subDays(2))
             ->exists();
 
-        $allowYesterday = ! $hasReadYesterday && ! $isNewUser && $hadReadingsBeforeYesterday;
+        $allowYesterday = ! $hasReadYesterday && ! $isNewUser && $hadReadingDayBeforeYesterday;
 
         return [
             'allowYesterday' => $allowYesterday,
