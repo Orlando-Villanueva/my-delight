@@ -6,12 +6,12 @@
     'currentStreak' => 0
 ])
 
-<div id="reading-log-form-container">
+<div id="reading-log-form-container" class="max-w-5xl mx-auto sm:px-20 lg:px-32">
 
 <form hx-post="{{ route('logs.store') }}"
       hx-target="#reading-log-form-container"
       hx-swap="outerHTML"
-      class="w-full max-w-lg mx-auto"
+      class="w-full"
       x-data="readingLogForm(@js($books))"
       x-init="init()">
     @csrf
@@ -68,12 +68,12 @@
             </div>
 
             <div class="overflow-y-auto" style="max-height: calc(100vh - 384px);">
-                <div class="grid grid-cols-2 gap-3">
+                <div class="grid grid-cols-2 md:grid-cols-4 gap-3">
                     <template x-for="book in filteredBooks" :key="book.id">
                         <button
                             type="button"
                             x-on:click="handleBookSelect(book)"
-                            class="justify-center text-center h-auto py-4 px-4 rounded-md border transition-all duration-200 hover:-translate-y-px active:translate-y-0"
+                            class="justify-center text-center h-auto py-4 px-4 rounded-md border transition-all duration-200"
                             :class="book.id === selectedBookId ? 'bg-primary-500 text-white border-primary-500' : 'bg-white dark:bg-gray-700 text-gray-700 dark:text-gray-200 border-gray-300 dark:border-gray-600 hover:border-primary-500/30 dark:hover:border-primary-500/50 hover:bg-gray-50 dark:hover:bg-gray-600'"
                             style="min-height: 64px; touch-action: manipulation;">
                             <div class="flex flex-col items-center">
@@ -118,7 +118,7 @@
                         <button
                             type="button"
                             x-on:click="handleChapterSelect(chapter)"
-                            class="aspect-square flex items-center justify-center text-base font-semibold rounded border transition-all duration-200 hover:-translate-y-px active:translate-y-0"
+                            class="flex items-center justify-center text-base font-semibold rounded-md border transition-all duration-200"
                             :class="getChapterButtonClass(chapter)"
                             style="min-height: 56px; touch-action: manipulation;"
                             x-text="chapter">
@@ -218,6 +218,7 @@
     .htmx-indicator { display: none; }
     .htmx-request .htmx-indicator { display: flex; }
     .htmx-request .htmx-indicator-hidden { display: none !important; }
+
 </style>
 
 </div>
@@ -403,7 +404,7 @@ function readingLogForm(books) {
                 return classes;
             }
 
-            return 'bg-white dark:bg-gray-800 text-gray-700 dark:text-gray-300 border-gray-300 dark:border-gray-600 hover:border-primary-500/30 dark:hover:border-primary-500/50';
+            return 'bg-white dark:bg-gray-700 text-gray-700 dark:text-gray-200 border-gray-300 dark:border-gray-600 hover:border-primary-500/30 dark:hover:border-primary-500/50 hover:bg-gray-50 dark:hover:bg-gray-600';
         },
 
         isChapterSelected(chapter) {
