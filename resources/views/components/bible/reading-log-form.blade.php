@@ -67,7 +67,7 @@
                     class="form-input pl-10 w-full shadow-none" />
             </div>
 
-            <div class="overflow-y-auto" style="max-height: calc(100vh - 384px);">
+            <div class="overflow-y-auto scrollbar-none" style="max-height: calc(100vh - 384px);">
                 <div class="grid grid-cols-2 md:grid-cols-4 gap-3">
                     <template x-for="book in filteredBooks" :key="book.id">
                         <button
@@ -112,8 +112,10 @@
                 </label>
             </div>
 
-            <div class="overflow-y-auto" :style="chapterNumbers.length > 25 ? (startChapter !== null ? 'max-height: calc(100vh - 510px);' : 'max-height: calc(100vh - 364px);') : ''">
-                <div class="grid grid-cols-5 gap-2">
+            <div class="overflow-y-auto scrollbar-none"
+                 style="will-change: auto; transform: translateZ(0);"
+                 :style="chapterNumbers.length > 25 ? (startChapter !== null ? 'max-height: calc(100vh - 510px);' : 'max-height: calc(100vh - 364px);') : ''">
+                <div class="grid grid-cols-5 lg:grid-cols-7 gap-2" style="transform: translateZ(0);">
                     <template x-for="chapter in chapterNumbers" :key="chapter">
                         <button
                             type="button"
@@ -132,8 +134,8 @@
                 Tip: Click a chapter, then another to create a range
             </div>
 
-            <!-- Reading Preview -->
-            <div x-show="getReadingText()" class="mt-3 p-2 bg-gray-50 dark:bg-gray-700 rounded-md">
+            <!-- Reading Preview - Hidden on Desktop (shown in action bar instead) -->
+            <div x-show="getReadingText()" class="mt-3 p-2 bg-gray-50 dark:bg-gray-700 rounded-md md:hidden">
                 <p class="text-sm font-medium text-center text-gray-900 dark:text-gray-100" x-text="getReadingText()"></p>
             </div>
         </x-ui.card>
