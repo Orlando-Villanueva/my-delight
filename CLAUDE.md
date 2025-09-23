@@ -123,11 +123,15 @@ book_progress (id, user_id, book_id, book_name, total_chapters, chapters_read, c
    - ❌ `new \Illuminate\Support\Collection()`
    - ✅ `use Illuminate\Support\Collection;` then `new Collection()`
 
-2. **Never use raw SQL methods** - always use Eloquent and query builder
+2. **Always import classes at the top** - import all classes and functions at the beginning of files
+   - ❌ Using `\App\Services\BibleReferenceService` inline
+   - ✅ `use App\Services\BibleReferenceService;` at top, then use `BibleReferenceService`
+
+3. **Never use raw SQL methods** - always use Eloquent and query builder
    - ❌ `selectRaw()`, `whereRaw()`, `havingRaw()`
    - ✅ Eloquent collection methods and Laravel's built-in functions
 
-3. **Alpine.js organization** - extract complex logic from inline x-data
+4. **Alpine.js organization** - extract complex logic from inline x-data
    - ❌ `x-data="{ complex: 'logic here' }"`
    - ✅ `x-data="componentFunction()"` with separate `<script>` tag
 

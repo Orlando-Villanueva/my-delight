@@ -62,19 +62,4 @@ Route::middleware('auth')->group(function () {
     Route::get('/logs/create', [ReadingLogController::class, 'create'])->name('logs.create');
     Route::post('/logs', [ReadingLogController::class, 'store'])->name('logs.store');
 
-    // User Preferences
-    Route::post('/preferences/testament', function (Request $request) {
-        $testament = $request->input('testament');
-
-        // Validate the testament value
-        if (! in_array($testament, ['Old', 'New'])) {
-            return response('Invalid testament', 400);
-        }
-
-        // Store in session
-        session(['testament_preference' => $testament]);
-
-        // Return 200 OK for HTMX (no content needed since hx-swap="none")
-        return response('', 200);
-    })->name('preferences.testament');
 });

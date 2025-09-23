@@ -106,23 +106,23 @@ html {
 
     /* Button variants - using Bible Habit colors */
     .btn {
-        @apply inline-flex items-center justify-center gap-2 px-4 py-2 text-sm font-medium rounded-md border border-transparent transition-colors focus:outline-none focus:ring-2 focus:ring-offset-2;
+        @apply inline-flex items-center justify-center gap-2 px-4 py-2 text-sm font-medium rounded-md border border-transparent transition-colors focus:outline-none;
     }
 
     .btn-primary {
-        @apply bg-primary-500 text-white hover:bg-primary-600 focus:ring-primary-500;
+        @apply bg-primary-500 text-white hover:bg-primary-600;
     }
 
     .btn-secondary {
-        @apply bg-gray-100 text-gray-900 hover:bg-gray-200 focus:ring-gray-500;
+        @apply bg-gray-100 text-gray-900 hover:bg-gray-200;
     }
 
     .btn-success {
-        @apply bg-success-500 text-white hover:bg-success-400 focus:ring-success-500;
+        @apply bg-success-500 text-white hover:bg-success-400;
     }
 
     .btn-accent {
-        @apply bg-accent-500 text-white hover:bg-accent-600 focus:ring-accent-500;
+        @apply bg-accent-500 text-white hover:bg-accent-600;
     }
 
     .btn-destructive {
@@ -130,11 +130,11 @@ html {
     }
 
     .btn-outline {
-        @apply border-gray-300 bg-white text-gray-700 hover:bg-gray-50 focus:ring-gray-500;
+        @apply border-gray-300 dark:border-gray-600 bg-white dark:bg-gray-800 text-gray-700 dark:text-gray-300 hover:bg-gray-50 dark:hover:bg-gray-700;
     }
 
     .btn-ghost {
-        @apply bg-transparent text-gray-700 hover:bg-gray-100 focus:ring-gray-500;
+        @apply bg-transparent text-gray-700 dark:text-gray-300 hover:bg-gray-100 dark:hover:bg-gray-700;
     }
 
     /* Card components */
@@ -189,6 +189,7 @@ html {
     .form-success {
         @apply text-success-600 dark:text-success-400 text-sm mt-1;
     }
+
 }
 
 /* Additional accessibility improvements */
@@ -205,6 +206,31 @@ html {
         min-height: 44px;
         min-width: 44px;
     }
+
+    /* Selection animations - can't be done with Tailwind utilities */
+    .animate-select-pulse {
+        animation: selectPulse 0.3s ease-out;
+    }
+
+    .animate-range-pulse {
+        animation: rangePulse 0.2s ease-out;
+    }
+
+    .chapter-range-shadow {
+        box-shadow: inset 0 0 0 1px rgba(51, 102, 204, 0.3);
+    }
+
+    @keyframes selectPulse {
+        0% { transform: scale(1); }
+        50% { transform: scale(1.05); }
+        100% { transform: scale(1); }
+    }
+
+    @keyframes rangePulse {
+        0% { transform: scale(1); }
+        50% { transform: scale(1.02); }
+        100% { transform: scale(1); }
+    }
     
     /* High contrast text for better readability */
     .text-high-contrast {
@@ -214,5 +240,15 @@ html {
     /* Ensure proper spacing for screen readers */
     .sr-spacing > * + * {
         margin-top: 0.5rem;
+    }
+
+    /* Hide scrollbars but keep scroll functionality */
+    .scrollbar-none {
+        scrollbar-width: none; /* Firefox */
+        -ms-overflow-style: none; /* IE/Edge */
+    }
+
+    .scrollbar-none::-webkit-scrollbar {
+        display: none; /* Chrome/Safari/Opera */
     }
 }
