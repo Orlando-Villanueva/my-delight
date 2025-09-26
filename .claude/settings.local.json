@@ -31,5 +31,6 @@
   "enabledMcpjsonServers": [
     "laravel-boost",
     "herd"
-  ]
+  ],
+  "outputStyle": "Explanatory"
 }
