@@ -24,12 +24,17 @@
       "Bash(git checkout:*)",
       "mcp__laravel-boost__get-absolute-url",
       "Bash(vendor/bin/pint:*)",
-      "Bash(php vendor/bin/pint:*)"
+      "Bash(php vendor/bin/pint:*)",
+      "mcp__laravel-boost__database-schema",
+      "Bash(php artisan make:migration:*)",
+      "Bash(php artisan migrate:*)",
+      "Bash(php artisan migrate:status:*)"
     ],
     "deny": []
   },
   "enabledMcpjsonServers": [
     "laravel-boost",
     "herd"
-  ]
+  ],
+  "outputStyle": "Explanatory"
 }

@@ -39,7 +39,10 @@ class ReadingLogController extends Controller
         // Get form context data (yesterday logic, streak info)
         $formContext = $this->readingFormService->getFormContextData($request->user());
 
-        $data = array_merge(compact('books', 'errors'), $formContext);
+        // Get recent books for autocomplete prioritization
+        $recentBooks = $this->readingFormService->getRecentBooks($request->user());
+
+        $data = array_merge(compact('books', 'errors', 'recentBooks'), $formContext);
 
         // Return appropriate view based on request type
         if ($request->header('HX-Request')) {
@@ -105,6 +108,7 @@ class ReadingLogController extends Controller
                 $books = $this->bibleReferenceService->listBibleBooks(null, 'en');
                 $errors = new MessageBag;
                 $formContext = $this->readingFormService->getFormContextData($request->user());
+                $recentBooks = $this->readingFormService->getRecentBooks($request->user());
 
                 // Set success message
                 session()->flash('success', "{$log->passage_text} recorded for {$log->date_read->format('M d, Y')}");
@@ -112,7 +116,7 @@ class ReadingLogController extends Controller
                 // Return just the form container with success message and reset form
                 return response()
                     ->view('partials.reading-log-form', array_merge(
-                        compact('books', 'errors'),
+                        compact('books', 'errors', 'recentBooks'),
                         $formContext
                     ))
                     ->header('HX-Trigger', 'readingLogAdded');
@@ -130,12 +134,13 @@ class ReadingLogController extends Controller
 
             // Get form context data (yesterday logic, streak info)
             $formContext = $this->readingFormService->getFormContextData($request->user());
+            $recentBooks = $this->readingFormService->getRecentBooks($request->user());
 
             // Return appropriate partial based on request type
             $partial = $request->header('HX-Request') ? 'partials.reading-log-form' : 'logs.create';
 
             return view($partial, array_merge(
-                compact('books', 'errors'),
+                compact('books', 'errors', 'recentBooks'),
                 $formContext
             ));
         } catch (InvalidArgumentException $e) {
@@ -147,12 +152,13 @@ class ReadingLogController extends Controller
 
             // Get form context data (yesterday logic, streak info)
             $formContext = $this->readingFormService->getFormContextData($request->user());
+            $recentBooks = $this->readingFormService->getRecentBooks($request->user());
 
             // Return appropriate partial based on request type
             $partial = $request->header('HX-Request') ? 'partials.reading-log-form' : 'logs.create';
 
             return view($partial, array_merge(
-                compact('books', 'errors'),
+                compact('books', 'errors', 'recentBooks'),
                 $formContext
             ));
         } catch (QueryException $e) {
@@ -166,12 +172,13 @@ class ReadingLogController extends Controller
 
                 // Get form context data (yesterday logic, streak info)
                 $formContext = $this->readingFormService->getFormContextData($request->user());
+                $recentBooks = $this->readingFormService->getRecentBooks($request->user());
 
                 // Return appropriate partial based on request type
                 $partial = $request->header('HX-Request') ? 'partials.reading-log-create-page' : 'logs.create';
 
                 return view($partial, array_merge(
-                    compact('books', 'errors'),
+                    compact('books', 'errors', 'recentBooks'),
                     $formContext
                 ));
             }

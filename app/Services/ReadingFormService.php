@@ -2,12 +2,15 @@
 
 namespace App\Services;
 
+use App\Models\ReadingLog;
 use App\Models\User;
+use Carbon\Carbon;
 
 class ReadingFormService
 {
     public function __construct(
-        private ReadingLogService $readingLogService
+        private ReadingLogService $readingLogService,
+        private BibleReferenceService $bibleService
     ) {}
 
     /**
@@ -18,6 +21,24 @@ class ReadingFormService
         return $user->readingLogs()
             ->whereDate('date_read', today())
             ->exists();
+    }
+
+    /**
+     * Get user's recently read books with formatted timestamps.
+     * Uses idx_recent_books composite index for optimal performance.
+     */
+    public function getRecentBooks(User $user, int $limit = 5): array
+    {
+        return ReadingLog::where('user_id', $user->id)
+            ->orderBy('date_read', 'desc')
+            ->get()
+            ->groupBy('book_id')
+            ->map(fn ($logs) => $logs->first())
+            ->sortByDesc('date_read')
+            ->take($limit)
+            ->map(fn ($log) => $this->formatRecentBookEntry($log))
+            ->values()
+            ->toArray();
     }
 
     /**
@@ -49,6 +70,29 @@ class ReadingFormService
             'hasReadToday' => $hasReadToday,
             'hasReadYesterday' => $hasReadYesterday,
             'currentStreak' => $currentStreak,
+        ];
+    }
+
+    /**
+     * Format a reading log entry with book details and human-readable timestamp.
+     */
+    private function formatRecentBookEntry(ReadingLog $log): array
+    {
+        $bookDetails = $this->bibleService->getBibleBook($log->book_id);
+        $lastReadDate = Carbon::parse($log->date_read);
+
+        // Format as "today", "yesterday", or "X days ago"
+        $lastReadHuman = $lastReadDate->isToday() ? 'today'
+            : ($lastReadDate->isYesterday() ? 'yesterday'
+            : $lastReadDate->diffForHumans(['parts' => 1, 'short' => false]));
+
+        return [
+            'id' => $log->book_id,
+            'name' => $bookDetails['name'],
+            'chapters' => $bookDetails['chapters'],
+            'testament' => $bookDetails['testament'],
+            'last_read' => $log->date_read,
+            'last_read_human' => $lastReadHuman,
         ];
     }
 }
