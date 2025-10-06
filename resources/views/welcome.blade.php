@@ -17,7 +17,7 @@
     <link href="https://fonts.bunny.net/css?family=instrument-sans:400,500,600" rel="stylesheet" />
 
     <!-- Styles / Scripts -->
-    <link href="{{ asset('css/tailwind.css') }}" rel="stylesheet">
+    @vite(['resources/css/app.css'])
     
     @if (false)
         <style>

@@ -28,7 +28,8 @@
       "mcp__laravel-boost__database-schema",
       "Bash(php artisan make:migration:*)",
       "Bash(php artisan migrate:*)",
-      "Bash(php artisan migrate:status:*)"
+      "Bash(php artisan migrate:status:*)",
+      "Bash(php artisan view:clear:*)"
     ],
     "deny": []
   },
