@@ -2,7 +2,6 @@
 /node_modules
 /public/build
 /public/hot
-tailwindcss-windows-x64.exe
 /public/storage
 /storage/*.key
 /storage/pail
@@ -24,6 +23,3 @@ yarn-error.log
 /.zed
 .cursor/rules/project-rules.mdc
 /ui-prototype
-
-# Generated Tailwind CSS file
-public/css/tailwind.css
