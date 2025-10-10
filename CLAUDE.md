@@ -48,11 +48,11 @@ npm run build
 
 ### CSS Development
 ```bash
-# Watch for changes during development
-./tailwindcss-windows-x64.exe -i resources/css/app.css -o public/css/tailwind.css --watch
+# Watch for changes during development (with hot reload)
+npm run dev
 
 # Build for production
-./tailwindcss-windows-x64.exe -i resources/css/app.css -o public/css/tailwind.css --minify
+npm run build
 ```
 
 ### Code Quality

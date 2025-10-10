@@ -47,7 +47,7 @@
     <link href="https://fonts.bunny.net/css?family=instrument-sans:400,500,600,700" rel="stylesheet" />
 
     <!-- Styles -->
-    <link href="{{ asset('css/tailwind.css') }}" rel="stylesheet">
+    @vite(['resources/css/app.css'])
 
     <!-- Structured Data -->
     <script type="application/ld+json">
