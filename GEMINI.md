@@ -54,9 +54,7 @@ The project follows a service layer architecture, with a clear separation of con
     ```
 
 6.  **Run the Application:**
-    ```bash
-    php artisan serve
-    ```
+    This project is set up to use Laravel Herd. Once you have placed the project in your Herd directory, it will be available at `http://biblehabit.test`.
 
 ### Testing
 
