@@ -5,17 +5,16 @@
     class="fixed z-50 w-full h-16 max-w-lg -translate-x-1/2 bg-white/60 backdrop-blur-md border-2  border-gray-200/50 rounded-full bottom-4 left-1/2 dark:bg-gray-700/70 dark:border-gray-600/50 lg:hidden">
     <div class="grid h-full max-w-lg grid-cols-3 mx-auto">
         <!-- Dashboard Button (Left) -->
-        <button type="button" hx-get="{{ route('dashboard') }}" hx-target="#page-container" hx-swap="innerHTML"
-            hx-push-url="true"
-            class="inline-flex flex-col items-center justify-center px-5 rounded-s-full active:bg-gray-100/50 dark:active:bg-gray-800/50 group transition-colors">
-            <svg class="w-6 h-6 text-gray-600 dark:text-gray-400 group-active:text-gray-800 dark:group-active:text-gray-200 transition-colors"
-                aria-hidden="true" xmlns="http://www.w3.org/2000/svg" width="24" height="24" fill="none"
-                viewBox="0 0 24 24">
+        <x-navigation.nav-link
+            route="dashboard"
+            label="Dashboard"
+            variant="mobile"
+            class="rounded-s-full">
+            <x-slot:icon>
                 <path stroke="currentColor" stroke-linecap="round" stroke-linejoin="round" stroke-width="2"
                     d="M3 15v4m6-6v6m6-4v4m6-6v6M3 11l6-5 6 5 5.5-5.5" />
-            </svg>
-            <span class="sr-only">Dashboard</span>
-        </button>
+            </x-slot:icon>
+        </x-navigation.nav-link>
 
         <!-- Log Reading FAB (Center) -->
         <div class="flex items-center justify-center">
@@ -30,16 +29,15 @@
         </div>
 
         <!-- History Button (Right) -->
-        <button type="button" hx-get="{{ route('logs.index') }}" hx-target="#page-container" hx-swap="innerHTML"
-            hx-push-url="true"
-            class="inline-flex flex-col items-center justify-center px-5 rounded-e-full active:bg-gray-100/50 dark:active:bg-gray-800/50 group transition-colors">
-            <svg class="w-6 h-6 text-gray-600 dark:text-gray-400 group-active:text-gray-800 dark:group-active:text-gray-200 transition-colors"
-                aria-hidden="true" xmlns="http://www.w3.org/2000/svg" width="24" height="24" fill="none"
-                viewBox="0 0 24 24">
+        <x-navigation.nav-link
+            route="logs.index"
+            label="History"
+            variant="mobile"
+            class="rounded-e-full">
+            <x-slot:icon>
                 <path stroke="currentColor" stroke-linecap="round" stroke-linejoin="round" stroke-width="2"
                     d="M12 8v4l3 3M3.22302 14C4.13247 18.008 7.71683 21 12 21c4.9706 0 9-4.0294 9-9 0-4.97056-4.0294-9-9-9-3.72916 0-6.92858 2.26806-8.29409 5.5M7 9H3V5" />
-            </svg>
-            <span class="sr-only">History</span>
-        </button>
+            </x-slot:icon>
+        </x-navigation.nav-link>
     </div>
 </div>
