@@ -50,7 +50,7 @@
         <x-navigation.desktop-sidebar class="hidden lg:block" />
 
         <!-- Main Content -->
-        <div class="flex-1 flex flex-col lg:overflow-hidden">
+        <div class="flex-1 flex flex-col lg:overflow-hidden lg:pt-14">
             <!-- Mobile: Navbar (scrolls with content) -->
             <x-navigation.mobile-navbar class="lg:hidden" />
 
