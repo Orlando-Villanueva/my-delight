@@ -1,6 +1,8 @@
 {{-- Dashboard Page Container Partial --}}
 {{-- This partial is loaded via HTMX navigation and follows the ui-prototype layout --}}
 
+<title>Dashboard - {{ config('app.name') }}</title>
+
 @include('partials.header-update', [
     'title' => 'Dashboard',
     'subtitle' => 'Track your Bible reading progress'

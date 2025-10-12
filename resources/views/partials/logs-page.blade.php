@@ -1,6 +1,8 @@
 {{-- Logs Page Container Partial (No Sidebar) --}}
 {{-- This partial is loaded via HTMX navigation and includes the page-container structure --}}
 
+<title>History - {{ config('app.name') }}</title>
+
 @include('partials.header-update', [
     'title' => 'Reading History',
     'subtitle' => 'View your Bible reading journey'

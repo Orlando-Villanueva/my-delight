@@ -1,6 +1,8 @@
 {{-- Reading Log Create Page Container Partial --}}
 {{-- This partial is loaded via HTMX navigation and includes the page-container structure --}}
 
+<title>Log Reading - {{ config('app.name') }}</title>
+
 @include('partials.header-update', [
     'title' => 'Log Reading',
     'subtitle' => 'Record your Bible reading progress'
