@@ -7,8 +7,8 @@
         <!-- Dashboard Button (Left) -->
         <button type="button" hx-get="{{ route('dashboard') }}" hx-target="#page-container" hx-swap="innerHTML"
             hx-push-url="true"
-            class="inline-flex flex-col items-center justify-center px-5 rounded-s-full hover:bg-gray-50 dark:hover:bg-gray-800 group">
-            <svg class="w-6 h-6 text-gray-600 dark:text-gray-400 group-hover:text-gray-800 dark:group-hover:text-gray-200"
+            class="inline-flex flex-col items-center justify-center px-5 rounded-s-full active:bg-gray-100/50 dark:active:bg-gray-800/50 group transition-colors">
+            <svg class="w-6 h-6 text-gray-600 dark:text-gray-400 group-active:text-gray-800 dark:group-active:text-gray-200 transition-colors"
                 aria-hidden="true" xmlns="http://www.w3.org/2000/svg" width="24" height="24" fill="none"
                 viewBox="0 0 24 24">
                 <path stroke="currentColor" stroke-linecap="round" stroke-linejoin="round" stroke-width="2"
@@ -34,8 +34,8 @@
         <!-- History Button (Right) -->
         <button type="button" hx-get="{{ route('logs.index') }}" hx-target="#page-container" hx-swap="innerHTML"
             hx-push-url="true"
-            class="inline-flex flex-col items-center justify-center px-5 rounded-e-full hover:bg-gray-50 dark:hover:bg-gray-800 group">
-            <svg class="w-6 h-6 text-gray-600 dark:text-gray-400 group-hover:text-gray-800 dark:group-hover:text-gray-200"
+            class="inline-flex flex-col items-center justify-center px-5 rounded-e-full active:bg-gray-100/50 dark:active:bg-gray-800/50 group transition-colors">
+            <svg class="w-6 h-6 text-gray-600 dark:text-gray-400 group-active:text-gray-800 dark:group-active:text-gray-200 transition-colors"
                 aria-hidden="true" xmlns="http://www.w3.org/2000/svg" width="24" height="24" fill="none"
                 viewBox="0 0 24 24">
                 <path stroke="currentColor" stroke-linecap="round" stroke-linejoin="round" stroke-width="2"
