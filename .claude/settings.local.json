@@ -29,7 +29,8 @@
       "Bash(php artisan make:migration:*)",
       "Bash(php artisan migrate:*)",
       "Bash(php artisan migrate:status:*)",
-      "Bash(php artisan view:clear:*)"
+      "Bash(php artisan view:clear:*)",
+      "WebFetch(domain:flowbite.com)"
     ],
     "deny": []
   },
