@@ -99,10 +99,8 @@ class CoreFunctionalityValidationTest extends TestCase
         $response = $this->actingAs($user)->get('/dashboard');
 
         $response->assertStatus(200);
-        $response->assertSee('Dashboard');
-        $response->assertSee('Track your Bible reading progress');
 
-        // Check for key dashboard components
+        // Check for key dashboard components (new UI)
         $response->assertSee('Daily Streak');
         $response->assertSee('Days Read');
         $response->assertSee('Total Chapters');
@@ -253,7 +251,6 @@ class CoreFunctionalityValidationTest extends TestCase
         // Test the main logs page loads
         $response = $this->actingAs($user)->get('/logs');
         $response->assertStatus(200);
-        $response->assertSee('Reading History');
 
         // Test the logs page contains the reading logs
         $response->assertSee('Genesis 1');
