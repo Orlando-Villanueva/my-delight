@@ -2,7 +2,7 @@
 {{-- This partial follows the ui-prototype layout with 4-column grid structure --}}
 {{-- $stats variable is passed from the controller/route --}}
 
-<div class="space-y-6 lg:space-y-4 xl:space-y-6 pb-16 lg:pb-0"
+<div class="space-y-6 lg:space-y-4 xl:space-y-6 lg:pb-0"
     id="dashboard-main-content-wrapper"
     hx-trigger="readingLogAdded from:body"
     hx-get="{{ route('dashboard') }}"
