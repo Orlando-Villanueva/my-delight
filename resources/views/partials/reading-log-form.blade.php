@@ -3,7 +3,33 @@
 
 <div id="reading-log-form-container">
 
-<form hx-post="{{ route('logs.store') }}" hx-target="#reading-log-form-container" hx-swap="outerHTML" class="space-y-6">
+@php
+    $oldTestament = collect($books)->where('testament', 'old')->values();
+    $newTestament = collect($books)->where('testament', 'new')->values();
+    
+    $initialTestament = 'old';
+    $oldBookId = old('book_id');
+
+    if ($oldBookId) {
+        // Find which testament the old book ID belongs to
+        if ($newTestament->firstWhere('id', $oldBookId)) {
+            $initialTestament = 'new';
+        }
+    }
+@endphp
+
+<form hx-post="{{ route('logs.store') }}" 
+      hx-target="#reading-log-form-container" 
+      hx-swap="outerHTML" 
+      class="space-y-6"
+      x-data="readingLogForm({
+        initialTestament: '{{ $initialTestament }}',
+        initialBookId: '{{ old('book_id') }}',
+        books: {
+            old: {{ $oldTestament->toJson() }},
+            new: {{ $newTestament->toJson() }}
+        }
+    })" x-init="init()">
     @csrf
 
 
@@ -51,30 +77,7 @@
     </div>
 
     <!-- Bible Book Selection -->
-    @php
-        $oldTestament = collect($books)->where('testament', 'old')->values();
-        $newTestament = collect($books)->where('testament', 'new')->values();
-        
-        $initialTestament = 'old';
-        $oldBookId = old('book_id');
-
-        if ($oldBookId) {
-            // Find which testament the old book ID belongs to
-            if ($newTestament->firstWhere('id', $oldBookId)) {
-                $initialTestament = 'new';
-            }
-        }
-    @endphp
-
-    <div class="space-y-2 max-w-md" x-data="{
-        testament: '{{ $initialTestament }}',
-        testamentLabel: '{{ $initialTestament === 'old' ? '📜 Old Testament' : '✝️ New Testament' }}',
-        books: {
-            old: {{ $oldTestament->toJson() }},
-            new: {{ $newTestament->toJson() }}
-        },
-        selectedBook: '{{ old('book_id') }}'
-    }">
+    <div class="space-y-2 max-w-md">
         <label class="form-label after:content-['*'] after:ml-0.5 after:text-destructive">
             📚 Bible Book
         </label>
@@ -100,7 +103,7 @@
                     <li>
                         <button
                             type="button"
-                            @click="testament = 'old'; testamentLabel = '📜 Old Testament'; document.getElementById('testament-button').click()"
+                            @click="updateTestament('old')"
                             class="inline-flex w-full px-4 py-2 text-sm text-gray-700 dark:text-gray-200 hover:bg-gray-100 dark:hover:bg-gray-600"
                         >
                             <span class="inline-flex items-center">
@@ -111,7 +114,7 @@
                     <li>
                         <button
                             type="button"
-                            @click="testament = 'new'; testamentLabel = '✝️ New Testament'; document.getElementById('testament-button').click()"
+                            @click="updateTestament('new')"
                             class="inline-flex w-full px-4 py-2 text-sm text-gray-700 dark:text-gray-200 hover:bg-gray-100 dark:hover:bg-gray-600"
                         >
                             <span class="inline-flex items-center">
@@ -124,7 +127,7 @@
 
             <!-- Book Select List -->
             <div class="flex-1 relative z-0">
-                <select name="book_id" required class="form-input rounded-s-none -ml-px w-full shadow-sm focus:z-10" aria-label="Select Bible book">
+                <select name="book_id" required class="form-input rounded-s-none -ml-px w-full shadow-sm focus:z-10" aria-label="Select Bible book" x-model="selectedBook" @change="updateChapterPlaceholder($event.target.value)">
                     <option value="">Select a book...</option>
                     <template x-for="book in books[testament]" :key="book.id">
                         <option :value="book.id" x-text="book.name" :selected="book.id == selectedBook"></option>
@@ -144,7 +147,9 @@
     <x-ui.input 
         name="chapter_input" 
         label="Chapter(s)" 
-        placeholder="e.g., 3 or 1-5"
+        inputmode="numeric"
+        pattern="\d+(-\d+)?"
+        x-bind:placeholder="chapterPlaceholder"
         :value="old('chapter_input')"
         required
         :error="$errors->first('chapter_input')"
@@ -205,4 +210,44 @@
         display: none !important;
     }
 </style>
+
+<script>
+    function readingLogForm(config) {
+        return {
+            testament: config.initialTestament,
+            testamentLabel: config.initialTestament === 'old' ? '📜 Old Testament' : '✝️ New Testament',
+            books: config.books,
+            selectedBook: config.initialBookId,
+            chapterPlaceholder: 'e.g., 3 or 1-5',
+
+            init() {
+                this.updateChapterPlaceholder(this.selectedBook);
+            },
+
+            updateChapterPlaceholder(bookId) {
+                if (!bookId) {
+                    this.chapterPlaceholder = 'e.g., 3 or 1-5';
+                    return;
+                }
+
+                const allBooks = [...this.books.old, ...this.books.new];
+                const book = allBooks.find(b => b.id == bookId);
+
+                if (book) {
+                    this.chapterPlaceholder = `1-${book.chapters}`;
+                } else {
+                    this.chapterPlaceholder = 'e.g., 3 or 1-5';
+                }
+            },
+
+            updateTestament(newTestament) {
+                this.testament = newTestament;
+                this.testamentLabel = newTestament === 'old' ? '📜 Old Testament' : '✝️ New Testament';
+                // Close the dropdown by simulating a click on the button that controls it
+                document.getElementById('testament-button').click();
+            }
+        }
+    }
+</script>
+
 </div>
