@@ -88,7 +88,7 @@
                 id="testament-button"
                 data-dropdown-toggle="testament-dropdown"
                 data-dropdown-placement="bottom-start"
-                class="shrink-0 inline-flex items-center py-2.5 px-4 text-sm font-medium text-center text-gray-700 dark:text-gray-300 bg-gray-100 dark:bg-gray-700 border border-gray-300 dark:border-gray-600 rounded-s-lg hover:bg-gray-200 dark:hover:bg-gray-600 focus:outline-none focus:ring-2 focus:ring-primary-500 focus:border-primary-500 focus:z-10 dark:focus:ring-primary-600"
+                class="shrink-0 inline-flex items-center py-2 px-4 text-sm font-medium text-center text-gray-700 dark:text-gray-300 bg-gray-100 dark:bg-gray-700 border border-gray-300 dark:border-gray-600 rounded-s-lg hover:bg-gray-200 dark:hover:bg-gray-600 focus:outline-none focus:ring-2 focus:ring-primary-500 focus:border-primary-500 focus:z-10 dark:focus:ring-primary-600 shadow-sm z-10"
                 type="button"
             >
                 <span x-text="testamentLabel"></span>
@@ -126,8 +126,8 @@
             </div>
 
             <!-- Book Select List -->
-            <div class="flex-1 relative z-0">
-                <select name="book_id" required class="form-input rounded-s-none -ml-px w-full shadow-sm focus:z-10" aria-label="Select Bible book" x-model="selectedBook" @change="updateChapterPlaceholder($event.target.value)">
+            <div class="flex-1 relative focus-within:z-20">
+                <select name="book_id" required class="form-input rounded-s-none -ml-px w-full" aria-label="Select Bible book" x-model="selectedBook" @change="updateChapterPlaceholder($event.target.value)">
                     <option value="">Select a book...</option>
                     <template x-for="book in books[testament]" :key="book.id">
                         <option :value="book.id" x-text="book.name" :selected="book.id == selectedBook"></option>
