@@ -78,7 +78,7 @@
 
     <!-- Bible Book Selection -->
     <div class="space-y-2 max-w-md">
-        <label class="form-label after:content-['*'] after:ml-0.5 after:text-destructive">
+        <label class="form-label">
             📚 Bible Book
         </label>
 
