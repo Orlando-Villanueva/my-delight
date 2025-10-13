@@ -83,16 +83,6 @@
             });
         }
     </script>
-
-    <!-- Browser Back/Forward Button Support -->
-    <script>
-        window.addEventListener('popstate', (event) => {
-            htmx.ajax('GET', window.location.href, {
-                target: '#page-container',
-                swap: 'innerHTML'
-            });
-        });
-    </script>
 </body>
 
 </html>

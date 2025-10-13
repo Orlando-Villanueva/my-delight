@@ -363,8 +363,9 @@ describe('Navigation Component Integration', function () {
         $response = $this->actingAs($user)->get('/dashboard');
 
         $response->assertSuccessful();
-        $response->assertSee('popstate', false);
-        $response->assertSee('htmx.ajax', false);
+        // HTMX handles history automatically, check for history event listener
+        $response->assertSee('htmx:historyRestore', false);
+        $response->assertSee('HTMX History Configuration', false);
     });
 });
 
