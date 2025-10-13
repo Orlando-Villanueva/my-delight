@@ -54,11 +54,26 @@
     @php
         $oldTestament = collect($books)->where('testament', 'old')->values();
         $newTestament = collect($books)->where('testament', 'new')->values();
+        
+        $initialTestament = 'old';
+        $oldBookId = old('book_id');
+
+        if ($oldBookId) {
+            // Find which testament the old book ID belongs to
+            if ($newTestament->firstWhere('id', $oldBookId)) {
+                $initialTestament = 'new';
+            }
+        }
     @endphp
 
     <div class="space-y-2 max-w-md" x-data="{
-        testament: 'old',
-        testamentLabel: '📜 Old Testament'
+        testament: '{{ $initialTestament }}',
+        testamentLabel: '{{ $initialTestament === 'old' ? '📜 Old Testament' : '✝️ New Testament' }}',
+        books: {
+            old: {{ $oldTestament->toJson() }},
+            new: {{ $newTestament->toJson() }}
+        },
+        selectedBook: '{{ old('book_id') }}'
     }">
         <label class="form-label after:content-['*'] after:ml-0.5 after:text-destructive">
             📚 Bible Book
@@ -109,39 +124,11 @@
 
             <!-- Book Select List -->
             <div class="flex-1 relative z-0">
-                <!-- Old Testament Select -->
-                <select
-                    :name="testament === 'old' ? 'book_id' : ''"
-                    id="book_id_old"
-                    :required="testament === 'old'"
-                    x-show="testament === 'old'"
-                    class="form-input rounded-s-none -ml-px w-full shadow-sm focus:z-10"
-                    aria-label="Select Old Testament book"
-                >
+                <select name="book_id" required class="form-input rounded-s-none -ml-px w-full shadow-sm focus:z-10" aria-label="Select Bible book">
                     <option value="">Select a book...</option>
-                    @foreach($oldTestament as $book)
-                        <option value="{{ $book['id'] }}" {{ old('book_id') == $book['id'] ? 'selected' : '' }}>
-                            {{ $book['name'] }}
-                        </option>
-                    @endforeach
-                </select>
-
-                <!-- New Testament Select -->
-                <select
-                    :name="testament === 'new' ? 'book_id' : ''"
-                    id="book_id_new"
-                    :required="testament === 'new'"
-                    x-show="testament === 'new'"
-                    x-cloak
-                    class="form-input rounded-s-none -ml-px w-full shadow-sm focus:z-10"
-                    aria-label="Select New Testament book"
-                >
-                    <option value="">Select a book...</option>
-                    @foreach($newTestament as $book)
-                        <option value="{{ $book['id'] }}" {{ old('book_id') == $book['id'] ? 'selected' : '' }}>
-                            {{ $book['name'] }}
-                        </option>
-                    @endforeach
+                    <template x-for="book in books[testament]" :key="book.id">
+                        <option :value="book.id" x-text="book.name" :selected="book.id == selectedBook"></option>
+                    </template>
                 </select>
             </div>
         </div>
