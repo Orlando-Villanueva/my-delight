@@ -3,7 +3,33 @@
 
 <div id="reading-log-form-container">
 
-<form hx-post="{{ route('logs.store') }}" hx-target="#reading-log-form-container" hx-swap="outerHTML" class="space-y-6">
+@php
+    $oldTestament = collect($books)->where('testament', 'old')->values();
+    $newTestament = collect($books)->where('testament', 'new')->values();
+    
+    $initialTestament = 'old';
+    $oldBookId = old('book_id');
+
+    if ($oldBookId) {
+        // Find which testament the old book ID belongs to
+        if ($newTestament->firstWhere('id', $oldBookId)) {
+            $initialTestament = 'new';
+        }
+    }
+@endphp
+
+<form hx-post="{{ route('logs.store') }}" 
+      hx-target="#reading-log-form-container" 
+      hx-swap="outerHTML" 
+      class="space-y-6"
+      x-data="readingLogForm({
+        initialTestament: '{{ $initialTestament }}',
+        initialBookId: '{{ old('book_id') }}',
+        books: {
+            old: {{ $oldTestament->toJson() }},
+            new: {{ $newTestament->toJson() }}
+        }
+    })" x-init="init()">
     @csrf
 
 
@@ -51,56 +77,79 @@
     </div>
 
     <!-- Bible Book Selection -->
-    <x-ui.select 
-        name="book_id" 
-        label="📚 Bible Book" 
-        placeholder="Select a Bible book..."
-        required
-        :error="$errors->first('book_id')"
-        class="max-w-md"
-    >
-        {{-- Old Testament Group --}}
-        @php
-            $oldTestament = collect($books)->where('testament', 'old')->values();
-            $newTestament = collect($books)->where('testament', 'new')->values();
-        @endphp
-        
-        @if($oldTestament->isNotEmpty())
-            <optgroup label="📜 Old Testament ({{ $oldTestament->count() }} books)">
-                @foreach($oldTestament as $book)
-                    <option value="{{ $book['id'] }}" {{ old('book_id') == $book['id'] ? 'selected' : '' }}>
-                        {{ $book['name'] }} ({{ $book['chapters'] }} chapters)
-                    </option>
-                @endforeach
-            </optgroup>
+    <div class="space-y-2 max-w-md">
+        <label class="form-label">
+            📚 Bible Book
+        </label>
+
+        <div class="flex relative">
+            <!-- Testament Dropdown Button -->
+            <button
+                id="testament-button"
+                data-dropdown-toggle="testament-dropdown"
+                data-dropdown-placement="bottom-start"
+                class="shrink-0 inline-flex items-center py-2 px-4 text-sm font-medium text-center text-gray-700 dark:text-gray-300 bg-white dark:bg-gray-700 border border-gray-300 dark:border-gray-600 rounded-s-lg hover:bg-gray-50 dark:hover:bg-gray-600 focus:outline-none focus:ring-2 focus:ring-primary-500 focus:border-primary-500 focus:z-10 dark:focus:ring-primary-600 shadow-sm z-10"
+                type="button"
+            >
+                <span x-text="testamentLabel"></span>
+                <svg class="w-2.5 h-2.5 ms-2.5" aria-hidden="true" xmlns="http://www.w3.org/2000/svg" fill="none" viewBox="0 0 10 6">
+                    <path stroke="currentColor" stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="m1 1 4 4 4-4"/>
+                </svg>
+            </button>
+
+            <!-- Testament Dropdown Menu -->
+            <div id="testament-dropdown" class="z-10 hidden bg-white dark:bg-gray-700 divide-y divide-gray-100 dark:divide-gray-600 rounded-lg shadow w-52">
+                <ul class="py-2 text-sm text-gray-700 dark:text-gray-200" aria-labelledby="testament-button">
+                    <li>
+                        <button
+                            type="button"
+                            @click="updateTestament('old')"
+                            class="inline-flex w-full px-4 py-2 text-sm text-gray-700 dark:text-gray-200 hover:bg-gray-100 dark:hover:bg-gray-600"
+                        >
+                            <span class="inline-flex items-center">
+                                📜 Old Testament
+                            </span>
+                        </button>
+                    </li>
+                    <li>
+                        <button
+                            type="button"
+                            @click="updateTestament('new')"
+                            class="inline-flex w-full px-4 py-2 text-sm text-gray-700 dark:text-gray-200 hover:bg-gray-100 dark:hover:bg-gray-600"
+                        >
+                            <span class="inline-flex items-center">
+                                ✝️ New Testament
+                            </span>
+                        </button>
+                    </li>
+                </ul>
+            </div>
+
+            <!-- Book Select List -->
+            <div class="flex-1 relative focus-within:z-20">
+                <select name="book_id" required class="form-input rounded-s-none -ml-px w-full" aria-label="Select Bible book" x-model="selectedBook" @change="updateChapterPlaceholder($event.target.value)">
+                    <option value="">Select a book...</option>
+                    <template x-for="book in books[testament]" :key="book.id">
+                        <option :value="book.id" x-text="book.name" :selected="book.id == selectedBook"></option>
+                    </template>
+                </select>
+            </div>
+        </div>
+
+        @if($errors->first('book_id'))
+            <p class="form-error" role="alert">
+                {{ $errors->first('book_id') }}
+            </p>
         @endif
-        
-        {{-- New Testament Group --}}
-        @if($newTestament->isNotEmpty())
-            <optgroup label="✝️ New Testament ({{ $newTestament->count() }} books)">
-                @foreach($newTestament as $book)
-                    <option value="{{ $book['id'] }}" {{ old('book_id') == $book['id'] ? 'selected' : '' }}>
-                        {{ $book['name'] }} ({{ $book['chapters'] }} chapters)
-                    </option>
-                @endforeach
-            </optgroup>
-        @endif
-        
-        {{-- Fallback: All books without grouping if testament data not available --}}
-        @if($oldTestament->isEmpty() && $newTestament->isEmpty())
-            @foreach($books as $book)
-                <option value="{{ $book['id'] }}" {{ old('book_id') == $book['id'] ? 'selected' : '' }}>
-                    {{ $book['name'] }} ({{ $book['chapters'] }} chapters)
-                </option>
-            @endforeach
-        @endif
-    </x-ui.select>
+    </div>
 
     <!-- Chapter Input -->
     <x-ui.input 
         name="chapter_input" 
         label="Chapter(s)" 
-        placeholder="e.g., 3 or 1-5"
+        inputmode="numeric"
+        pattern="\d+(-\d+)?"
+        x-bind:placeholder="chapterPlaceholder"
         :value="old('chapter_input')"
         required
         :error="$errors->first('chapter_input')"
@@ -132,7 +181,7 @@
                 <span id="save-loading" class="htmx-indicator hidden">
                     <svg class="animate-spin -ml-1 mr-3 h-5 w-5 text-white" xmlns="http://www.w3.org/2000/svg" fill="none" viewBox="0 0 24 24">
                         <circle class="opacity-25" cx="12" cy="12" r="10" stroke="currentColor" stroke-width="4"></circle>
-                        <path class="opacity-75" fill="currentColor" d="M4 12a8 8 0 018-8V0C5.373 0 0 5.373 0 12h4zm2 5.291A7.962 7.962 0 714 12H0c0 3.042 1.135 5.824 3 7.938l3-2.647z"></path>
+                        <path class="opacity-75" fill="currentColor" d="M4 12a8 8 0 018-8V0C5.373 0 0 5.373 0 12h4zm2 5.291A7.962 7.962 0 014 12H0c0 3.042 1.135 5.824 3 7.938l3-2.647z"></path>
                     </svg>
                     Saving...
                 </span>
@@ -161,4 +210,44 @@
         display: none !important;
     }
 </style>
+
+<script>
+    function readingLogForm(config) {
+        return {
+            testament: config.initialTestament,
+            testamentLabel: config.initialTestament === 'old' ? '📜 Old Testament' : '✝️ New Testament',
+            books: config.books,
+            selectedBook: config.initialBookId,
+            chapterPlaceholder: 'e.g., 3 or 1-5',
+
+            init() {
+                this.updateChapterPlaceholder(this.selectedBook);
+            },
+
+            updateChapterPlaceholder(bookId) {
+                if (!bookId) {
+                    this.chapterPlaceholder = 'e.g., 3 or 1-5';
+                    return;
+                }
+
+                const allBooks = [...this.books.old, ...this.books.new];
+                const book = allBooks.find(b => b.id == bookId);
+
+                if (book) {
+                    this.chapterPlaceholder = `1-${book.chapters}`;
+                } else {
+                    this.chapterPlaceholder = 'e.g., 3 or 1-5';
+                }
+            },
+
+            updateTestament(newTestament) {
+                this.testament = newTestament;
+                this.testamentLabel = newTestament === 'old' ? '📜 Old Testament' : '✝️ New Testament';
+                // Close the dropdown by simulating a click on the button that controls it
+                document.getElementById('testament-button').click();
+            }
+        }
+    }
+</script>
+
 </div>

@@ -1,10 +1,13 @@
 @import 'tailwindcss';
+@import 'flowbite/src/themes/default';
+@plugin 'flowbite/plugin';
 
 /* Source paths for Tailwind v4 */
 @source '../../vendor/laravel/framework/src/Illuminate/Pagination/resources/views/*.blade.php';
 @source '../../storage/framework/views/*.php';
 @source '../**/*.blade.php';
 @source '../**/*.js';
+@source '../../node_modules/flowbite';
 
 /* Bible Habit Brand Colors for reference */
 /* Primary: #3366CC, Success: #66CC99 */

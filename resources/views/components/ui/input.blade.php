@@ -5,7 +5,9 @@
     'placeholder' => '',
     'required' => false,
     'error' => null,
-    'value' => ''
+    'value' => '',
+    'inputmode' => null,
+    'pattern' => null,
 ])
 
 @php
@@ -27,6 +29,8 @@
         class="{{ $inputClasses }}"
         placeholder="{{ $placeholder }}"
         value="{{ $value }}"
+        @if($inputmode) inputmode="{{ $inputmode }}" @endif
+        @if($pattern) pattern="{{ $pattern }}" @endif
         {{ $required ? 'required' : '' }}
         {{ $attributes }}
     />
@@ -34,4 +38,4 @@
     @if($error)
         <p class="form-error">{{ $error }}</p>
     @endif
-</div> 
+</div>
