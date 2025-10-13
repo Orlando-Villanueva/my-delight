@@ -48,9 +48,11 @@
 
 <body class="bg-[#F5F7FA] dark:bg-gray-900 text-gray-600 min-h-screen font-sans antialiased transition-colors">
     <div class="flex h-screen">
-        <!-- Desktop: Navbar + Sidebar -->
-        <x-navigation.desktop-navbar class="hidden lg:block" />
-        <x-navigation.desktop-sidebar class="hidden lg:block" />
+        <!-- Desktop: Sidebar and Navbar -->
+        <div class="hidden lg:flex">
+            <x-navigation.desktop-sidebar />
+            <x-navigation.desktop-navbar />
+        </div>
 
         <!-- Main Content -->
         <div class="flex-1 flex flex-col lg:overflow-hidden lg:pt-14">

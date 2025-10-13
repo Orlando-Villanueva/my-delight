@@ -2,7 +2,7 @@
 {{-- Flowbite-based sidebar with HTMX navigation and hover states only --}}
 
 <aside
-    class="hidden lg:flex lg:flex-col w-64 bg-white dark:bg-gray-800 border-r border-gray-200 dark:border-gray-700 lg:pt-16">
+    class="w-64 bg-white dark:bg-gray-800 border-r border-gray-200 dark:border-gray-700 lg:pt-16">
     <div class="h-full px-3 py-4 overflow-y-auto">
         <!-- Navigation Menu -->
         <ul class="space-y-2 font-medium">

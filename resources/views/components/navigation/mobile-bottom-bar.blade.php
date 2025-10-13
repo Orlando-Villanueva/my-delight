@@ -2,7 +2,7 @@
 {{-- Flowbite-based application bar with floating action button --}}
 
 <div
-    class="fixed z-50 w-full h-16 max-w-lg -translate-x-1/2 bg-white/60 backdrop-blur-md border-2  border-gray-200/50 rounded-full bottom-4 left-1/2 dark:bg-gray-700/70 dark:border-gray-600/50 lg:hidden">
+    class="fixed z-50 w-full h-16 max-w-lg -translate-x-1/2 bg-white/50 backdrop-blur-lg border-2  border-gray-200/50 rounded-full bottom-4 left-1/2 dark:bg-gray-700/70 dark:border-gray-600/50 lg:hidden">
     <div class="grid h-full max-w-lg grid-cols-3 mx-auto">
         <!-- Dashboard Button (Left) -->
         <x-navigation.nav-link
