@@ -70,6 +70,16 @@
         <x-navigation.mobile-bottom-bar class="lg:hidden" />
     </div>
 
+    <!-- HTMX History Configuration -->
+    <script>
+        document.body.addEventListener('htmx:historyRestore', function(evt) {
+            // This event is fired when HTMX restores a page from history.
+            // You can use it to re-initialize any components or scripts that might
+            // have been affected by the content swap.
+            console.log('HTMX history restored.');
+        });
+    </script>
+
     <!-- PWA Service Worker Registration -->
     <script>
         if ('serviceWorker' in navigator) {
