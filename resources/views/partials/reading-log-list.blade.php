@@ -1,31 +1,31 @@
 {{-- Reading Log List Partial --}}
 {{-- This partial is loaded via HTMX for seamless filtering --}}
 
-@if ($logs->count() > 0)
-    {{-- Reading Log Entries Container - Simplified architecture for consistent spacing --}}
-    <div id="log-list" class="relative"
+@php
+    // Check if today has any readings logged
+    $today = today()->format('Y-m-d');
+    $hasReadingToday = $logs->count() > 0 && $logs->keys()->contains($today);
+@endphp
+
+@if ($logs->count() > 0 || !$hasReadingToday)
+    {{-- Reading Log Timeline with Flowbite --}}
+    <ol id="log-list"
+        class="relative border-s border-gray-200 dark:border-gray-700 ps-0"
         hx-trigger="readingLogAdded from:body"
         hx-get="{{ route('logs.index') }}?refresh=1"
         hx-target="this"
         hx-swap="outerHTML">
-        {{-- Content Container - All cards render here with consistent spacing --}}
-        <div id="log-list-content" class="space-y-4">
-            @foreach ($logs as $logsForDay)
-                @if ($logsForDay->count() === 1)
-                    {{-- Single reading: use individual card --}}
-                    <x-bible.reading-log-card :log="$logsForDay->first()" />
-                @else
-                    {{-- Multiple readings: use daily grouped card --}}
-                    <x-bible.daily-reading-card :logsForDay="$logsForDay" />
-                @endif
-            @endforeach
-        </div>
-        
-        {{-- Intersection Observer Sentinel for Infinite Scroll --}}
-        @if ($logs->hasMorePages())
-            @include('partials.infinite-scroll-sentinel', compact('logs'))
-        @endif
-    </div>
+        @include('partials.reading-log-items', [
+            'logs' => $logs,
+            'includeEmptyToday' => ! $hasReadingToday,
+        ])
+    </ol>
+
+    {{-- Render all delete modals at document level to avoid z-index issues --}}
+    @include('partials.reading-log-modals', [
+        'logs' => $logs,
+        'modalsOutOfBand' => request()->header('HX-Request') !== null,
+    ])
 @else
     {{-- Empty State --}}
     <div class="text-center py-12 pb-20 lg:pb-12">
